@@ -1,3 +1,5 @@
+## Functionality
+This is a real-time chat app
 ## Running the App
 ### Docker
 #### Building the Container
@@ -10,20 +12,21 @@ docker build -t realtime-chat-image .
 ```bash
 docker run --rm -p 3000:3000 --name realtime-chat-container realtime-chat-image
 ```
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 #### Stopping the Container
 ```bash
 docker stop realtime-chat-container
 ```
 
-### Building the App
+## Deploying the App
 Continuous integration is set up with Heroku (live version at https://salthouse-chat-2e94934e3b3e.herokuapp.com/), 
-so when it's good to publish, merge changes to `main`
+when it's good to publish,
+1. merge changes from `dev` to `main`
+2. Open the heroku dashboard at `https://dashboard.heroku.com/apps/salthouse-chat/deploy/github`
+3. Hit "Deploy Branch from Main"
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-## Functionality
-This is a real-time chat app
+![Screenshot 2024-10-01 at 2.32.50 PM.png](README%20assets/Screenshot%202024-10-01%20at%202.32.50%E2%80%AFPM.png)
 
 ## Credits
 Built from template put forth by @johnrushx at [https://nextjsstarter.com/blog/build-nextjs-real-time-chat-app-in-5-steps/](https://nextjsstarter.com/blog/build-nextjs-real-time-chat-app-in-5-steps/)
