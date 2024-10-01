@@ -1,10 +1,21 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
 ## Running the App
-
+### Docker
+#### Building the Container
+note: Make sure `docker` or `docker desktop` is running
+From the root directory
 ```bash
-npm run dev
+docker build -t realtime-chat-image .  
 ```
+#### Running the Container
+```bash
+docker run --rm -p 3000:3000 --name realtime-chat-container realtime-chat-image
+```
+
+#### Stopping the Container
+```bash
+docker stop realtime-chat-container
+```
+
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
