@@ -1,9 +1,10 @@
 ## Functionality
-This is a real-time chat app
+This is a real-time chat app. 
 ## Running the App
 ### Docker
 #### Building the Container
-note: Make sure `docker` or `docker desktop` is running
+note: Make sure `docker` or `docker desktop` is running.
+We're using an Alpine Linux image in Docker to approximate Heroku's default dyno container, which uses a lightweight Linux distro.
 From the root directory
 ```bash
 docker compose up  
