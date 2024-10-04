@@ -6,17 +6,13 @@ This is a real-time chat app
 note: Make sure `docker` or `docker desktop` is running
 From the root directory
 ```bash
-docker build -t realtime-chat-image .  
-```
-#### Running the Container
-```bash
-docker run --rm -p 3000:3000 --name realtime-chat-container realtime-chat-image
+docker compose up  
 ```
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 #### Stopping the Container
 ```bash
-docker stop realtime-chat-container
+docker compose down
 ```
 
 ## Deploying the App
