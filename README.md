@@ -1,10 +1,9 @@
 ## Functionality
-This is a real-time chat app. 
+This is a real-time chat app
 ## Running the App
 ### Docker
 #### Building the Container
-note: Make sure `docker` or `docker desktop` is running.
-We're using an Alpine Linux image in Docker to approximate Heroku's default dyno container, which uses a lightweight Linux distro.
+note: Make sure `docker` or `docker desktop` is running
 From the root directory
 ```bash
 docker compose up  
@@ -15,13 +14,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ```bash
 docker compose down
 ```
-
-## Running Tests
-The docker-compose file is rigged for live test watching. When running `docker compose up`,
-the container `realtime-chat-jest` will run the unit tests and pass or fail accordingly.
-
-If you're not running the docker container, you can manually run the tests with the `jest` command.
-Please please please please please please please please please write unit tests before implementing anything.
 
 ## Deploying the App
 Continuous integration is set up with Heroku (live version at https://salthouse-chat-2e94934e3b3e.herokuapp.com/), 
