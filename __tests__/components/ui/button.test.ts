@@ -1,7 +1,12 @@
 import Button from "@/components/ui/button/Button";
 import {Loader2} from "lucide-react";
+import {Utils} from "@/lib/utils";
 
 describe('Button',()=>{
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
 
     test('Button type test',()=>{
         const button = Button({})
@@ -17,7 +22,6 @@ describe('Button',()=>{
 
     test('Miscellaneous props passed to React Parent', ()=>{
         const button =  Button({})
-        console.log({button})
         expect(button?.props)
             .not
             .toEqual(expect.objectContaining({color:"#841584"}))
@@ -71,6 +75,33 @@ describe('Button',()=>{
         expect(button?.props?.children)
             .toEqual(expect
                 .arrayContaining(["Boring conversation anyway"]))
+    })
+
+    test('Utils.buttonClassNames is called with the correct variant, size and className',()=>{
+        const spy = jest.spyOn(Utils, 'buttonClassNames')
+        Button({variant:'default', size: 'lg', className:'Stephen'})
+        expect(spy).toHaveBeenCalledWith({variant:'default', size: 'lg', className:'Stephen'})
+
+    })
+
+    test('Utils.buttonClassNames is called with the correct variant, size and className -- different data',()=>{
+        const spy = jest.spyOn(Utils, 'buttonClassNames')
+        Button({variant:'ghost', size: 'default', className:'Cat'})
+        expect(spy).toHaveBeenCalledWith({variant:'ghost', size: 'default', className:'Cat'})
+    })
+
+    test('className of button should be set with output of Utils.buttonClassNames', ()=>{
+        jest.spyOn(Utils, 'buttonClassNames').mockReturnValueOnce('Chihiro, your name is now "Sen"')
+        const button = Button({})
+        expect(button?.props.className)
+            .toEqual('Chihiro, your name is now "Sen"')
+    })
+
+    test('className of button should be set with output of Utils.buttonClassNames', ()=>{
+        jest.spyOn(Utils, 'buttonClassNames').mockReturnValueOnce('Ashitaka, you must leave the village')
+        const button = Button({})
+        expect(button?.props.className)
+            .toEqual('Ashitaka, you must leave the village')
     })
 
 })
