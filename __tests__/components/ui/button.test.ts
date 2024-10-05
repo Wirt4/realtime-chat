@@ -1,4 +1,4 @@
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/button/Button";
 describe('Button',()=>{
     test('default button content test',()=>{
         const button =  Button()
