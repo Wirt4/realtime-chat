@@ -1,11 +1,7 @@
 import cslx, {ClassValue} from "clsx";
 import {twMerge} from "tailwind-merge";
 import buttonVariants from "@/components/ui/button/buttonVariants";
-interface buttonClassNamesProps{
-    variant?: string,
-    size?: string,
-    className?: string
-}
+
 export class Utils {
     static _cslx(...inputs: ClassValue[]): string {
         return cslx(inputs)
