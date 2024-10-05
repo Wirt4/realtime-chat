@@ -23,6 +23,9 @@ the container `realtime-chat-jest` will run the unit tests and pass or fail acco
 If you're not running the docker container, you can manually run the tests with the `jest` command.
 Please please please please please please please please please write unit tests before implementing anything.
 
+## Accessing the Database
+The app uses Upstash.com for database management, specifically the redis app. The REDIS_URL and REDIS_TOKEN are stored in  `.env.local`.
+
 ## Deploying the App
 Continuous integration is set up with Heroku (live version at https://salthouse-chat-2e94934e3b3e.herokuapp.com/), 
 when it's good to publish,
