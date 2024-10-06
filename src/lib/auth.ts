@@ -1,11 +1,14 @@
 import {db} from "@/lib/db";
 import {UpstashRedisAdapter} from "@next-auth/upstash-redis-adapter";
 import GoogleProvider from 'next-auth/providers/google'
+import {NextAuthOptions} from "next-auth";
+import {JWT} from "next-auth/jwt";
 
 interface googleCredProps{
     clientId: string;
     clientSecret: string;
 }
+
 export class Auth {
     static isValidSecret(secret: string | undefined) {
         return secret && secret.length > 0
@@ -40,7 +43,7 @@ export class Auth {
         }
     }
 
-    static async JWTCallback({token, user}): Promise<User>{
+    static async JWTCallback({token, user}): Promise<JWT>{
         const dbUser = await this._db().get(`user:${token?.id}`) as User | null
         if(!dbUser){
             token.id = user!.id
@@ -56,7 +59,7 @@ export class Auth {
         return session
     }
 
-    static options() {
+    static options(): NextAuthOptions {
          return {
             adapter: UpstashRedisAdapter(this._db()),
              session:{
