@@ -30,20 +30,26 @@ describe('Login', () => {
     test('confirm placement of h2 component',()=>{
         const login = Login({})
         console.log(login?.props.children.props.children.props.children.props.children)
-        expect(login?.props.children.props.children.props.children.props.children).toEqual(expect.arrayContaining([expect.objectContaining({type: 'h2'})]))
+        expect(login?.props.children.props.children.props.children.props.children).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({type: 'h2'})]))
     })
 
     test('confirm styling of h2 component',()=>{
         const login = Login({})
        // const loginMessage = 'Sign in with Google'
         const styling = 'mt-6 text-center text-3xl font-bold tracking-tight text-gray-900'
-        expect(login?.props.children.props.children.props.children.props.children).toEqual(expect.arrayContaining([expect.objectContaining({props: expect.objectContaining({className: styling})})]))
+        expect(login?.props.children.props.children.props.children.props.children).toEqual(
+            expect.arrayContaining([expect.objectContaining({props:
+                    expect.objectContaining({className: styling})})]))
     })
 
     test('confirm content of h2 component',()=>{
         const login = Login({})
         const loginMessage = 'Sign in with Google'
-        expect(login?.props.children.props.children.props.children.props.children).toEqual(expect.arrayContaining([expect.objectContaining({props: expect.objectContaining({children: loginMessage})})]))
+        expect(login?.props.children.props.children.props.children.props.children).toEqual(
+            expect.arrayContaining([expect.objectContaining({props:
+                    expect.objectContaining({children: loginMessage})})]))
     })
 
 })
