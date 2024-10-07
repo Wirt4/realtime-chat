@@ -1,5 +1,4 @@
 import {Utils} from "@/lib/utils"
-import {be} from "@upstash/redis/zmscore-BLgYk16R";
 
 describe('classNames test', ()=>{
     test('want to make sure the inputs are passed to clsx', ()=>{

@@ -2,6 +2,7 @@ import cslx, {ClassValue} from "clsx"
 import {twMerge} from "tailwind-merge"
 import buttonVariants from "@/components/ui/button/buttonVariants"
 import {signIn} from "next-auth/react"
+import {toast} from "react-hot-toast";
 
 export class Utils {
     static _cslx(...inputs: ClassValue[]): string {
@@ -45,5 +46,7 @@ export class Utils {
         })
     }
 
-    static toastError(msg:string){}
+    static toastError(msg:string){
+        toast.error(msg)
+    }
 }
