@@ -43,7 +43,7 @@ export class Auth {
         }
     }
 
-    static async JWTCallback({token, user}): Promise<JWT>{
+    static async JWTCallback({token, user}): Promise<any>{
         const dbUser = await this._db().get(`user:${token?.id}`) as User | null
         if(!dbUser){
             token.id = user!.id
