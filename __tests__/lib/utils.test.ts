@@ -46,3 +46,31 @@ describe('buttonClassNames test', ()=>{
         expect(spy).toHaveBeenCalledWith("Here's looking at you kid")
     })
 })
+
+describe('loginwithGoogle',()=>{
+    beforeEach(()=>{
+        jest.resetAllMocks()
+    })
+    test('The dependency injection should be called with "true, then false"', async()=>{
+        jest.spyOn(Utils, '_signIn').mockImplementation(jest.fn())
+        const spy = jest.fn()
+        const func = Utils.loginWithGoogle(spy)
+        await func()
+        expect(spy.mock.calls).toEqual([[true], [false]])
+    })
+
+    test("_signin should be called with 'google'",async ()=>{
+        const spy =  jest.spyOn(Utils, '_signIn').mockImplementation(jest.fn())
+        const func = Utils.loginWithGoogle(()=>{})
+        await func()
+        expect(spy).toHaveBeenCalledWith('google')
+    })
+
+    test('The dependency injection should be called with "true, then false", even is _signin throws', async()=>{
+        jest.spyOn(Utils, '_signIn').mockRejectedValueOnce('error')
+        const spy = jest.fn()
+        const func = Utils.loginWithGoogle(spy)
+        await func()
+        expect(spy.mock.calls).toEqual([[true], [false]])
+    })
+})
