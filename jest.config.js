@@ -8,7 +8,7 @@ const customJestConfig = {
     setupFiles: ['dotenv/config'],
     transform: {
         '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
-    },
+    }
 }
 
 module.exports = createJestConfig(customJestConfig)
