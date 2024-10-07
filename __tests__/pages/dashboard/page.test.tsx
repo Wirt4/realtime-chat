@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 import {render} from "@testing-library/react";
-import Dashboard from  '@/app/pages/dashboard/page'
+import Page from '@/app/dashboard/page'
 
 describe('DashboardPage', () => {
     test('Needs to have the page title "dasboard"',()=>{
-        render(<Dashboard/>)
+        render(<Page/>)
         expect(document.title).toBe('dashboard')
     })
 })

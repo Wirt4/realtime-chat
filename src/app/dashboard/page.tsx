@@ -3,8 +3,8 @@ import {FC} from "react";
 
 interface pageProps {}
 
-const Dashboard: FC<pageProps> = ({}) =>{
+const Page: FC<pageProps> = ({}) =>{
     return <><title>dashboard</title></>
 }
 
-export default Dashboard
+export default Page
