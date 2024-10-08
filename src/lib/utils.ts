@@ -10,7 +10,7 @@ export class Utils {
     }
 
     static _signIn(service: string){
-        return signIn(service)
+        return signIn(service, {callbackUrl: '/dashboard'})
     }
 
     static _twMerge(cslx: string): string {

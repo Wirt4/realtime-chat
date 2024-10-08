@@ -2,7 +2,6 @@ import {db} from "@/lib/db";
 import {UpstashRedisAdapter} from "@next-auth/upstash-redis-adapter";
 import GoogleProvider from 'next-auth/providers/google'
 import {NextAuthOptions} from "next-auth";
-import {JWT} from "next-auth/jwt";
 
 interface googleCredProps{
     clientId: string;
@@ -72,10 +71,12 @@ export class Auth {
                 signIn:'/login'
              },
              callbacks: {
-                jwt: this.JWTCallback,
-                 session: this.sessionCallback,
-                 redirect: ()=>{
-                    return '/dashboard'
+                 async redirect({ url, baseUrl }) {
+                     // Allows relative callback URLs
+                     if (url.startsWith("/")) return `${baseUrl}${url}`
+                     // Allows callback URLs on the same origin
+                     else if (new URL(url).origin === baseUrl) return url
+                     return baseUrl
                  }
              }
         }
