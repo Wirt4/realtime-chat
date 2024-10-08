@@ -137,9 +137,12 @@ describe('properties of AuthOptions object', ()=>{
                             expect.anything()})}))
     })
 
-    test('redirect should be to dashboard',()=>{
+    test('session callback should be the method redirectCallback', async ()=>{
+        const spy = jest.spyOn(Auth, 'redirectCallback').mockReturnValue({})
         const opts = Auth.options()
-        expect(opts.callbacks.redirect()).toEqual('/dashboard')
+        const param = {url:'foo', baseUrl: 'bar'}
+        await opts.callbacks.redirect(param)
+        expect(spy).toHaveBeenCalledWith(param)
     })
 })
 
@@ -364,5 +367,38 @@ describe('Session callback tests', ()=>{
                 email:'wrigleyfield@chicago.com',
                 image:'another valid image address'
             }})
+    })
+})
+
+describe('redirect callback tests',()=>{
+    test('url starts with a "/"', ()=>{
+        const url = "/007"
+        const baseUrl = "http://mi5.uk"
+        const actual = Auth.redirectCallback({url, baseUrl})
+        expect(actual).toEqual(baseUrl + url)
+    })
+    test('url starts with a "/", different data', ()=>{
+        const url = "/doo"
+        const baseUrl = "http://scooby.com"
+        const actual = Auth.redirectCallback({url, baseUrl})
+        expect(actual).toEqual(baseUrl + url)
+    })
+    test('url doesn\'t start with a "/", origin is the same', ()=>{
+        const url = "doo"
+        const baseUrl = "http://scooby.com"
+        jest.spyOn(global, 'URL').mockImplementation(()=>{
+            return  {origin: baseUrl}
+        })
+        const actual = Auth.redirectCallback({url, baseUrl})
+        expect(actual).toEqual(url)
+    })
+    test('url doesn\'t start with a "/", origin is different', ()=>{
+        const url = "doo"
+        const baseUrl = "http://scooby.com"
+        jest.spyOn(global, 'URL').mockImplementation(()=>{
+            return  {origin: "different"}
+        })
+        const actual = Auth.redirectCallback({url, baseUrl})
+        expect(actual).toEqual(baseUrl)
     })
 })

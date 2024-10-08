@@ -42,13 +42,19 @@ export class Auth {
         }
     }
 
-    static async JWTCallback({token, user}): Promise<any>{
-        const dbUser = await this._db().get(`user:${token?.id}`) as User | null
+
+    static  async JWTCallback({ token, user}) {
+        const dbUser = await Auth._db().get(`user:${token?.id}`) as User | null
         if(!dbUser){
             token.id = user!.id
             return token
         }
-       return dbUser
+        return {
+            id: dbUser.id,
+            name: dbUser.name,
+            email: dbUser.email,
+            image: dbUser.image,
+        }
     }
 
     static async sessionCallback({session, token}){
@@ -56,6 +62,16 @@ export class Auth {
             session.user = token
         }
         return session
+    }
+
+    static  redirectCallback({url, baseUrl}){
+        if (url.startsWith("/")){
+            return `${baseUrl}${url}`
+        }
+        if  (new URL(url).origin === baseUrl){
+            return url
+        }
+        return baseUrl
     }
 
     static options(): NextAuthOptions {
@@ -71,13 +87,9 @@ export class Auth {
                 signIn:'/login'
              },
              callbacks: {
-                 async redirect({ url, baseUrl }) {
-                     // Allows relative callback URLs
-                     if (url.startsWith("/")) return `${baseUrl}${url}`
-                     // Allows callback URLs on the same origin
-                     else if (new URL(url).origin === baseUrl) return url
-                     return baseUrl
-                 }
+                 jwt: this.JWTCallback,
+                 session: this.sessionCallback,
+                 redirect: this.redirectCallback
              }
         }
     }
