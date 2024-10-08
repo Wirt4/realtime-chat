@@ -2,7 +2,6 @@ import {db} from "@/lib/db";
 import {UpstashRedisAdapter} from "@next-auth/upstash-redis-adapter";
 import GoogleProvider from 'next-auth/providers/google'
 import {NextAuthOptions} from "next-auth";
-import {JWT} from "next-auth/jwt";
 
 interface googleCredProps{
     clientId: string;
@@ -43,13 +42,19 @@ export class Auth {
         }
     }
 
-    static async JWTCallback({token, user}): Promise<JWT>{
-        const dbUser = await this._db().get(`user:${token?.id}`) as User | null
+
+    static  async JWTCallback({ token, user}) {
+        const dbUser = await Auth._db().get(`user:${token?.id}`) as User | null
         if(!dbUser){
             token.id = user!.id
             return token
         }
-       return dbUser
+        return {
+            id: dbUser.id,
+            name: dbUser.name,
+            email: dbUser.email,
+            image: dbUser.image,
+        }
     }
 
     static async sessionCallback({session, token}){
@@ -57,6 +62,16 @@ export class Auth {
             session.user = token
         }
         return session
+    }
+
+    static  redirectCallback({url, baseUrl}){
+        if (url.startsWith("/")){
+            return `${baseUrl}${url}`
+        }
+        if  (new URL(url).origin === baseUrl){
+            return url
+        }
+        return baseUrl
     }
 
     static options(): NextAuthOptions {
@@ -72,11 +87,9 @@ export class Auth {
                 signIn:'/login'
              },
              callbacks: {
-                jwt: this.JWTCallback,
+                 jwt: this.JWTCallback,
                  session: this.sessionCallback,
-                 redirect: ()=>{
-                    return '/dashboard'
-                 }
+                 redirect: this.redirectCallback
              }
         }
     }

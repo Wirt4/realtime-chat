@@ -33,7 +33,24 @@ when it's good to publish,
 2. Open the heroku dashboard at `https://dashboard.heroku.com/apps/salthouse-chat/deploy/github`
 3. Hit "Deploy Branch from Main"
 
+## Env Variables
+The app uses the following .env variables.
+```
+REDIS_URL
+REDIS_TOKEN
+GOOGLE_CLIENT_ID
+GOOGLE_CLIENT_SECRET
+```
+`REDIS` is for accessing the redis database via upstash.com
+`GOOGLE_CLIENT` is for OAuth login via the users' google account
+
+## OAuth
+For Google, go to https://console.cloud.google.com/ to configure the credentials.
+Authorized Javascript origin should be the homepage (for dev it's http://localhost:3000)
+For the authorized redirect URI, set it to `<homepage>/api/auth/callback/google`
+
 ![Screenshot 2024-10-01 at 2.32.50 PM.png](README%20assets/Screenshot%202024-10-01%20at%202.32.50%E2%80%AFPM.png)
+
 
 ## Credits
 Built from template put forth by @johnrushx at [https://nextjsstarter.com/blog/build-nextjs-real-time-chat-app-in-5-steps/](https://nextjsstarter.com/blog/build-nextjs-real-time-chat-app-in-5-steps/)

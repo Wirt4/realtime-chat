@@ -1,10 +1,16 @@
-import cslx, {ClassValue} from "clsx";
-import {twMerge} from "tailwind-merge";
-import buttonVariants from "@/components/ui/button/buttonVariants";
+import cslx, {ClassValue} from "clsx"
+import {twMerge} from "tailwind-merge"
+import buttonVariants from "@/components/ui/button/buttonVariants"
+import {signIn} from "next-auth/react"
+import {toast} from "react-hot-toast";
 
 export class Utils {
     static _cslx(...inputs: ClassValue[]): string {
         return cslx(inputs)
+    }
+
+    static _signIn(service: string){
+        return signIn(service, {callbackUrl: '/dashboard'})
     }
 
     static _twMerge(cslx: string): string {
@@ -25,5 +31,22 @@ export class Utils {
         className: string | undefined
     }):string{
         return this.classNames(this._buttonVariants(props as never))
+    }
+
+    static loginWithGoogle(setIsLoading:(isLoading: boolean)=>void){
+        return (async ()=>{
+            setIsLoading(true)
+            try{
+                await this._signIn('google')
+            }catch(e){
+                this.toastError('something went wrong with the login')
+            }finally{
+                setIsLoading(false)
+            }
+        })
+    }
+
+    static toastError(msg:string){
+        toast.error(msg)
     }
 }
