@@ -1,5 +1,5 @@
 import {render, screen} from "@testing-library/react";
-import Providers from "@/components/Providers";
+import ToastErrorHandler from "@/components/ToastErrorHandler";
 import '@testing-library/jest-dom'
 
 jest.mock('react-hot-toast', () => ({
@@ -7,11 +7,11 @@ jest.mock('react-hot-toast', () => ({
 }));
 describe('Providers', () => {
     test('needs to contain a toaster',()=>{
-        const {getByTestId} = render(<Providers>null</Providers>)
+        const {getByTestId} = render(<ToastErrorHandler>null</ToastErrorHandler>)
         expect(getByTestId('mocked-toaster')).toBeInTheDocument()
     })
     test('renders the children passed to it',()=>{
-        render(<Providers><p>My Names June. Whats Yours?</p></Providers>)
+        render(<ToastErrorHandler><p>My Names June. Whats Yours?</p></ToastErrorHandler>)
         expect(screen.getByText('My Names June. Whats Yours?')).toBeInTheDocument();
     })
 })

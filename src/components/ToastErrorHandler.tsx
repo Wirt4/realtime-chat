@@ -7,11 +7,11 @@ interface ProvidersProps{
     children: ReactNode
 }
 
-const Providers: FC<ProvidersProps> = ({children}) => {
+const ToastErrorHandler: FC<ProvidersProps> = ({children}) => {
     return (<>
         <Toaster position='top-center' reverseOrder={false}/>
         {children}
     </>)
 }
 
-export default Providers
+export default ToastErrorHandler

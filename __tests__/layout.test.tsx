@@ -3,14 +3,14 @@ import RootLayout from "@/app/layout"
 import '@testing-library/jest-dom'
 
 
-jest.mock('../src/components/Providers', () => ({
+jest.mock('../src/components/ToastErrorHandler', () => ({
     __esModule: true,
-    default: ({ children }) => <div data-testid="providers">{children}</div>
+    default: ({ children }) => <div data-testid="toast-handler">{children}</div>
 }))
 
 describe('Providers', () => {
     test('needs to contain a A Provider',()=>{
         const {getByTestId} = render(<RootLayout>null</RootLayout>)
-        expect(getByTestId('providers')).toBeInTheDocument()
+        expect(getByTestId('toast-handler')).toBeInTheDocument()
     })
 })
