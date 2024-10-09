@@ -166,4 +166,14 @@ describe('adFriend', ()=>{
         await Utils.addFriend({email, setError: jest.fn(), setShowSuccessState: spy})
         expect(spy).toHaveBeenCalledWith( true)
     })
+    test('axios.post and addFriendValidator.parse are clean, should call setShowSuccessState with true', async ()=>{
+        const email = 'valid-email'
+        const validEmail = {email}
+        jest.spyOn(addFriendValidator, 'parse').mockReturnValue(validEmail)
+        jest.spyOn(axios, 'post').mockRejectedValue(false)
+        const spy = jest.fn()
+        await Utils.addFriend({email, setError: jest.fn(), setShowSuccessState: spy})
+        expect(spy).not.toHaveBeenCalledWith(true)
+    })
+
 })
