@@ -23,9 +23,8 @@ export class PostFriendsRouteHandler {
     }
     async triggerPusher():Promise<void> {}
     async isValidRequest(requestBody:any):Promise<boolean>{
-       let validatedEmail:{email:string}
         try{
-           validatedEmail =  this.validateEmail(requestBody.email)
+            this.validateEmail(requestBody.email)
         }catch(error){
            return false
        }
