@@ -66,12 +66,15 @@ export class Utils {
             await axios.post('/api/friends/add', {email: validEmail})
             props.setShowSuccessState(true)
         }catch(e){
+            let message = "Something went wrong, check logs"
+
             if (e instanceof ZodError){
-                props.setError("email",{message: e.message})
+                message = e.message
             }else if (e instanceof AxiosError){
-                console.log('axios error')
-                props.setError("email",{message: e.response?.data})
-            }else {props.setError("email",{message: "Something went wrong, check logs"})}
+                message = e.response?.data
+            }
+
+            props.setError("email",{message})
         }
     }
 }
