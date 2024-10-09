@@ -3,13 +3,14 @@ import { addFriendValidator } from '@/lib/validations/add-friend'
 type FormData = z.infer<typeof addFriendValidator>
 import { z } from 'zod'
 import axios from "axios";
+import React from "react";
 
 interface SubmissionProps {
     data: FormData
     showSuccessState:(state: boolean) => void
 }
 export class Submissions{
-    handleSubmit(props: SubmissionProps): void{
+    handleSubmit(props: React.FormEvent<HTMLFormElement>): void{
         this.addFriend(props)
     }
 
