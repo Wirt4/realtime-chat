@@ -103,7 +103,7 @@ describe('adFriend', ()=>{
     test('validator.parse() is called', async ()=>{
         const spy = jest.spyOn(addFriendValidator, 'parse').mockReturnValue({email:'valid-email'})
         await Utils.addFriend({email:'valid-email', setError: jest.fn(), setShowSuccessState: jest.fn()})
-        expect(spy).toHaveBeenCalledWith('valid-email')
+        expect(spy).toHaveBeenCalledWith({email: 'valid-email'})
     })
     test('validator.parse() throws, expect setEror to be called ', async ()=>{
         const issues: z.ZodIssue[] = [
