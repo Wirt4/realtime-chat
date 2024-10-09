@@ -2,9 +2,12 @@
 
 import {FC} from "react";
 import Button from "@/components/ui/button/Button";
+import {Submissions} from "@/lib/submissions";
 
 const AddFriendButton: FC = ()=>{
-    return <form className='max-w-sum'>
+
+
+    return <form onClick={Submissions.handleSubmit} className= 'max-w-sum'>
         <label htmlFor='email'
         className='block text-sm font-medium leading-6 text-gray-900'>Add a Friend by Email:</label>
         <div className='mt-2 flex gap-4'>
