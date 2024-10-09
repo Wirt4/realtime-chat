@@ -121,8 +121,7 @@ export class PostFriendsRouteHandler {
     }
 
     isSameUser():boolean{
-        //stub
-        return false
+        return this.senderId === this.idToAdd
     }
 
     errorResponse(): errorProps{
