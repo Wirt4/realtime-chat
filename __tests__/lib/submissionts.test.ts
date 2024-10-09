@@ -78,5 +78,19 @@ describe('addFriend',()=>{
         await Submissions.addFriend(props);
 
         expect(spy).not.toHaveBeenCalled();
-    });
+    })
+    test(' expect axios to be called with correct path', async ()=>{
+        const path = '/api/friends/add'
+        // @ts-ignore
+        const spy = jest.spyOn(Submissions, "postToAxios").mockResolvedValue(true)
+        // @ts-ignore
+        jest.spyOn(Submissions, 'validate').mockReturnValueOnce('true')
+        const email = "bar@foo.com";
+        const props = {
+            data: { email },
+            showSuccessState: jest.fn,
+        };
+        await Submissions.addFriend(props);
+        expect(spy).toHaveBeenCalledWith(path, expect.anything())
+    })
 })

@@ -13,10 +13,18 @@ export class Submissions{
         this.addFriend(props)
     }
 
+    static validate(email: string){
+        return addFriendValidator.parse(email)
+    }
+
+    static async postToAxios(route: string, options: AbortController){
+        return axios.post(route, options)
+    }
+
     static async addFriend(props: SubmissionProps){
         try{
-            addFriendValidator.parse(props.data.email)
-            await axios.post('some bullshit')
+            this.validate(props.data.email)
+            await this.postToAxios('some bullshit',{})
             props.showSuccessState(true)
         }catch(error){}
     }
