@@ -5,6 +5,7 @@ import {signIn} from "next-auth/react"
 import {toast} from "react-hot-toast"
 import {UseFormSetError} from "react-hook-form";
 import {addFriendValidator} from "@/lib/validations/add-friend";
+import {ZodError} from "zod";
 
 interface addFriendInterface{
     email: string,
@@ -57,8 +58,12 @@ export class Utils {
     static toastError(msg:string){
         toast.error(msg)
     }
-
+e
     static addFriend(props: addFriendInterface){
-        addFriendValidator.parse(props.email)
+        try{
+            addFriendValidator.parse(props.email)
+        }catch(e:ZodError){
+            props.setError("email",{message: e.message})
+        }
     }
 }

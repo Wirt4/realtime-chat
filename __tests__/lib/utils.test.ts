@@ -121,7 +121,7 @@ describe('adFriend', ()=>{
         }catch(e){
         //stub
         }finally{
-            expect(spy).toHaveBeenCalledWith(email, { message: error.message })
+            expect(spy).toHaveBeenCalledWith('email', { message: error.message })
         }
     })
 })
