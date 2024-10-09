@@ -1,4 +1,5 @@
 import {POST} from "@/app/api/friends/add/route";
+import {ResponseMock} from "../../../../__mocks__/ResponseMock";
 
 describe('/api/friends/add', () => {
     let response : Response
@@ -6,25 +7,7 @@ describe('/api/friends/add', () => {
         response = global.Response
 
         // @ts-expect-error smaller set of features for mocking
-        global.Response  = class {
-            body: any;
-            status: number;
-            headers: any;
-
-            constructor(body: any, init: { status: number; headers?: any } = { status: 200 }) {
-                this.body = body;
-                this.status = init.status;
-                this.headers = init.headers || {};
-            }
-
-            text() {
-                return Promise.resolve(this.body);
-            }
-
-            json() {
-                return Promise.resolve(JSON.parse(this.body));
-            }
-        }
+        global.Response  =  ResponseMock
     })
     afterAll(()=>{
         //@ts-expect-error a bit blunt to get the mock restored when done
