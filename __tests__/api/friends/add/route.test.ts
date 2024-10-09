@@ -74,7 +74,7 @@ describe('/api/friends/add', () => {
 
     test('FetchRedis returns false', async ()=>{
         const req = {
-            body: {email:  'validemail@gmail.com'},
+            json: ()=> {{email:  'validemail@gmail.com'}},
         } as unknown as Request;
         jest.spyOn(addFriendValidator, 'parse').mockReturnValue({email: 'validemail@gmail.com'})
         jest.spyOn(Helpers, 'fetchRedis').mockReturnValueOnce(false)
