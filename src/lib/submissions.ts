@@ -15,6 +15,7 @@ export class Submissions{
 
     static async addFriend(props: SubmissionProps){
         try{
+            addFriendValidator.parse(props.data.email)
             await axios.post('some bullshit')
             props.showSuccessState(true)
         }catch(error){}
