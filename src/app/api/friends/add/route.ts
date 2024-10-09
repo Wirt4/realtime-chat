@@ -103,7 +103,7 @@ export class PostFriendsRouteHandler {
     }
 
     async isAlreadyAdded():Promise<boolean>{
-        //stub
+        await fetchRedis("sismember",  "user:1234:incoming_friend_requests", "54321")
         return false
     }
     async areAlreadyFriends():Promise<boolean>{
