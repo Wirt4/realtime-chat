@@ -1,7 +1,7 @@
 export class Submissions{
     static handleSubmit({email}){
-
+        this.addFriend("foo@bar.com")
     }
 
-    static addFriend(){}
+    static addFriend(email: string){}
 }
