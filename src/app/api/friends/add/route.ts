@@ -51,7 +51,11 @@ export class PostFriendsRouteHandler {
     }
     async triggerPusher():Promise<void> {
         const key = Utils.toPusherKey( `user:${this.idToAdd}:incoming_friend_requests`)
-        pusherServer.trigger(key, 'incoming_friend_requests',{senderEmail: this.senderEmail, senderId: this.senderId})
+        pusherServer.trigger(
+            key, 
+            'incoming_friend_requests',
+            {senderEmail: this.senderEmail, senderId: this.senderId}
+        )
     }
 
     async isValidRequest(requestBody:any):Promise<boolean>{
