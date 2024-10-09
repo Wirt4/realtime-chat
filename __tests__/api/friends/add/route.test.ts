@@ -214,4 +214,11 @@ describe("Trigger Pusher tests", ()=>{
         await handler.getSession()
         expect(handler.senderId).toEqual(expectedID)
     })
+    test("confirm senderEmail has been set by the session method",async ()=>{
+        const handler = new PostFriendsRouteHandler()
+        const expectedEmail = 'foo@bar.com';
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{email: expectedEmail}});
+        await handler.getSession()
+        expect(handler.senderEmail).toEqual(expectedEmail)
+    })
 })
