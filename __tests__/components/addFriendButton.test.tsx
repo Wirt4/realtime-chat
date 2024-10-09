@@ -2,24 +2,26 @@
 import '@testing-library/jest-dom'
 import {render, screen, fireEvent} from '@testing-library/react'
 import AddFriendButton from "@/components/AddFriendButton"
-import {Submissions} from "@/lib/submissions";
+
 const mockHandleSubmit = jest.fn();
 jest.mock("../../src/lib/submissions.ts", () => {
     return {
         Submissions: jest.fn().mockImplementation(() => {
             return {
                 handleSubmit: mockHandleSubmit,
-            };
+            }
         }),
-    };
-});
+    }
+})
 
 describe('addFriendButton', () => {
-    let sub: Submissions
     beforeEach(()=>{
-        sub = new Submissions()
         render(<AddFriendButton />)
     })
+    afterEach(()=>{
+        mockHandleSubmit.mockReset()
+    })
+
    test('expect label to be rendered correctly',()=>{
        expect(screen.getByText('Add a Friend by Email:')).toBeInTheDocument();
    })
@@ -33,4 +35,10 @@ describe('addFriendButton', () => {
        fireEvent.submit(addButton);
        expect(mockHandleSubmit).toHaveBeenCalled();
     })
+
+    test('When submit button is clicked, handleSubmit receives setSuccess as an argument', () => {
+        const formElement = screen.getByRole('form');
+        fireEvent.submit(formElement);
+        expect(mockHandleSubmit).toHaveBeenCalledWith(expect.any(Function));
+    });
 })
