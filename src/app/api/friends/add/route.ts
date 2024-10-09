@@ -34,7 +34,7 @@ export class PostFriendsRouteHandler {
         const session = await this.getSession()
         const isSameUser = this.isSameUser()
         const isAlreadyAdded = await this.isAlreadyAdded()
-        return userExists && session && !isSameUser && !isAlreadyAdded
+        return userExists && session && !(isSameUser  || isAlreadyAdded)
     }
     async userExists():Promise<boolean>{
         //stub
