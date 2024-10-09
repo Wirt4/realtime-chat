@@ -3,6 +3,7 @@ import {Utils} from "@/lib/utils";
 import myGetServerSession from "@/lib/myGetServerSession";
 import {pusherServer} from "@/lib/pusher";
 import fetchRedis from "@/app/helpers/redis";
+import {db} from "@/lib/db";
 
 interface errorProps{
     message: string,
@@ -116,7 +117,7 @@ export class PostFriendsRouteHandler {
     }
 
     async addToDB():Promise<void>{
-        //stub
+        await db.sadd("user:234235:incoming_friend_requests","24325223" )
     }
 
     isSameUser():boolean{

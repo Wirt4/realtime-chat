@@ -17,7 +17,9 @@ jest.mock("../../../../src/app/helpers/redis",()=>({
 
 jest.mock("../../../../src/lib/db",()=>({
     __esModule: true,
-    db: jest.fn()
+    db: {
+        sadd: jest.fn() // Mock the sadd method
+    }
 }));
 
 describe('Validate Tests - true verses false', () => {
@@ -294,13 +296,9 @@ describe("addToDB tests",()=>{
         jest.resetAllMocks()
     })
     test('confirm parameters passed to db. sadd',async ()=>{
-        const spy = jest.fn();
-        (db as jest.Mock).mockImplementation(()=>({
-            sadd: spy
-        }))
         const idToAdd='234235'
         const userId = '24325223'
         await handler.addToDB()
-        expect(spy).toHaveBeenCalledWith(`user:${idToAdd}:incoming_friend_requests`, userId)
+        expect(db.sadd).toHaveBeenCalledWith(`user:${idToAdd}:incoming_friend_requests`, userId)
     })
 })
