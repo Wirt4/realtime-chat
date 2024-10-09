@@ -1,6 +1,7 @@
 import {PostFriendsRouteHandler} from "@/app/api/friends/add/route";
 import {Utils} from "@/lib/utils";
 import myGetServerSession from "@/lib/myGetServerSession"
+import {pusherServer} from "@/lib/pusher";
 jest.mock("../../../../src/lib/myGetServerSession",()=>({
     __esModule: true,
     default: jest.fn()
@@ -185,4 +186,20 @@ describe("Trigger Pusher tests", ()=>{
         await handler.getSession()
         expect(handler.idToAdd).toEqual(expectedID)
     })
+    test("pusher server should get the output of the key as well as the user id and email",async ()=>{
+        const handler = new PostFriendsRouteHandler()
+        const spy = jest.spyOn(pusherServer, 'trigger')
+        const expected1 ='valid-pusher-key'
+        const expectedSenderId ="1972"
+        const expectedSenderEmail = "tom@tomHagenLaw.com"
+        handler.senderId = expectedSenderId
+        handler.senderEmail = expectedSenderEmail
+
+        jest.spyOn(Utils, 'toPusherKey').mockReturnValue(expected1)
+        expect(spy).toHaveBeenCalledWith(expected1,
+            'incoming_friend_requests',
+            {senderId: expectedSenderId, senderEmail:expectedSenderEmail}
+        )
+    })
+
 })

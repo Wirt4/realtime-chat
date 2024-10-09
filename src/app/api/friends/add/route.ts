@@ -32,11 +32,13 @@ export class PostFriendsRouteHandler {
     private status: number
     private message: string
     public idToAdd: string
+    public senderId: string
+    public senderEmail: string
 
     constructor() {
         this.status = 400
         this.message = 'This person does not exist.'
-        this.idToAdd = ''
+        this.idToAdd = this.senderEmail = this.senderId= ''
     }
 
     validateEmail(email:{email:string}){

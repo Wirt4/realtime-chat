@@ -1,3 +1,3 @@
 export class pusherServer {
-    static trigger:()=>{}21
+    static trigger(){}
 }
