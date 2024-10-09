@@ -1,6 +1,9 @@
 import {Utils} from "@/lib/utils"
 import {addFriendValidator} from "@/lib/validations/add-friend";
 import {ZodError, ZodIssueCode} from "zod";
+import axios from 'axios'
+
+jest.mock('axios')
 
 describe('classNames test', ()=>{
     test('want to make sure the inputs are passed to clsx', ()=>{
@@ -123,5 +126,16 @@ describe('adFriend', ()=>{
         }finally{
             expect(spy).toHaveBeenCalledWith('email', { message: error.message })
         }
+    })
+    test('axios.post should be called with the correct path and output of addFriendValidator.parse',()=>{
+        const expectedPath = '/api/friends/add'
+        const email = 'valid-email'
+        const validEmail = {email}
+        const expetedOpts = {email: validEmail}
+        jest.spyOn(addFriendValidator, 'parse').mockReturnValue(validEmail)
+        const postSpy = jest.spyOn(axios, 'post').mockResolvedValue({ data: { success: true } })
+        Utils.addFriend({email, setError: jest.fn(), setShowSuccessState: jest.fn()})
+        expect(postSpy).toHaveBeenCalledWith(expectedPath, expetedOpts)
+
     })
 })
