@@ -1,20 +1,61 @@
 import {addFriendValidator} from "@/lib/validations/add-friend";
-import {ZodError} from "zod";
-import {Helpers} from "@/lib/helpers";
 
 export async function  POST(req: Request):Promise<Response> {
-    try{
-        const body = await req.json()
-        addFriendValidator.parse(body)
-        const foo = await Helpers.fetchRedis()
-        if (!foo){
-            return new Response("This User does not exist", {status: 400})
+
+    const routeHandler = new PostFriendsRouteHandler()
+    const body = await req.json()
+    const validRequest = await routeHandler.isValidRequest(body)
+
+    if (!validRequest) {
+        return routeHandler.errorResponse()
+    }
+
+    await routeHandler.triggerPusher()
+    await routeHandler.addToDB()
+    return new Response('OK')
+
+}
+
+export class PostFriendsRouteHandler {
+
+    validateEmail(email:{email:string}){
+        return addFriendValidator.parse(email)
+    }
+    async triggerPusher():Promise<void> {}
+    async isValidRequest(requestBody:any):Promise<boolean>{
+       let validatedEmail:{email:string}
+        try{
+           validatedEmail =  this.validateEmail(requestBody.email)
+        }catch(error){
+           return false
+       }
+
+       const userExists = await this.userExists()
+
+        if (!userExists){
+            return false
         }
-        return new Response('shiny happy people')
-    }catch(err){
-        if (err instanceof ZodError){
-            return new Response("Invalid request payload", {status: 422})
-        }
-        return new Response("Invalid request", {status: 400})
+
+        return true
+    }
+    async userExists():Promise<boolean>{
+        //stub
+        return false
+    }
+    async isAlreadyAdded(session:any):Promise<boolean>{
+        //stub
+        return false
+    }
+    async areAlreadyFriends(session:any):Promise<boolean>{
+        //stub
+        return false
+    }
+    async addToDB():Promise<void>{}
+    isCallingUser(session: any):boolean{
+        //stub
+        return false
+    }
+    errorResponse(): Response{
+        return new Response(this.errorMessage, {status: this.statusCode})
     }
 }
