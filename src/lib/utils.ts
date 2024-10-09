@@ -4,6 +4,7 @@ import buttonVariants from "@/components/ui/button/buttonVariants"
 import {signIn} from "next-auth/react"
 import {toast} from "react-hot-toast"
 import {UseFormSetError} from "react-hook-form";
+import {addFriendValidator} from "@/lib/validations/add-friend";
 
 interface addFriendInterface{
     email: string,
@@ -57,5 +58,7 @@ export class Utils {
         toast.error(msg)
     }
 
-    static addFriend(props: addFriendInterface){}
+    static addFriend(props: addFriendInterface){
+        addFriendValidator.parse(props.email)
+    }
 }

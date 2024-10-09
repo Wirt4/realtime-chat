@@ -1,4 +1,5 @@
 import {Utils} from "@/lib/utils"
+import {addFriendValidator} from "@/lib/validations/add-friend";
 
 describe('classNames test', ()=>{
     test('want to make sure the inputs are passed to clsx', ()=>{
@@ -88,5 +89,13 @@ describe('loginwithGoogle',()=>{
         const func = Utils.loginWithGoogle(()=>{})
         await func()
         expect(spy).not.toHaveBeenCalled()
+    })
+})
+
+describe('adFriend', ()=>{
+    test('validator.parse() is called', ()=>{
+        const spy = jest.spyOn(addFriendValidator, 'parse').mockReturnValue({email:'valid-email'})
+        Utils.addFriend({email:'valid-email', setError: jest.fn(), setShowSuccessState: jest.fn()})
+        expect(spy).toHaveBeenCalledWith('valid-email')
     })
 })
