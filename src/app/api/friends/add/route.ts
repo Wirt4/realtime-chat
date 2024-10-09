@@ -30,17 +30,10 @@ export class PostFriendsRouteHandler {
        }
 
        const userExists = await this.userExists()
-
-        if (!userExists){
-            return false
-        }
+        
 
         const session = await this.getSession()
-        if (!session){
-            return false
-        }
-
-        return true
+        return userExists && session
     }
     async userExists():Promise<boolean>{
         //stub
