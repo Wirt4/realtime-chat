@@ -225,6 +225,9 @@ describe("IsAlreadyAddedTests", ()=>{
     beforeEach(()=>{
         handler = new PostFriendsRouteHandler()
     })
+    afterEach(()=>{
+        jest.resetAllMocks()
+    })
     test('confirm parameters passed to redis- 1',async ()=>{
         const addId = '1234';
         const senderId = '54321';
@@ -235,7 +238,7 @@ describe("IsAlreadyAddedTests", ()=>{
         expect(fetchRedis).toHaveBeenCalledWith('sismember',`user:${addId}:incoming_friend_requests`, senderId )
     })
 
-    test('confirm parameters passed to redis- 1',async ()=>{
+    test('confirm parameters passed to redis- 2',async ()=>{
         const addId = '5678';
         const senderId = '234123';
         handler.idToAdd= addId;
@@ -243,5 +246,34 @@ describe("IsAlreadyAddedTests", ()=>{
         (fetchRedis as jest.Mock).mockResolvedValue('');
         await handler.isAlreadyAdded()
         expect(fetchRedis).toHaveBeenCalledWith('sismember',`user:${addId}:incoming_friend_requests`, senderId )
+    })
+})
+
+describe("IsAlreadyAddedTests", ()=> {
+    let handler: PostFriendsRouteHandler
+    beforeEach(() => {
+        handler = new PostFriendsRouteHandler()
+    })
+    afterEach(()=>{
+        jest.resetAllMocks()
+    })
+    test('confirm parameters passed to redis- 1', async () => {
+        const senderId = '54321';
+        const addId = '14t63423'
+        handler.idToAdd = addId;
+        handler.senderId = senderId;
+        (fetchRedis as jest.Mock).mockResolvedValue('');
+        await handler.areAlreadyFriends()
+        expect(fetchRedis).toHaveBeenCalledWith('sismember', `user:${senderId}:friends`, addId)
+    })
+
+    test('confirm parameters passed to redis- 2', async () => {
+        const senderId = '234123';
+        const addId = '7644643'
+        handler.idToAdd = addId;
+        handler.senderId = senderId;
+        (fetchRedis as jest.Mock).mockResolvedValue('');
+        await handler.areAlreadyFriends()
+        expect(fetchRedis).toHaveBeenCalledWith('sismember', `user:${senderId}:friends`, addId)
     })
 })

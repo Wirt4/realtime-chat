@@ -103,8 +103,8 @@ export class PostFriendsRouteHandler {
     }
 
     async isAlreadyAdded():Promise<boolean>{
-        await fetchRedis("sismember",  `user:${this.idToAdd}:incoming_friend_requests`, this.senderId)
-        return false
+        const added = await fetchRedis("sismember",  `user:${this.idToAdd}:incoming_friend_requests`, this.senderId) as 0 | 1
+        return Boolean(added)
     }
     async areAlreadyFriends():Promise<boolean>{
         //stub
