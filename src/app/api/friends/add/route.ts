@@ -35,6 +35,11 @@ export class PostFriendsRouteHandler {
             return false
         }
 
+        const session = await this.getSession()
+        if (!session){
+            return false
+        }
+
         return true
     }
     async userExists():Promise<boolean>{
@@ -56,5 +61,8 @@ export class PostFriendsRouteHandler {
     }
     errorResponse(): Response{
         return new Response(this.errorMessage, {status: this.statusCode})
+    }
+    async getSession(){
+        return true
     }
 }
