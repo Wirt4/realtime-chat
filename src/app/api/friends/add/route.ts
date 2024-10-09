@@ -1,7 +1,5 @@
 import {addFriendValidator} from "@/lib/validations/add-friend";
 import {Utils} from "@/lib/utils";
-import {getServerSession} from "next-auth";
-import {Auth} from "@/lib/auth";
 import myGetServerSession from "@/lib/myGetServerSession";
 import {pusherServer} from "@/lib/pusher";
 
@@ -52,7 +50,7 @@ export class PostFriendsRouteHandler {
     async triggerPusher():Promise<void> {
         const key = Utils.toPusherKey( `user:${this.idToAdd}:incoming_friend_requests`)
         pusherServer.trigger(
-            key, 
+            key,
             'incoming_friend_requests',
             {senderEmail: this.senderEmail, senderId: this.senderId}
         )
@@ -125,7 +123,6 @@ export class PostFriendsRouteHandler {
     }
     async getSession(){
         const session = await myGetServerSession()
-        this.idToAdd = session?.user.id
-        return true
+        return session
     }
 }

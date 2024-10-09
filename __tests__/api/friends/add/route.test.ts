@@ -1,12 +1,16 @@
 import {PostFriendsRouteHandler} from "@/app/api/friends/add/route";
 import {Utils} from "@/lib/utils";
-import myGetServerSession from "@/lib/myGetServerSession"
+import fetchRedis from "@/app/helpers/redis"
 import {pusherServer} from "@/lib/pusher";
 jest.mock("../../../../src/lib/myGetServerSession",()=>({
     __esModule: true,
     default: jest.fn()
 }));
 
+jest.mock("../../../../src/app/helpers/redis",()=>({
+    __esModule: true,
+    default: jest.fn()
+}));
 
 describe('Validate Tests - true verses false', () => {
     let handler: PostFriendsRouteHandler
@@ -172,18 +176,18 @@ describe("Trigger Pusher tests", ()=>{
         await handler.triggerPusher()
         expect(spy).toHaveBeenCalledWith('user:1984:incoming_friend_requests')
     })
-    test("confirm idToAdd has been set by the session method",async ()=>{
+    test("confirm idToAdd has been set by the userExists method",async ()=>{
         const handler = new PostFriendsRouteHandler()
         const expectedID = '1984';
-        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: expectedID}});
-        await handler.getSession()
+        (fetchRedis as jest.Mock).mockResolvedValue(expectedID);
+        await handler.userExists()
         expect(handler.idToAdd).toEqual(expectedID)
     })
-    test("confirm idToAdd has been set by the session method",async ()=>{
+    test("confirm idToAdd has been set by the userExists method",async ()=>{
         const handler = new PostFriendsRouteHandler()
         const expectedID = '1489';
-        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: expectedID}});
-        await handler.getSession()
+        (fetchRedis as jest.Mock).mockResolvedValue(expectedID);
+        await handler.userExists()
         expect(handler.idToAdd).toEqual(expectedID)
     })
     test("pusher server should get the output of the key as well as the user id and email",async ()=>{
@@ -202,5 +206,11 @@ describe("Trigger Pusher tests", ()=>{
             {senderId: expectedSenderId, senderEmail:expectedSenderEmail}
         )
     })
-
+   /** test("confirm senderId has been set by the session method",async ()=>{
+        const handler = new PostFriendsRouteHandler()
+        const expectedID = '1489';
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: expectedID}});
+        await handler.getSession()
+        expect(handler.idToAdd).toEqual(expectedID)
+    })**/
 })
