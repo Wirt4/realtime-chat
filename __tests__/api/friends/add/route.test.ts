@@ -3,6 +3,11 @@ import {ResponseMock} from "../../../../__mocks__/ResponseMock";
 import {addFriendValidator} from "@/lib/validations/add-friend";
 import {z, ZodError, ZodIssueCode} from "zod";
 import {Helpers} from "@/lib/helpers";
+import {getServerSession} from "next-auth";
+
+jest.mock('next-auth', () => ({
+    getServerSession: jest.fn(),
+}));
 
 describe('/api/friends/add', () => {
     let response : Response
@@ -72,7 +77,7 @@ describe('/api/friends/add', () => {
         expect(text).toBe('Invalid request')
     })
 
-    test('FetchRedis returns false', async ()=>{
+    test('FetchRedis returns false when passed', async ()=>{
         const req = {
             json: ()=> {{email:  'validemail@gmail.com'}},
         } as unknown as Request;
@@ -80,6 +85,32 @@ describe('/api/friends/add', () => {
         jest.spyOn(Helpers, 'fetchRedis').mockReturnValueOnce(false)
         const response = await POST(req)
         const text = await  response.text()
+        expect(response.status).toBe(400)
+        expect(text).toBe('This User does not exist')
+    })
+    test('FetchRedis returns a valid value', async ()=>{
+        const req = {
+            json: ()=> {{email:  'validemail@gmail.com'}},
+        } as unknown as Request;
+        jest.spyOn(addFriendValidator, 'parse').mockReturnValue({email: 'validemail@gmail.com'})
+        jest.spyOn(Helpers, 'fetchRedis').mockReturnValueOnce(false)
+        const response = await POST(req)
+        const text = await  response.text()
+        expect(response.status).toBe(400)
+        expect(text).toBe('This User does not exist')
+    })
+    test('getServerSession returns a falsy value', async ()=>{
+        const req = {
+            json: ()=> {{email:  'validemail@gmail.com'}},
+        } as unknown as Request;
+        jest.spyOn(addFriendValidator, 'parse').mockReturnValue({email: 'validemail@gmail.com'})
+        jest.spyOn(Helpers, 'fetchRedis').mockReturnValueOnce(true);
+        (getServerSession as jest.Mock).mockImplementation(() => {
+            throw new Error('Session error');
+        });
+        const response = await POST(req);
+        const text = await response.text();
+
         expect(response.status).toBe(400)
         expect(text).toBe('This User does not exist')
     })
