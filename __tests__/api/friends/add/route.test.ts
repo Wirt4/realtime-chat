@@ -228,6 +228,18 @@ describe("IsAlreadyAddedTests", ()=>{
     test('confirm parameters passed to redis- 1',async ()=>{
         const addId = '1234';
         const senderId = '54321';
+        handler.idToAdd= addId;
+        handler.senderId = senderId;
+        (fetchRedis as jest.Mock).mockResolvedValue('');
+        await handler.isAlreadyAdded()
+        expect(fetchRedis).toHaveBeenCalledWith('sismember',`user:${addId}:incoming_friend_requests`, senderId )
+    })
+
+    test('confirm parameters passed to redis- 1',async ()=>{
+        const addId = '5678';
+        const senderId = '234123';
+        handler.idToAdd= addId;
+        handler.senderId = senderId;
         (fetchRedis as jest.Mock).mockResolvedValue('');
         await handler.isAlreadyAdded()
         expect(fetchRedis).toHaveBeenCalledWith('sismember',`user:${addId}:incoming_friend_requests`, senderId )
