@@ -102,13 +102,16 @@ export class PostFriendsRouteHandler {
         return Boolean(this.idToAdd)
     }
 
+    async redisSismember(userId: string, list: 'incoming_friend_requests' | 'friends', queryId:string):Promise<boolean>{
+        const result = await fetchRedis("sismember",  `user:${userId}:${list}`,queryId) as 0 | 1
+        return Boolean(result)
+    }
+
     async isAlreadyAdded():Promise<boolean>{
-        const added = await fetchRedis("sismember",  `user:${this.idToAdd}:incoming_friend_requests`, this.senderId) as 0 | 1
-        return Boolean(added)
+        return this.redisSismember(this.idToAdd, 'incoming_friend_requests', this.senderId)
     }
     async areAlreadyFriends():Promise<boolean>{
-        const added = await fetchRedis("sismember",  `user:${this.senderId}:friends`, this.idToAdd) as 0 | 1
-        return Boolean(added)
+        return this.redisSismember(this.senderId, 'friends',this.idToAdd)
     }
 
     async addToDB():Promise<void>{}
