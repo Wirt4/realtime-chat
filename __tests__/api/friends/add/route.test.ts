@@ -30,6 +30,7 @@ describe('/api/friends/add', () => {
         })
         const req = {
             body: {email: 'bad email'},
+            json: ()=>{ return {email: 'bad email'}}
         } as unknown as Request;
         const response = await POST(req)
         const text = await  response.text()
@@ -39,6 +40,7 @@ describe('/api/friends/add', () => {
     test('Zod does not throw', async ()=>{
         const req = {
             body: {email:  'validemail@gmail.com'},
+            json: ()=>{return {email:  'validemail@gmail.com'}}
         } as unknown as Request;
         jest.spyOn(addFriendValidator, 'parse').mockReturnValue({email: 'validemail@gmail.com'})
         const response = await POST(req)
@@ -46,7 +48,16 @@ describe('/api/friends/add', () => {
         expect(response.status).not.toBe(422)
         expect(text).not.toBe('Invalid request payload')
     })
-    test('unknown errorthrow', async ()=>{
+    test('Zod is called with the email', async ()=>{
+        const req = {
+            body: {email:  'validemail@gmail.com'},
+            json: () =>{return {email: 'validemail@gmail.com'}}
+        } as unknown as Request;
+        const spy = jest.spyOn(addFriendValidator, 'parse').mockReturnValue({email: 'validemail@gmail.com'})
+        await POST(req)
+        expect(spy).toHaveBeenCalledWith({email: 'validemail@gmail.com'})
+    })
+    test('unknown error throw', async ()=>{
         const req = {
             body: {email:  'validemail@gmail.com'},
         } as unknown as Request;

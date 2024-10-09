@@ -3,7 +3,8 @@ import {ZodError} from "zod";
 
 export async function  POST(req: Request):Promise<Response> {
     try{
-        addFriendValidator.parse(req.body)
+        const body = await req.json()
+        addFriendValidator.parse(body)
         return new Response('shiny happy people')
     }catch(err){
         if (err instanceof ZodError){
