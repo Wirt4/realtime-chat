@@ -78,5 +78,7 @@ export class Utils {
         }
     }
 
-    static toPusherKey(s: string){}
+    static toPusherKey(s: string):string{
+        return 'stub'
+    }
 }

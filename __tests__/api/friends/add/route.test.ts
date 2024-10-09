@@ -196,6 +196,7 @@ describe("Trigger Pusher tests", ()=>{
         handler.senderEmail = expectedSenderEmail
 
         jest.spyOn(Utils, 'toPusherKey').mockReturnValue(expected1)
+        await handler.triggerPusher()
         expect(spy).toHaveBeenCalledWith(expected1,
             'incoming_friend_requests',
             {senderId: expectedSenderId, senderEmail:expectedSenderEmail}

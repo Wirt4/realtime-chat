@@ -3,6 +3,7 @@ import {Utils} from "@/lib/utils";
 import {getServerSession} from "next-auth";
 import {Auth} from "@/lib/auth";
 import myGetServerSession from "@/lib/myGetServerSession";
+import {pusherServer} from "@/lib/pusher";
 
 interface errorProps{
     message: string,
@@ -49,7 +50,8 @@ export class PostFriendsRouteHandler {
         this.message = message
     }
     async triggerPusher():Promise<void> {
-        Utils.toPusherKey( `user:${this.idToAdd}:incoming_friend_requests`)
+        const key = Utils.toPusherKey( `user:${this.idToAdd}:incoming_friend_requests`)
+        pusherServer.trigger(key, 'incoming_friend_requests',{senderEmail: this.senderEmail, senderId: this.senderId})
     }
 
     async isValidRequest(requestBody:any):Promise<boolean>{
