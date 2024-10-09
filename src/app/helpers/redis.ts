@@ -1,6 +1,7 @@
 
 const  fetchRedis= async ()=>{
-    return 'stub'
+    return 'stub';
 }
 
-export default fetchRedis
+export default fetchRedis;
+
