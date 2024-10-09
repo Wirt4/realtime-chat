@@ -2,6 +2,7 @@ import { addFriendValidator } from '@/lib/validations/add-friend'
 
 type FormData = z.infer<typeof addFriendValidator>
 import { z } from 'zod'
+import axios from "axios";
 
 interface SubmissionProps {
     data: FormData
@@ -12,7 +13,10 @@ export class Submissions{
         this.addFriend(props)
     }
 
-    static addFriend(props: SubmissionProps){
-        props.showSuccessState(true)
+    static async addFriend(props: SubmissionProps){
+        try{
+            await axios.post('some bullshit')
+            props.showSuccessState(true)
+        }catch(error){}
     }
 }
