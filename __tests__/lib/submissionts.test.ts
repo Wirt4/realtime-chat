@@ -96,15 +96,16 @@ describe('addFriend',()=>{
     test(' expect axios to be called with correct opts', async ()=>{
         // @ts-ignore
         const spy = jest.spyOn(Submissions, "postToAxios").mockResolvedValue(true)
+        const validEmail = 'validated email'
         // @ts-ignore
-        jest.spyOn(Submissions, 'validate').mockReturnValueOnce('validated email')
+        jest.spyOn(Submissions, 'validate').mockReturnValueOnce(validEmail)
         const email = "bar@foo.com";
         const props = {
             data: { email },
             showSuccessState: jest.fn,
         };
         await Submissions.addFriend(props);
-        expect(spy).toHaveBeenCalledWith(expect.anything(), {email: 'validated email'})
+        expect(spy).toHaveBeenCalledWith(expect.anything(), {email:validEmail})
     })
     test(' expect axios to be called with correct opts', async ()=>{
         // @ts-ignore
