@@ -3,10 +3,15 @@ import { addFriendValidator } from '@/lib/validations/add-friend'
 type FormData = z.infer<typeof addFriendValidator>
 import { z } from 'zod'
 
+interface handleSubmitInterface{
+    data: FormData,
+    showSuccessState(status: boolean): void
+}
+
 export class Submissions{
-    static handleSubmit(data: FormData){
-        this.addFriend(data.email)
+    static handleSubmit(submission: handleSubmitInterface){
+        this.addFriend(submission)
     }
 
-    static addFriend(email: string){}
+    static addFriend(submission: handleSubmitInterface){}
 }
