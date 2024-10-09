@@ -1,7 +1,7 @@
 import {Utils} from "@/lib/utils"
 import {addFriendValidator} from "@/lib/validations/add-friend";
 import {ZodError, ZodIssueCode} from "zod";
-import axios from 'axios'
+import axios, {AxiosError} from 'axios'
 
 jest.mock('axios')
 
@@ -97,6 +97,9 @@ describe('loginwithGoogle',()=>{
 })
 
 describe('adFriend', ()=>{
+    afterEach(()=>{
+        jest.resetAllMocks()
+    })
     test('validator.parse() is called', ()=>{
         const spy = jest.spyOn(addFriendValidator, 'parse').mockReturnValue({email:'valid-email'})
         Utils.addFriend({email:'valid-email', setError: jest.fn(), setShowSuccessState: jest.fn()})
@@ -137,5 +140,15 @@ describe('adFriend', ()=>{
         Utils.addFriend({email, setError: jest.fn(), setShowSuccessState: jest.fn()})
         expect(postSpy).toHaveBeenCalledWith(expectedPath, expetedOpts)
 
+    })
+    test('axios.post throws, setError should be called',async ()=>{
+        const email = 'valid-email'
+        const validEmail = {email}
+        jest.spyOn(addFriendValidator, 'parse').mockReturnValue(validEmail)
+        const axError = new AxiosError('you dun effed up')
+        jest.spyOn(axios, 'post').mockRejectedValue(axError)
+        const spy = jest.fn()
+        await Utils.addFriend({email, setError: spy, setShowSuccessState: jest.fn()})
+        expect(spy).toHaveBeenCalledWith('email', { message: axError.response?.data })
     })
 })
