@@ -24,7 +24,7 @@ describe('addFriendButton', () => {
 
     test('When submit button is clicked, the Submissions Handle submit method should be called', async ()=>{
         const addButton = screen.getByText("Add");
-        fireEvent.click(addButton);
-        expect(Submissions.handleSubmit).toHaveBeenCalled();
+        fireEvent.click(addButton)
+        expect(Submissions.handleSubmit).toHaveBeenCalled()
     })
 })

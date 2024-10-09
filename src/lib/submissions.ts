@@ -1,3 +1,7 @@
 export class Submissions{
-    static handleSubmit(){}
+    static handleSubmit({email}){
+
+    }
+
+    static addFriend(){}
 }
