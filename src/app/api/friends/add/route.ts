@@ -44,13 +44,16 @@ export class PostFriendsRouteHandler {
     validateEmail(email:{email:string}){
         return addFriendValidator.parse(email)
     }
-    setReturn(message: string, status: number = 400){
+
+    setAndReturn(message: string, status: number = 400): boolean{
         this.status = status
         this.message = message
+        return false
     }
+
     async triggerPusher():Promise<void> {
         const key = Utils.toPusherKey( `user:${this.idToAdd}:incoming_friend_requests`)
-        
+
         pusherServer.trigger(
             key,
             'incoming_friend_requests',
@@ -63,38 +66,32 @@ export class PostFriendsRouteHandler {
         try{
             this.validateEmail(requestBody.email)
         }catch(error){
-            this.setReturn('Invalid request payload', 422)
-           return false
+            return this.setAndReturn('Invalid request payload', 422)
        }
 
        const userExists = await this.userExists()
         if (!userExists){
-            this.setReturn('This person does not exist.')
-            return false
+            return this.setAndReturn('This person does not exist.')
         }
 
         const session = await this.getSession()
         if (!session){
-            this.setReturn('unauthorized', 401)
-            return false
+            return this.setAndReturn('unauthorized', 401)
         }
 
         const isSameUser = this.isSameUser()
         if (isSameUser){
-            this.setReturn('You cannot add yourself as a friend')
-            return false
+            return this.setAndReturn('You cannot add yourself as a friend')
         }
 
         const isAlreadyAdded = await this.isAlreadyAdded()
         if (isAlreadyAdded){
-            this.setReturn('You\'ve already added this user')
-            return false
+            return this.setAndReturn('You\'ve already added this user')
         }
 
         const areAlreadyFriends = await this.areAlreadyFriends()
         if (areAlreadyFriends){
-            this.setReturn("You're already friends with this user")
-            return false
+            return this.setAndReturn("You're already friends with this user")
         }
 
         return true
