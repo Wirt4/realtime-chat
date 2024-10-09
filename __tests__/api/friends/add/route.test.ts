@@ -58,5 +58,4 @@ describe('/api/friends/add', () => {
         expect(response.status).toBe(400)
         expect(text).toBe('Invalid request')
     })
-
 })
