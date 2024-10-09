@@ -105,7 +105,7 @@ describe('adFriend', ()=>{
         await Utils.addFriend({email:'valid-email', setError: jest.fn(), setShowSuccessState: jest.fn()})
         expect(spy).toHaveBeenCalledWith({email: 'valid-email'})
     })
-    test('validator.parse() throws, expect setEror to be called ', async ()=>{
+    test('validator.parse() throws, expect setError to be called ', async ()=>{
         const issues: z.ZodIssue[] = [
             {
                 code: ZodIssueCode.invalid_type,
