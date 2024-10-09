@@ -158,7 +158,6 @@ describe('adFriend', ()=>{
         expect(spy).toHaveBeenCalledWith('email', { message: 'Something went wrong, check logs'})
     })
     test('axios.post and addFriendValidator.parse are clean, should call setShowSuccessState with true', async ()=>{
-        const expectedPath = '/api/friends/add'
         const email = 'valid-email'
         const validEmail = {email}
         jest.spyOn(addFriendValidator, 'parse').mockReturnValue(validEmail)

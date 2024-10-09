@@ -71,5 +71,6 @@ export class Utils {
                 props.setError("email",{message: e.response?.data})
             }else {props.setError("email",{message: "Something went wrong, check logs"})}
         }
+        props.setShowSuccessState(true)
     }
 }
