@@ -206,6 +206,14 @@ describe("Trigger Pusher tests", ()=>{
         expect(handler.idToAdd).toEqual(expectedID)
     })
 
+    test("conirm params passed to fetcRedis",async ()=>{
+        const expectedID = '1984';
+        (fetchRedis as jest.Mock).mockResolvedValue(expectedID);
+        const email = 'example@example.com'
+        await handler.userExists(email)
+        expect(fetchRedis).toHaveBeenCalledWith('get', `user:email:${email}`)
+    })
+
     test("confirm idToAdd has been set by the userExists method",async ()=>{
         const expectedID = '1489';
         (fetchRedis as jest.Mock).mockResolvedValue(expectedID);
