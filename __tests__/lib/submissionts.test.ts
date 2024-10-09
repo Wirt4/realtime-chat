@@ -1,13 +1,14 @@
 import {Submissions} from "@/lib/submissions"
-import axios from "axios";
-import {addFriendValidator} from '@/lib/validations/add-friend'
 jest.mock('axios')
 jest.mock('../../src/lib/validations/add-friend')
 
 
 describe("handleSubmit", () => {
-    beforeAll(()=>{
-        jest.spyOn(Submissions, 'addFriend')
+    let sub: Submissions
+
+    beforeEach(()=>{
+        sub = new Submissions()
+        jest.spyOn(sub, 'addFriend')
     })
     afterEach(()=>{
         jest.resetAllMocks()
@@ -18,20 +19,22 @@ describe("handleSubmit", () => {
     test('method addFriend should be called with the email member of FormData 1',()=>{
         const email = "foo@bar.com"
         const props = {showSuccessState: jest.fn, data:{email}}
-        Submissions.handleSubmit(props)
-        expect(Submissions.addFriend).toHaveBeenCalledWith(props)
+        sub.handleSubmit(props)
+        expect(sub.addFriend).toHaveBeenCalledWith(props)
     })
     test('method addFriend should be called with the email member of FormData 2',()=>{
         const email = "bar@foo.com"
         const props = {showSuccessState: jest.fn, data:{email}}
-        Submissions.handleSubmit(props)
-        expect(Submissions.addFriend).toHaveBeenCalledWith(props)
+        sub.handleSubmit(props)
+        expect(sub.addFriend).toHaveBeenCalledWith(props)
     })
 })
 
 describe('addFriend',()=>{
     let goodAxios: { data: { success: boolean; }; }
+    let sub: Submissions
     beforeAll(()=>{
+        sub = new Submissions()
         goodAxios = { data: { success: true } }
     })
     afterEach(()=>{
@@ -39,8 +42,8 @@ describe('addFriend',()=>{
     })
     test('setStatus true if axios and validated email resolve', async ()=>{
         // @ts-expect-error parital payload resolve
-        jest.spyOn(Submissions,'postToAxios').mockResolvedValue(goodAxios)
-        jest.spyOn(Submissions, 'validate').mockReturnValue({email: 'validEmail'})
+        jest.spyOn(sub,'postToAxios').mockResolvedValue(goodAxios)
+        jest.spyOn(sub, 'validate').mockReturnValue({email: 'validEmail'})
 
         const spy = jest.fn()
         const email = "bar@foo.com"
@@ -48,13 +51,13 @@ describe('addFriend',()=>{
             data: {email},
             showSuccessState: spy,
         }
-        await Submissions.addFriend(props)
+        await sub.addFriend(props)
 
         expect(spy).toHaveBeenCalledWith(true)
     })
     test("setStatus not called if axios throws", async () => {
-        jest.spyOn(Submissions, 'postToAxios').mockRejectedValue(new Error("API Error"));
-        jest.spyOn(Submissions, 'validate').mockReturnValue({email:'validEmail'});
+        jest.spyOn(sub, 'postToAxios').mockRejectedValue(new Error("API Error"));
+        jest.spyOn(sub, 'validate').mockReturnValue({email:'validEmail'});
 
         const spy = jest.fn();
         const email = "bar@foo.com";
@@ -63,14 +66,14 @@ describe('addFriend',()=>{
             showSuccessState: spy,
         };
 
-        await Submissions.addFriend(props);
+        await sub.addFriend(props);
 
         expect(spy).not.toHaveBeenCalled();
     });
     test("setStatus not called if friendValidator throws", async () => {
         //@ts-expect-error partial resolved value
-        jest.spyOn(Submissions, 'postToAxios').mockResolvedValue(goodAxios);
-        jest.spyOn(Submissions, 'validate').mockImplementation(()=>{
+        jest.spyOn(sub, 'postToAxios').mockResolvedValue(goodAxios);
+        jest.spyOn(sub, 'validate').mockImplementation(()=>{
             throw new Error("bad");
         })
 
@@ -81,7 +84,7 @@ describe('addFriend',()=>{
             showSuccessState: spy,
         };
 
-        await Submissions.addFriend(props);
+        await sub.addFriend(props);
 
         expect(spy).not.toHaveBeenCalled();
     })
@@ -89,40 +92,39 @@ describe('addFriend',()=>{
         const path = '/api/friends/add'
         //@ts-expect-error partial resolved value
         const spy = jest.spyOn(Submissions, "postToAxios").mockResolvedValue(goodAxios)
-        jest.spyOn(Submissions, 'validate').mockReturnValueOnce({email: 'validEmail'})
+        jest.spyOn(sub, 'validate').mockReturnValueOnce({email: 'validEmail'})
         const email = "bar@foo.com";
         const props = {
             data: { email },
             showSuccessState: jest.fn,
         };
-        await Submissions.addFriend(props);
+        await sub.addFriend(props);
         expect(spy).toHaveBeenCalledWith(path, expect.anything())
     })
     test(' expect axios to be called with correct opts', async ()=>{
         //@ts-expect-error partial resolved value
-        const spy = jest.spyOn(Submissions, "postToAxios").mockResolvedValue(goodAxios)
+        const spy = jest.spyOn(sub, "postToAxios").mockResolvedValue(goodAxios)
         const validEmail = 'validated email'
-        jest.spyOn(Submissions, 'validate').mockReturnValueOnce({email:validEmail})
+        jest.spyOn(sub, 'validate').mockReturnValueOnce({email:validEmail})
         const email = "bar@foo.com";
         const props = {
             data: { email },
             showSuccessState: jest.fn,
         };
-        await Submissions.addFriend(props);
+        await sub.addFriend(props);
         expect(spy).toHaveBeenCalledWith(expect.anything(), {email:{email: validEmail}})
     })
     test(' expect axios to be called with correct opts', async ()=>{
         // @ts-expect-error partial resolved value
-        const spy = jest.spyOn(Submissions, "postToAxios").mockResolvedValue(goodAxios)
+        const spy = jest.spyOn(sub, "postToAxios").mockResolvedValue(goodAxios)
         const validEmail='scooby@doo.com'
-        jest.spyOn(Submissions, 'validate').mockReturnValueOnce({email: validEmail})
+        jest.spyOn(sub, 'validate').mockReturnValueOnce({email: validEmail})
         const email = "bar@foo.com";
         const props = {
             data: { email },
             showSuccessState: jest.fn,
         };
-        await Submissions.addFriend(props);
+        await sub.addFriend(props);
         expect(spy).toHaveBeenCalledWith(expect.anything(), {email: {email: validEmail}})
     })
-    test(' expect axios to be called with correct opts', async ()=>{})
 })
