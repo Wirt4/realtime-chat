@@ -41,7 +41,9 @@ export class PostFriendsRouteHandler {
         this.message = message
     }
     async triggerPusher():Promise<void> {}
+
     async isValidRequest(requestBody:any):Promise<boolean>{
+
         try{
             this.validateEmail(requestBody.email)
         }catch(error){
@@ -72,6 +74,7 @@ export class PostFriendsRouteHandler {
             this.setReturn('You\'ve already added this user')
             return false
         }
+        
         const areAlreadyFriends = await this.areAlreadyFriends()
         if (areAlreadyFriends){
             this.setReturn("You're already friends with this user")
