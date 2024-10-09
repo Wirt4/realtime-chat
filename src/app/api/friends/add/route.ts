@@ -125,6 +125,7 @@ export class PostFriendsRouteHandler {
     }
     async getSession(){
         const session = await myGetServerSession()
+        this.senderId = session?.user.id as string
         return session
     }
 }

@@ -2,6 +2,7 @@ import {PostFriendsRouteHandler} from "@/app/api/friends/add/route";
 import {Utils} from "@/lib/utils";
 import fetchRedis from "@/app/helpers/redis"
 import {pusherServer} from "@/lib/pusher";
+import myGetServerSession from "@/lib/myGetServerSession";
 jest.mock("../../../../src/lib/myGetServerSession",()=>({
     __esModule: true,
     default: jest.fn()
@@ -206,11 +207,11 @@ describe("Trigger Pusher tests", ()=>{
             {senderId: expectedSenderId, senderEmail:expectedSenderEmail}
         )
     })
-   /** test("confirm senderId has been set by the session method",async ()=>{
+    test("confirm senderId has been set by the session method",async ()=>{
         const handler = new PostFriendsRouteHandler()
         const expectedID = '1489';
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: expectedID}});
         await handler.getSession()
-        expect(handler.idToAdd).toEqual(expectedID)
-    })**/
+        expect(handler.senderId).toEqual(expectedID)
+    })
 })
