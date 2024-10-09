@@ -44,7 +44,7 @@ export class PostFriendsRouteHandler {
         this.message = message
     }
     async triggerPusher():Promise<void> {
-Utils.toPusherKey( "user:1701:incoming_friend_requests")
+        Utils.toPusherKey( "user:1701:incoming_friend_requests")
     }
 
     async isValidRequest(requestBody:any):Promise<boolean>{

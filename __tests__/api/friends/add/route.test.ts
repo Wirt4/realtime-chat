@@ -1,6 +1,5 @@
 import {PostFriendsRouteHandler} from "@/app/api/friends/add/route";
 import {Utils} from "@/lib/utils";
-import { pusherServer } from '@/lib/pusher'
 
 describe('Validate Tests - true verses false', () => {
     let handler: PostFriendsRouteHandler
@@ -149,12 +148,21 @@ describe("error response tests",()=>{
 })
 
 describe("Trigger Pusher tests", ()=>{
+    afterEach(()=>{
+        jest.resetAllMocks()
+    })
     test("check the correct arguments have been passed to 'toPusherKey'",async ()=>{
         const handler = new PostFriendsRouteHandler()
         handler.idToAdd ='1701'
         const spy = jest.spyOn(Utils, 'toPusherKey')
-       // jest.spyOn(pusherServer, 'trigger')
         await handler.triggerPusher()
         expect(spy).toHaveBeenCalledWith('user:1701:incoming_friend_requests')
+    })
+    test("check the correct arguments have been passed to 'toPusherKey' 2",async ()=>{
+        const handler = new PostFriendsRouteHandler()
+        handler.idToAdd ='1984'
+        const spy = jest.spyOn(Utils, 'toPusherKey')
+        await handler.triggerPusher()
+        expect(spy).toHaveBeenCalledWith('user:1984:incoming_friend_requests')
     })
 })
