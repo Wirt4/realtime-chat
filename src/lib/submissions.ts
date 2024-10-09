@@ -10,9 +10,6 @@ interface SubmissionProps {
     showSuccessState:(state: boolean) => void
 }
 export class Submissions{
-    constructor() {
-    }
-
     handleSubmit(props: React.FormEvent<HTMLFormElement>): void{
         this.addFriend(props)
     }

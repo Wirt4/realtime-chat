@@ -7,7 +7,7 @@ import {Submissions} from "@/lib/submissions";
 const AddFriendButton: FC = ()=>{
     const sub = new Submissions()
 
-    return <form onSubmit={sub.handleSubmit} className= 'max-w-sum'>
+    return <form onSubmit={sub.handleSubmit} className= 'max-w-sum' role="form">
         <label htmlFor='email'
         className='block text-sm font-medium leading-6 text-gray-900'>Add a Friend by Email:</label>
         <div className='mt-2 flex gap-4'>

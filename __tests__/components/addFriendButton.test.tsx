@@ -1,20 +1,23 @@
 
 import '@testing-library/jest-dom'
-import {render, screen} from '@testing-library/react'
+import {render, screen, fireEvent} from '@testing-library/react'
 import AddFriendButton from "@/components/AddFriendButton"
-
+import {Submissions} from "@/lib/submissions";
+const mockHandleSubmit = jest.fn();
 jest.mock("../../src/lib/submissions.ts", () => {
     return {
         Submissions: jest.fn().mockImplementation(() => {
             return {
-                handleSubmit: jest.fn(),
-            }
+                handleSubmit: mockHandleSubmit,
+            };
         }),
-    }
-})
+    };
+});
 
 describe('addFriendButton', () => {
+    let sub: Submissions
     beforeEach(()=>{
+        sub = new Submissions()
         render(<AddFriendButton />)
     })
    test('expect label to be rendered correctly',()=>{
@@ -25,9 +28,9 @@ describe('addFriendButton', () => {
         expect(buttonElement).toBeInTheDocument();
     })
 
-   /** test('When submit button is clicked, the Submissions Handle submit method should be called', async ()=>{
-        const addButton = screen.getByText("Add");
-        fireEvent.click(addButton)
-        expect(Submissions.handleSubmit).toHaveBeenCalled()
-    })**/
+   test('When submit button is clicked, the Submissions Handle submit method should be called', async ()=>{
+       const addButton = screen.getByRole("form");
+       fireEvent.submit(addButton);
+       expect(mockHandleSubmit).toHaveBeenCalled();
+    })
 })
