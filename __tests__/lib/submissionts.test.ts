@@ -91,7 +91,7 @@ describe('addFriend',()=>{
     test(' expect axios to be called with correct path', async ()=>{
         const path = '/api/friends/add'
         //@ts-expect-error partial resolved value
-        const spy = jest.spyOn(Submissions, "postToAxios").mockResolvedValue(goodAxios)
+        const spy = jest.spyOn(sub, "postToAxios").mockResolvedValue(goodAxios)
         jest.spyOn(sub, 'validate').mockReturnValueOnce({email: 'validEmail'})
         const email = "bar@foo.com";
         const props = {
