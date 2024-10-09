@@ -3,7 +3,6 @@ import {Utils} from "@/lib/utils";
 import myGetServerSession from "@/lib/myGetServerSession";
 import {pusherServer} from "@/lib/pusher";
 import fetchRedis from "@/app/helpers/redis";
-import {Bold} from "lucide-react";
 
 interface errorProps{
     message: string,
