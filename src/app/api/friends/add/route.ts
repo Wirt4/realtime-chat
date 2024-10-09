@@ -50,6 +50,7 @@ export class PostFriendsRouteHandler {
     }
     async triggerPusher():Promise<void> {
         const key = Utils.toPusherKey( `user:${this.idToAdd}:incoming_friend_requests`)
+        
         pusherServer.trigger(
             key,
             'incoming_friend_requests',
@@ -98,10 +99,12 @@ export class PostFriendsRouteHandler {
 
         return true
     }
+
     async userExists():Promise<boolean>{
         this.idToAdd = await fetchRedis()
         return Boolean(this.idToAdd)
     }
+
     async isAlreadyAdded():Promise<boolean>{
         //stub
         return false
@@ -110,21 +113,25 @@ export class PostFriendsRouteHandler {
         //stub
         return false
     }
+
     async addToDB():Promise<void>{}
 
     isSameUser():boolean{
         //stub
         return false
     }
+
     errorResponse(): errorProps{
         return  {
             message:this.message,
             opts: { status: this.status }
         }
     }
+
     async getSession(){
         const session = await myGetServerSession()
         this.senderId = session?.user.id as string
+        this.senderEmail= session?.user.email as string
         return session
     }
 }
