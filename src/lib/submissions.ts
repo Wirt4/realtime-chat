@@ -24,7 +24,7 @@ export class Submissions{
     static async addFriend(props: SubmissionProps){
         try{
             this.validate(props.data.email)
-            await this.postToAxios('some bullshit',{})
+            await this.postToAxios("/api/friends/add",{})
             props.showSuccessState(true)
         }catch(error){}
     }
