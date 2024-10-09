@@ -1,6 +1,6 @@
 import {PostFriendsRouteHandler} from "@/app/api/friends/add/route";
 import {Utils} from "@/lib/utils";
-import fetchRedis from "@/app/helpers/redis"
+import fetchRedis from "@/helpers/redis"
 import {pusherServer} from "@/lib/pusher";
 import myGetServerSession from "@/lib/myGetServerSession";
 import { db } from '@/lib/db';
@@ -10,7 +10,7 @@ jest.mock("../../../../src/lib/myGetServerSession",()=>({
     default: jest.fn()
 }));
 
-jest.mock("../../../../src/app/helpers/redis",()=>({
+jest.mock("../../../../src/helpers/redis",()=>({
     __esModule: true,
     default: jest.fn()
 }));
