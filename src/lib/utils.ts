@@ -2,7 +2,14 @@ import cslx, {ClassValue} from "clsx"
 import {twMerge} from "tailwind-merge"
 import buttonVariants from "@/components/ui/button/buttonVariants"
 import {signIn} from "next-auth/react"
-import {toast} from "react-hot-toast";
+import {toast} from "react-hot-toast"
+import {UseFormSetError} from "react-hook-form";
+
+interface addFriendInterface{
+    email: string,
+    setError: UseFormSetError<{ email: string; }>,
+    setShowSuccessState:(state: boolean) => void
+}
 
 export class Utils {
     static _cslx(...inputs: ClassValue[]): string {
@@ -49,4 +56,6 @@ export class Utils {
     static toastError(msg:string){
         toast.error(msg)
     }
+
+    static addFriend(props: addFriendInterface){}
 }
