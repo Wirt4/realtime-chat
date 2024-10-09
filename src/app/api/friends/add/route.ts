@@ -1,4 +1,5 @@
 import {addFriendValidator} from "@/lib/validations/add-friend";
+import {is} from "@babel/types";
 
 export async function  POST(req: Request):Promise<Response> {
 
@@ -30,10 +31,9 @@ export class PostFriendsRouteHandler {
        }
 
        const userExists = await this.userExists()
-        
-
         const session = await this.getSession()
-        return userExists && session
+        const isSameUser = this.isSameUser()
+        return userExists && session && !isSameUser
     }
     async userExists():Promise<boolean>{
         //stub
@@ -48,7 +48,7 @@ export class PostFriendsRouteHandler {
         return false
     }
     async addToDB():Promise<void>{}
-    isCallingUser(session: any):boolean{
+    isSameUser():boolean{
         //stub
         return false
     }

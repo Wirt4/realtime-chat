@@ -28,4 +28,13 @@ describe('Validate Tests', () => {
         const actual = await handler.isValidRequest({email:'example@example.com'})
         expect(actual).toEqual(false)
     })
+    test("user attempts to add self", async()=>{
+        const handler = new PostFriendsRouteHandler()
+        jest.spyOn(handler, 'validateEmail').mockReturnValue({email:'valid@email.com'})
+        jest.spyOn(handler, 'userExists').mockResolvedValue(true)
+        jest.spyOn(handler, 'getSession').mockResolvedValue(true)
+        jest.spyOn(handler, 'isSameUser').mockReturnValue(true)
+        const actual = await handler.isValidRequest({email:'example@example.com'})
+        expect(actual).toEqual(false)
+    })
 })
