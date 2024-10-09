@@ -6,6 +6,7 @@ import {toast} from "react-hot-toast"
 import {UseFormSetError} from "react-hook-form";
 import {addFriendValidator} from "@/lib/validations/add-friend";
 import {ZodError, ZodIssueCode} from "zod";
+import axios from "axios";
 
 interface addFriendInterface{
     email: string,
@@ -61,7 +62,8 @@ export class Utils {
 e
     static addFriend(props: addFriendInterface){
         try{
-            addFriendValidator.parse(props.email)
+            const validEmail = addFriendValidator.parse(props.email)
+            axios.post('/api/friends/add', {email: validEmail})
         }catch(e){
             if (e instanceof ZodError){
                 props.setError("email",{message: e.message})
