@@ -36,7 +36,7 @@ export class PostFriendsRouteHandler {
     validateEmail(email:{email:string}){
         return addFriendValidator.parse(email)
     }
-    setReturn(message: string, status: number){
+    setReturn(message: string, status: number = 400){
         this.status = status
         this.message = message
     }
@@ -51,7 +51,7 @@ export class PostFriendsRouteHandler {
 
        const userExists = await this.userExists()
         if (!userExists){
-            this.setReturn('This person does not exist.', 400)
+            this.setReturn('This person does not exist.')
             return false
         }
         const session = await this.getSession()
@@ -61,7 +61,7 @@ export class PostFriendsRouteHandler {
         }
         const isSameUser = this.isSameUser()
         if (isSameUser){
-            this.setReturn('You cannot add yourself as a friend', 400)
+            this.setReturn('You cannot add yourself as a friend')
             return false
         }
         const isAlreadyAdded = await this.isAlreadyAdded()
