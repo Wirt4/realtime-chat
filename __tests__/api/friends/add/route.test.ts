@@ -46,5 +46,17 @@ describe('/api/friends/add', () => {
         expect(response.status).not.toBe(422)
         expect(text).not.toBe('Invalid request payload')
     })
+    test('unknown errorthrow', async ()=>{
+        const req = {
+            body: {email:  'validemail@gmail.com'},
+        } as unknown as Request;
+        jest.spyOn(addFriendValidator, 'parse').mockImplementation(()=>{
+            throw new Error('unknown error')
+        })
+        const response = await POST(req)
+        const text = await  response.text()
+        expect(response.status).toBe(400)
+        expect(text).toBe('Invalid request')
+    })
 
 })
