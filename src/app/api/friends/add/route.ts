@@ -1,5 +1,7 @@
 import {addFriendValidator} from "@/lib/validations/add-friend";
 import {Utils} from "@/lib/utils";
+import {getServerSession} from "next-auth";
+import {Auth} from "@/lib/auth";
 
 interface errorProps{
     message: string,
@@ -44,7 +46,7 @@ export class PostFriendsRouteHandler {
         this.message = message
     }
     async triggerPusher():Promise<void> {
-        Utils.toPusherKey( "user:1701:incoming_friend_requests")
+        Utils.toPusherKey( `user:${this.idToAdd}:incoming_friend_requests`)
     }
 
     async isValidRequest(requestBody:any):Promise<boolean>{
@@ -101,6 +103,7 @@ export class PostFriendsRouteHandler {
         return false
     }
     async addToDB():Promise<void>{}
+
     isSameUser():boolean{
         //stub
         return false
@@ -112,6 +115,8 @@ export class PostFriendsRouteHandler {
         }
     }
     async getSession(){
+       // const session = await getServerSession(Auth.options())
+        this.idToAdd = "1984"
         return true
     }
 }

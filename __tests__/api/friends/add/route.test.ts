@@ -1,6 +1,7 @@
 import {PostFriendsRouteHandler} from "@/app/api/friends/add/route";
 import {Utils} from "@/lib/utils";
 
+
 describe('Validate Tests - true verses false', () => {
     let handler: PostFriendsRouteHandler
     beforeEach(()=>{
@@ -164,5 +165,19 @@ describe("Trigger Pusher tests", ()=>{
         const spy = jest.spyOn(Utils, 'toPusherKey')
         await handler.triggerPusher()
         expect(spy).toHaveBeenCalledWith('user:1984:incoming_friend_requests')
+    })
+    test("confirm idToAdd has been set by the session method",async ()=>{
+        const handler = new PostFriendsRouteHandler()
+        const expectedID = '1984'
+
+        await handler.getSession()
+        expect(handler.idToAdd).toEqual(expectedID)
+    })
+    test("confirm idToAdd has been set by the session method",async ()=>{
+        const handler = new PostFriendsRouteHandler()
+        const expectedID = '1489'
+
+        await handler.getSession()
+        expect(handler.idToAdd).toEqual(expectedID)
     })
 })
