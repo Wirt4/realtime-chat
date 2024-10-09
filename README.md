@@ -40,9 +40,12 @@ REDIS_URL
 REDIS_TOKEN
 GOOGLE_CLIENT_ID
 GOOGLE_CLIENT_SECRET
+NEXTAUTH_SECRET
 ```
 `REDIS` is for accessing the redis database via upstash.com
 `GOOGLE_CLIENT` is for OAuth login via the users' google account
+
+`NEXTAUTH_SECRET` is defined by the app developer, so I'm not sharing it with you here
 
 ## OAuth
 For Google, go to https://console.cloud.google.com/ to configure the credentials.

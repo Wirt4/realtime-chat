@@ -1,4 +1,9 @@
 import {Utils} from "@/lib/utils"
+import {addFriendValidator} from "@/lib/validations/add-friend";
+import {z, ZodError, ZodIssueCode} from "zod";
+import axios, {AxiosError} from 'axios'
+
+jest.mock('axios')
 
 describe('classNames test', ()=>{
     test('want to make sure the inputs are passed to clsx', ()=>{
@@ -89,4 +94,86 @@ describe('loginwithGoogle',()=>{
         await func()
         expect(spy).not.toHaveBeenCalled()
     })
+})
+
+describe('adFriend', ()=>{
+    afterEach(()=>{
+        jest.resetAllMocks()
+    })
+    test('validator.parse() is called', async ()=>{
+        const spy = jest.spyOn(addFriendValidator, 'parse').mockReturnValue({email:'valid-email'})
+        await Utils.addFriend({email:'valid-email', setError: jest.fn(), setShowSuccessState: jest.fn()})
+        expect(spy).toHaveBeenCalledWith({email: 'valid-email'})
+    })
+    test('validator.parse() throws, expect setEror to be called ', async ()=>{
+        const issues: z.ZodIssue[] = [
+            {
+                code: ZodIssueCode.invalid_type,
+                expected: "string",
+                received: "number",
+                path: ["name"],
+                message: "Name must be a string",
+            }
+        ];
+        const error = new ZodError(issues)
+        jest.spyOn(addFriendValidator, 'parse').mockImplementation(()=>{
+            throw error
+        })
+
+        const email = 'invalid-email'
+        const spy = jest.fn()
+        await Utils.addFriend({email, setError: spy, setShowSuccessState: jest.fn()})
+        expect(spy).toHaveBeenCalledWith('email', { message: error.message })
+    })
+    test('axios.post should be called with the correct path and output of addFriendValidator.parse', async ()=>{
+        const expectedPath = '/api/friends/add'
+        const email = 'valid-email'
+        const validEmail = {email}
+        const expectedOpts = {email: validEmail}
+        jest.spyOn(addFriendValidator, 'parse').mockReturnValue(validEmail)
+        const postSpy = jest.spyOn(axios, 'post').mockResolvedValue({ data: { success: true } })
+        await Utils.addFriend({email, setError: jest.fn(), setShowSuccessState: jest.fn()})
+        expect(postSpy).toHaveBeenCalledWith(expectedPath, expectedOpts)
+
+    })
+    test('axios.post throws, setError should be called',async ()=>{
+        const email = 'valid-email'
+        const validEmail = {email}
+        jest.spyOn(addFriendValidator, 'parse').mockReturnValue(validEmail)
+        const axError = new AxiosError('you dun effed up')
+        jest.spyOn(axios, 'post').mockRejectedValue(axError)
+        const spy = jest.fn()
+        await Utils.addFriend({email, setError: spy, setShowSuccessState: jest.fn()})
+        expect(spy).toHaveBeenCalledWith('email', { message: axError.response?.data })
+        expect(spy).toHaveBeenCalledTimes(1)
+    })
+    test('axios.post throws a generic, setError should be called',async ()=>{
+        const email = 'valid-email'
+        const validEmail = {email}
+        jest.spyOn(addFriendValidator, 'parse').mockReturnValue(validEmail)
+        const axError = new Error('Shoot, I dunno')
+        jest.spyOn(axios, 'post').mockRejectedValue(axError)
+        const spy = jest.fn()
+        await Utils.addFriend({email, setError: spy, setShowSuccessState: jest.fn()})
+        expect(spy).toHaveBeenCalledWith('email', { message: 'Something went wrong, check logs'})
+    })
+    test('axios.post and addFriendValidator.parse are clean, should call setShowSuccessState with true', async ()=>{
+        const email = 'valid-email'
+        const validEmail = {email}
+        jest.spyOn(addFriendValidator, 'parse').mockReturnValue(validEmail)
+        jest.spyOn(axios, 'post').mockResolvedValue({ data: { success: true } })
+        const spy = jest.fn()
+        await Utils.addFriend({email, setError: jest.fn(), setShowSuccessState: spy})
+        expect(spy).toHaveBeenCalledWith( true)
+    })
+    test('axios.post and addFriendValidator.parse are clean, should call setShowSuccessState with true', async ()=>{
+        const email = 'valid-email'
+        const validEmail = {email}
+        jest.spyOn(addFriendValidator, 'parse').mockReturnValue(validEmail)
+        jest.spyOn(axios, 'post').mockRejectedValue(false)
+        const spy = jest.fn()
+        await Utils.addFriend({email, setError: jest.fn(), setShowSuccessState: spy})
+        expect(spy).not.toHaveBeenCalledWith(true)
+    })
+
 })

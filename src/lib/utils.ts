@@ -2,7 +2,17 @@ import cslx, {ClassValue} from "clsx"
 import {twMerge} from "tailwind-merge"
 import buttonVariants from "@/components/ui/button/buttonVariants"
 import {signIn} from "next-auth/react"
-import {toast} from "react-hot-toast";
+import {toast} from "react-hot-toast"
+import {UseFormSetError} from "react-hook-form";
+import {addFriendValidator} from "@/lib/validations/add-friend";
+import {ZodError, ZodIssueCode} from "zod";
+import axios, {AxiosError} from "axios";
+
+interface addFriendInterface{
+    email: string,
+    setError: UseFormSetError<{ email: string; }>,
+    setShowSuccessState:(state: boolean) => void
+}
 
 export class Utils {
     static _cslx(...inputs: ClassValue[]): string {
@@ -48,5 +58,23 @@ export class Utils {
 
     static toastError(msg:string){
         toast.error(msg)
+    }
+
+    static async addFriend(props: addFriendInterface){
+        try{
+            const validEmail = addFriendValidator.parse({email: props.email})
+            await axios.post('/api/friends/add', {email: validEmail})
+            props.setShowSuccessState(true)
+        }catch(e){
+            let message = "Something went wrong, check logs"
+
+            if (e instanceof ZodError){
+                message = e.message
+            }else if (e instanceof AxiosError){
+                message = e.response?.data
+            }
+
+            props.setError("email",{message})
+        }
     }
 }
