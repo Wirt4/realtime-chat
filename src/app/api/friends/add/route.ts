@@ -2,6 +2,7 @@ import {addFriendValidator} from "@/lib/validations/add-friend";
 import {Utils} from "@/lib/utils";
 import myGetServerSession from "@/lib/myGetServerSession";
 import {pusherServer} from "@/lib/pusher";
+import fetchRedis from "@/app/helpers/redis";
 
 interface errorProps{
     message: string,
@@ -98,8 +99,8 @@ export class PostFriendsRouteHandler {
         return true
     }
     async userExists():Promise<boolean>{
-        //stub
-        return false
+        this.idToAdd = await fetchRedis()
+        return this.idToAdd !==''
     }
     async isAlreadyAdded():Promise<boolean>{
         //stub
