@@ -77,4 +77,6 @@ export class Utils {
             props.setError("email",{message})
         }
     }
+
+    static toPusherKey(s: string){}
 }

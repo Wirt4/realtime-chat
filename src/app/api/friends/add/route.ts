@@ -1,4 +1,5 @@
 import {addFriendValidator} from "@/lib/validations/add-friend";
+import {Utils} from "@/lib/utils";
 
 interface errorProps{
     message: string,
@@ -27,10 +28,12 @@ export async function  POST(req: Request):Promise<Response> {
 export class PostFriendsRouteHandler {
     private status: number
     private message: string
+    public idToAdd: string
 
     constructor() {
         this.status = 400
         this.message = 'This person does not exist.'
+        this.idToAdd = ''
     }
 
     validateEmail(email:{email:string}){
@@ -40,7 +43,9 @@ export class PostFriendsRouteHandler {
         this.status = status
         this.message = message
     }
-    async triggerPusher():Promise<void> {}
+    async triggerPusher():Promise<void> {
+Utils.toPusherKey( "user:1701:incoming_friend_requests")
+    }
 
     async isValidRequest(requestBody:any):Promise<boolean>{
 
@@ -74,7 +79,7 @@ export class PostFriendsRouteHandler {
             this.setReturn('You\'ve already added this user')
             return false
         }
-        
+
         const areAlreadyFriends = await this.areAlreadyFriends()
         if (areAlreadyFriends){
             this.setReturn("You're already friends with this user")
