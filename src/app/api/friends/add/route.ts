@@ -2,6 +2,7 @@ import {addFriendValidator} from "@/lib/validations/add-friend";
 import {Utils} from "@/lib/utils";
 import {getServerSession} from "next-auth";
 import {Auth} from "@/lib/auth";
+import myGetServerSession from "@/lib/myGetServerSession";
 
 interface errorProps{
     message: string,
@@ -115,8 +116,8 @@ export class PostFriendsRouteHandler {
         }
     }
     async getSession(){
-       // const session = await getServerSession(Auth.options())
-        this.idToAdd = "1984"
+        const session = await myGetServerSession()
+        this.idToAdd = session?.user.id
         return true
     }
 }
