@@ -3,6 +3,8 @@ import {Utils} from "@/lib/utils";
 import fetchRedis from "@/app/helpers/redis"
 import {pusherServer} from "@/lib/pusher";
 import myGetServerSession from "@/lib/myGetServerSession";
+import { db } from '@/lib/db';
+
 jest.mock("../../../../src/lib/myGetServerSession",()=>({
     __esModule: true,
     default: jest.fn()
@@ -11,6 +13,11 @@ jest.mock("../../../../src/lib/myGetServerSession",()=>({
 jest.mock("../../../../src/app/helpers/redis",()=>({
     __esModule: true,
     default: jest.fn()
+}));
+
+jest.mock("../../../../src/lib/db",()=>({
+    __esModule: true,
+    db: jest.fn()
 }));
 
 describe('Validate Tests - true verses false', () => {
@@ -275,5 +282,25 @@ describe("IsAlreadyAddedTests", ()=> {
         (fetchRedis as jest.Mock).mockResolvedValue('');
         await handler.areAlreadyFriends()
         expect(fetchRedis).toHaveBeenCalledWith('sismember', `user:${senderId}:friends`, addId)
+    })
+})
+
+describe("addToDB tests",()=>{
+    let handler: PostFriendsRouteHandler
+    beforeEach(()=>{
+        handler = new PostFriendsRouteHandler()
+    })
+    afterEach(()=>{
+        jest.resetAllMocks()
+    })
+    test('confirm parameters passed to db. sadd',async ()=>{
+        const spy = jest.fn();
+        (db as jest.Mock).mockImplementation(()=>({
+            sadd: spy
+        }))
+        const idToAdd='234235'
+        const userId = '24325223'
+        await handler.addToDB()
+        expect(spy).toHaveBeenCalledWith(`user:${idToAdd}:incoming_friend_requests`, userId)
     })
 })

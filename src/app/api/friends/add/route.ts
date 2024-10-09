@@ -110,12 +110,14 @@ export class PostFriendsRouteHandler {
     async isAlreadyAdded():Promise<boolean>{
         return this.redisSismember(this.idToAdd, 'incoming_friend_requests', this.senderId)
     }
-    
+
     async areAlreadyFriends():Promise<boolean>{
         return this.redisSismember(this.senderId, 'friends',this.idToAdd)
     }
 
-    async addToDB():Promise<void>{}
+    async addToDB():Promise<void>{
+        //stub
+    }
 
     isSameUser():boolean{
         //stub
