@@ -9,6 +9,9 @@ const customJestConfig = {
     transform: {
         '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
     },
+    transformIgnorePatterns: [
+        "/node_modules/(?!next-auth|@next-auth/upstash-redis-adapter|uuid)",  // Add any other problematic packages here
+    ],
 }
 
 module.exports = createJestConfig(customJestConfig)

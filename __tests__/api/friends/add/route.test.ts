@@ -1,5 +1,4 @@
 import {PostFriendsRouteHandler} from "@/app/api/friends/add/route";
-import {addFriendValidator} from "@/lib/validations/add-friend";
 
 describe('Validate Tests', () => {
     afterEach(()=>{
