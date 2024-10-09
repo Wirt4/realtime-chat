@@ -35,7 +35,7 @@ describe('addFriend',()=>{
     })
     test('setStatus true if axios and validated email resolve', ()=>{
         (axios.post as jest.Mock).mockResolvedValue({ data: { success: true } });
-        (addFriendValidator.parse as jest.Mock).mockResolvedValue(true)
+        (addFriendValidator.parse as jest.Mock).mockReturnValue(true)
 
         const spy = jest.fn()
         const email = "bar@foo.com"
@@ -47,4 +47,19 @@ describe('addFriend',()=>{
 
         expect(spy).toHaveBeenCalledWith(true)
     })
+    test("setStatus not called if axios throws", async () => {
+        (axios.post as jest.Mock).mockRejectedValue(new Error("API Error"));
+        (addFriendValidator.parse as jest.Mock).mockReturnValue(true); // Assuming parse is synchronous
+
+        const spy = jest.fn();
+        const email = "bar@foo.com";
+        const props = {
+            data: { email },
+            showSuccessState: spy,
+        };
+
+        await Submissions.addFriend(props);
+
+        expect(spy).not.toHaveBeenCalled();
+    });
 })
