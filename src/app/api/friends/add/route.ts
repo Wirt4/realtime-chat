@@ -1,5 +1,11 @@
 import {addFriendValidator} from "@/lib/validations/add-friend";
 import {is} from "@babel/types";
+interface errorProps{
+    message: string,
+    opts:{
+        status: number
+    }
+}
 
 export async function  POST(req: Request):Promise<Response> {
 
@@ -8,7 +14,8 @@ export async function  POST(req: Request):Promise<Response> {
     const validRequest = await routeHandler.isValidRequest(body)
 
     if (!validRequest) {
-        return routeHandler.errorResponse()
+        const {message, opts} = routeHandler.errorResponse()
+        return new Response(message, opts)
     }
 
     await routeHandler.triggerPusher()
@@ -54,8 +61,11 @@ export class PostFriendsRouteHandler {
         //stub
         return false
     }
-    errorResponse(): Response{
-        return new Response(this.errorMessage, {status: this.statusCode})
+    errorResponse(){
+        return  {
+            message:'Invalid request payload',
+            opts: { status: 422 }
+        }
     }
     async getSession(){
         return true
