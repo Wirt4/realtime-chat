@@ -56,16 +56,21 @@ describe('Validate Tests - true verses false', () => {
         await handler.isValidRequest({email:'example@example.com'})
         expect(handler.errorResponse()).toEqual(expected)
     })
-        /**
+
     test("the target is already added", async()=>{
         jest.spyOn(handler, 'validateEmail').mockReturnValue({email:'valid@email.com'})
         jest.spyOn(handler, 'userExists').mockResolvedValue(true)
         jest.spyOn(handler, 'getSession').mockResolvedValue(true)
         jest.spyOn(handler, 'isSameUser').mockReturnValue(false)
         jest.spyOn(handler, 'isAlreadyAdded').mockResolvedValue(true)
-        const actual = await handler.isValidRequest({email:'example@example.com'})
-        expect(actual).toEqual(false)
+        const expected = {
+            message:'You\'ve already added this user',
+            opts: { status: 400 }
+        }
+        await handler.isValidRequest({email:'example@example.com'})
+        expect(handler.errorResponse()).toEqual(expected)
     })
+
     test("the target is already added", async()=>{
         jest.spyOn(handler, 'validateEmail').mockReturnValue({email:'valid@email.com'})
         jest.spyOn(handler, 'userExists').mockResolvedValue(true)
@@ -73,20 +78,14 @@ describe('Validate Tests - true verses false', () => {
         jest.spyOn(handler, 'isSameUser').mockReturnValue(false)
         jest.spyOn(handler, 'isAlreadyAdded').mockResolvedValue(false)
         jest.spyOn(handler, 'areAlreadyFriends').mockResolvedValue(true)
-        const actual = await handler.isValidRequest({email:'example@example.com'})
-        expect(actual).toEqual(false)
+        const expected = {
+            message:"You're already friends with this user",
+            opts: { status: 400 }
+        }
+        await handler.isValidRequest({email:'example@example.com'})
+        expect(handler.errorResponse()).toEqual(expected)
     })
-    test("it's all green and clean", async()=>{
-        jest.spyOn(handler, 'validateEmail').mockReturnValue({email:'valid@email.com'})
-        jest.spyOn(handler, 'userExists').mockResolvedValue(true)
-        jest.spyOn(handler, 'getSession').mockResolvedValue(true)
-        jest.spyOn(handler, 'isSameUser').mockReturnValue(false)
-        jest.spyOn(handler, 'isAlreadyAdded').mockResolvedValue(false)
-        jest.spyOn(handler, 'areAlreadyFriends').mockResolvedValue(false)
-        const actual = await handler.isValidRequest({email:'example@example.com'})
-        expect(actual).toEqual(true)
-    })
-    **/
+
 })
 
 describe("error response tests",()=>{

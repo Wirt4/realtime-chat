@@ -54,19 +54,31 @@ export class PostFriendsRouteHandler {
             this.setReturn('This person does not exist.')
             return false
         }
+
         const session = await this.getSession()
         if (!session){
             this.setReturn('unauthorized', 401)
             return false
         }
+
         const isSameUser = this.isSameUser()
         if (isSameUser){
             this.setReturn('You cannot add yourself as a friend')
             return false
         }
+
         const isAlreadyAdded = await this.isAlreadyAdded()
+        if (isAlreadyAdded){
+            this.setReturn('You\'ve already added this user')
+            return false
+        }
         const areAlreadyFriends = await this.areAlreadyFriends()
-        return userExists && session && !(isSameUser  || isAlreadyAdded|| areAlreadyFriends)
+        if (areAlreadyFriends){
+            this.setReturn("You're already friends with this user")
+            return false
+        }
+
+        return true
     }
     async userExists():Promise<boolean>{
         //stub
