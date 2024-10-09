@@ -1,5 +1,5 @@
 import {addFriendValidator} from "@/lib/validations/add-friend";
-import {is} from "@babel/types";
+
 interface errorProps{
     message: string,
     opts:{
@@ -25,15 +25,27 @@ export async function  POST(req: Request):Promise<Response> {
 }
 
 export class PostFriendsRouteHandler {
+    private status: number
+    private message: string
+
+    constructor() {
+        this.status = 400
+        this.message = 'This person does not exist.'
+    }
 
     validateEmail(email:{email:string}){
         return addFriendValidator.parse(email)
+    }
+    setReturn(message: string, status: number){
+        this.status = status
+        this.message = message
     }
     async triggerPusher():Promise<void> {}
     async isValidRequest(requestBody:any):Promise<boolean>{
         try{
             this.validateEmail(requestBody.email)
         }catch(error){
+            this.setReturn('Invalid request payload', 422)
            return false
        }
 
@@ -61,10 +73,10 @@ export class PostFriendsRouteHandler {
         //stub
         return false
     }
-    errorResponse(){
+    errorResponse(): errorProps{
         return  {
-            message:'Invalid request payload',
-            opts: { status: 422 }
+            message:this.message,
+            opts: { status: this.status }
         }
     }
     async getSession(){

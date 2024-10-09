@@ -19,13 +19,20 @@ describe('Validate Tests - true verses false', () => {
        await handler.isValidRequest({email:'stupid invalid email'})
         expect(handler.errorResponse()).toEqual(expected)
     })
-    /**
+
     test("user does not exist", async()=>{
         jest.spyOn(handler, 'validateEmail').mockReturnValue({email:'valid@email.com'})
         jest.spyOn(handler, 'userExists').mockResolvedValue(false)
-        const actual = await handler.isValidRequest({email:'example@example.com'})
-        expect(actual).toEqual(false)
+        const expected = {
+            message:'This person does not exist.',
+            opts: { status: 400 }
+        }
+
+
+       await handler.isValidRequest({email:'example@example.com'})
+        expect(handler.errorResponse()).toEqual(expected)
     })
+        /**
     test("session is unauthorized", async()=>{
         jest.spyOn(handler, 'validateEmail').mockReturnValue({email:'valid@email.com'})
         jest.spyOn(handler, 'userExists').mockResolvedValue(true)
