@@ -298,6 +298,17 @@ describe("addToDB tests",()=>{
     test('confirm parameters passed to db. sadd',async ()=>{
         const idToAdd='234235'
         const userId = '24325223'
+        handler.idToAdd = idToAdd
+        handler.senderId = userId
+        await handler.addToDB()
+        expect(db.sadd).toHaveBeenCalledWith(`user:${idToAdd}:incoming_friend_requests`, userId)
+    })
+
+    test('confirm parameters passed to db. sadd - different args',async ()=>{
+        const idToAdd='235346q3'
+        const userId = '86576435'
+        handler.idToAdd = idToAdd
+        handler.senderId = userId
         await handler.addToDB()
         expect(db.sadd).toHaveBeenCalledWith(`user:${idToAdd}:incoming_friend_requests`, userId)
     })

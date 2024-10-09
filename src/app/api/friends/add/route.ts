@@ -117,7 +117,7 @@ export class PostFriendsRouteHandler {
     }
 
     async addToDB():Promise<void>{
-        await db.sadd("user:234235:incoming_friend_requests","24325223" )
+        await db.sadd(`user:${this.idToAdd}:incoming_friend_requests`,this.senderId )
     }
 
     isSameUser():boolean{
