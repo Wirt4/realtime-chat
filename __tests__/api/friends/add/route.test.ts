@@ -32,22 +32,31 @@ describe('Validate Tests - true verses false', () => {
        await handler.isValidRequest({email:'example@example.com'})
         expect(handler.errorResponse()).toEqual(expected)
     })
-        /**
     test("session is unauthorized", async()=>{
         jest.spyOn(handler, 'validateEmail').mockReturnValue({email:'valid@email.com'})
         jest.spyOn(handler, 'userExists').mockResolvedValue(true)
         jest.spyOn(handler, 'getSession').mockResolvedValue(false)
-        const actual = await handler.isValidRequest({email:'example@example.com'})
-        expect(actual).toEqual(false)
+        const expected = {
+            message:'unauthorized',
+            opts: { status: 401 }
+        }
+        await handler.isValidRequest({email:'example@example.com'})
+        expect(handler.errorResponse()).toEqual(expected)
     })
+
     test("user attempts to add self", async()=>{
         jest.spyOn(handler, 'validateEmail').mockReturnValue({email:'valid@email.com'})
         jest.spyOn(handler, 'userExists').mockResolvedValue(true)
         jest.spyOn(handler, 'getSession').mockResolvedValue(true)
         jest.spyOn(handler, 'isSameUser').mockReturnValue(true)
-        const actual = await handler.isValidRequest({email:'example@example.com'})
-        expect(actual).toEqual(false)
+        const expected = {
+            message:'You cannot add yourself as a friend',
+            opts: { status: 400 }
+        }
+        await handler.isValidRequest({email:'example@example.com'})
+        expect(handler.errorResponse()).toEqual(expected)
     })
+        /**
     test("the target is already added", async()=>{
         jest.spyOn(handler, 'validateEmail').mockReturnValue({email:'valid@email.com'})
         jest.spyOn(handler, 'userExists').mockResolvedValue(true)
