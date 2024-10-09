@@ -17,13 +17,15 @@ describe("handleSubmit", () => {
     })
     test('method addFriend should be called with the email member of FormData 1',()=>{
         const email = "foo@bar.com"
-        Submissions.handleSubmit({email}, jest.fn)
-        expect(Submissions.addFriend).toHaveBeenCalledWith(expect.objectContaining({email}), expect.anything())
+        const props = {showSuccessState: jest.fn, data:{email}}
+        Submissions.handleSubmit(props)
+        expect(Submissions.addFriend).toHaveBeenCalledWith(props)
     })
     test('method addFriend should be called with the email member of FormData 2',()=>{
         const email = "bar@foo.com"
-        Submissions.handleSubmit( {email}, jest.fn)
-        expect(Submissions.addFriend).toHaveBeenCalledWith(expect.objectContaining({email}), expect.anything())
+        const props = {showSuccessState: jest.fn, data:{email}}
+        Submissions.handleSubmit(props)
+        expect(Submissions.addFriend).toHaveBeenCalledWith(props)
     })
 })
 
@@ -37,7 +39,11 @@ describe('addFriend',()=>{
 
         const spy = jest.fn()
         const email = "bar@foo.com"
-        Submissions.addFriend({email}, spy)
+        const props ={
+            data: {email},
+            showSuccessState: spy,
+        }
+        Submissions.addFriend(props)
 
         expect(spy).toHaveBeenCalledWith(true)
     })
