@@ -12,19 +12,18 @@ describe("handleSubmit", () => {
     afterEach(()=>{
         jest.resetAllMocks()
     })
+    afterAll(()=>{
+        jest.restoreAllMocks()
+    })
     test('method addFriend should be called with the email member of FormData 1',()=>{
         const email = "foo@bar.com"
-        Submissions.handleSubmit({data: {email}, showSuccessState: jest.fn})
-        expect(Submissions.addFriend).toHaveBeenCalledWith(
-            expect.objectContaining({data:
-                    expect.objectContaining({email})}))
+        Submissions.handleSubmit({email}, jest.fn)
+        expect(Submissions.addFriend).toHaveBeenCalledWith(expect.objectContaining({email}), expect.anything())
     })
     test('method addFriend should be called with the email member of FormData 2',()=>{
         const email = "bar@foo.com"
-        Submissions.handleSubmit({data: {email}, showSuccessState: jest.fn})
-        expect(Submissions.addFriend).toHaveBeenCalledWith(
-            expect.objectContaining({data:
-                    expect.objectContaining({email})}))
+        Submissions.handleSubmit( {email}, jest.fn)
+        expect(Submissions.addFriend).toHaveBeenCalledWith(expect.objectContaining({email}), expect.anything())
     })
 })
 
@@ -32,13 +31,13 @@ describe('addFriend',()=>{
     afterEach(()=>{
         jest.resetAllMocks()
     })
-    test('setStatus true if axios and validated email resolve', (value: jest.ResolvedValue<T>)=>{
+    test('setStatus true if axios and validated email resolve', ()=>{
         (axios.post as jest.Mock).mockResolvedValue({ data: { success: true } });
         (addFriendValidator.parse as jest.Mock).mockResolvedValue(true)
 
         const spy = jest.fn()
         const email = "bar@foo.com"
-        Submissions.handleSubmit({data: {email}, showSuccessState:spy})
+        Submissions.addFriend({email}, spy)
 
         expect(spy).toHaveBeenCalledWith(true)
     })
