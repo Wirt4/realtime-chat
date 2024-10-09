@@ -219,3 +219,16 @@ describe("Trigger Pusher tests", ()=>{
         expect(handler.senderEmail).toEqual(expectedEmail)
     })
 })
+
+describe("IsAlreadyAddedTests", ()=>{
+    let handler: PostFriendsRouteHandler
+    beforeEach(()=>{
+        handler = new PostFriendsRouteHandler()
+    })
+    test('confirm parameters passed to redis- 1',()=>{
+        const addId = '1234';
+        const senderId = '54321';
+        (fetchRedis as jest.Mock).mockResolvedValue('');
+        expect(fetchRedis).toHaveBeenCalledWith('sismember',`user:${addId}:incoming_friend_requests`, senderId )
+    })
+})
