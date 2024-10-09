@@ -313,3 +313,24 @@ describe("addToDB tests",()=>{
         expect(db.sadd).toHaveBeenCalledWith(`user:${idToAdd}:incoming_friend_requests`, userId)
     })
 })
+
+describe("isSameUserTests",()=>{
+    let handler: PostFriendsRouteHandler
+    beforeEach(()=>{
+        handler = new PostFriendsRouteHandler()
+    })
+    test("the user are the same",()=>{
+        const idToAdd='235346q3'
+        const userId = '235346q3'
+        handler.idToAdd = idToAdd
+        handler.senderId = userId
+        expect(handler.isSameUser()).toEqual(true)
+    })
+    test("the user are the same",()=>{
+        const idToAdd='235346q3'
+        const userId = '86576435'
+        handler.idToAdd = idToAdd
+        handler.senderId = userId
+        expect(handler.isSameUser()).toEqual(false)
+    })
+})
