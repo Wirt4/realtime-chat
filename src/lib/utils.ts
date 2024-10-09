@@ -67,10 +67,9 @@ export class Utils {
         }catch(e){
             if (e instanceof ZodError){
                 props.setError("email",{message: e.message})
-            }
-            if (e instanceof AxiosError){
+            }else if (e instanceof AxiosError){
                 props.setError("email",{message: e.response?.data})
-            }
+            }else {props.setError("email",{message: "Something went wrong, check logs"})}
         }
     }
 }
