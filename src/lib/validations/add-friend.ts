@@ -4,4 +4,4 @@ export const addFriendValidator = z.object({
 })
 
 
-export type FormData = z.infer<typeof addFriendValidator>;
+export type FormData = z.infer<typeof addFriendValidator>

@@ -1,5 +1,6 @@
 import {Utils} from "@/lib/utils"
 import {addFriendValidator} from "@/lib/validations/add-friend";
+import {ZodError, ZodIssueCode} from "zod";
 
 describe('classNames test', ()=>{
     test('want to make sure the inputs are passed to clsx', ()=>{
@@ -97,5 +98,30 @@ describe('adFriend', ()=>{
         const spy = jest.spyOn(addFriendValidator, 'parse').mockReturnValue({email:'valid-email'})
         Utils.addFriend({email:'valid-email', setError: jest.fn(), setShowSuccessState: jest.fn()})
         expect(spy).toHaveBeenCalledWith('valid-email')
+    })
+    test('validator.parse() throws, expect setEror to be called ', ()=>{
+        const issues: z.ZodIssue[] = [
+            {
+                code: ZodIssueCode.invalid_type,
+                expected: "string",
+                received: "number",
+                path: ["name"],
+                message: "Name must be a string",
+            }
+        ];
+        const error = new ZodError(issues)
+        jest.spyOn(addFriendValidator, 'parse').mockImplementation(()=>{
+            throw error
+        })
+
+        const email = 'invalid-email'
+        const spy = jest.fn()
+        try{
+            Utils.addFriend({email, setError: spy, setShowSuccessState: jest.fn()})
+        }catch(e){
+        //stub
+        }finally{
+            expect(spy).toHaveBeenCalledWith(email, { message: error.message })
+        }
     })
 })
