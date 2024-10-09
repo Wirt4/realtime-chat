@@ -9,19 +9,19 @@ interface SubmissionProps {
     showSuccessState:(state: boolean) => void
 }
 export class Submissions{
-    static handleSubmit(props: SubmissionProps): void{
+    handleSubmit(props: SubmissionProps): void{
         this.addFriend(props)
     }
 
-    static validate(email: string){
+    validate(email: string){
         return addFriendValidator.parse(email)
     }
 
-    static async postToAxios(route: string, options: AbortController){
+    async postToAxios(route: string, options: AbortController){
         return axios.post(route, options)
     }
 
-    static async addFriend(props: SubmissionProps){
+    async addFriend(props: SubmissionProps){
         try{
             await this.postToAxios("/api/friends/add",{email: this.validate(props.data.email)})
             props.showSuccessState(true)

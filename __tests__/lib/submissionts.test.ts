@@ -68,6 +68,7 @@ describe('addFriend',()=>{
         expect(spy).not.toHaveBeenCalled();
     });
     test("setStatus not called if friendValidator throws", async () => {
+        //@ts-expect-error partial resolved value
         jest.spyOn(Submissions, 'postToAxios').mockResolvedValue(goodAxios);
         jest.spyOn(Submissions, 'validate').mockImplementation(()=>{
             throw new Error("bad");
@@ -123,4 +124,5 @@ describe('addFriend',()=>{
         await Submissions.addFriend(props);
         expect(spy).toHaveBeenCalledWith(expect.anything(), {email: {email: validEmail}})
     })
+    test(' expect axios to be called with correct opts', async ()=>{})
 })
