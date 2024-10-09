@@ -1,5 +1,10 @@
 import {PostFriendsRouteHandler} from "@/app/api/friends/add/route";
 import {Utils} from "@/lib/utils";
+import myGetServerSession from "@/lib/myGetServerSession"
+jest.mock("../../../../src/lib/myGetServerSession",()=>({
+    __esModule: true,
+    default: jest.fn()
+}));
 
 
 describe('Validate Tests - true verses false', () => {
@@ -168,15 +173,15 @@ describe("Trigger Pusher tests", ()=>{
     })
     test("confirm idToAdd has been set by the session method",async ()=>{
         const handler = new PostFriendsRouteHandler()
-        const expectedID = '1984'
-
+        const expectedID = '1984';
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: expectedID}});
         await handler.getSession()
         expect(handler.idToAdd).toEqual(expectedID)
     })
     test("confirm idToAdd has been set by the session method",async ()=>{
         const handler = new PostFriendsRouteHandler()
-        const expectedID = '1489'
-
+        const expectedID = '1489';
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: expectedID}});
         await handler.getSession()
         expect(handler.idToAdd).toEqual(expectedID)
     })
