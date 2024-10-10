@@ -1,6 +1,6 @@
-
-const  fetchRedis= async ()=>{
-    await fetch("www.sampleurl.com/sismember/dostuff/12345")
+type Command = 'zrange' | 'sismember'
+const fetchRedis= async (cmd: Command, ...args:string[])=>{
+    await fetch(`${process.env.REDIS_URL}/${cmd}/${ Object.values(args)[0].join('/')}`)
 }
 
 export default fetchRedis;
