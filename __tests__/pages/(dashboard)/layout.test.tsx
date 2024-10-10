@@ -1,7 +1,8 @@
 import '@testing-library/jest-dom'
-import {render, screen, fireEvent} from '@testing-library/react'
+import {render} from '@testing-library/react'
+import Layout from "@/app/\(dashboard\)/layout"
 describe('Layout tests',()=>{
-    test('renders without crashing',()=>
+    test('renders without crashing',()=>{
         render(<Layout/>)
-    )
+    })
 })
