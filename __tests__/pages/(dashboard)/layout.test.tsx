@@ -2,9 +2,16 @@ import '@testing-library/jest-dom'
 import Layout from "@/app/(dashboard)/layout"
 import myGetServerSession from "@/lib/myGetServerSession";
 import {ReactNode} from "react";
+import {notFound} from "next/navigation"
+
 jest.mock("../../../src/lib/myGetServerSession",()=>({
     __esModule: true,
     default: jest.fn()
+}));
+
+jest.mock("next/navigation", () => ({
+    __esModule: true,
+    notFound: jest.fn()
 }));
 
 describe('Layout tests',()=>{
@@ -31,5 +38,11 @@ describe('Layout tests',()=>{
         await Layout({});
         expect(myGetServerSession).toHaveBeenCalledTimes(1);
     });
+
+    test("if it a bad session, then the layout should be notFound",async ()=>{
+        (myGetServerSession as jest.Mock).mockResolvedValue(null);
+        await Layout({});
+        expect(notFound).toHaveBeenCalledTimes(1);
+    })
 
 });
