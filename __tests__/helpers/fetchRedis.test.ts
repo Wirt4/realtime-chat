@@ -112,4 +112,16 @@ describe('fetchRedis', () => {
             expect(e).toEqual(new Error(`error executing Redis command: ${status}`))
         }
     })
+
+    test('options test, if the status is not okay, then the method should throw', async () => {
+        const expected= {foo: 'bar'}
+        jest.spyOn(global, 'fetch')
+            .mockResolvedValue({ok: true, json: async()=>{return expected}});
+
+        const args = ['dostuff','54321', 63457]
+        const command ='zrange'
+        process.env.REDIS_TOKEN ='goliath'
+        const result = await fetchRedis(command, args)
+       expect(result).toEqual(expected);
+    })
 })
