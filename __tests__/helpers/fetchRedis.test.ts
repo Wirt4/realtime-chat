@@ -2,7 +2,7 @@ import fetchRedis from "@/helpers/redis";
 
 
 describe('fetchRedis', () => {
-    const positiveResolution = {ok: true}
+    const positiveResolution = {ok: true, json: async()=>{return {result:""}}}
     let originalFetch: any
     let originalToken: any
     let originalUrl: any
@@ -100,7 +100,9 @@ describe('fetchRedis', () => {
     test('options test, if the status is not okay, then the method should throw', async () => {
         const status = "Jim, I think you better get down here"
         jest.spyOn(global, 'fetch')
-            .mockResolvedValue({ok: false, statusText: status});
+            .mockResolvedValue({ok: false, statusText: status, json: jest.fn(async()=>{
+                return {result: 'foo'}
+                })});
 
         const args = ['dostuff','54321', 63457]
         const command ='zrange'
@@ -113,10 +115,10 @@ describe('fetchRedis', () => {
         }
     })
 
-    test('options test, if the status is not okay, then the method should throw', async () => {
+    test('options test, if the status is  okay, then the method should parse and return the appropriate payload', async () => {
         const expected= {foo: 'bar'}
         jest.spyOn(global, 'fetch')
-            .mockResolvedValue({ok: true, json: async()=>{return expected}});
+            .mockResolvedValue({ok: true, json: async()=>{return {result: expected, json: async()=>{return {result:''}}}}});
 
         const args = ['dostuff','54321', 63457]
         const command ='zrange'

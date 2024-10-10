@@ -6,11 +6,13 @@ const fetchRedis= async (cmd: Command, ...args:string[])=>{
         },
         cache: 'no-store',
     }
-    const result = await fetch(`${process.env.REDIS_URL}/${cmd}/${ Object.values(args)[0].join('/')}`,opts )
-    console.log({result})
-    if (!result.ok) {
-        throw new Error(`error executing Redis command: ${result.statusText}`)
+    const response = await fetch(`${process.env.REDIS_URL}/${cmd}/${ Object.values(args)[0].join('/')}`,opts )
+
+    if (!response.ok) {
+        throw new Error(`error executing Redis command: ${response.statusText}`)
     }
+        const data = await response.json()
+        return data.result
 }
 
 export default fetchRedis;
