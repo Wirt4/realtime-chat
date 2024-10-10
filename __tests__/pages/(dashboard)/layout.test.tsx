@@ -30,7 +30,11 @@ describe('Layout tests',()=>{
     test('renders children',async ()=>{
         const testNode = <div>Tossed Salads and Scrambled eggs</div> as ReactNode
         const layout = await Layout({children:testNode});
-        expect(layout.props.children.props.children).toEqual("Tossed Salads and Scrambled eggs");
+        console.log(layout.props.children);
+        expect(layout.props.children).toEqual(
+            expect.arrayContaining(
+                [expect.objectContaining({props:
+                        expect.objectContaining({children:'Tossed Salads and Scrambled eggs'})})]));
     });
 
     test('should call a server session',async ()=>{
