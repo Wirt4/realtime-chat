@@ -79,6 +79,6 @@ export class Utils {
     }
 
     static toPusherKey(s: string):string{
-        return 'stub'
+        return 'oogie__boogie__man'
     }
 }
