@@ -43,6 +43,11 @@ describe('Layout tests',()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue(null);
         await Layout({});
         expect(notFound).toHaveBeenCalledTimes(1);
-    })
+    });
 
+    test("If it's a fine session, then  notFound should not be called",async ()=>{
+        (myGetServerSession as jest.Mock).mockResolvedValue({foo:"bar"});
+        await Layout({});
+        expect(notFound).not.toHaveBeenCalled();
+    });
 });
