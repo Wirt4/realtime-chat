@@ -4,7 +4,7 @@ import { db } from './db'
 import GoogleProvider from 'next-auth/providers/google'
 import  fetchRedis  from '@/helpers/redis'
 
-function getGoogleCredentials() {
+const  getGoogleCredentials =() =>{
     const clientId = process.env.GOOGLE_CLIENT_ID
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET
 
@@ -19,7 +19,7 @@ function getGoogleCredentials() {
     return { clientId, clientSecret }
 }
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
     adapter: UpstashRedisAdapter(db),
     session: {
         strategy: 'jwt',
@@ -72,3 +72,5 @@ export const authOptions: NextAuthOptions = {
         },
     },
 }
+
+export {getGoogleCredentials, authOptions}
