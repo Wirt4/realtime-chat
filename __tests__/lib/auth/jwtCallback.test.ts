@@ -1,7 +1,7 @@
 import { authOptions } from '@/lib/auth'
 import fetchRedis from '@/helpers/redis'
 
-jest.mock('@/helpers/redis')
+jest.mock('../../../src/helpers/redis')
 
 describe('authOptions callbacks - jwt', () => {
     const jwtCallback = authOptions.callbacks.jwt
