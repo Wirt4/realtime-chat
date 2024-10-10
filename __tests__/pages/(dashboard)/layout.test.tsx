@@ -64,4 +64,14 @@ describe('Layout tests',()=>{
                         expect.objectContaining({href:'/dashboard'})
                 })]));
     })
+
+    test('Sidebar needs a div called "Your Chats"', async ()=>{
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
+        const layout = await Layout({});
+        expect(layout.props.children).toEqual(
+            expect.arrayContaining(
+                [expect.objectContaining({props:
+                        expect.objectContaining({children:'Your Chats'})
+                })]));
+    });
 });
