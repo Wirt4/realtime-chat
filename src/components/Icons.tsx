@@ -1,3 +1,3 @@
 export const Icons = {
-    Logo: 'foo'
+    Logo: ()=>{}
 }
