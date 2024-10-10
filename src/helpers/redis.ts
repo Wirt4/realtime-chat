@@ -4,4 +4,3 @@ const fetchRedis= async (cmd: Command, ...args:string[])=>{
 }
 
 export default fetchRedis;
-
