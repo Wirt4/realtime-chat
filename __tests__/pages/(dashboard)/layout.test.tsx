@@ -7,6 +7,9 @@ jest.mock("../../../src/lib/myGetServerSession",()=>({
     default: jest.fn()
 }));
 describe('Layout tests',()=>{
+    afterEach(()=>{
+        jest.resetAllMocks()
+    })
     test('renders without crashing',async ()=>{
         try{
             await Layout({})
@@ -17,12 +20,11 @@ describe('Layout tests',()=>{
     test('renders children',async ()=>{
         const testNode = <div>Tossed Salads and Scrambled eggs</div> as ReactNode
         const layout = await Layout({children:testNode})
-        console.log({layout})
         expect(layout.props.children.props.children).toEqual("Tossed Salads and Scrambled eggs")
     })
     test('should call a server session',async ()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
-       // await render(<Layout>null</Layout>)
+        await Layout({})
         expect(myGetServerSession).toHaveBeenCalledTimes(1);
     })
 });
