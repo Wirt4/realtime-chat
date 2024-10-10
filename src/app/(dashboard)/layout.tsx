@@ -18,6 +18,7 @@ const Layout = async ({children}: LayoutProps)=>{
         <Link href="/dashboard" className='flex h-16 shrink-0 items-center'>
            <Icons.Logo className='h-20 w-auto text-indigo-600'/>
         </Link>
+        <div>Your Chats</div>
         {children}
     </div>;
 }
