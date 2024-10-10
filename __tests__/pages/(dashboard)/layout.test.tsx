@@ -30,7 +30,6 @@ describe('Layout tests',()=>{
     test('renders children',async ()=>{
         const testNode = <div>Tossed Salads and Scrambled eggs</div> as ReactNode
         const layout = await Layout({children:testNode});
-        console.log(layout.props.children);
         expect(layout.props.children).toEqual(
             expect.arrayContaining(
                 [expect.objectContaining({props:
