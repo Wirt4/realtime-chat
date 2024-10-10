@@ -62,7 +62,7 @@ describe('Layout tests',()=>{
         expect(layout.props.children).toEqual(
             expect.arrayContaining(
                 [expect.objectContaining({props:
-                        expect.objectContaining({children:'Click Me'})
+                        expect.objectContaining({href:'/dashboard'})
                 })]));
 
     })
