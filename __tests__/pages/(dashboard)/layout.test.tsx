@@ -58,20 +58,13 @@ describe('Layout tests',()=>{
     test("needs to include a Link to dashboard",async ()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({foo:"bar"});
         const layout = await Layout({});
-        expect(layout.props.children).toEqual(
-            expect.arrayContaining(
-                [expect.objectContaining({props:
-                        expect.objectContaining({href:'/dashboard'})
-                })]));
+        expect(layout.props.children[0].props.children[0].props.href).toEqual('/dashboard');
     })
 
-    test('Sidebar needs a div called "Your Chats"', async ()=>{
-        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
+    test('Sidebar needs a div called "Your Chats"', async ()=> {
+        (myGetServerSession as jest.Mock).mockResolvedValue({user: {id: 'foo'}});
         const layout = await Layout({});
-        expect(layout.props.children).toEqual(
-            expect.arrayContaining(
-                [expect.objectContaining({props:
-                        expect.objectContaining({children:'Your Chats'})
-                })]));
+        console.log(layout.props.children[0].props.children[1].props.children)
+        expect(layout.props.children[0].props.children[1].props.children).toEqual("Your Chats")
     });
 });
