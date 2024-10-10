@@ -2,7 +2,7 @@ import {addFriendValidator} from "@/lib/validations/add-friend";
 import {Utils} from "@/lib/utils";
 import myGetServerSession from "@/lib/myGetServerSession";
 import {pusherServer} from "@/lib/pusher";
-import fetchRedis from "@/app/helpers/redis";
+import fetchRedis from "@/helpers/redis";
 import {db} from "@/lib/db";
 
 interface errorProps{
@@ -63,14 +63,14 @@ export class PostFriendsRouteHandler {
     }
 
     async isValidRequest(requestBody:any):Promise<boolean>{
-
+        let email: { email: string }
         try{
-            this.validateEmail(requestBody.email)
+          email= this.validateEmail(requestBody.email)
         }catch(error){
             return this.setAndReturn('Invalid request payload', 422)
        }
 
-       const userExists = await this.userExists()
+       const userExists = await this.userExists(email.email)
         if (!userExists){
             return this.setAndReturn('This person does not exist.')
         }
@@ -98,8 +98,8 @@ export class PostFriendsRouteHandler {
         return true
     }
 
-    async userExists():Promise<boolean>{
-        this.idToAdd = await fetchRedis()
+    async userExists(email:string):Promise<boolean>{
+        this.idToAdd = await fetchRedis("get",`user:email:${email}`)
         return Boolean(this.idToAdd)
     }
 

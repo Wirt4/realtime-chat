@@ -1,6 +1,6 @@
 import {PostFriendsRouteHandler} from "@/app/api/friends/add/route";
 import {Utils} from "@/lib/utils";
-import fetchRedis from "@/app/helpers/redis"
+import fetchRedis from "@/helpers/redis"
 import {pusherServer} from "@/lib/pusher";
 import myGetServerSession from "@/lib/myGetServerSession";
 import { db } from '@/lib/db';
@@ -10,7 +10,7 @@ jest.mock("../../../../src/lib/myGetServerSession",()=>({
     default: jest.fn()
 }));
 
-jest.mock("../../../../src/app/helpers/redis",()=>({
+jest.mock("../../../../src/helpers/redis",()=>({
     __esModule: true,
     default: jest.fn()
 }));
@@ -204,6 +204,14 @@ describe("Trigger Pusher tests", ()=>{
         (fetchRedis as jest.Mock).mockResolvedValue(expectedID);
         await handler.userExists()
         expect(handler.idToAdd).toEqual(expectedID)
+    })
+
+    test("conirm params passed to fetcRedis",async ()=>{
+        const expectedID = '1984';
+        (fetchRedis as jest.Mock).mockResolvedValue(expectedID);
+        const email = 'example@example.com'
+        await handler.userExists(email)
+        expect(fetchRedis).toHaveBeenCalledWith('get', `user:email:${email}`)
     })
 
     test("confirm idToAdd has been set by the userExists method",async ()=>{

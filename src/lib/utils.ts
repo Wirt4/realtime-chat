@@ -5,7 +5,7 @@ import {signIn} from "next-auth/react"
 import {toast} from "react-hot-toast"
 import {UseFormSetError} from "react-hook-form";
 import {addFriendValidator} from "@/lib/validations/add-friend";
-import {ZodError, ZodIssueCode} from "zod";
+import {ZodError} from "zod";
 import axios, {AxiosError} from "axios";
 
 interface addFriendInterface{
@@ -79,6 +79,6 @@ export class Utils {
     }
 
     static toPusherKey(s: string):string{
-        return 'stub'
+        return s.replace(/:/g, '__')
     }
 }

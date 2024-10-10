@@ -177,3 +177,11 @@ describe('adFriend', ()=>{
     })
 
 })
+describe('toPusherKey',()=>{
+    test('case 1',()=>{
+        expect(Utils.toPusherKey('oogie:boogie:man')).toEqual('oogie__boogie__man')
+    })
+    test('case 1',()=>{
+        expect(Utils.toPusherKey('i:am:the:night')).toEqual('i__am__the__night')
+    })
+})
