@@ -34,7 +34,8 @@ describe('Layout tests',()=>{
         expect(layout.props.children).toEqual(
             expect.arrayContaining(
                 [expect.objectContaining({props:
-                        expect.objectContaining({children:'Tossed Salads and Scrambled eggs'})})]));
+                        expect.objectContaining({children:'Tossed Salads and Scrambled eggs'})
+                })]));
     });
 
     test('should call a server session',async ()=>{
