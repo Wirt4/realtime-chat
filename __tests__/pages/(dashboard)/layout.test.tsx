@@ -55,4 +55,15 @@ describe('Layout tests',()=>{
         await Layout({});
         expect(notFound).not.toHaveBeenCalled();
     });
+
+    test("needs to include a Link to dashboard",async ()=>{
+        (myGetServerSession as jest.Mock).mockResolvedValue({foo:"bar"});
+        const layout = await Layout({});
+        expect(layout.props.children).toEqual(
+            expect.arrayContaining(
+                [expect.objectContaining({props:
+                        expect.objectContaining({children:'Click Me'})
+                })]));
+
+    })
 });
