@@ -7,8 +7,8 @@ interface LayoutProps {
 }
 
 const Layout = async ({children}: LayoutProps)=>{
-    await MyGetServerSession()
-    notFound()
+    const session = await MyGetServerSession()
+    if (!session)notFound()
     return <div>{children}</div>;
 }
 
