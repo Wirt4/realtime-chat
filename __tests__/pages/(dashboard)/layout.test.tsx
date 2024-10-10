@@ -64,6 +64,5 @@ describe('Layout tests',()=>{
                 [expect.objectContaining({props:
                         expect.objectContaining({href:'/dashboard'})
                 })]));
-
     })
 });

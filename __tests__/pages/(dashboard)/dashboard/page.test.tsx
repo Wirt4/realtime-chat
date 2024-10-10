@@ -8,4 +8,3 @@ describe('Dashboard Tests',()=>{
         expect(document.title).toBe('dashboard')
     })
 })
-
