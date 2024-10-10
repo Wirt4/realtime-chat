@@ -1,8 +1,10 @@
-import {FC, ReactNode} from "react";
+import { ReactNode} from "react";
+import MyGetServerSession from "@/lib/myGetServerSession";
 interface LayoutProps {
     children: ReactNode
 }
-const Layout:FC<LayoutProps>= ({children})=>{
+const Layout = async ({children}: LayoutProps)=>{
+    await MyGetServerSession()
     return <div>{children}</div>;
 }
 

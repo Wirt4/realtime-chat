@@ -1,13 +1,28 @@
 import '@testing-library/jest-dom'
-import {render, screen} from '@testing-library/react';
 import Layout from "@/app/(dashboard)/layout"
-import AddFriendButton from "@/components/AddFriendButton";
+import myGetServerSession from "@/lib/myGetServerSession";
+import {ReactNode} from "react";
+jest.mock("../../../src/lib/myGetServerSession",()=>({
+    __esModule: true,
+    default: jest.fn()
+}));
 describe('Layout tests',()=>{
-    test('renders without crashing',()=>{
-        render(<Layout/>);
+    test('renders without crashing',async ()=>{
+        try{
+            await Layout({})
+        }catch(error){
+            expect(true).toEqual(false)
+        }
     });
-    test('renders children',()=>{
-        render(<Layout><AddFriendButton/></Layout>);
-        expect(screen.getByText('Add a Friend by Email:')).toBeInTheDocument();
+    test('renders children',async ()=>{
+        const testNode = <div>Tossed Salads and Scrambled eggs</div> as ReactNode
+        const layout = await Layout({children:testNode})
+        console.log({layout})
+        expect(layout.props.children.props.children).toEqual("Tossed Salads and Scrambled eggs")
+    })
+    test('should call a server session',async ()=>{
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
+       // await render(<Layout>null</Layout>)
+        expect(myGetServerSession).toHaveBeenCalledTimes(1);
     })
 });
