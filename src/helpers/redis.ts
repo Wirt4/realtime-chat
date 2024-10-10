@@ -6,7 +6,9 @@ const fetchRedis= async (cmd: Command, ...args:string[])=>{
         },
         cache: 'no-store',
     }
-    const response = await fetch(`${process.env.REDIS_URL}/${cmd}/${ Object.values(args)[0].join('/')}`,opts )
+    let arr = Object.values(args)
+    arr = arr.length ===0 || typeof arr[0] =='string' ? arr: arr[0]
+    const response = await fetch(`${process.env.REDIS_URL}/${cmd}/${ arr.join('/')}`,opts )
 
     if (!response.ok) {
         throw new Error(`error executing Redis command: ${response.statusText}`)
