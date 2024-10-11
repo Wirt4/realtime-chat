@@ -45,4 +45,9 @@ describe('NavBarListItem', () => {
         const userPlusIcon = screen.getByText('Add a Friend');
         expect(userPlusIcon).toBeInTheDocument();
     });
+    test('component should display the correct name Alternate Data',()=>{
+        render(<NavbarListItem href="/add" Icon="Logo" />);
+        const userPlusIcon = screen.getByText('Order an Aligator');
+        expect(userPlusIcon).toBeInTheDocument();
+    });
 });
