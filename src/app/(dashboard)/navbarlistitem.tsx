@@ -11,7 +11,7 @@ interface navbarListItemPrps {
 const NavbarListItem: FC<navbarListItemPrps> =  (props) =>{
     const Icon = Icons[props.Icon]
     return <li>
-        <Link href={props.href}><span><Icon/></span></Link>
+        <Link href={props.href}><span><Icon aria-label={props.Icon as string}/></span></Link>
     </li>
 }
 
