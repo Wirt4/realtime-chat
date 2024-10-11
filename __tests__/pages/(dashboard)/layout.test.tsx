@@ -79,4 +79,9 @@ describe('Layout tests',()=>{
                                     expect.objectContaining({props:
                                             expect.objectContaining({children: 'Your Chats'})})])})})]));
     });
+    test('Sidebar  a nav for existing chats', async ()=> {
+        (myGetServerSession as jest.Mock).mockResolvedValue({user: {id: 'foo'}});
+        const layout = await Layout({});
+        expect(layout.props.children[0].props.children[2].type).toEqual('nav')
+    });
 });
