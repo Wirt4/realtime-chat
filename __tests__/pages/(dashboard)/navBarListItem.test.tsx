@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 import NavbarListItem from "@/app/(dashboard)/navbarlistitem"
 import {render, screen} from "@testing-library/react";
+
 describe('NavBarListItem', () => {
     beforeEach(()=>{
         render(<NavbarListItem />);
@@ -19,5 +20,4 @@ describe('NavBarListItem', () => {
         const link = screen.getByRole('link');
         expect(link).toHaveAttribute('href', '/contact');
     })
-
 });
