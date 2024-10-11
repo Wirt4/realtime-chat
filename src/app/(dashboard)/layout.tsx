@@ -4,6 +4,7 @@ import {notFound} from "next/navigation";
 import Link from "next/link";
 import {Icons, Icon} from "@/components/Icons";
 import NavbarListItem, {navbarListItemProps} from "@/app/(dashboard)/navbarlistitem";
+import layoutClassNames from "@/app/(dashboard)/layoutClassNames";
 
 interface LayoutProps {
     children: ReactNode
@@ -28,19 +29,21 @@ const Layout = async ({children}: LayoutProps)=>{
     if (!session){
         notFound();
     }
-    return <div className='w-full flex h-screen'>
-        <div className='flex h-full w-full max-w-xs frow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6'>
-        <Link href="/dashboard" className='flex h-16 shrink-0 items-center'>
-           <Icons.Logo className='h-20 w-auto text-indigo-600'/>
+    return <div className={layoutClassNames.div.className}>
+        <div className={layoutClassNames.div.div[0].className}>
+        <Link href="/dashboard" className={layoutClassNames.div.Link.className}>
+           <Icons.Logo className={layoutClassNames.div.Link.Icon.className}/>
         </Link>
-        <div className='text-xs font-semibold leading-6 text-gray-400'>Your Chats</div>
-            <nav className='flex-1 flex flex-col'>
-                <ul role='list' className='flex flex-1 flex-col gap-y-7'>
+        <div className={layoutClassNames.div.div[1].className}>
+            Your Chats
+        </div>
+            <nav className={layoutClassNames.div.div[1].nav.className}>
+                <ul role='list' className={layoutClassNames.div.div[1].nav.ul.className}>
                     <li>
                       //chats the user has
                     </li>
-                    <div className='text-xs font-semibold leading-6 text-gray-400'>Overview</div>
-                    <ul role='list' className='-mx-2 mt-2 space-y-1'>
+                    <div>Overview</div>
+                    <ul role='list' className={layoutClassNames.div.div[1].nav.ul.ul.className}>
                         {options.map((option)=>{
                             return <NavbarListItem key = {option.id}
                                                    Icon={option.Icon}
