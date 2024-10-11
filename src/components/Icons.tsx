@@ -1,10 +1,10 @@
 import {LucideProps, UserPlus} from "lucide-react";
-import Gatorpath from "@/assets/svgPaths/gatorpath";
+import Logopath from "@/assets/svgPaths/logopath";
 
 export const Icons = {
     Logo: (props: LucideProps)=>{
         return <svg data-testid="logo-component" {...props} viewBox='0 0 2000 2000'>
-            <Gatorpath/>
+            <Logopath/>
         </svg>
     },
     UserPlus

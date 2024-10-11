@@ -14,7 +14,13 @@ const options:navbarListItemProps[] = [{
     name:'Add a Friend',
     Icon: 'UserPlus',
     href: '/dashboard/add',
-}
+},
+    {
+        id: 1,
+        name:'Add a Friend',
+        Icon: 'Logo',
+        href: '/dashboard/add',
+    }
 ]
 
 const Layout = async ({children}: LayoutProps)=>{
