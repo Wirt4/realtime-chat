@@ -19,7 +19,17 @@ const Layout = async ({children}: LayoutProps)=>{
            <Icons.Logo className='h-20 w-auto text-indigo-600'/>
         </Link>
         <div className='text-xs font-semibold leading-6 text-gray-400'>Your Chats</div>
-            <nav></nav>
+            <nav className='flex-1 flex flex-col'>
+                <ul role='list' className='flex flex-1 flex-col gap-y-7'>
+                    <li>
+                      //chats the user has
+                    </li>
+                    <div className='text-xs font-semibold leading-6 text-gray-400'>Overview</div>
+                    <ul role='list' className='-mx-2 mt-2 space-y-1'>
+                        <li></li>
+                    </ul>
+                </ul>
+            </nav>
         </div>
         {children}
     </div>;
