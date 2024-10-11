@@ -6,13 +6,14 @@ import {Icon, Icons} from "@/components/Icons";
 interface navbarListItemPrps {
     href: string;
     Icon: Icon;
+    name: string;
 }
 
 const NavbarListItem: FC<navbarListItemPrps> =  (props) =>{
     const Icon = Icons[props.Icon]
     return <li>
         <Link href={props.href}><span><Icon aria-label={props.Icon as string}/></span></Link>
-        <span>Add a Friend</span>
+        <span>{props.name}</span>
     </li>
 }
 
