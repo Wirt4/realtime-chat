@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 import NavbarListItem from "@/app/(dashboard)/navbarlistitem"
 import {render, screen} from "@testing-library/react";
+import{ Icon} from "@/components/Icons"
 
 describe('NavBarListItem', () => {
     test('make sure component as list item',()=>{
@@ -10,7 +11,7 @@ describe('NavBarListItem', () => {
     });
 
     test('make sure component contains Link',()=>{
-        render(<NavbarListItem href="foo"/>);
+        render(<NavbarListItem href="foo" Icon={"Logo"}/>);
         const link = screen.getByRole('link')
         expect(link).toBeInTheDocument();
     });
@@ -29,13 +30,13 @@ describe('NavBarListItem', () => {
 
     test('confirm the element is rendered',()=>{
         render(<NavbarListItem href="/add" Icon="Logo"/>);
-        const logo = screen.getByTestId('logo-component');
+        const logo = screen.getByLabelText('Logo');;
         expect(logo).toBeInTheDocument();
     });
 
     test('confirm the UserPlus element is rendered',()=>{
-        render(<NavbarListItem href="/add"Icon="MyUserPlus"/>);
-        const logo = screen.getByTestId('userplus-component');
-        expect(logo).toBeInTheDocument();
+        render(<NavbarListItem href="/add" Icon="UserPlus"/>);
+        const userPlusIcon = screen.getByLabelText('UserPlus');
+        expect(userPlusIcon).toBeInTheDocument();
     });
 });

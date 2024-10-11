@@ -7,11 +7,7 @@ export const Icons = {
             <Gatorpath/>
         </svg>
     },
-    MyUserPlus: (props: LucideProps)=>{
-        return <div data-testid="userplus-component">
-            <UserPlus/>
-        </div>
-    }
+    UserPlus
 }
 
 export type Icon = keyof typeof Icons;
