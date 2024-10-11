@@ -2,11 +2,20 @@ import React, { ReactNode} from "react";
 import MyGetServerSession from "@/lib/myGetServerSession";
 import {notFound} from "next/navigation";
 import Link from "next/link";
-import {Icons} from "@/components/Icons";
+import {Icons, Icon} from "@/components/Icons";
+import NavbarListItem, {navbarListItemProps} from "@/app/(dashboard)/navbarlistitem";
 
 interface LayoutProps {
     children: ReactNode
 }
+
+const options:navbarListItemProps[] = [{
+    id: 1,
+    name:'Add a Friend',
+    Icon: 'UserPlus',
+    href: '/dashboard/add',
+}
+]
 
 const Layout = async ({children}: LayoutProps)=>{
     const session = await MyGetServerSession();
@@ -26,7 +35,12 @@ const Layout = async ({children}: LayoutProps)=>{
                     </li>
                     <div className='text-xs font-semibold leading-6 text-gray-400'>Overview</div>
                     <ul role='list' className='-mx-2 mt-2 space-y-1'>
-                        <li></li>
+                        {options.map((option)=>{
+                            return <NavbarListItem key = {option.id}
+                                                   Icon={option.Icon}
+                                                   name = {option.name}
+                                                   href={option.href}/>
+                        })}
                     </ul>
                 </ul>
             </nav>
