@@ -7,6 +7,7 @@ describe('NavBarListItem', () => {
         const listItem = screen.getByRole('listitem');
         expect(listItem).toBeInTheDocument();
     });
+
     test('make sure component contains Link',()=>{
         render(<NavbarListItem />);
         const link = screen.getByRole('link')
