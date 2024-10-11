@@ -4,7 +4,7 @@ import {FC} from "react";
 interface navbarListItemPrps {}
 
 const NavbarListItem: FC<navbarListItemPrps> =  ({}) =>{
-    return <></>
+    return <li></li>
 }
 
 export default NavbarListItem
