@@ -7,7 +7,11 @@ export const Icons = {
             <Gatorpath/>
         </svg>
     },
-    UserPlus
+    MyUserPlus: (props: LucideProps)=>{
+        return <div data-testid="logo-component">
+            <UserPlus/>
+        </div>
+    }
 }
 
 export type Icon = keyof typeof Icons;

@@ -18,6 +18,6 @@ describe('Icons', ()=>{
 
     test('should have a component called "UserPlus"',()=>{
         expect(Icons).toEqual(
-            expect.objectContaining({UserPlus:expect.anything()}))
+            expect.objectContaining({MyUserPlus:expect.anything()}))
     });
 });
