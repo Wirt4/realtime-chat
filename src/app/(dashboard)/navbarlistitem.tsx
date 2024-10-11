@@ -6,7 +6,7 @@ interface navbarListItemPrps {}
 
 const NavbarListItem: FC<navbarListItemPrps> =  ({}) =>{
     return <li>
-        <Link href='stub'>stub</Link>
+        <Link href='/contact'>stub</Link>
     </li>
 }
 
