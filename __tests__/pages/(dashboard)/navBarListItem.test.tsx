@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom'
 import NavbarListItem from "@/app/(dashboard)/navbarlistitem"
 import {render, screen} from "@testing-library/react";
-import{ Icon} from "@/components/Icons"
 
 describe('NavBarListItem', () => {
     test('make sure component as list item',()=>{
@@ -30,7 +29,7 @@ describe('NavBarListItem', () => {
 
     test('confirm the element is rendered',()=>{
         render(<NavbarListItem href="/add" Icon="Logo"/>);
-        const logo = screen.getByLabelText('Logo');;
+        const logo = screen.getByLabelText('Logo');
         expect(logo).toBeInTheDocument();
     });
 
