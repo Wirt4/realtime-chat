@@ -26,6 +26,9 @@ describe('addFriendButton', () => {
 })
 
 describe('addFriendButton events',()=>{
+    afterEach(()=>{
+        jest.resetAllMocks()
+    })
     test('when the button is clicked, the addFriend method is called', async ()=>{
         const spy = jest.spyOn(Utils, 'addFriend').mockImplementation(jest.fn())
         render(<AddFriendButton/>)

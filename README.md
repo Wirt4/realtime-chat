@@ -46,6 +46,8 @@ NEXTAUTH_SECRET
 `GOOGLE_CLIENT` is for OAuth login via the users' google account
 
 `NEXTAUTH_SECRET` is defined by the app developer, so I'm not sharing it with you here
+## Accessing the DB
+The app uses Redis on the backend, so log on to upstash.com with GitHub credenitals. 
 
 ## OAuth
 For Google, go to https://console.cloud.google.com/ to configure the credentials.
