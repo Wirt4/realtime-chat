@@ -32,4 +32,10 @@ describe('NavBarListItem', () => {
         const logo = screen.getByTestId('logo-component');
         expect(logo).toBeInTheDocument();
     });
+
+    test('confirm the UserPlus element is rendered',()=>{
+        render(<NavbarListItem href="/add"/>);
+        const logo = screen.getByTestId('userplus-component');
+        expect(logo).toBeInTheDocument();
+    });
 });
