@@ -19,5 +19,9 @@ describe('NavBarListItem', () => {
     test('make sure link used desired href',()=>{
         const link = screen.getByRole('link');
         expect(link).toHaveAttribute('href', '/contact');
-    })
+    });
+    test('make sure link used desired href',()=>{
+        const link = screen.getByRole('link');
+        expect(link).toHaveAttribute('href', '/add');
+    });
 });
