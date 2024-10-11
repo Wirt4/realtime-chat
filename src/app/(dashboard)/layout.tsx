@@ -19,6 +19,7 @@ const Layout = async ({children}: LayoutProps)=>{
            <Icons.Logo className='h-20 w-auto text-indigo-600'/>
         </Link>
         <div className='text-xs font-semibold leading-6 text-gray-400'>Your Chats</div>
+            <nav></nav>
         </div>
         {children}
     </div>;
