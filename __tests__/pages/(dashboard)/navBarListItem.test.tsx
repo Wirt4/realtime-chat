@@ -20,6 +20,7 @@ describe('NavBarListItem', () => {
         const link = screen.getByRole('link');
         expect(link).toHaveAttribute('href', '/contact');
     });
+
     test('make sure link used desired href',()=>{
         render(<NavbarListItem href="/add"/>);
         const link = screen.getByRole('link');
