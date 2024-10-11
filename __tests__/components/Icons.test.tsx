@@ -4,7 +4,7 @@ import React from "react";
 describe('Icons', ()=>{
     test ('should have a component called Logo',()=>{
         expect(Icons).toEqual(
-            expect.objectContaining({Logo: expect.anything()}))
+            expect.objectContaining({Logo: expect.anything()}));
     });
 
     test ('Logo should be a function',()=>{
@@ -18,6 +18,6 @@ describe('Icons', ()=>{
 
     test('should have a component called "UserPlus"',()=>{
         expect(Icons).toEqual(
-            expect.objectContaining({UserPlus:expect.anything()}))
+            expect.objectContaining({UserPlus:expect.anything()}));
     });
 });
