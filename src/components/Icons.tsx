@@ -8,7 +8,7 @@ export const Icons = {
         </svg>
     },
     MyUserPlus: (props: LucideProps)=>{
-        return <div data-testid="logo-component">
+        return <div data-testid="userplus-component">
             <UserPlus/>
         </div>
     }
