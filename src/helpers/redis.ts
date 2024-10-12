@@ -15,7 +15,7 @@ const fetchRedis= async (cmd: Command, ...args:string[])=>{
         return data.result
 }
 
-const formatArr= (args:any)=>{
+const formatArr= (args:never)=>{
     const arr = Object.values(args)
     return arr.length ===0 || typeof arr[0] =='string' ? arr: arr[0]
 }

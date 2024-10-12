@@ -1,9 +1,9 @@
 import Login from "@/components/ui/login/Login";
 import {FC} from "react";
 
-interface pageProps{}
+interface loginPageProps{}
 
-const page: FC<pageProps> = ({}) =>{
+const page: FC<loginPageProps> = ({}) =>{
     return <Login />
 }
 

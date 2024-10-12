@@ -16,7 +16,7 @@ export async function  POST(req: Request):Promise<Response> {
 
     const routeHandler = new PostFriendsRouteHandler()
     const body = await req.json()
-    const validRequest = await routeHandler.isValidRequest(body)
+    const validRequest = await routeHandler.isValidRequest({email: body.email})
 
     if (!validRequest) {
         const {message, opts} = routeHandler.errorResponse()
@@ -62,11 +62,11 @@ export class PostFriendsRouteHandler {
         )
     }
 
-    async isValidRequest(requestBody:any):Promise<boolean>{
-        let email: { email: string }
+    async isValidRequest(email:{email:string}):Promise<boolean>{
         try{
-          email= this.validateEmail(requestBody.email)
+          email= this.validateEmail(email)
         }catch(error){
+            console.error({error})
             return this.setAndReturn('Invalid request payload', 422)
        }
 
