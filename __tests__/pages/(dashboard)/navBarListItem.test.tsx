@@ -34,14 +34,14 @@ describe('NavBarListItem', () => {
     });
 
     test('confirm the UserPlus element is rendered',()=>{
-        render(<NavbarListItem href="/add" Icon="UserPlus" name='Main'/>);
-        const name = screen.getByLabelText('UserPlus');
+        render(<NavbarListItem href="/add" Icon="AddUser" name='Main'/>);
+        const name = screen.getByLabelText('AddUser');
         expect(name).toBeInTheDocument();
     });
 
 
     test('component should display the correct name',()=>{
-        render(<NavbarListItem href="/add" Icon="UserPlus" name='Add a Friend'/>);
+        render(<NavbarListItem href="/add" Icon="AddUser" name='Add a Friend'/>);
         const userPlusIcon = screen.getByText('Add a Friend');
         expect(userPlusIcon).toBeInTheDocument();
     });
