@@ -1,5 +1,4 @@
 import { DefaultSession } from "next-auth";
-import {JWT}  from "next-auth";
 
 declare module "next-auth" {
     /**
@@ -11,9 +10,10 @@ declare module "next-auth" {
         } & DefaultSession["user"];
     }
 }
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
 declare module 'next-auth/jwt' {
     interface JWT {
         id: string
     }
 }
+/* eslint-enable @typescript-eslint/no-unused-vars */
