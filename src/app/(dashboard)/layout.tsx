@@ -27,7 +27,7 @@ const Layout = async ({children}: LayoutProps)=>{
             <nav className={layoutClassNames.div.div[1].nav.className}>
                 <ul role='list' className={layoutClassNames.div.div[1].nav.ul.className}>
                     <li>
-                      //chats the user has
+                      TBD
                     </li>
                     <div>Overview</div>
                     <ul role='list' className={layoutClassNames.div.div[1].nav.ul.ul.className}>
