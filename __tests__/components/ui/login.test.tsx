@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import Login from '@/components/ui/login/Login';
 import '@testing-library/jest-dom'
 import {Utils} from "@/lib/utils";
