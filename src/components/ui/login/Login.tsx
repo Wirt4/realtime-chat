@@ -6,8 +6,6 @@ import GoogleLogo from "@/components/ui/login/googleSVG";
 import {Utils} from "@/lib/utils";
 import {Icons} from "@/components/Icons";
 
-interface loginProps{}
-
 const Login:FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const Logo = Icons.Logo
