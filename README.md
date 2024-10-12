@@ -56,7 +56,6 @@ For the authorized redirect URI, set it to `<homepage>/api/auth/callback/google`
 
 ![Screenshot 2024-10-01 at 2.32.50 PM.png](README%20assets/Screenshot%202024-10-01%20at%202.32.50%E2%80%AFPM.png)
 
-
 ## Credits
 Built from template put forth by @johnrushx at [https://nextjsstarter.com/blog/build-nextjs-real-time-chat-app-in-5-steps/](https://nextjsstarter.com/blog/build-nextjs-real-time-chat-app-in-5-steps/)
 Icons sourced from https://www.svgrepo.com/collection/batch-interface-oval-icons/
