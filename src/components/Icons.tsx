@@ -1,13 +1,18 @@
-import {LucideProps, UserPlus} from "lucide-react";
+import {LucideProps} from "lucide-react";
 import Logopath from "@/assets/svgPaths/logopath";
+import AddUserPath from "@/assets/svgPaths/addUserPath";
 
 export const Icons = {
     Logo: (props: LucideProps)=>{
-        return <svg data-testid="logo-component" {...props} viewBox='0 0 2000 2000'>
-            <Logopath/>
+        return <svg data-testid="logo-component" {...props}  viewBox="0 0 32 32" >
+           <Logopath/>
         </svg>
     },
-    UserPlus
+    AddUser: (props: LucideProps)=>{
+        return <svg viewBox="0 0 32 32" data-test-id='adduser-component' {...props}  viewBox="0 0 32 32">
+     <AddUserPath/>
+    </svg>
+    }
 }
 
 export type Icon = keyof typeof Icons;

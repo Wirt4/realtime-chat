@@ -16,8 +16,8 @@ describe('Icons', ()=>{
         expect(React.isValidElement(logo)).toBe(true);
     });
 
-    test('should have a component called "UserPlus"',()=>{
+    test('should have a component called "AddUser"',()=>{
         expect(Icons).toEqual(
-            expect.objectContaining({UserPlus:expect.anything()}));
+            expect.objectContaining({AddUser:expect.anything()}));
     });
 });
