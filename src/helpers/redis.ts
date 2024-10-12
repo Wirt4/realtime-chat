@@ -1,4 +1,4 @@
-type Command = 'zrange' | 'sismember'
+type Command = 'zrange' | 'sismember' | 'get'
 const fetchRedis= async (cmd: Command, ...args:string[])=>{
     const opts= {
         headers: {
@@ -6,7 +6,8 @@ const fetchRedis= async (cmd: Command, ...args:string[])=>{
         },
         cache: 'no-store',
     }
-    const response = await fetch(`${process.env.REDIS_URL}/${cmd}/${ formatArr(args).join('/')}`,opts )
+    // @ts-expect-error rough type coercion
+    const response = await fetch(`${process.env.REDIS_URL}/${cmd}/${ formatArr(args ).join('/')}`,opts )
 
     if (!response.ok) {
         throw new Error(`error executing Redis command: ${response.statusText}`)

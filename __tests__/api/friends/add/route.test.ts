@@ -1,4 +1,4 @@
-import {PostFriendsRouteHandler} from "@/app/api/friends/add/route";
+import {PostFriendsRouteHandler} from '@/app/api/friends/add/handler'
 import {Utils} from "@/lib/utils";
 import fetchRedis from "@/helpers/redis"
 import {pusherServer} from "@/lib/pusher";
