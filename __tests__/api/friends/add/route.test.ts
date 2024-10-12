@@ -58,6 +58,7 @@ describe('Validate Tests - true verses false', () => {
     test("session is unauthorized", async()=>{
         jest.spyOn(handler, 'validateEmail').mockReturnValue({email:'valid@email.com'});
         jest.spyOn(handler, 'userExists').mockResolvedValue(true);
+        //@ts-expect-error rough type coersion, need non-null value
         jest.spyOn(handler, 'getSession').mockResolvedValue(false);
         const expected = {
             message:'unauthorized',
@@ -70,6 +71,7 @@ describe('Validate Tests - true verses false', () => {
     test("user attempts to add self", async()=>{
         jest.spyOn(handler, 'validateEmail').mockReturnValue({email:'valid@email.com'});
         jest.spyOn(handler, 'userExists').mockResolvedValue(true);
+        //@ts-expect-error rough type coersion, need non-null value
         jest.spyOn(handler, 'getSession').mockResolvedValue(true);
         jest.spyOn(handler, 'isSameUser').mockReturnValue(true);
         const expected = {
@@ -83,6 +85,7 @@ describe('Validate Tests - true verses false', () => {
     test("the target is already added", async()=>{
         jest.spyOn(handler, 'validateEmail').mockReturnValue({email:'valid@email.com'});
         jest.spyOn(handler, 'userExists').mockResolvedValue(true);
+        //@ts-expect-error rough type coersion, need non-null value
         jest.spyOn(handler, 'getSession').mockResolvedValue(true);
         jest.spyOn(handler, 'isSameUser').mockReturnValue(false);
         jest.spyOn(handler, 'isAlreadyAdded').mockResolvedValue(true);
@@ -97,6 +100,7 @@ describe('Validate Tests - true verses false', () => {
     test("the target is already added", async()=>{
         jest.spyOn(handler, 'validateEmail').mockReturnValue({email:'valid@email.com'});
         jest.spyOn(handler, 'userExists').mockResolvedValue(true);
+        //@ts-expect-error rough type coersion, need non-null value
         jest.spyOn(handler, 'getSession').mockResolvedValue(true);
         jest.spyOn(handler, 'isSameUser').mockReturnValue(false);
         jest.spyOn(handler, 'isAlreadyAdded').mockResolvedValue(false);
@@ -140,6 +144,7 @@ describe("error response tests",()=>{
     test("session is unauthorized", async()=>{
         jest.spyOn(handler, 'validateEmail').mockReturnValue({email:'valid@email.com'});
         jest.spyOn(handler, 'userExists').mockResolvedValue(true);
+        //@ts-expect-error rough type coersion, need non-null value
         jest.spyOn(handler, 'getSession').mockResolvedValue(false);
         const actual = await handler.isValidRequest({email:'example@example.com'});
         expect(actual).toEqual(false);
@@ -148,6 +153,7 @@ describe("error response tests",()=>{
     test("user attempts to add self", async()=>{
         jest.spyOn(handler, 'validateEmail').mockReturnValue({email:'valid@email.com'})
         jest.spyOn(handler, 'userExists').mockResolvedValue(true)
+        //@ts-expect-error rough type coersion, need non-null value
         jest.spyOn(handler, 'getSession').mockResolvedValue(true)
         jest.spyOn(handler, 'isSameUser').mockReturnValue(true)
         const actual = await handler.isValidRequest({email:'example@example.com'})
@@ -166,6 +172,7 @@ describe("error response tests",()=>{
     test("the target is already added", async()=>{
         jest.spyOn(handler, 'validateEmail').mockReturnValue({email:'valid@email.com'})
         jest.spyOn(handler, 'userExists').mockResolvedValue(true)
+        //@ts-expect-error rough type coersion, need non-null value
         jest.spyOn(handler, 'getSession').mockResolvedValue(true)
         jest.spyOn(handler, 'isSameUser').mockReturnValue(false)
         jest.spyOn(handler, 'isAlreadyAdded').mockResolvedValue(false)
@@ -218,12 +225,12 @@ describe("Trigger Pusher tests", ()=>{
     test("confirm idToAdd has been set by the userExists method",async ()=>{
         const expectedID = '1489';
         (fetchRedis as jest.Mock).mockResolvedValue(expectedID);
-        await handler.userExists()
+        await handler.userExists('foo@bar.com')
         expect(handler.idToAdd).toEqual(expectedID)
     })
 
     test("pusher server should get the output of the key as well as the user id and email",async ()=>{
-        const spy = jest.spyOn(pusherServer, 'trigger').mockResolvedValue({})
+        const spy = jest.spyOn(pusherServer, 'trigger').mockResolvedValue({} as never)
         const expected1 ='valid-pusher-key'
         const expectedSenderId ="1972"
         const expectedSenderEmail = "tom@tomHagenLaw.com"
