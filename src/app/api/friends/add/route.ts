@@ -66,6 +66,7 @@ export class PostFriendsRouteHandler {
         try{
           email= this.validateEmail(email)
         }catch(error){
+            console.error({error})
             return this.setAndReturn('Invalid request payload', 422)
        }
 
