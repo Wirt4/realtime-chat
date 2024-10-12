@@ -9,7 +9,7 @@ export const Icons = {
         </svg>
     },
     AddUser: (props: LucideProps)=>{
-        return <svg viewBox="0 0 32 32" data-test-id='adduser-component' {...props}  viewBox="0 0 32 32">
+        return <svg viewBox="0 0 32 32" data-test-id='adduser-component' {...props} >
      <AddUserPath/>
     </svg>
     }
