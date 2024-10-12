@@ -3,7 +3,7 @@ import Logopath from "@/assets/svgPaths/logopath";
 
 export const Icons = {
     Logo: (props: LucideProps)=>{
-        return <svg data-testid="logo-component" {...props} viewBox='0 0 2000 2000'>
+        return <svg data-testid="logo-component" {...props} viewBox='0 -250 2000 2250'>
             <Logopath/>
         </svg>
     },
