@@ -1,87 +1,76 @@
-import {db} from "@/lib/db";
-import {UpstashRedisAdapter} from "@next-auth/upstash-redis-adapter";
+import { NextAuthOptions } from 'next-auth'
+import { UpstashRedisAdapter } from '@next-auth/upstash-redis-adapter'
+import { db } from './db'
 import GoogleProvider from 'next-auth/providers/google'
-import {NextAuthOptions} from "next-auth";
-import {JWT} from "next-auth/jwt";
+import  fetchRedis  from '@/helpers/redis'
 
-interface googleCredProps{
-    clientId: string;
-    clientSecret: string;
+const  getGoogleCredentials =() =>{
+    const clientId = process.env.GOOGLE_CLIENT_ID
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET
+
+    if (!clientId || clientId.length === 0) {
+        throw new Error('Missing GOOGLE_CLIENT_ID')
+    }
+
+    if (!clientSecret || clientSecret.length === 0) {
+        throw new Error('Missing GOOGLE_CLIENT_SECRET')
+    }
+
+    return { clientId, clientSecret }
 }
 
-export class Auth {
-    static isValidSecret(secret: string | undefined) {
-        return secret && secret.length > 0
-    }
+const authOptions: NextAuthOptions = {
+    adapter: UpstashRedisAdapter(db),
+    session: {
+        strategy: 'jwt',
+    },
 
-    static getSecretType(clientId : string | undefined){
-       if (this.isValidSecret(clientId)) {
-           return 'SECRET'
-       }
-       return 'ID'
-   }
+    pages: {
+        signIn: '/login',
+    },
+    providers: [
+        GoogleProvider({
+            clientId: getGoogleCredentials().clientId,
+            clientSecret: getGoogleCredentials().clientSecret,
+        }),
+    ],
+    callbacks: {
+        async jwt({ token, user }) {
+            const dbUserResult = (await fetchRedis('get', `user:${token.id}`)) as
+                | string
+                | null
 
-   static hasValidSecret(clientId: string | undefined, clientSecret: string | undefined){
-       return this.isValidSecret(clientId) && this.isValidSecret(clientSecret)
-   }
+            if (!dbUserResult) {
+                if (user) {
+                    token.id = user!.id
+                }
 
-   static googleCredentialsError(clientId : string | undefined){
-        return new Error(`missing GOOGLE_CLIENT_${this.getSecretType(clientId)} .env variable`)
-   }
+                return token
+            }
 
-   static getGoogleCredentials():googleCredProps{
-        const clientId = process.env.GOOGLE_CLIENT_ID
-        const clientSecret = process.env.GOOGLE_CLIENT_SECRET
+            const dbUser = JSON.parse(dbUserResult) as User
 
-        if (!this.hasValidSecret(clientId, clientSecret)) {
-            throw this.googleCredentialsError(clientId)
-        }
+            return {
+                id: dbUser.id,
+                name: dbUser.name,
+                email: dbUser.email,
+                picture: dbUser.image,
+            }
+        },
+        async session({ session, token }) {
+            if (token) {
+                session.user.id = token.id
+                session.user.name = token.name
+                session.user.email = token.email
+                session.user.image = token.picture
+            }
 
-        return {
-            clientId: clientId as string,
-            clientSecret: clientSecret as string,
-        }
-    }
-
-    static async JWTCallback({token, user}): Promise<JWT>{
-        const dbUser = await this._db().get(`user:${token?.id}`) as User | null
-        if(!dbUser){
-            token.id = user!.id
-            return token
-        }
-       return dbUser
-    }
-
-    static async sessionCallback({session, token}){
-        if (token){
-            session.user = token
-        }
-        return session
-    }
-
-    static options(): NextAuthOptions {
-         return {
-            adapter: UpstashRedisAdapter(this._db()),
-             session:{
-                strategy: 'jwt'
-             },
-             providers:[
-                 GoogleProvider(this.getGoogleCredentials())
-             ],
-             pages:{
-                signIn:'/login'
-             },
-             callbacks: {
-                jwt: this.JWTCallback,
-                 session: this.sessionCallback,
-                 redirect: ()=>{
-                    return '/dashboard'
-                 }
-             }
-        }
-    }
-
-    static _db(){
-         return db
-    }
+            return session
+        },
+        redirect() {
+            return '/(dashboard)'
+        },
+    },
 }
+
+export {getGoogleCredentials, authOptions}

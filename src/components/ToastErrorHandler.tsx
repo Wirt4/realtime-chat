@@ -1,0 +1,17 @@
+'use client'
+
+import {Toaster} from 'react-hot-toast'
+import {FC, ReactNode} from "react";
+
+interface ProvidersProps{
+    children: ReactNode
+}
+
+const ToastErrorHandler: FC<ProvidersProps> = ({children}) => {
+    return (<>
+        <Toaster position='top-center' reverseOrder={false}/>
+        {children}
+    </>)
+}
+
+export default ToastErrorHandler
