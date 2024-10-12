@@ -48,7 +48,8 @@ export class Utils {
             setIsLoading(true)
             try{
                 await this._signIn('google')
-            }catch(e){
+            }catch(error){
+                console.error({error})
                 this.toastError('something went wrong with the login')
             }finally{
                 setIsLoading(false)

@@ -1,8 +1,6 @@
 import {FC} from "react";
 
-interface googleLogoPorps{}
-
-const GoogleLogo: FC<googleLogoPorps> = ({}) =>{
+const GoogleLogo: FC = () =>{
     return  <svg
         className='mr-2 h-4 w-4'
         aria-hidden='true'

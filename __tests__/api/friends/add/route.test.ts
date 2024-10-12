@@ -186,6 +186,7 @@ describe("Trigger Pusher tests", ()=>{
     })
 
     test("check the correct arguments have been passed to 'toPusherKey'",async ()=>{
+        jest.spyOn(pusherServer, 'trigger').mockResolvedValue({})
         handler.idToAdd ='1701'
         const spy = jest.spyOn(Utils, 'toPusherKey')
         await handler.triggerPusher()
@@ -222,7 +223,7 @@ describe("Trigger Pusher tests", ()=>{
     })
 
     test("pusher server should get the output of the key as well as the user id and email",async ()=>{
-        const spy = jest.spyOn(pusherServer, 'trigger')
+        const spy = jest.spyOn(pusherServer, 'trigger').mockResolvedValue({})
         const expected1 ='valid-pusher-key'
         const expectedSenderId ="1972"
         const expectedSenderEmail = "tom@tomHagenLaw.com"
