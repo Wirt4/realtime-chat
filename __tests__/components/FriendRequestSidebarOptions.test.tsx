@@ -6,12 +6,14 @@ describe('FriendRequestSidebarOptions', () => {
     test('Component renders without error', ()=>{
         render(<FriendRequestSidebarOptions/>);
     });
+
     test('Component contains a link', ()=>{
         render(<FriendRequestSidebarOptions/>);
-        const buttonElement = screen.getByRole('link');
-        expect(buttonElement).toBeInTheDocument();
+        const linkElement = screen.getByRole('link');
+        expect(linkElement).toBeInTheDocument();
     });
-    test('Component contains a link', ()=>{
+
+    test('Link points to /dashboard/requests', ()=>{
         render(<FriendRequestSidebarOptions/>);
         const linkElement = screen.getByRole('link');
         expect(linkElement).toBeInTheDocument();
