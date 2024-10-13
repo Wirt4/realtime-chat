@@ -46,7 +46,7 @@ describe('FriendRequestSidebarOptions', () => {
 
     test("If count is equal to 0,  don't display it",()=>{
         render(<FriendRequestSidebarOptions requestCount={0}/>);
-        //const label = screen.getByText("0");
-        expect(screen.queryByText("0")).not.toBeInTheDocument();
+        const label = screen.queryByText("0")
+        expect(label).not.toBeInTheDocument();
     });
 });
