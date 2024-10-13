@@ -1,8 +1,8 @@
-'use client'
+'use client';
 import {FC} from "react";
 
 const FriendRequestSidebarOptions: FC = ()=>{
-    return <></>
+    return <></>;
 }
 
 export default FriendRequestSidebarOptions;
