@@ -18,8 +18,8 @@ const NavbarListItem: FC<navbarListItemProps> =  (props) =>{
             <span className={navBarListItemClassNames.Link.span.className}>
                 <Icon className={navBarListItemClassNames.Link.span.Icon.className} aria-label={props.Icon as string}/>
             </span>
-        </Link>
         <span className={navBarListItemClassNames.span.className}>{props.name}</span>
+        </Link>
     </li>
 }
 
