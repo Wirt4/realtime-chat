@@ -49,4 +49,10 @@ describe('FriendRequestSidebarOptions', () => {
         const label = screen.queryByText("0")
         expect(label).not.toBeInTheDocument();
     });
+
+    test("If count is less than  0,  don't display it",()=>{
+        render(<FriendRequestSidebarOptions requestCount={-50}/>);
+        const label = screen.queryByText("-50")
+        expect(label).not.toBeInTheDocument();
+    });
 });
