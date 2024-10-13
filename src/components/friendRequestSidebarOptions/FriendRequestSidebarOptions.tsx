@@ -7,11 +7,12 @@ const User = Icons['User']
 
 interface FRSOProps{
     initialRequestCount: number
+    sessionId: string
 }
 
-const FriendRequestSidebarOptions: FC<FRSOProps> = ({initialRequestCount})=>{
+const FriendRequestSidebarOptions: FC<FRSOProps> = ({initialRequestCount, sessionId})=>{
     const [requestCount] = useState<number>(initialRequestCount);
-    useEffect(FriendRequestEffect);
+    useEffect(FriendRequestEffect, [sessionId]);
 
     return <>
         <Link href='/dashboard/requests'>
