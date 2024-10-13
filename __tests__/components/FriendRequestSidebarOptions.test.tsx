@@ -37,4 +37,10 @@ describe('FriendRequestSidebarOptions', () => {
         const label = screen.getByText("3");
         expect(label).toBeInTheDocument();
     });
+
+    test('If count is greater than 0, display it, different number',()=>{
+        render(<FriendRequestSidebarOptions/>);
+        const label = screen.getByText("7");
+        expect(label).toBeInTheDocument();
+    });
 });

@@ -9,6 +9,7 @@ const FriendRequestSidebarOptions: FC = ()=>{
         <div>
             <User aria-label="User"/>
             <p>Friend Requests</p>
+            <div>3</div>
         </div>
     </Link>
     </>;
