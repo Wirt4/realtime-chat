@@ -2,11 +2,14 @@ import '@testing-library/jest-dom';
 import {render, screen} from '@testing-library/react';
 import FriendRequestSidebarOptions from "@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions";
 import { useState } from 'react';
+import FriendRequestEffect from "@/components/friendRequestSidebarOptions/FriendRequestEffect";
 
 jest.mock('react', ()=>({
     ...jest.requireActual('react'),
     useState: jest.fn()
 }))
+
+jest.mock("../../src/components/friendRequestSidebarOptions/FriendRequestEffect", () => jest.fn());
 
 describe('FriendRequestSidebarOptions', () => {
     beforeEach(()=>{
@@ -66,5 +69,10 @@ describe('FriendRequestSidebarOptions', () => {
         render(<FriendRequestSidebarOptions initialRequestCount={-50}/>);
         const label = screen.queryByText("-50")
         expect(label).not.toBeInTheDocument();
+    });
+
+    test("confirm FriendReuqestEffect() has been called",()=>{
+        render(<FriendRequestSidebarOptions initialRequestCount={-50}/>);
+        expect(FriendRequestEffect).toHaveBeenCalledTimes(1);
     });
 });
