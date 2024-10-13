@@ -22,5 +22,7 @@ describe('FriendRequestSidebarOptions', () => {
 
     test('Component should contain User Icon',()=>{
         render(<FriendRequestSidebarOptions/>);
-    })
+        const name = screen.getByLabelText('User');
+        expect(name).toBeInTheDocument();
+    });
 });
