@@ -9,7 +9,7 @@ interface FRSOProps{
 }
 
 const FriendRequestSidebarOptions: FC<FRSOProps> = ({initialRequestCount})=>{
-    const [unseenRequestCount, setUnseenRequestCount] = useState<number>(
+    const [requestCount] = useState<number>(
         initialRequestCount
     )
     return <>
@@ -17,7 +17,7 @@ const FriendRequestSidebarOptions: FC<FRSOProps> = ({initialRequestCount})=>{
         <div>
             <User aria-label="User"/>
             <p>Friend Requests</p>
-            { unseenRequestCount > 0 ? <div>{unseenRequestCount}</div> : null }
+            { requestCount > 0 ? <div>{requestCount}</div> : null }
         </div>
     </Link>
     </>;
