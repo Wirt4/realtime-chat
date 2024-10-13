@@ -7,7 +7,7 @@ import FriendRequestEffect from "@/components/friendRequestSidebarOptions/Friend
 jest.mock('react', ()=>({
     ...jest.requireActual('react'),
     useState: jest.fn()
-}))
+}));
 
 jest.mock("../../src/components/friendRequestSidebarOptions/FriendRequestEffect", () => jest.fn());
 

@@ -10,11 +10,9 @@ interface FRSOProps{
 }
 
 const FriendRequestSidebarOptions: FC<FRSOProps> = ({initialRequestCount})=>{
-    const [requestCount] = useState<number>(
-        initialRequestCount
-    )
+    const [requestCount] = useState<number>(initialRequestCount);
+    useEffect(FriendRequestEffect);
 
-    useEffect(FriendRequestEffect)
     return <>
         <Link href='/dashboard/requests'>
         <div>
