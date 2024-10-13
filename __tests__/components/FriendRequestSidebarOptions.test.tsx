@@ -25,6 +25,7 @@ describe('FriendRequestSidebarOptions', () => {
         const name = screen.getByLabelText('User');
         expect(name).toBeInTheDocument();
     });
+
     test('Component should contain text "Friend Requests"',()=>{
         render(<FriendRequestSidebarOptions/>);
         const label = screen.getByText("Friend Requests");
