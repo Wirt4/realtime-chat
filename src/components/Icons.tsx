@@ -10,12 +10,12 @@ export const Icons = {
         </svg>
     },
     AddUser: (props: LucideProps)=>{
-        return <svg viewBox="0 0 32 32" data-test-id='adduser-component' {...props} >
+        return <svg viewBox="0 0 32 32" {...props} >
      <AddUserPath/>
     </svg>
     },
     User: (props: LucideProps)=> {
-        return <svg viewBox="0 0 32 32" data-test-id='user-component' {...props} >
+        return <svg viewBox="0 0 32 32" {...props} >
             <UserIconPath/>
         </svg>
     }

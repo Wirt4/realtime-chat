@@ -23,4 +23,4 @@ const NavbarListItem: FC<navbarListItemProps> =  (props) =>{
     </li>
 }
 
-export default NavbarListItem
+export default NavbarListItem;
