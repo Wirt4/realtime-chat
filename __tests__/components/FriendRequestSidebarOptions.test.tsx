@@ -31,4 +31,10 @@ describe('FriendRequestSidebarOptions', () => {
         const label = screen.getByText("Friend Requests");
         expect(label).toBeInTheDocument();
     });
+
+    test('If count is greater than 0, display it',()=>{
+        render(<FriendRequestSidebarOptions/>);
+        const label = screen.getByText("3");
+        expect(label).toBeInTheDocument();
+    });
 });
