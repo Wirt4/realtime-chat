@@ -15,6 +15,9 @@ describe('FriendRequestSidebarOptions', () => {
     beforeEach(()=>{
         (useState as jest.Mock).mockImplementation(()=>{ return [0, jest.fn()]});
     });
+    afterEach(()=>{
+        jest.resetAllMocks();
+    })
 
     test('Component renders without error', ()=>{
         render(<FriendRequestSidebarOptions initialRequestCount={0}/>);
