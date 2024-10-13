@@ -43,15 +43,15 @@ describe('FriendRequestSidebarOptions', () => {
     });
 
     test('If final count is greater than 0, display it',()=>{
-        render(<FriendRequestSidebarOptions initialRequestCount={2}/>);
         (useState as jest.Mock).mockImplementation(()=>{ return [3, jest.fn()]});
+        render(<FriendRequestSidebarOptions initialRequestCount={2}/>);
         const label = screen.queryByText("3");
         expect(label).toBeInTheDocument();
     });
 
     test('If count is greater than 0, display it, different number',()=>{
-        render(<FriendRequestSidebarOptions initialRequestCount={4}/>);
         (useState as jest.Mock).mockImplementation(()=>{ return [7, jest.fn()]});
+        render(<FriendRequestSidebarOptions initialRequestCount={4}/>);
         const label = screen.queryByText("7");
         expect(label).toBeInTheDocument();
     });

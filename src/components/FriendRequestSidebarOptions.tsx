@@ -1,5 +1,5 @@
 'use client';
-import {FC} from "react";
+import {FC, useState} from "react";
 import Link from "next/link";
 import {Icons} from "@/components/Icons";
 const User = Icons['User']
@@ -9,12 +9,15 @@ interface FRSOProps{
 }
 
 const FriendRequestSidebarOptions: FC<FRSOProps> = ({initialRequestCount})=>{
+    const [unseenRequestCount, setUnseenRequestCount] = useState<number>(
+        initialRequestCount
+    )
     return <>
         <Link href='/dashboard/requests'>
         <div>
             <User aria-label="User"/>
             <p>Friend Requests</p>
-            { initialRequestCount >0 ? <div>{initialRequestCount}</div> : null }
+            { unseenRequestCount > 0 ? <div>{unseenRequestCount}</div> : null }
         </div>
     </Link>
     </>;
