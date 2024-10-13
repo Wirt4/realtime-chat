@@ -14,7 +14,7 @@ const FriendRequestSidebarOptions: FC<FRSOProps> = ({requestCount})=>{
         <div>
             <User aria-label="User"/>
             <p>Friend Requests</p>
-            { requestCount !=0 ? <div>{requestCount}</div> : null }
+            { requestCount >0 ? <div>{requestCount}</div> : null }
         </div>
     </Link>
     </>;
