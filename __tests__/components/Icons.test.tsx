@@ -20,4 +20,9 @@ describe('Icons', ()=>{
         expect(Icons).toEqual(
             expect.objectContaining({AddUser:expect.anything()}));
     });
+
+    test('should have a component called "User"',()=>{
+        expect(Icons).toEqual(
+            expect.objectContaining({User:expect.anything()}));
+    });
 });

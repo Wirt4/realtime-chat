@@ -19,4 +19,8 @@ describe('FriendRequestSidebarOptions', () => {
         expect(linkElement).toBeInTheDocument();
         expect(linkElement).toHaveAttribute('href', '/dashboard/requests');
     });
+
+    test('Component should contain User Icon',()=>{
+        render(<FriendRequestSidebarOptions/>);
+    })
 });
