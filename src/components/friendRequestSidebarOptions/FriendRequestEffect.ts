@@ -1,5 +1,8 @@
 
+function FriendRequestEffect(): () => void {
+    return ()=> {
 
-const FriendRequestEffect = () => {}
+    };
+}
 
 export default FriendRequestEffect;

@@ -1,5 +1,9 @@
-export class pusherServer {
-    static trigger(key:string, type: string, obj:object) {
-        pusherServer.trigger(key, type, obj)
-    }
+//want to know what pusher and pusher-js do before implementing them blindly
+
+export const pusherClient = {
+    //stub
+}
+export const pusherServer =  {
+    //stub
+    trigger:()=>{}
 }
