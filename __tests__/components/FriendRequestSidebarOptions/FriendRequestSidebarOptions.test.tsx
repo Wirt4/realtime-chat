@@ -9,7 +9,7 @@ jest.mock('react', ()=>({
     useState: jest.fn()
 }));
 
-jest.mock("../../src/components/friendRequestSidebarOptions/FriendRequestEffect", () => jest.fn());
+jest.mock("../../../src/components/friendRequestSidebarOptions/FriendRequestEffect", () => jest.fn());
 
 describe('FriendRequestSidebarOptions', () => {
     beforeEach(()=>{
