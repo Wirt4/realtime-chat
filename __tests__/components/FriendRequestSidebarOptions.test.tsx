@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import {render, screen} from '@testing-library/react';
-import FriendRequestSidebarOptions from "@/components/FriendRequestSidebarOptions";
+import FriendRequestSidebarOptions from "@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions";
 import { useState } from 'react';
 
 jest.mock('react', ()=>({
