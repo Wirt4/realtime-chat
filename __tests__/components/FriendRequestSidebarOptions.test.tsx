@@ -34,13 +34,19 @@ describe('FriendRequestSidebarOptions', () => {
 
     test('If count is greater than 0, display it',()=>{
         render(<FriendRequestSidebarOptions requestCount={3}/>);
-        const label = screen.getByText("3");
+        const label = screen.queryByText("3");
         expect(label).toBeInTheDocument();
     });
 
     test('If count is greater than 0, display it, different number',()=>{
         render(<FriendRequestSidebarOptions requestCount={7}/>);
-        const label = screen.getByText("7");
+        const label = screen.queryByText("7");
         expect(label).toBeInTheDocument();
+    });
+
+    test("If count is equal to 0,  don't display it",()=>{
+        render(<FriendRequestSidebarOptions requestCount={0}/>);
+        //const label = screen.getByText("0");
+        expect(screen.queryByText("0")).not.toBeInTheDocument();
     });
 });
