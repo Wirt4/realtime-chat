@@ -1,8 +1,18 @@
 import '@testing-library/jest-dom';
 import {render, screen} from '@testing-library/react';
 import FriendRequestSidebarOptions from "@/components/FriendRequestSidebarOptions";
+import { useState } from 'react';
+
+jest.mock('react', ()=>({
+    ...jest.requireActual('react'),
+    useState: jest.fn()
+}))
 
 describe('FriendRequestSidebarOptions', () => {
+    beforeEach(()=>{
+        (useState as jest.Mock).mockImplementation(()=>{ return [0, jest.fn()]});
+    });
+
     test('Component renders without error', ()=>{
         render(<FriendRequestSidebarOptions initialRequestCount={0}/>);
     });
@@ -32,20 +42,22 @@ describe('FriendRequestSidebarOptions', () => {
         expect(label).toBeInTheDocument();
     });
 
-    test('If count is greater than 0, display it',()=>{
-        render(<FriendRequestSidebarOptions initialRequestCount={3}/>);
+    test('If final count is greater than 0, display it',()=>{
+        render(<FriendRequestSidebarOptions initialRequestCount={2}/>);
+        (useState as jest.Mock).mockImplementation(()=>{ return [3, jest.fn()]});
         const label = screen.queryByText("3");
         expect(label).toBeInTheDocument();
     });
 
     test('If count is greater than 0, display it, different number',()=>{
-        render(<FriendRequestSidebarOptions initialRequestCount={7}/>);
+        render(<FriendRequestSidebarOptions initialRequestCount={4}/>);
+        (useState as jest.Mock).mockImplementation(()=>{ return [7, jest.fn()]});
         const label = screen.queryByText("7");
         expect(label).toBeInTheDocument();
     });
 
     test("If count is equal to 0,  don't display it",()=>{
-        render(<FriendRequestSidebarOptions initialRequestCount={0}/>);
+        render(<FriendRequestSidebarOptions initialRequestCount={5}/>);
         const label = screen.queryByText("0")
         expect(label).not.toBeInTheDocument();
     });
