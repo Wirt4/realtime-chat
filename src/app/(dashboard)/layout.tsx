@@ -14,13 +14,13 @@ interface LayoutProps {
 
 const Layout = async ({children}: LayoutProps = {children:null})=>{
     const session = await MyGetServerSession();
-
+    const sessionId = session?.user?.id || '';
 
     if (!session){
         notFound();
     }
 
-    const friendRequests = await fetchRedis('smembers', `user:${session?.user?.id}:incoming_friend_requests`) as User[]
+    const friendRequests = await fetchRedis('smembers', `user:${sessionId}:incoming_friend_requests`) as User[]
 
     return <div className='w-full flex h-screen'>
         <div className='flex h-full max-w-xs frow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white pt-6 px-6'>
@@ -39,13 +39,14 @@ const Layout = async ({children}: LayoutProps = {children:null})=>{
                     <ul role='list' className='-mx-2 mt-2 space-y-1'>
                         {layoutOptions.map((option)=>{
                             return <NavbarListItem key = {option.id}
-                                                   Icon={option.Icon}
+                                                   Icon = {option.Icon}
                                                    name = {option.name}
-                                                   href={option.href}/>
+                                                   href = {option.href}
+                            />
                         })}
                     </ul>
                     <li>
-                        <FriendRequestSidebarOptions initialRequestCount={friendRequests.length} sessionId={session?.user?.id}/>
+                        <FriendRequestSidebarOptions initialRequestCount={friendRequests.length} sessionId={sessionId}/>
                     </li>
                 </ul>
             </nav>
