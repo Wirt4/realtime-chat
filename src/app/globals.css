@@ -66,3 +66,51 @@
 .loading {
     @apply mr-2 h-4 w-4 animate-spin;
 }
+
+.login-page{
+    @apply flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8;
+}
+
+.login-body {
+    @apply w-full flex flex-col items-center max-w-md space-y-8;
+}
+
+.login-instructions {
+    @apply flex flex-col items-center max-w-md space-y-8;
+}
+
+.login-button {
+    @apply max-w-sm mx-auto w-full;
+}
+
+.login-h2 {
+    @apply  text-center text-3xl font-bold tracking-tight text-gray-900;
+}
+
+.login-logo{
+   @apply pb-5 text-gray-400;
+}
+
+.addfriend-form {
+    @apply max-w-sm;
+}
+
+.addfriend-label {
+    @apply block text-sm font-medium leading-6 text-gray-900;
+}
+
+.addfriend-input {
+    @apply mt-2 flex gap-4;
+}
+
+.addfriend-field {
+    @apply block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6;
+}
+
+.addfriend-error{
+    @apply mt-1 text-sm text-red-600;
+}
+
+.addfriend-success{
+    @apply mt-1 text-sm text-green-600;
+}
