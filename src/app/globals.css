@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-.icon-1 {
-    @apply h-4 w-4
+.icon {
+    @apply h-4 w-4;
 }
 
 .link {
@@ -11,5 +11,13 @@
 }
 
 .link:hover {
-    @apply text-indigo-600 bg-gray-50; /* Apply hover styles */
+    @apply text-indigo-600 bg-gray-50;
+}
+
+.link-icon {
+    @apply text-gray-400 border-gray-200 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white;
+}
+
+.link-icon.group-hover {
+    @apply border-indigo-600 text-indigo-600;
 }
