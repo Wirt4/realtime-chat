@@ -21,13 +21,15 @@ jest.mock("../../../src/helpers/redis", ()=>({
 }))
 
 describe('Layout tests',()=>{
+    beforeEach(()=>{
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
+    })
     afterEach(()=>{
         jest.resetAllMocks();
     });
 
     test('renders without crashing',async ()=>{
         try{
-            (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
             await Layout({});
         }catch(error){
             console.error(error);
@@ -37,7 +39,6 @@ describe('Layout tests',()=>{
 
     test('renders children',async ()=>{
         const testNode = <div>Tossed Salads and Scrambled eggs</div> as ReactNode
-        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
         const layout = await Layout({children:testNode});
         expect(layout.props.children).toEqual(
             expect.arrayContaining(
@@ -47,7 +48,6 @@ describe('Layout tests',()=>{
     });
 
     test('should call a server session',async ()=>{
-        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
         await Layout({});
         expect(myGetServerSession).toHaveBeenCalledTimes(1);
     });
@@ -59,13 +59,11 @@ describe('Layout tests',()=>{
     });
 
     test("If it's a fine session, then  notFound should not be called",async ()=>{
-        (myGetServerSession as jest.Mock).mockResolvedValue({foo:"bar"});
         await Layout({});
         expect(notFound).not.toHaveBeenCalled();
     });
 
     test("needs to include a Link to dashboard",async ()=>{
-        (myGetServerSession as jest.Mock).mockResolvedValue({foo:"bar"});
         const layout = await Layout({});
         expect(layout.props.children).toEqual(
             expect.arrayContaining([
@@ -77,7 +75,6 @@ describe('Layout tests',()=>{
     })
 
     test('Sidebar needs a div called "Your Chats"', async ()=> {
-        (myGetServerSession as jest.Mock).mockResolvedValue({user: {id: 'foo'}});
         const layout = await Layout({});
         expect(layout.props.children[0].props.children[1].props.children).toEqual("Your Chats")
         expect(layout.props.children).toEqual(
@@ -89,7 +86,6 @@ describe('Layout tests',()=>{
                                             expect.objectContaining({children: 'Your Chats'})})])})})]));
     });
     test('Sidebar  a nav for existing chats', async ()=> {
-        (myGetServerSession as jest.Mock).mockResolvedValue({user: {id: 'foo'}});
         const layout = await Layout({});
         expect(layout.props.children).toEqual(
             expect.arrayContaining([
