@@ -23,6 +23,7 @@ jest.mock("../../../src/helpers/redis", ()=>({
 describe('Layout tests',()=>{
     beforeEach(()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
+        (fetchRedis as jest.Mock).mockResolvedValue(['foo'])
     })
     afterEach(()=>{
         jest.resetAllMocks();
@@ -96,7 +97,7 @@ describe('Layout tests',()=>{
     test('Output of fetchRedis is passed to child component of FriendRequestSidebarOptions.initialRequestCount',
         async ()=>{
         const expected: number = 5;
-        (fetchRedis as jest.Mock).mockResolvedValue(expected)
+        (fetchRedis as jest.Mock).mockResolvedValue(['first entry','second entry','third entry','fourth entry','fifth entry'])
         const layout = await Layout();
         expect(layout.props.children).toEqual(
             expect.arrayContaining([
@@ -119,7 +120,7 @@ describe('Layout tests',()=>{
     test('Output of fetchRedis is passed to child component of FriendRequestSidebarOptions.initialRequestCount, different data',
         async ()=>{
         const expected: number = 2;
-        (fetchRedis as jest.Mock).mockResolvedValue(expected);
+        (fetchRedis as jest.Mock).mockResolvedValue(['first entry', 'second entry']);
         const layout = await Layout()
         expect(layout.props.children).toEqual(
             expect.arrayContaining([
@@ -138,4 +139,7 @@ describe('Layout tests',()=>{
                                                                                                     {initialRequestCount:expected}
                                                                                                 )})})})])})})})})])})})]))
     });
+    test ('confirm input passed to fetcRedis',()=>{
+       // expect(fetchRedis as jest.Mock).toHaveBeenCalledWith('smemebers', 'user:1701:incoming_friend_requests')
+    })
 });
