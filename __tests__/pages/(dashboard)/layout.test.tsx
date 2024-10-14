@@ -93,8 +93,10 @@ describe('Layout tests',()=>{
                                 expect.arrayContaining([
                                     expect.objectContaining({type: 'nav'})])})})]))
     });
-    test('Output of fetchRedis is passed to child component of FriendRequestSidebarOptions.initialRequestCount',async ()=>{
-        (fetchRedis as jest.Mock).mockResolvedValue(5)
+    test('Output of fetchRedis is passed to child component of FriendRequestSidebarOptions.initialRequestCount',
+        async ()=>{
+        const expected: number = 5;
+        (fetchRedis as jest.Mock).mockResolvedValue(expected)
         const layout = await Layout({})
         expect(layout.props.children).toEqual(
             expect.arrayContaining([
@@ -110,7 +112,30 @@ describe('Layout tests',()=>{
                                                                                 expect.objectContaining({children:
                                                                                         expect.objectContaining({props:
                                                                                             expect.objectContaining(
-                                                                                                {initialRequestCount:5}
+                                                                                                {initialRequestCount:expected}
                                                                                             )})})})])})})})})])})})]))
-    })
+    });
+
+    test('Output of fetchRedis is passed to child component of FriendRequestSidebarOptions.initialRequestCount, different data',
+        async ()=>{
+        const expected: number = 2;
+        (fetchRedis as jest.Mock).mockResolvedValue(expected);
+        const layout = await Layout({})
+        expect(layout.props.children).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({props:
+                        expect.objectContaining({children:
+                                expect.arrayContaining([
+                                    expect.objectContaining({props:
+                                            expect.objectContaining({children:
+                                                    expect.objectContaining({props:
+                                                            expect.objectContaining({children:
+                                                                    expect.arrayContaining([
+                                                                        expect.objectContaining({props:
+                                                                                expect.objectContaining({children:
+                                                                                        expect.objectContaining({props:
+                                                                                                expect.objectContaining(
+                                                                                                    {initialRequestCount:expected}
+                                                                                                )})})})])})})})})])})})]))
+    });
 });
