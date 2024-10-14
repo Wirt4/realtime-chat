@@ -6,6 +6,7 @@ import {Icons} from "@/components/Icons";
 import NavbarListItem from "@/app/(dashboard)/navbarlistitem";
 import layoutOptions from "@/app/(dashboard)/layoutOptions";
 import FriendRequestSidebarOptions from "@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions";
+import fetchRedis from "@/helpers/redis";
 
 interface LayoutProps {
     children: ReactNode
@@ -17,6 +18,8 @@ const Layout = async ({children}: LayoutProps)=>{
     if (!session){
         notFound();
     }
+
+    const initialCount = await fetchRedis('get', 'stub', 'tree', 'test')
 
     return <div className='w-full flex h-screen'>
         <div className='flex h-full max-w-xs frow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white pt-6 px-6'>
@@ -41,7 +44,7 @@ const Layout = async ({children}: LayoutProps)=>{
                         })}
                     </ul>
                     <li>
-                        <FriendRequestSidebarOptions initialRequestCount={5} sessionId={session?.user?.id}/>
+                        <FriendRequestSidebarOptions initialRequestCount={initialCount} sessionId={session?.user?.id}/>
                     </li>
                 </ul>
             </nav>
