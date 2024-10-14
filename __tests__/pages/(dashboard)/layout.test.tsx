@@ -93,7 +93,9 @@ describe('Layout tests',()=>{
                                 expect.arrayContaining([
                                     expect.objectContaining({type: 'nav'})])})})]))
     });
-    test('Output of fetchRedis is passed to child component of FriendRequestSidebarOptions.initialRequestCount',()=>{
-
+    test('Output of fetchRedis is passed to child component of FriendRequestSidebarOptions.initialRequestCount',async ()=>{
+        (fetchRedis as jest.Mock).mockResolvedValue(5)
+        const layout = await Layout({})
+        expect(layout.props.children[0].props.children[2].props.children.props.children[3].props.children.props.initialRequestCount).toEqual(5)
     })
 });
