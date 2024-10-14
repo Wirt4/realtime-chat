@@ -2,7 +2,7 @@
 
 import {FC, useState} from 'react'
 import Button from "@/components/ui/button/Button";
-import GoogleLogo from "@/components/ui/login/googleSVG";
+import GoogleLogo from "@/assets/svgPaths/googleSVG";
 import {Utils} from "@/lib/utils";
 import {Icons} from "@/components/Icons";
 
