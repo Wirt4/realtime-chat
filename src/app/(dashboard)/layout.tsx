@@ -40,7 +40,7 @@ const Layout = async ({children}: LayoutProps)=>{
                         })}
                     </ul>
                     <li>
-                        <FriendRequestSidebarOptions initialRequestCount={0} sessionId='0'/>
+                        <FriendRequestSidebarOptions initialRequestCount={-1} sessionId={session.user.id}/>
                     </li>
                 </ul>
             </nav>

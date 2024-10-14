@@ -3,6 +3,7 @@ import Layout from "@/app/(dashboard)/layout"
 import myGetServerSession from "@/lib/myGetServerSession";
 import {ReactNode} from "react";
 import {notFound} from "next/navigation"
+import fetchRedis from "@/helpers/redis";
 
 jest.mock("../../../src/lib/myGetServerSession",()=>({
     __esModule: true,
@@ -13,6 +14,11 @@ jest.mock("next/navigation", () => ({
     __esModule: true,
     notFound: jest.fn()
 }));
+
+jest.mock("../../../src/helpers/redis", ()=>({
+    __esModule: true,
+    default: jest.fn()
+}))
 
 describe('Layout tests',()=>{
     afterEach(()=>{
@@ -89,4 +95,7 @@ describe('Layout tests',()=>{
                                 expect.arrayContaining([
                                     expect.objectContaining({type: 'nav'})])})})]))
     });
+    test('Output of fetchRedis is passed to child component of FriendRequestSidebarOptions.initialRequestCount',()=>{
+
+    })
 });
