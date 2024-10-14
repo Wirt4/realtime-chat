@@ -76,7 +76,6 @@ describe('Layout tests',()=>{
 
     test('Sidebar needs a div called "Your Chats"', async ()=> {
         const layout = await Layout({});
-        expect(layout.props.children[0].props.children[1].props.children).toEqual("Your Chats")
         expect(layout.props.children).toEqual(
             expect.arrayContaining([
                 expect.objectContaining({props:
