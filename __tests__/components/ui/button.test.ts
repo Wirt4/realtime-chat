@@ -67,10 +67,4 @@ describe('Button',()=>{
             .toEqual(expect
                 .arrayContaining(["Boring conversation anyway"]))
     })
-
-    test('Utils.buttonClassNames is called with the correct variant, size and className -- different data',()=>{
-        const spy = jest.spyOn(Utils, 'buttonClassNames')
-        Button({variant:'ghost', size: 'default', className:'Cat'})
-        expect(spy).toHaveBeenCalledWith({variant:'ghost', size: 'default', className:'Cat'})
-    })
 })

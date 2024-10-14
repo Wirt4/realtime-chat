@@ -14,9 +14,9 @@ export interface navbarListItemProps {
 const NavbarListItem: FC<navbarListItemProps> =  (props) =>{
     const Icon = Icons[props.Icon]
     return <li>
-        <Link href={props.href} className={navBarListItemClassNames.Link.className}>
+        <Link href={props.href} className='link group'>
             <span className={navBarListItemClassNames.Link.span.className}>
-                <Icon className={navBarListItemClassNames.Link.span.Icon.className} aria-label={props.Icon as string}/>
+                <Icon className='icon-1' aria-label={props.Icon as string}/>
             </span>
         </Link>
         <span className={navBarListItemClassNames.span.className}>{props.name}</span>
