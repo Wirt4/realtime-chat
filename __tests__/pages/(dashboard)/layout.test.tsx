@@ -142,6 +142,6 @@ describe('Layout tests',()=>{
     test ('confirm input passed to fetcRedis', async ()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: '1701'}});
         await Layout();
-        expect(fetchRedis as jest.Mock).toHaveBeenCalledWith('smemebers', 'user:1701:incoming_friend_requests');
+        expect(fetchRedis as jest.Mock).toHaveBeenCalledWith('smembers', 'user:1701:incoming_friend_requests');
     })
 });

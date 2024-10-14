@@ -19,7 +19,7 @@ const Layout = async ({children}: LayoutProps = {children:null})=>{
         notFound();
     }
 
-    const friendRequests = await fetchRedis('get')
+    const friendRequests = await fetchRedis('smembers', 'user:1701:incoming_friend_requests') as User[]
 
     return <div className='w-full flex h-screen'>
         <div className='flex h-full max-w-xs frow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white pt-6 px-6'>
