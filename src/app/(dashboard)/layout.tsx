@@ -12,7 +12,7 @@ interface LayoutProps {
     children: ReactNode
 }
 
-const Layout = async ({children}: LayoutProps)=>{
+const Layout = async ({children}: LayoutProps = {children:null})=>{
     const session = await MyGetServerSession();
 
     if (!session){

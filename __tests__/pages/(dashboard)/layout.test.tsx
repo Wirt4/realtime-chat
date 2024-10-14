@@ -30,7 +30,7 @@ describe('Layout tests',()=>{
 
     test('renders without crashing',async ()=>{
         try{
-            await Layout({});
+            await Layout();
         }catch(error){
             console.error(error);
             expect(true).toEqual(false);
@@ -48,23 +48,23 @@ describe('Layout tests',()=>{
     });
 
     test('should call a server session',async ()=>{
-        await Layout({});
+        await Layout();
         expect(myGetServerSession).toHaveBeenCalledTimes(1);
     });
 
     test("if it a bad session, then the layout should be notFound",async ()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue(null);
-        await Layout({});
+        await Layout();
         expect(notFound).toHaveBeenCalledTimes(1);
     });
 
     test("If it's a fine session, then  notFound should not be called",async ()=>{
-        await Layout({});
+        await Layout();
         expect(notFound).not.toHaveBeenCalled();
     });
 
     test("needs to include a Link to dashboard",async ()=>{
-        const layout = await Layout({});
+        const layout = await Layout();
         expect(layout.props.children).toEqual(
             expect.arrayContaining([
                 expect.objectContaining({props:
@@ -75,7 +75,7 @@ describe('Layout tests',()=>{
     })
 
     test('Sidebar needs a div called "Your Chats"', async ()=> {
-        const layout = await Layout({});
+        const layout = await Layout();
         expect(layout.props.children).toEqual(
             expect.arrayContaining([
                 expect.objectContaining({props:
@@ -85,7 +85,7 @@ describe('Layout tests',()=>{
                                             expect.objectContaining({children: 'Your Chats'})})])})})]));
     });
     test('Sidebar  a nav for existing chats', async ()=> {
-        const layout = await Layout({});
+        const layout = await Layout();
         expect(layout.props.children).toEqual(
             expect.arrayContaining([
                 expect.objectContaining({props:
@@ -97,7 +97,7 @@ describe('Layout tests',()=>{
         async ()=>{
         const expected: number = 5;
         (fetchRedis as jest.Mock).mockResolvedValue(expected)
-        const layout = await Layout({})
+        const layout = await Layout();
         expect(layout.props.children).toEqual(
             expect.arrayContaining([
                 expect.objectContaining({props:
@@ -120,7 +120,7 @@ describe('Layout tests',()=>{
         async ()=>{
         const expected: number = 2;
         (fetchRedis as jest.Mock).mockResolvedValue(expected);
-        const layout = await Layout({})
+        const layout = await Layout()
         expect(layout.props.children).toEqual(
             expect.arrayContaining([
                 expect.objectContaining({props:
