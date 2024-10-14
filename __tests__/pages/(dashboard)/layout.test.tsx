@@ -27,14 +27,17 @@ describe('Layout tests',()=>{
 
     test('renders without crashing',async ()=>{
         try{
+            (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
             await Layout({});
         }catch(error){
+            console.error(error);
             expect(true).toEqual(false);
         }
     });
 
     test('renders children',async ()=>{
         const testNode = <div>Tossed Salads and Scrambled eggs</div> as ReactNode
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
         const layout = await Layout({children:testNode});
         expect(layout.props.children).toEqual(
             expect.arrayContaining(
