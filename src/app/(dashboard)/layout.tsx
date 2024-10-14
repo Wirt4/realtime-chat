@@ -5,6 +5,7 @@ import Link from "next/link";
 import {Icons} from "@/components/Icons";
 import NavbarListItem from "@/app/(dashboard)/navbarlistitem";
 import layoutOptions from "@/app/(dashboard)/layoutOptions";
+import FriendRequestSidebarOptions from "@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions";
 
 interface LayoutProps {
     children: ReactNode
@@ -38,6 +39,9 @@ const Layout = async ({children}: LayoutProps)=>{
                                                    href={option.href}/>
                         })}
                     </ul>
+                    <li>
+                        <FriendRequestSidebarOptions initialRequestCount={0} sessionId='0'/>
+                    </li>
                 </ul>
             </nav>
         </div>
