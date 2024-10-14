@@ -139,7 +139,9 @@ describe('Layout tests',()=>{
                                                                                                     {initialRequestCount:expected}
                                                                                                 )})})})])})})})})])})})]))
     });
-    test ('confirm input passed to fetcRedis',()=>{
-       // expect(fetchRedis as jest.Mock).toHaveBeenCalledWith('smemebers', 'user:1701:incoming_friend_requests')
+    test ('confirm input passed to fetcRedis', async ()=>{
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: '1701'}});
+        await Layout();
+        expect(fetchRedis as jest.Mock).toHaveBeenCalledWith('smemebers', 'user:1701:incoming_friend_requests');
     })
 });
