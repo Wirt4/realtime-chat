@@ -96,6 +96,21 @@ describe('Layout tests',()=>{
     test('Output of fetchRedis is passed to child component of FriendRequestSidebarOptions.initialRequestCount',async ()=>{
         (fetchRedis as jest.Mock).mockResolvedValue(5)
         const layout = await Layout({})
-        expect(layout.props.children[0].props.children[2].props.children.props.children[3].props.children.props.initialRequestCount).toEqual(5)
+        expect(layout.props.children).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({props:
+                        expect.objectContaining({children:
+                                expect.arrayContaining([
+                                    expect.objectContaining({props:
+                                            expect.objectContaining({children:
+                                                    expect.objectContaining({props:
+                                                            expect.objectContaining({children:
+                                                                    expect.arrayContaining([
+                                                                        expect.objectContaining({props:
+                                                                                expect.objectContaining({children:
+                                                                                        expect.objectContaining({props:
+                                                                                            expect.objectContaining(
+                                                                                                {initialRequestCount:5}
+                                                                                            )})})})])})})})})])})})]))
     })
 });
