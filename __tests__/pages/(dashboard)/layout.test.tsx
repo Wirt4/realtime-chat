@@ -85,6 +85,7 @@ describe('Layout tests',()=>{
                                     expect.objectContaining({props:
                                             expect.objectContaining({children: 'Your Chats'})})])})})]));
     });
+
     test('Sidebar  a nav for existing chats', async ()=> {
         const layout = await Layout();
         expect(layout.props.children).toEqual(
@@ -139,9 +140,10 @@ describe('Layout tests',()=>{
                                                                                                     {initialRequestCount:expected}
                                                                                                 )})})})])})})})})])})})]))
     });
+
     test ('confirm input passed to fetcRedis', async ()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: '1701'}});
         await Layout();
         expect(fetchRedis as jest.Mock).toHaveBeenCalledWith('smembers', 'user:1701:incoming_friend_requests');
-    })
+    });
 });
