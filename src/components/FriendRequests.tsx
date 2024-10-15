@@ -14,7 +14,8 @@ const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests})=>{
         {incomingFriendRequests.length == 0 ?
         <p>Nothing to show here...</p>:
             incomingFriendRequests.map((request)=>{
-                return <Icons.AddUser key={request.senderId} aria-label='add user'/>
+                return (<><Icons.AddUser key={request.senderId} aria-label='add user'/>
+                <p>{request.senderEmail}</p></>)
             })
         }</div>
 }
