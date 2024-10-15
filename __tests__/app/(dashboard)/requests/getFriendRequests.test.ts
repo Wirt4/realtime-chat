@@ -80,7 +80,10 @@ describe('getFriendRequests', () => {
     });
 
     test('first call to fetchRedis should be with args of "user{:sessionid}:incoming_friend_request"',async()=>{
-        await getFriendRequests('1234')
-        expect(fetchRedis.mock.calls).toEqual(expect.arrayContaining([['smembers', 'user:1234:incoming_friend_requests']]))
+        const sessionId = '1234'
+        await getFriendRequests(sessionId)
+        expect(fetchRedis.mock.calls).toEqual(
+            expect.arrayContaining([['smembers', `user:${sessionId}:incoming_friend_requests`]])
+        )
     })
 });
