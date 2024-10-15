@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import Page from "@/app/(dashboard)/add/page"
+import Page from "@/app/(dashboard)/dashboard/add/page"
 import {render, screen} from "@testing-library/react"
 
 jest.mock('../../../../src/components/AddFriendButton', () => ({

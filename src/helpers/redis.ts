@@ -1,4 +1,4 @@
-type Command = 'zrange' | 'sismember' | 'get'
+type Command = 'zrange' | 'sismember' | 'get' | 'smembers'
 const fetchRedis= async (cmd: Command, ...args:string[])=>{
     const opts= {
         headers: {
