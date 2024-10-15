@@ -46,10 +46,10 @@ describe('FriendRequests', () => {
         const button = screen.getByLabelText('accept friend');
         expect(button.tagName).toBe('BUTTON');
     });
-    test('button should contain a checkmark',()=>{
+    test('accept friend should contain a checkmark',()=>{
         const requests = [{senderId:'foo', senderEmail: 'foo@bar.com'}]
         render(<FriendRequests incomingFriendRequests={requests} />);
-        const button = screen.getByRole('button');
+        const button = screen.getByLabelText('accept friend');
         const check = within(button).getByLabelText('checkmark');
         expect(check).toBeInTheDocument();
     });
