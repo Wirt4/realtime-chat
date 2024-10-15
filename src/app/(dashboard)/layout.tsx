@@ -1,6 +1,4 @@
-'use client'
-
-import React, {ReactNode, useState, useEffect} from "react";
+import React, {ReactNode} from "react";
 import {notFound} from "next/navigation";
 import Link from "next/link";
 import {Icons} from "@/components/Icons";
@@ -14,31 +12,16 @@ interface LayoutProps {
     children: ReactNode
 }
 
-const Layout = ({children}: LayoutProps = {children:null})=>{
-    const [session, setSession] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
-    const [friendRequests, setFriendRequests] = useState<string[]>([]);
+const Layout = async ({children}: LayoutProps = {children:null})=>{
+    const session = await myGetServerSession();
 
-    useEffect(()=>{
-        const fetchSession= async ()=>{
-            const session =await myGetServerSession();
+    if (!session){
+        notFound();
+        return null;
+    }
 
-            if (!session){
-                notFound();
-                return;
-            }
 
-            setSession(session);
-            const friendRequests = await fetchRedis("smembers", `user:${session?.user?.id}:incoming_friend_requests`);
-            setFriendRequests(friendRequests);
-            setLoading(false);
-        }
-
-        fetchSession();
-    },[]);
-
-    if (loading) return <div>Loading...</div>;
-    if (!session) return null;
+    const friendRequests = await fetchRedis("smembers", `user:${session?.user?.id}:incoming_friend_requests`);
 
     return<div className='dashboard-window'>
         <div className='dashboard'>

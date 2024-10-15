@@ -1,5 +1,6 @@
 type Command = 'zrange' | 'sismember' | 'get' | 'smembers'
-const fetchRedis= async (cmd: Command, ...args:string[])=>{
+
+const fetchRedis = async (cmd: Command, ...args:string[])=>{
     const opts= {
         headers: {
             Authorization: `Bearer ${process.env.REDIS_TOKEN}`,
@@ -16,7 +17,7 @@ const fetchRedis= async (cmd: Command, ...args:string[])=>{
         return data.result
 }
 
-const formatArr= (args:never)=>{
+const formatArr = (args:never)=>{
     const arr = Object.values(args)
     return arr.length ===0 || typeof arr[0] =='string' ? arr: arr[0]
 }
