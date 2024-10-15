@@ -4,13 +4,15 @@ import {FC} from "react";
 import {Icons} from "@/components/Icons";
 
 interface FriendRequestsProps {
-    incomingFriendRequests: string[]
+    incomingFriendRequests: {
+        senderId:string,
+        senderEmail:string
+    }[]
 }
 const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests})=>{
     return <div aria-label='friend requests'>
         <p>Nothing to show here...</p>
-        <Icons.AddUser aria-label='add user'/>
-        <Icons.AddUser aria-label='add user'/>
+        {incomingFriendRequests.map((request)=>{ return <Icons.AddUser key={request.senderId} aria-label='add user'/>})}
     </div>;
 }
 

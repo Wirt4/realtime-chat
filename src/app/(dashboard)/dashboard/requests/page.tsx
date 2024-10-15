@@ -19,7 +19,7 @@ const Page: FC = async () =>{
             Friend Requests
         </h1>
         <div className='friend-requests'>
-        <FriendRequests/>
+        <FriendRequests incomingFriendRequests={[]}/>
         </div>
     </main>
 }
