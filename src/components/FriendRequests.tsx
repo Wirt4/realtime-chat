@@ -5,7 +5,7 @@ import {FC} from "react";
 
 const FriendRequests :FC =()=>{
     return <div aria-label='friend requests'>
-        FriendRequests
+        <p>Nothing to show here...</p>
     </div>;
 }
 
