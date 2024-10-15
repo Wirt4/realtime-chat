@@ -1,7 +1,7 @@
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/lib/auth";
 
-const  myGetServerSession= async ()=>{
+const myGetServerSession = async ()=>{
     return getServerSession(authOptions)
 }
 

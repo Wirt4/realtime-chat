@@ -1,5 +1,4 @@
-
-import React, {ReactNode, useState, useEffect} from "react";
+import React, {ReactNode} from "react";
 import {notFound} from "next/navigation";
 import Link from "next/link";
 import {Icons} from "@/components/Icons";
@@ -14,21 +13,15 @@ interface LayoutProps {
 }
 
 const Layout = async ({children}: LayoutProps = {children:null})=>{
+    const session = await myGetServerSession();
+
+    if (!session){
+        notFound();
+        return null;
+    }
 
 
-
-            const session =await myGetServerSession();
-
-            if (!session){
-                notFound();
-                return null;
-            }
-
-
-            const friendRequests = await fetchRedis("smembers", `user:${session?.user?.id}:incoming_friend_requests`);
-
-
-    if (!session) return null;
+    const friendRequests = await fetchRedis("smembers", `user:${session?.user?.id}:incoming_friend_requests`);
 
     return<div className='dashboard-window'>
         <div className='dashboard'>
