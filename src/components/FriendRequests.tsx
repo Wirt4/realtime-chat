@@ -2,6 +2,7 @@
 
 import {FC} from "react";
 import {Icons} from "@/components/Icons";
+import {Check} from 'lucide-react';
 
 interface FriendRequestsProps {
     incomingFriendRequests: {
@@ -17,7 +18,9 @@ const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests})=>{
                 return (<>
                     <Icons.AddUser key={request.senderId} aria-label='add user'/>
                     <p>{request.senderEmail}</p>
-                    <button aria-label='accept friend'></button>
+                    <button aria-label='accept friend'>
+                        <Check aria-label='checkmark'/>
+                    </button>
                 </>)
             })
         }</div>

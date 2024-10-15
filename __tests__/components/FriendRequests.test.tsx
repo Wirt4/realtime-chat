@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import FriendRequests from "@/components/FriendRequests";
-import {render, screen} from "@testing-library/react";
+import {render, screen, within} from "@testing-library/react";
 
 describe('FriendRequests', () => {
     test('final state of friend requests is 0, should render "Nothing to show here..." ',()=>{
@@ -45,5 +45,12 @@ describe('FriendRequests', () => {
         render(<FriendRequests incomingFriendRequests={requests} />);
         const button = screen.getByLabelText('accept friend');
         expect(button.tagName).toBe('BUTTON');
+    });
+    test('button should contain a checkmark',()=>{
+        const requests = [{senderId:'foo', senderEmail: 'foo@bar.com'}]
+        render(<FriendRequests incomingFriendRequests={requests} />);
+        const button = screen.getByRole('button');
+        const check = within(button).getByLabelText('checkmark');
+        expect(check).toBeInTheDocument();
     });
 });
