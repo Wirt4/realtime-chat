@@ -10,7 +10,7 @@ const Page: FC = async () =>{
     if(!session) notFound()
     return <main className='pt-8'>
         <h1>
-            stub
+            Friend Requests
         </h1>
         <div className='friend-requests'>
         <FriendRequests/>
