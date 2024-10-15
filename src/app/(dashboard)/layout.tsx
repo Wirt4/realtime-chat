@@ -1,5 +1,6 @@
-import React, { ReactNode} from "react";
-import MyGetServerSession from "@/lib/myGetServerSession";
+'use client'
+
+import React, {ReactNode, useState, useEffect} from "react";
 import {notFound} from "next/navigation";
 import Link from "next/link";
 import {Icons} from "@/components/Icons";
@@ -7,18 +8,38 @@ import NavbarListItem from "@/app/(dashboard)/navbarlistitem";
 import layoutOptions from "@/app/(dashboard)/layoutOptions";
 import FriendRequestSidebarOptions from "@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions";
 import fetchRedis from "@/helpers/redis";
+import myGetServerSession from "@/lib/myGetServerSession";
 
 interface LayoutProps {
     children: ReactNode
 }
 
-const Layout = async ({children}: LayoutProps = {children:null})=>{
-    const session = await MyGetServerSession();
-    const sessionId = session?.user?.id || '';
+const Layout = ({children}: LayoutProps = {children:null})=>{
+    const [session, setSession] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+    const [friendRequests, setFriendRequests] = useState<string[]>([]);
 
-    if (!session){
-        notFound();
-    }
+    useEffect(()=>{
+        const fetchSession= async ()=>{
+            const session =await myGetServerSession();
+
+            if (!session){
+                notFound();
+                return;
+            }
+
+            setSession(session);
+            const friendRequests = await fetchRedis("smembers", `user:${session?.user?.id}:incoming_friend_requests`);
+            setFriendRequests(friendRequests);
+            setLoading(false);
+        }
+
+        fetchSession();
+    },[]);
+
+    if (loading) return <div>Loading...</div>;
+    if (!session) return null;
+
     return<div className='dashboard-window'>
         <div className='dashboard'>
         <Link href="/dashboard" className='dashboard-link'>
@@ -43,7 +64,7 @@ const Layout = async ({children}: LayoutProps = {children:null})=>{
                         })}
                     </ul>
                     <li>
-                        <FriendRequestSidebarOptions initialRequestCount={friendRequests.length} sessionId={sessionId}/>
+                        <FriendRequestSidebarOptions initialRequestCount={friendRequests.length} sessionId={session.user.id}/>
                     </li>
                 </ul>
             </nav>
