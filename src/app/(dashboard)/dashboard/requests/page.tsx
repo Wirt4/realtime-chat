@@ -5,9 +5,15 @@ import FriendRequests from "@/components/FriendRequests";
 import getFriendRequests from "@/app/(dashboard)/dashboard/requests/getFriendRequests";
 
 const Page: FC = async () =>{
-    const session = await myGetServerSession()
-    const requests = await getFriendRequests()
-    if(!session) notFound()
+    const session = await myGetServerSession();
+
+    if(!session) {
+        notFound();
+        return null;
+    }
+
+    const requests = await getFriendRequests(session.user.id);
+
     return <main className='pt-8'>
         <h1>
             Friend Requests
