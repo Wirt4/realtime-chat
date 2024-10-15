@@ -4,6 +4,8 @@ import Page from '@/app/(dashboard)/dashboard/requests/page'
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/lib/auth";
 import {notFound} from "next/navigation";
+import fetchRedis from "@/helpers/redis";
+jest.mock("../../../../src/helpers/redis",()=> jest.fn());
 
 jest.mock('next-auth', () => ({
     getServerSession: jest.fn(),
@@ -14,7 +16,8 @@ jest.mock('next/navigation', () => ({
 
 describe('Request page', () => {
     beforeEach(()=>{
-        (getServerSession as jest.Mock).mockResolvedValue(null)
+        (getServerSession as jest.Mock).mockResolvedValue(null);
+        (fetchRedis as jest.Mock).mockResolvedValue([]);
     });
 
     afterEach(()=>{

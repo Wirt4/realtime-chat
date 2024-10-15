@@ -2,6 +2,14 @@ import fetchRedis from "@/helpers/redis";
 import getFriendRequests from "@/app/(dashboard)/dashboard/requests/getFriendRequests";
 jest.mock("../../../../src/helpers/redis",()=> jest.fn());
 describe('getFriendRequests', () => {
+    beforeEach(()=>{
+        (fetchRedis as jest.Mock).mockResolvedValue([]);
+    });
+
+    afterEach(()=>{
+        jest.resetAllMocks();
+    });
+
     test('returns an array of objects based off payloads retrned from redis',async () => {
        (fetchRedis as jest.Mock).mockImplementation(async(cmd:string, query:string)=>{
            if (cmd ==='smembers'){
@@ -28,7 +36,7 @@ describe('getFriendRequests', () => {
                }
            }
            return users[query]
-       })
+       });
 
         const expected = [
             {senderId: 'k1234', senderEmail: 'sonny@correlone.edu'},
@@ -36,10 +44,11 @@ describe('getFriendRequests', () => {
             {senderId: 'k90123', senderEmail: 'michael@correlone.edu'}
         ]
 
-        const actual = await getFriendRequests('54321')
-        expect(actual).toEqual(expected)
-    })
-    test('returns an array of objects based off payloads retrned from redis 2',async () => {
+        const actual = await getFriendRequests('54321');
+        expect(actual).toEqual(expected);
+    });
+
+    test('returns an array of objects based off payloads returned from redis 2',async () => {
         (fetchRedis as jest.Mock).mockImplementation(async(cmd:string, query:string)=>{
             if (cmd ==='smembers'){
                 return['l1234','l5678' ]
@@ -68,5 +77,10 @@ describe('getFriendRequests', () => {
 
         const actual = await getFriendRequests('12345')
         expect(actual).toEqual(expected)
+    });
+
+    test('first call to fetchRedis should be with args of "user{:sessionid}:incoming_friend_request"',async()=>{
+        await getFriendRequests('1234')
+        expect(fetchRedis.mock.calls).toEqual(expect.arrayContaining([['smembers', 'user:1234:incoming_friend_requests']]))
     })
-})
+});
