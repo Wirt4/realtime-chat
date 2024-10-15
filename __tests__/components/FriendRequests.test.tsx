@@ -75,4 +75,12 @@ describe('FriendRequests', () => {
         const button = screen.getByLabelText('deny friend');
         expect(button.tagName).toBe('BUTTON');
     });
+
+    test('accept friend should contain a x',()=>{
+        const requests = [{senderId:'foo', senderEmail: 'foo@bar.com'}]
+        render(<FriendRequests incomingFriendRequests={requests} />);
+        const button = screen.getByLabelText('deny friend');
+        const check = within(button).getByLabelText('x');
+        expect(check).toBeInTheDocument();
+    });
 });

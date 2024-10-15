@@ -1,4 +1,4 @@
-import {LucideProps} from "lucide-react";
+import {LucideProps, userPlus} from "lucide-react";
 import Logopath from "@/assets/svgPaths/logopath";
 import AddUserPath from "@/assets/svgPaths/addUserPath";
 import UserIconPath from "@/assets/svgPaths/userIconPath";

@@ -19,7 +19,7 @@ const Page: FC = async () =>{
             Friend Requests
         </h1>
         <div className='friend-requests'>
-        <FriendRequests incomingFriendRequests={[]}/>
+        <FriendRequests incomingFriendRequests={[{senderEmail:'stub@stub.com', senderId:'1'}]}/>
         </div>
     </main>
 }
