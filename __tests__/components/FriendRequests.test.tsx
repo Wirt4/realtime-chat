@@ -23,7 +23,7 @@ describe('FriendRequests', () => {
     test('if (final) requests are greater than 0, do not render "Nothing to show here...',()=>{
         const requests = [{senderId:'foo', senderEmail: 'bar'}, {senderId: 'bar', senderEmail: 'foo'}]
         render(<FriendRequests incomingFriendRequests={requests}/>);
-        const text = screen.getByText('Nothing to show here...');
+        const text = screen.queryByText('Nothing to show here...');
         expect(text).not.toBeInTheDocument();
     })
 });

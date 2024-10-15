@@ -10,8 +10,10 @@ interface FriendRequestsProps {
     }[]
 }
 const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests})=>{
+    if (incomingFriendRequests.length==0) {
+        return <p aria-label='friend requests'>Nothing to show here...</p>;
+    }
     return <div aria-label='friend requests'>
-        <p>Nothing to show here...</p>
         {incomingFriendRequests.map((request)=>{
             return <Icons.AddUser key={request.senderId} aria-label='add user'/>
         })}
