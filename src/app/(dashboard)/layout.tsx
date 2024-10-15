@@ -1,4 +1,3 @@
-'use client'
 
 import React, {ReactNode, useState, useEffect} from "react";
 import {notFound} from "next/navigation";
@@ -14,30 +13,21 @@ interface LayoutProps {
     children: ReactNode
 }
 
-const Layout = ({children}: LayoutProps = {children:null})=>{
-    const [session, setSession] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
-    const [friendRequests, setFriendRequests] = useState<string[]>([]);
+const Layout = async ({children}: LayoutProps = {children:null})=>{
 
-    useEffect(()=>{
-        const fetchSession= async ()=>{
+
+
             const session =await myGetServerSession();
 
             if (!session){
                 notFound();
-                return;
+                return null;
             }
 
-            setSession(session);
+
             const friendRequests = await fetchRedis("smembers", `user:${session?.user?.id}:incoming_friend_requests`);
-            setFriendRequests(friendRequests);
-            setLoading(false);
-        }
 
-        fetchSession();
-    },[]);
 
-    if (loading) return <div>Loading...</div>;
     if (!session) return null;
 
     return<div className='dashboard-window'>
