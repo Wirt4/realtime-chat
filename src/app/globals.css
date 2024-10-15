@@ -114,3 +114,7 @@
 .addfriend-success{
     @apply mt-1 text-sm text-green-600;
 }
+
+.friend-requests{
+    @apply flex flex-col gap-4;
+}

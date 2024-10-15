@@ -8,7 +8,14 @@ const Page: FC = async () =>{
     const session = await myGetServerSession()
     const requests = await getFriendRequests()
     if(!session) notFound()
-    return <FriendRequests/>
+    return <main className='pt-8'>
+        <h1>
+            stub
+        </h1>
+        <div className='friend-requests'>
+        <FriendRequests/>
+        </div>
+    </main>
 }
 
 export default Page;
