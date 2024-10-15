@@ -21,6 +21,9 @@ const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests})=>{
                     <button aria-label='accept friend'>
                         <Check aria-label='checkmark'/>
                     </button>
+                    <div aria-label='deny friend'>
+                        <Check aria-label='checkmark'/>
+                    </div>
                 </>)
             })
         }</div>
