@@ -33,5 +33,11 @@ describe('FriendRequests', () => {
         const button2 = screen.queryByText('bar@foo.com');
         expect(button1).toBeInTheDocument();
         expect(button2).toBeInTheDocument();
-    })
+    });
+    test('if the component receives a list of length 2, then there should be two elements with the label "accept friend"',()=>{
+        const requests = [{senderId:'foo', senderEmail: 'foo@bar.com'}, {senderId: 'bar', senderEmail: 'bar@foo.com'}]
+        render(<FriendRequests incomingFriendRequests={requests} />);
+        const buttons = screen.getAllByLabelText('accept friend');
+        expect(buttons).toHaveLength(2);
+    });
 });
