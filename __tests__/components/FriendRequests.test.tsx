@@ -9,13 +9,13 @@ describe('FriendRequests', () => {
         expect(text).toBeInTheDocument();
     });
     test('if the component receives a list of length 2, then there should be two UserPlus icons in the document',()=>{
-        const requests = ['foo', 'bar']
+        const requests = [{senderId:'foo', senderEmail: 'bar'}, {senderId: 'bar', senderEmail: 'foo'}]
         render(<FriendRequests incomingFriendRequests={requests}/>);
         const icons = screen.getAllByLabelText('add user');
         expect(icons).toHaveLength(2);
     })
     test('if the component receives a list of length 2, then there should be two UserPlus icons in the document',()=>{
-        const requests = ['foo']
+        const requests = [{senderId:'foo', senderEmail: 'bar'}]
         render(<FriendRequests incomingFriendRequests={requests} />);
         const icons = screen.getAllByLabelText('add user');
         expect(icons).toHaveLength(1);
