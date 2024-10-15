@@ -33,15 +33,24 @@ describe('Request page', () => {
         render(await Page({}));
         expect(notFound as jest.Mock).toHaveBeenCalled()
     });
+
     test('if the session is valid, do not call "notFound"', async ()=>{
         (getServerSession as jest.Mock).mockResolvedValue({user:{id:'valid'}})
         render(await Page({}));
         expect(notFound as jest.Mock).not.toHaveBeenCalled()
     });
+
     test('should render a FriendRequests component',async ()=>{
         (getServerSession as jest.Mock).mockResolvedValue({user:{id:'valid'}})
         render(await Page({}));
-        const friendRequests = screen.getByLabelText('friend requests')
+        const friendRequests = screen.getByLabelText('friend requests');
         expect(friendRequests).toBeInTheDocument();
-    })
+    });
+
+    test('should display the words "Friend Requests',async ()=>{
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'valid'}})
+        render(await Page({}));
+        const header = screen.getByText('Friend Requests');
+        expect(header).toBeInTheDocument();
+    });
 });
