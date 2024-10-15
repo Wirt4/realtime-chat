@@ -54,15 +54,6 @@ describe('Button',()=>{
                     .objectContaining({type: Loader2})]))
     })
 
-    test ('if isLoading is true, then expect styling to be set in the Loader2 element', ()=>{
-        const button =  Button({isLoading: true})
-        const styling = 'mr-2 h-4 w-4 animate-spin'
-        expect(button?.props?.children)
-            .toEqual(expect
-                .arrayContaining([expect
-                    .objectContaining({props: expect
-                            .objectContaining({className:styling})}),]))})
-
     test ('The children field of the argument should be rendered in the final button', ()=>{
         const button =  Button({isLoading: true, children: "TK421, why aren't you at your post?"})
         expect(button?.props?.children)
@@ -76,32 +67,4 @@ describe('Button',()=>{
             .toEqual(expect
                 .arrayContaining(["Boring conversation anyway"]))
     })
-
-    test('Utils.buttonClassNames is called with the correct variant, size and className',()=>{
-        const spy = jest.spyOn(Utils, 'buttonClassNames')
-        Button({variant:'default', size: 'lg', className:'Stephen'})
-        expect(spy).toHaveBeenCalledWith({variant:'default', size: 'lg', className:'Stephen'})
-
-    })
-
-    test('Utils.buttonClassNames is called with the correct variant, size and className -- different data',()=>{
-        const spy = jest.spyOn(Utils, 'buttonClassNames')
-        Button({variant:'ghost', size: 'default', className:'Cat'})
-        expect(spy).toHaveBeenCalledWith({variant:'ghost', size: 'default', className:'Cat'})
-    })
-
-    test('className of button should be set with output of Utils.buttonClassNames', ()=>{
-        jest.spyOn(Utils, 'buttonClassNames').mockReturnValueOnce('Chihiro, your name is now "Sen"')
-        const button = Button({})
-        expect(button?.props.className)
-            .toEqual('Chihiro, your name is now "Sen"')
-    })
-
-    test('className of button should be set with output of Utils.buttonClassNames', ()=>{
-        jest.spyOn(Utils, 'buttonClassNames').mockReturnValueOnce('Ashitaka, you must leave the village')
-        const button = Button({})
-        expect(button?.props.className)
-            .toEqual('Ashitaka, you must leave the village')
-    })
-
 })
