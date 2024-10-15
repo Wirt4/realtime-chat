@@ -12,18 +12,18 @@ interface FriendRequestsProps {
 const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests})=>{
     return <div aria-label='friend requests'>
         {incomingFriendRequests.length == 0 ?
-        <p>Nothing to show here...</p>:
+        <p className='friend-requests-nothing'>Nothing to show here...</p>:
             incomingFriendRequests.map((request)=>{
-                return (<>
-                    <UserPlus key={request.senderId} aria-label='add user'/>
-                    <p>{request.senderEmail}</p>
-                    <button aria-label='accept friend'>
-                        <Check aria-label='checkmark'/>
+                return (<div className='friend-requests' key={request.senderId}>
+                    <UserPlus  aria-label='add user'/>
+                    <p className='friend-requests-email'>{request.senderEmail}</p>
+                    <button aria-label='accept friend' className='friend-requests-check'>
+                        <Check aria-label='checkmark' className='friend-requests-button'/>
                     </button>
-                    <button aria-label='deny friend'>
-                        <X aria-label='x'/>
+                    <button aria-label='deny friend' className='friend-requests-x'>
+                        <X aria-label='x' className='friend-requests-button'/>
                     </button>
-                </>)
+                </div>)
             })
         }</div>
 }

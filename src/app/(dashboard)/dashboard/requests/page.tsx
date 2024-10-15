@@ -13,13 +13,13 @@ const Page: FC = async () =>{
     }
 
     const requests = await getFriendRequests(session.user.id);
-
+const foo ={senderEmail:'stub@stub.com', senderId:'1'}
     return <main className='pt-8'>
         <h1>
             Friend Requests
         </h1>
-        <div className='friend-requests'>
-        <FriendRequests incomingFriendRequests={[{senderEmail:'stub@stub.com', senderId:'1'}]}/>
+        <div className='friend-requests-wrapper'>
+            <FriendRequests incomingFriendRequests={[foo]}/>
         </div>
     </main>
 }
