@@ -10,7 +10,7 @@ describe('FriendRequests', () => {
     });
     test('if the component receives a list of length 2, then there should be two UserPlus icons in the document',()=>{
         render(<FriendRequests />);
-        const icons = screen.getAllByLabelText('AddUser');
+        const icons = screen.getAllByLabelText('add user');
         expect(icons).toHaveLength(2);
     })
 });
