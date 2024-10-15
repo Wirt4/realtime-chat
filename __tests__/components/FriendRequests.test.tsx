@@ -40,4 +40,10 @@ describe('FriendRequests', () => {
         const buttons = screen.getAllByLabelText('accept friend');
         expect(buttons).toHaveLength(2);
     });
+    test('elements with the label "accept friend" should be a button',()=>{
+        const requests = [{senderId:'foo', senderEmail: 'foo@bar.com'}]
+        render(<FriendRequests incomingFriendRequests={requests} />);
+        const button = screen.getByLabelText('accept friend');
+        expect(button.tagName).toBe('BUTTON');
+    });
 });
