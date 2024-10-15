@@ -5,7 +5,7 @@ import {render, screen} from "@testing-library/react";
 describe('FriendRequests', () => {
     test('Should render a div that reads "FriendRequests',()=>{
         render(<FriendRequests />);
-        const text = screen.getByText('FriendRequest');
+        const text = screen.getByText('FriendRequests');
         expect(text).toBeInTheDocument();
-    })
-})
+    });
+});
