@@ -10,12 +10,12 @@ jest.mock("../../../src/components/friendRequestSidebarOptions/FriendRequestSide
 
 jest.mock("../../../src/lib/myGetServerSession",()=> jest.fn());
 
+jest.mock("../../../src/helpers/redis", ()=> jest.fn());
+
 jest.mock("next/navigation", () => ({
     __esModule: true,
     notFound: jest.fn()
 }));
-
-jest.mock("../../../src/helpers/redis", ()=> jest.fn())
 
 describe('Layout tests',()=>{
     beforeEach(()=>{
