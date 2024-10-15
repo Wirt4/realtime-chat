@@ -84,6 +84,6 @@ describe('getFriendRequests', () => {
         await getFriendRequests(sessionId)
         expect(fetchRedis.mock.calls).toEqual(
             expect.arrayContaining([['smembers', `user:${sessionId}:incoming_friend_requests`]])
-        )
-    })
+        );
+    });
 });
