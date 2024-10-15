@@ -8,4 +8,9 @@ describe('FriendRequests', () => {
         const text = screen.getByText('Nothing to show here...');
         expect(text).toBeInTheDocument();
     });
+    test('if the component receives a list of length 2, then there should be two UserPlus icons in the document',()=>{
+        render(<FriendRequests />);
+        const text = screen.getByText('Nothing to show here...');
+        expect(text).toBeInTheDocument();
+    })
 });

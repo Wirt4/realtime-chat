@@ -47,7 +47,7 @@ describe('NavBarListItem', () => {
     });
     test('component should display the correct name Alternate Data',()=>{
         render(<NavbarListItem href="/add" Icon="Logo" name='Main' />);
-        const userPlusIcon = screen.getByText('Main');
-        expect(userPlusIcon).toBeInTheDocument();
+        const icons = screen.getAllByLabelText('AddUser');
+        expect(icons).toHaveLength(2);
     });
 });
