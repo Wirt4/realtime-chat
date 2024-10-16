@@ -1,5 +1,6 @@
 import fetchRedis from "@/helpers/redis";
 import getFriendRequests from "@/app/(dashboard)/dashboard/requests/getFriendRequests";
+import {fetchRedisMock1, fetchRedisMock2} from "../../../../__mocks__/app/(dashboard)/requests/fetchRedismock";
 jest.mock("../../../../src/helpers/redis",()=> jest.fn());
 describe('getFriendRequests', () => {
     beforeEach(()=>{
@@ -11,32 +12,7 @@ describe('getFriendRequests', () => {
     });
 
     test('returns an array of objects based off payloads returned from redis',async () => {
-       (fetchRedis as jest.Mock).mockImplementation(async(cmd:string, query:string)=>{
-           if (cmd ==='smembers'){
-               return['k1234','k5678', 'k90123' ]
-           }
-           const users: {[index: string]:User}  = {
-               'user:k1234': {
-                   name: "Santino",
-                   email: 'sonny@correlone.edu',
-                   image: 'stub',
-                   id:'k1234'
-               },
-               'user:k5678':{
-                   name: "Freddie the Fisher",
-                   email: 'fredo@correlone.edu',
-                   image: 'stub',
-                   id:'k5678'
-               },
-               'user:k90123':{
-                   name: "Michael",
-                   email: 'michael@correlone.edu',
-                   image: 'stub',
-                   id:'k90123'
-               }
-           }
-           return JSON.stringify(users[query])
-       });
+       (fetchRedis as jest.Mock).mockImplementation(fetchRedisMock1);
 
         const expected = [
             {senderId: 'k1234', senderEmail: 'sonny@correlone.edu'},
@@ -49,26 +25,7 @@ describe('getFriendRequests', () => {
     });
 
     test('returns an array of objects based off payloads returned from redis 2',async () => {
-        (fetchRedis as jest.Mock).mockImplementation(async(cmd:string, query:string)=>{
-            if (cmd ==='smembers'){
-                return['l1234','l5678' ]
-            }
-            const users: {[index: string]:User}  = {
-                'user:l1234': {
-                    name: "Clemenza",
-                    email: 'clemenza@correlone.edu',
-                    image: 'stub',
-                    id:'l1234'
-                },
-                'user:l5678':{
-                    name: "Tessio",
-                    email: 'tessio@correlone.edu',
-                    image: 'stub',
-                    id:'l5678'
-                }
-            }
-            return JSON.stringify(users[query])
-        })
+        (fetchRedis as jest.Mock).mockImplementation(fetchRedisMock2);
 
         const expected = [
             {senderId: 'l1234', senderEmail: 'clemenza@correlone.edu'},
