@@ -11,20 +11,20 @@ jest.mock('next/navigation', () => ({
 }));
 
 describe('FriendRequests', () => {
-    const requests1: {senderId: string, senderEmail:string} []=  [
+    const requests1: FriendRequest []=  [
         {senderId:'foo', senderEmail: 'bar'},
         {senderId: 'bar', senderEmail: 'foo'}
     ];
-    const requests2: {senderId: string, senderEmail:string} [] = [
+    const requests2: FriendRequest [] = [
         {senderId:'foo', senderEmail: 'bar'}
     ];
-    const requests3: {senderId: string, senderEmail:string}[]  = [
+    const requests3: FriendRequest []  = [
         {senderId:'michael', senderEmail: 'michael@correlone.edu'},
         {senderId: 'sonny', senderEmail: 'santino@correlone.edu'},
         {senderId: 'fredo', senderEmail: 'fredo@correlone.edu'},
         {senderId: 'tom', senderEmail: 'foo@bar.com'}
     ];
-    
+
     beforeEach(()=>{
         mockedAxios.post.mockImplementation(jest.fn());
         (useRouter as jest.Mock).mockReturnValue({

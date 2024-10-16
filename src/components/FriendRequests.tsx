@@ -6,10 +6,7 @@ import axios from "axios";
 import { useRouter } from 'next/navigation';
 
 interface FriendRequestsProps {
-    incomingFriendRequests: {
-        senderId:string,
-        senderEmail:string
-    }[]
+    incomingFriendRequests: FriendRequest[]
 }
 
 type command = 'accept' | 'deny'
