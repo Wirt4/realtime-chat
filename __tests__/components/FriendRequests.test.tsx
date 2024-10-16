@@ -223,7 +223,7 @@ describe('FriendRequests', () => {
         (useRouter as jest.Mock).mockReturnValue({
             refresh: spy,
         });
-        
+
         const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests2} />);
         const button = getByLabelText(/deny friend*/i);
         fireEvent.click(button);
