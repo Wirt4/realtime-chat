@@ -12,11 +12,11 @@ jest.mock('next/navigation', () => ({
 
 describe('FriendRequests', () => {
     const requests1: FriendRequest []=  [
-        {senderId:'foo', senderEmail: 'bar'},
-        {senderId: 'bar', senderEmail: 'foo'}
+        {senderId:'foo', senderEmail: 'foo@bar.com'},
+        {senderId: 'bar', senderEmail: 'bar@foo.com'}
     ];
     const requests2: FriendRequest [] = [
-        {senderId:'foo', senderEmail: 'bar'}
+        {senderId:'foo', senderEmail: 'foo@bar.com'}
     ];
     const requests3: FriendRequest []  = [
         {senderId:'michael', senderEmail: 'michael@correlone.edu'},
@@ -63,9 +63,9 @@ describe('FriendRequests', () => {
     });
 
     test('sender emails should be listed',()=>{
-        render(<FriendRequests incomingFriendRequests = {requests1}/>);
-        const button1 = screen.queryByText('foo@bar.com');
-        const button2 = screen.queryByText('bar@foo.com');
+        const {queryByText} =render(<FriendRequests incomingFriendRequests ={requests1}/>);
+        const button1 = queryByText('foo@bar.com');
+        const button2 = queryByText('bar@foo.com');
         expect(button1).toBeInTheDocument();
         expect(button2).toBeInTheDocument();
     });
@@ -98,13 +98,13 @@ describe('FriendRequests', () => {
     });
 
     test('elements with the label "deny friend" should be a button',()=>{
-        render(<FriendRequests incomingFriendRequests = {requests1}/>);
+        render(<FriendRequests incomingFriendRequests = {requests2}/>);
         const button = screen.getByLabelText(/deny friend*/i);
         expect(button.tagName).toBe('BUTTON');
     });
 
     test('deny friend should contain a x',()=>{
-        render(<FriendRequests incomingFriendRequests = {requests1}/>);
+        render(<FriendRequests incomingFriendRequests = {requests2}/>);
         const button = screen.getByLabelText(/deny friend*/i);
         const check = within(button).getByLabelText('x');
         expect(check).toBeInTheDocument();
@@ -112,7 +112,7 @@ describe('FriendRequests', () => {
 
     test('when accept friend is clicked, axios should be called with the endpoint /api/friends/accept',
         async ()=>{
-        const {getByLabelText} = render(<FriendRequests incomingFriendRequests = {requests1}/>);
+        const {getByLabelText} = render(<FriendRequests incomingFriendRequests = {requests2}/>);
         const button = getByLabelText(/accept friend*/i);
         fireEvent.click(button);
         await waitFor(()=>{
@@ -121,7 +121,7 @@ describe('FriendRequests', () => {
     });
 
     test('when accept friend is clicked, axios should be called with the opts {id: senderId}', async ()=>{
-        const {getByLabelText} = render(<FriendRequests incomingFriendRequests = {requests1}/>);
+        const {getByLabelText} = render(<FriendRequests incomingFriendRequests = {requests2}/>);
         const button = getByLabelText(/accept friend*/i);
         fireEvent.click(button);
         await waitFor(()=>{
@@ -129,13 +129,13 @@ describe('FriendRequests', () => {
         });
     });
 
-    test('when accept friend is clicked, axios should be called with the opts {id: senderId}, differnt data',
+    test('when accept friend is clicked, axios should be called with the opts {id: senderId}, different data',
         async ()=>{
-        const {getByLabelText} =  render(<FriendRequests incomingFriendRequests = {requests1}/>);
+        const {getByLabelText} =  render(<FriendRequests incomingFriendRequests = {requests2}/>);
         const button = getByLabelText(/accept friend*/i);
         fireEvent.click(button);
         await waitFor(()=>{
-            expect(mockedAxios.post).toHaveBeenCalledWith(expect.anything(), {id: 'bar'});
+            expect(mockedAxios.post).toHaveBeenCalledWith(expect.anything(), {id: 'foo'});
         });
     });
 
@@ -161,7 +161,7 @@ describe('FriendRequests', () => {
         (useRouter as jest.Mock).mockReturnValue({
             refresh: spy, // Mock the refresh function
         });
-        const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests1} />);
+        const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests2} />);
         const button = getByLabelText(/accept friend*/i);
         fireEvent.click(button);
         await waitFor(()=>{
@@ -171,7 +171,7 @@ describe('FriendRequests', () => {
 
     test('when deny friend is clicked, axios should be called with the endpoint /api/friends/deny',
         async ()=>{
-            const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests1} />);
+            const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests2} />);
             const button = getByLabelText(/deny friend*/i);
             fireEvent.click(button);
             await waitFor(()=>{
@@ -180,7 +180,7 @@ describe('FriendRequests', () => {
         });
 
     test('when deny friend is clicked, axios should be called with the opts {id: senderId}', async ()=>{
-        const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests1} />);
+        const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests2} />);
         const button = getByLabelText(/deny friend*/i);
         fireEvent.click(button);
         await waitFor(()=>{
@@ -188,13 +188,13 @@ describe('FriendRequests', () => {
         });
     });
 
-    test('when deny friend is clicked, axios should be called with the opts {id: senderId}, differnt data',
+    test('when deny friend is clicked, axios should be called with the opts {id: senderId}, different data',
         async ()=>{
-            const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests1} />);
+            const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests2} />);
             const button = getByLabelText(/deny friend*/i);
             fireEvent.click(button);
             await waitFor(()=>{
-                expect(mockedAxios.post).toHaveBeenCalledWith(expect.anything(), {id: 'bar'});
+                expect(mockedAxios.post).toHaveBeenCalledWith(expect.anything(), {id: 'foo'});
             });
         });
 
@@ -220,7 +220,7 @@ describe('FriendRequests', () => {
         (useRouter as jest.Mock).mockReturnValue({
             refresh: spy,
         });
-        const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests1} />);
+        const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests2} />);
         const button = getByLabelText(/deny friend*/i);
         fireEvent.click(button);
         await waitFor(()=>{

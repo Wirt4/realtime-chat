@@ -37,22 +37,22 @@ const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests})=>{
         <p className='friend-requests-nothing'>
             Nothing to show here...
         </p>:
-            requests.map((r)=>{
-                return (<div className='friend-requests' key={r.senderId}>
+            requests.map((request)=>{
+                return (<div className='friend-requests' key={request.senderId}>
                     <UserPlus  aria-label='add user'/>
                     <p className='friend-requests-email'>
-                        {r.senderEmail}
+                        {request.senderEmail}
                     </p>
                     <button aria-label={`accept friend: {r.senderEmail}`}
-                            onClick={()=>accept(r.senderId)}
+                            onClick={()=>accept(request.senderId)}
                             className='friend-requests-check'
                     >
                         <Check aria-label='checkmark'
                                className='friend-requests-button'
                         />
                     </button>
-                    <button aria-label={`deny friend: ${r.senderEmail}`}
-                            onClick={()=>deny(r.senderId)}
+                    <button aria-label={`deny friend: ${request.senderEmail}`}
+                            onClick={()=>deny(request.senderId)}
                             className='friend-requests-x'
                     >
                         <X aria-label='x'
