@@ -12,7 +12,7 @@ interface FriendRequestsProps {
 }
 
 const accept = () =>{
-    axios.post('/api/friends/accept', 'foo')
+    axios.post('/api/friends/accept', {id: 'foo'})
 }
 const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests})=>{
     return <div aria-label='friend requests'>
