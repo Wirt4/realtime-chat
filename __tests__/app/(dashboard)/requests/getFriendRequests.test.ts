@@ -10,7 +10,7 @@ describe('getFriendRequests', () => {
         jest.resetAllMocks();
     });
 
-    test('returns an array of objects based off payloads retrned from redis',async () => {
+    test('returns an array of objects based off payloads returned from redis',async () => {
        (fetchRedis as jest.Mock).mockImplementation(async(cmd:string, query:string)=>{
            if (cmd ==='smembers'){
                return['k1234','k5678', 'k90123' ]
@@ -35,7 +35,7 @@ describe('getFriendRequests', () => {
                    id:'k90123'
                }
            }
-           return users[query]
+           return JSON.stringify(users[query])
        });
 
         const expected = [
@@ -67,7 +67,7 @@ describe('getFriendRequests', () => {
                     id:'l5678'
                 }
             }
-            return users[query]
+            return JSON.stringify(users[query])
         })
 
         const expected = [
