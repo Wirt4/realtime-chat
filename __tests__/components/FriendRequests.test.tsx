@@ -145,7 +145,7 @@ describe('FriendRequests', () => {
                 {senderId: 'tom', senderEmail: 'foo@bar.com'}]
             const {getByRole} = render(<FriendRequests incomingFriendRequests={requests} />);
             const button = getByRole('button', {
-                name: /accept friend: fredo@correlone.edu/i
+                name: /fredo@correlone.edu/i
             });
 
             fireEvent.click(button);
