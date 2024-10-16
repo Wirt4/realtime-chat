@@ -20,8 +20,8 @@ const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests})=>{
     }[]>(incomingFriendRequests);
 
     const accept = async (senderId: string) =>{
-        await axios.post('/api/friends/accept', {id: senderId})
-        setRequests([]);
+        await axios.post('/api/friends/accept', {id: senderId});
+        setRequests(previousOptions => previousOptions.filter(item=> item.senderId != senderId));
     }
 
     return <div aria-label='friend requests'>
