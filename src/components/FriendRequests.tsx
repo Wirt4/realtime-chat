@@ -3,7 +3,7 @@
 import {FC, useState} from "react";
 import {Check, UserPlus, X} from 'lucide-react';
 import axios from "axios";
-import {useRouter} from "next/router";
+import { useRouter } from 'next/navigation';
 
 interface FriendRequestsProps {
     incomingFriendRequests: {

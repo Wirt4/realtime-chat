@@ -1,9 +1,15 @@
 import '@testing-library/jest-dom';
 import FriendRequests from "@/components/FriendRequests";
 import {render, screen, waitFor, within, fireEvent} from "@testing-library/react";
+//mocks
 import axios from 'axios';
+import {useRouter} from "next/navigation";
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
+jest.mock('next/navigation', () => ({
+    useRouter: jest.fn(),
+}));
+
 
 describe('FriendRequests', () => {
     beforeEach(()=>{
@@ -140,4 +146,17 @@ describe('FriendRequests', () => {
 
             });
         });
+    test('when accept friend is clicked, should refersh the page', async ()=>{
+        const spy = jest.fn();
+        (useRouter as jest.Mock).mockReturnValue({
+            refresh: spy, // Mock the refresh function
+        });
+        const requests = [{senderId:'foo', senderEmail: 'foo@bar.com'}];
+        const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests} />);
+        const button = getByLabelText(/accept friend*/i);
+        fireEvent.click(button);
+        await waitFor(()=>{
+            expect(spy).toHaveBeenCalled();
+        });
+    });
 });
