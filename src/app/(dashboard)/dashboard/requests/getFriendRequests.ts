@@ -7,11 +7,10 @@ async function getFriendRequests(sessionId:string): Promise<{senderId: string, s
     const requests = await Promise.all(
         ids.map(async id => {
             const sender = await fetchRedis('get', `user:${id}`) as string;
-            const foo =JSON.parse(sender) as User
-            console.log(foo)
+            const parsed =JSON.parse(sender) as User
             return{
                 senderId:id,
-                senderEmail:foo.email
+                senderEmail:parsed.email
             }
         })
     );

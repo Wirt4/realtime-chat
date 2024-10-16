@@ -1,8 +1,17 @@
 import '@testing-library/jest-dom';
 import FriendRequests from "@/components/FriendRequests";
-import {render, screen, within} from "@testing-library/react";
+import {render, screen, waitFor, within, fireEvent} from "@testing-library/react";
+import axios from 'axios';
+jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('FriendRequests', () => {
+    beforeEach(()=>{
+        mockedAxios.post.mockImplementation(jest.fn())
+    })
+    afterEach(()=>{
+        jest.resetAllMocks()
+    })
     test('final state of friend requests is 0, should render "Nothing to show here..." ',()=>{
         render(<FriendRequests incomingFriendRequests={[]} />);
         const text = screen.getByText('Nothing to show here...');
@@ -76,11 +85,21 @@ describe('FriendRequests', () => {
         expect(button.tagName).toBe('BUTTON');
     });
 
-    test('accept friend should contain a x',()=>{
+    test('deny friend should contain a x',()=>{
         const requests = [{senderId:'foo', senderEmail: 'foo@bar.com'}]
         render(<FriendRequests incomingFriendRequests={requests} />);
         const button = screen.getByLabelText('deny friend');
         const check = within(button).getByLabelText('x');
         expect(check).toBeInTheDocument();
+    });
+
+    test('when accept friend is clicked, axios should be called with the endpoint /api/friends/accept', async ()=>{
+        const requests = [{senderId:'foo', senderEmail: 'foo@bar.com'}];
+        const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests} />);
+        const button = getByLabelText('accept friend');
+        fireEvent.click(button);
+        await waitFor(()=>{
+            expect(mockedAxios.post).toHaveBeenCalledWith('/api/friends/accept', expect.anything());
+        });
     });
 });
