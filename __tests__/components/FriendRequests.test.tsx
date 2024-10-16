@@ -102,4 +102,13 @@ describe('FriendRequests', () => {
             expect(mockedAxios.post).toHaveBeenCalledWith('/api/friends/accept', expect.anything());
         });
     });
+    test('when accept friend is clicked, axios should be called with the opts {id: senderId}', async ()=>{
+        const requests = [{senderId:'foo', senderEmail: 'foo@bar.com'}];
+        const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests} />);
+        const button = getByLabelText('accept friend');
+        fireEvent.click(button);
+        await waitFor(()=>{
+            expect(mockedAxios.post).toHaveBeenCalledWith(expect.anything(), {id: 'foo'});
+        });
+    });
 });
