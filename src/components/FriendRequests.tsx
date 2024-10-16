@@ -14,6 +14,7 @@ interface FriendRequestsProps {
 
 
 const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests})=>{
+    const router = useRouter()
     const [requests, setRequests] = useState<{
         senderId:string,
         senderEmail:string
@@ -22,6 +23,7 @@ const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests})=>{
     const accept = async (senderId: string) =>{
         await axios.post('/api/friends/accept', {id: senderId});
         setRequests(previousOptions => previousOptions.filter(item=> item.senderId != senderId));
+        await router.refresh();
     }
 
     return <div aria-label='friend requests'>

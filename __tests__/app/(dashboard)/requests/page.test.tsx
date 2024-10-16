@@ -5,8 +5,10 @@ import {getServerSession} from "next-auth";
 import {authOptions} from "@/lib/auth";
 import {notFound} from "next/navigation";
 import fetchRedis from "@/helpers/redis";
-jest.mock("../../../../src/helpers/redis",()=> jest.fn());
+import FriendRequests from "@/components/FriendRequests";
 
+jest.mock("../../../../src/helpers/redis",()=> jest.fn());
+jest.mock("../../../../src/components/FriendRequests",()=> jest.fn());
 jest.mock('next-auth', () => ({
     getServerSession: jest.fn(),
 }));
@@ -43,8 +45,7 @@ describe('Request page', () => {
     test('should render a FriendRequests component',async ()=>{
         (getServerSession as jest.Mock).mockResolvedValue({user:{id:'valid'}})
         render(await Page({}));
-        const friendRequests = screen.getByLabelText('friend requests');
-        expect(friendRequests).toBeInTheDocument();
+        expect((FriendRequests as Jest.Mock)).toHaveBeenCalled();
     });
 
     test('should display the words "Friend Requests',async ()=>{

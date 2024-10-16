@@ -13,7 +13,10 @@ jest.mock('next/navigation', () => ({
 
 describe('FriendRequests', () => {
     beforeEach(()=>{
-        mockedAxios.post.mockImplementation(jest.fn())
+        mockedAxios.post.mockImplementation(jest.fn());
+        (useRouter as jest.Mock).mockReturnValue({
+            refresh: jest.fn(),
+        });
     })
     afterEach(()=>{
         jest.resetAllMocks()
