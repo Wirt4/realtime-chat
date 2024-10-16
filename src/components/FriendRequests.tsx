@@ -12,6 +12,7 @@ interface FriendRequestsProps {
     }[]
 }
 
+type command = 'accept' | 'deny'
 
 const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests})=>{
     const router = useRouter()
@@ -20,25 +21,46 @@ const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests})=>{
         senderEmail:string
     }[]>(incomingFriendRequests);
 
-    const accept = async (senderId: string) =>{
-        await axios.post('/api/friends/accept', {id: senderId});
+    const apiPost = async (senderId: string, cmd: command) =>{
+        await axios.post(`/api/friends/${cmd}`, {id: senderId});
         setRequests(previousOptions => previousOptions.filter(item=> item.senderId != senderId));
-        await router.refresh();
+        router.refresh();
+    }
+
+    const accept = async (senderId: string)=>{
+        await apiPost(senderId, 'accept')
+    }
+
+    const deny = async (senderId: string)=>{
+        await apiPost(senderId, 'deny')
     }
 
     return <div aria-label='friend requests'>
         {incomingFriendRequests.length == 0 ?
-        <p className='friend-requests-nothing'>Nothing to show here...</p>:
+        <p className='friend-requests-nothing'>
+            Nothing to show here...
+        </p>:
             requests.map((r)=>{
                 return (<div className='friend-requests' key={r.senderId}>
                     <UserPlus  aria-label='add user'/>
-                    <p className='friend-requests-email'>{r.senderEmail}</p>
-                    <button aria-label={`accept friend: ${r.senderEmail}`} onClick={()=>accept(r.senderId)}
-                            className='friend-requests-check'>
-                        <Check aria-label='checkmark' className='friend-requests-button'/>
+                    <p className='friend-requests-email'>
+                        {r.senderEmail}
+                    </p>
+                    <button aria-label={`accept friend: {r.senderEmail}`}
+                            onClick={()=>accept(r.senderId)}
+                            className='friend-requests-check'
+                    >
+                        <Check aria-label='checkmark'
+                               className='friend-requests-button'
+                        />
                     </button>
-                    <button aria-label='deny friend' className='friend-requests-x'>
-                        <X aria-label='x' className='friend-requests-button'/>
+                    <button aria-label={`deny friend: ${r.senderEmail}`}
+                            onClick={()=>deny(r.senderId)}
+                            className='friend-requests-x'
+                    >
+                        <X aria-label='x'
+                           className='friend-requests-button'
+                        />
                     </button>
                 </div>)
             })
