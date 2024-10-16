@@ -29,7 +29,7 @@ describe('FriendRequests', () => {
         mockedAxios.post.mockImplementation(jest.fn());
         (useRouter as jest.Mock).mockReturnValue({
             refresh: jest.fn(),
-        });[]
+        });
     });
 
     afterEach(()=>{
@@ -115,6 +115,7 @@ describe('FriendRequests', () => {
         const {getByLabelText} = render(<FriendRequests incomingFriendRequests = {requests2}/>);
         const button = getByLabelText(/accept friend*/i);
         fireEvent.click(button);
+
         await waitFor(()=>{
             expect(mockedAxios.post).toHaveBeenCalledWith('/api/friends/accept', expect.anything());
         });
@@ -124,6 +125,7 @@ describe('FriendRequests', () => {
         const {getByLabelText} = render(<FriendRequests incomingFriendRequests = {requests2}/>);
         const button = getByLabelText(/accept friend*/i);
         fireEvent.click(button);
+
         await waitFor(()=>{
             expect(mockedAxios.post).toHaveBeenCalledWith(expect.anything(), {id: 'foo'});
         });
@@ -134,6 +136,7 @@ describe('FriendRequests', () => {
         const {getByLabelText} =  render(<FriendRequests incomingFriendRequests = {requests2}/>);
         const button = getByLabelText(/accept friend*/i);
         fireEvent.click(button);
+
         await waitFor(()=>{
             expect(mockedAxios.post).toHaveBeenCalledWith(expect.anything(), {id: 'foo'});
         });
@@ -159,8 +162,9 @@ describe('FriendRequests', () => {
     test('when accept friend is clicked, should refresh the page', async ()=>{
         const spy = jest.fn();
         (useRouter as jest.Mock).mockReturnValue({
-            refresh: spy, // Mock the refresh function
+            refresh: spy
         });
+
         const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests2} />);
         const button = getByLabelText(/accept friend*/i);
         fireEvent.click(button);
@@ -211,7 +215,6 @@ describe('FriendRequests', () => {
                 expect( screen.queryByText('fredo@correlone.edu')).not.toBeInTheDocument();
                 expect( screen.queryByText('santino@correlone.edu')).toBeInTheDocument();
                 expect( screen.queryByText('michael@correlone.edu')).toBeInTheDocument();
-
             });
         });
 
@@ -220,6 +223,7 @@ describe('FriendRequests', () => {
         (useRouter as jest.Mock).mockReturnValue({
             refresh: spy,
         });
+        
         const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests2} />);
         const button = getByLabelText(/deny friend*/i);
         fireEvent.click(button);
