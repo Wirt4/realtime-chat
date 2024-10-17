@@ -7,6 +7,7 @@ const customJestConfig = {
     moduleDirectories: ['node_modules', '<rootDir>'],
     testEnvironment: 'jest-environment-jsdom',
     setupFiles: ['dotenv/config'],
+    setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
     transform: {
         '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
     },
