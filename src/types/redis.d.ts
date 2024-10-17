@@ -1,1 +1,1 @@
-type Command = 'zrange' | 'sismember' | 'get' | 'smembers'
+type Command = 'zrange' | 'sismember' | 'get' | 'smembers';

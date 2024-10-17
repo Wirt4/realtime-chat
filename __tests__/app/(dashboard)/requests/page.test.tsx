@@ -12,6 +12,7 @@ jest.mock("../../../../src/components/FriendRequests",()=> jest.fn());
 jest.mock('next-auth', () => ({
     getServerSession: jest.fn(),
 }));
+
 jest.mock('next/navigation', () => ({
     notFound: jest.fn(),
 }));
