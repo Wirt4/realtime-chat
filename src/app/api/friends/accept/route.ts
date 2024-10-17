@@ -43,11 +43,15 @@ class Handler{
     }
 
     async areFriends(): Promise<boolean>{
-        return fetchRedis('sismember', this.friendsTable(), this.idToAdd);
+        return this.fetchRedisTemplate(this.friendsTable());
     }
 
     async isInRequests(): Promise<boolean>{
-       return  await fetchRedis('sismember', this.incomingRequestsQuery(), this.idToAdd) as number == 1;
+        return this.fetchRedisTemplate(this.incomingRequestsQuery());
+    }
+
+    async fetchRedisTemplate(table: string): Promise<boolean>{
+        return  fetchRedis('sismember', table, this.idToAdd);
     }
 
     async addtoFriendsTabeles():Promise<void>{
