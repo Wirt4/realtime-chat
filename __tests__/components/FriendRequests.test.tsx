@@ -142,11 +142,11 @@ describe('FriendRequests', () => {
         });
     });
 
-    test('if accept friend is clicked, setFriendRequests should be called with every sender id except the current one',
+    test('if accept friend is clicked,  current id should be removed from page',
         async ()=>{
             const {getByRole} = render(<FriendRequests incomingFriendRequests={requests3} />);
             const button = getByRole('button', {
-                name: /fredo@correlone.edu/i
+                name: /accept friend: fredo@correlone.edu/i
             });
 
             fireEvent.click(button);
@@ -173,8 +173,7 @@ describe('FriendRequests', () => {
         });
     });
 
-    test('when deny friend is clicked, axios should be called with the endpoint /api/friends/deny',
-        async ()=>{
+    test('when deny friend is clicked, axios should be called with /api/friends/deny', async ()=>{
             const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests2} />);
             const button = getByLabelText(/deny friend*/i);
             fireEvent.click(button);
@@ -202,7 +201,7 @@ describe('FriendRequests', () => {
             });
         });
 
-    test('if deny friend is clicked, setFriendRequests should be called with every sender id except the current one',
+    test('if deny friend is clicked, current sender id should be removed',
         async ()=>{
             const {getByRole} = render(<FriendRequests incomingFriendRequests={requests3} />);
             const button = getByRole('button', {

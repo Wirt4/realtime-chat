@@ -43,7 +43,7 @@ const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests})=>{
                     <p className='friend-requests-email'>
                         {request.senderEmail}
                     </p>
-                    <button aria-label={`accept friend: {r.senderEmail}`}
+                    <button aria-label={`accept friend: ${request.senderEmail}`}
                             onClick={()=>accept(request.senderId)}
                             className='friend-requests-check'
                     >
