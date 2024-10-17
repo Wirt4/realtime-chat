@@ -51,7 +51,6 @@ export class PostFriendsRouteHandler {
             console.error({error})
             return this.setAndReturn('Invalid request payload', 422)
         }
-        debugger;
         const userExists = await this.userExists(email.email)
         if (!userExists){
             return this.setAndReturn('This person does not exist.')
