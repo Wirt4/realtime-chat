@@ -1,19 +1,18 @@
 import {PostFriendsRouteHandler} from '@/app/api/friends/add/handler'
 import fetchRedis from "@/helpers/redis"
-import myGetServerSession from "@/lib/myGetServerSession";
 import { db } from '@/lib/db';
 
-jest.mock("../../../../src/lib/myGetServerSession",()=>({
+jest.mock("@/lib/myGetServerSession",()=>({
     __esModule: true,
     default: jest.fn()
 }));
 
-jest.mock("../../../../src/helpers/redis",()=>({
+jest.mock("@/helpers/redis",()=>({
     __esModule: true,
     default: jest.fn()
 }));
 
-jest.mock("../../../../src/lib/db",()=>({
+jest.mock("@/lib/db",()=>({
     __esModule: true,
     db: {
         sadd: jest.fn() // Mock the sadd method
