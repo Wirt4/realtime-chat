@@ -1,7 +1,5 @@
 import {addFriendValidator} from "@/lib/validations/add-friend";
-import {Utils} from "@/lib/utils";
 import myGetServerSession from "@/lib/myGetServerSession";
-import {pusherServer} from "@/lib/pusher";
 import fetchRedis from "@/helpers/redis";
 import {db} from "@/lib/db";
 
