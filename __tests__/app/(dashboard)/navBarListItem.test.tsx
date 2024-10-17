@@ -4,7 +4,7 @@ import {render, screen} from "@testing-library/react";
 
 describe('NavBarListItem', () => {
     test('make sure component as list item',()=>{
-        render(<NavbarListItem href="foo" Icon="Logo" name='Order an Main'/>);
+        render(<NavbarListItem href="foo" Icon="Logo" name='Main'/>);
         const listItem = screen.getByRole('listitem');
         expect(listItem).toBeInTheDocument();
     });
@@ -16,7 +16,7 @@ describe('NavBarListItem', () => {
     });
 
     test('make sure link used desired href',()=>{
-        render(<NavbarListItem href="/contact" Icon="Logo" name='Order an Aligator'/> );
+        render(<NavbarListItem href="/contact" Icon="Logo" name='Main'/> );
         const link = screen.getByRole('link');
         expect(link).toHaveAttribute('href', '/contact');
     });
@@ -34,14 +34,14 @@ describe('NavBarListItem', () => {
     });
 
     test('confirm the UserPlus element is rendered',()=>{
-        render(<NavbarListItem href="/add" Icon="AddUser" name='Main'/>);
-        const name = screen.getByLabelText('AddUser');
+        render(<NavbarListItem href="/add" Icon="UserPlus" name='Main'/>);
+        const name = screen.getByLabelText('UserPlus');
         expect(name).toBeInTheDocument();
     });
 
 
     test('component should display the correct name',()=>{
-        render(<NavbarListItem href="/add" Icon="AddUser" name='Add a Friend'/>);
+        render(<NavbarListItem href="/add" Icon="UserPlus" name='Add a Friend'/>);
         const userPlusIcon = screen.getByText('Add a Friend');
         expect(userPlusIcon).toBeInTheDocument();
     });
