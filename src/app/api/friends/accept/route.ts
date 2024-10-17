@@ -5,6 +5,7 @@ import {db} from "@/lib/db";
 
 export async function POST(request: Request):Promise<Response> {
     const idToAdd = await getIdToAdd(request);
+
     if (!idToAdd) {
         return respond('Invalid Request', 422);
     }
