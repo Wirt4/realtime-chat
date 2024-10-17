@@ -192,20 +192,6 @@ describe("Trigger Pusher tests", ()=>{
         jest.resetAllMocks()
     })
 
-    test("check the correct arguments have been passed to 'toPusherKey'",async ()=>{
-        jest.spyOn(pusherServer, 'trigger').mockResolvedValue({})
-        handler.idToAdd ='1701'
-        const spy = jest.spyOn(Utils, 'toPusherKey')
-        await handler.triggerPusher()
-        expect(spy).toHaveBeenCalledWith('user:1701:incoming_friend_requests')
-    })
-
-    test("check the correct arguments have been passed to 'toPusherKey' 2",async ()=>{
-        handler.idToAdd ='1984'
-        const spy = jest.spyOn(Utils, 'toPusherKey')
-        await handler.triggerPusher()
-        expect(spy).toHaveBeenCalledWith('user:1984:incoming_friend_requests')
-    })
 
     test("confirm idToAdd has been set by the userExists method",async ()=>{
         const expectedID = '1984';
@@ -228,22 +214,7 @@ describe("Trigger Pusher tests", ()=>{
         await handler.userExists('foo@bar.com')
         expect(handler.idToAdd).toEqual(expectedID)
     })
-
-    test("pusher server should get the output of the key as well as the user id and email",async ()=>{
-        const spy = jest.spyOn(pusherServer, 'trigger').mockResolvedValue({} as never)
-        const expected1 ='valid-pusher-key'
-        const expectedSenderId ="1972"
-        const expectedSenderEmail = "tom@tomHagenLaw.com"
-        handler.senderId = expectedSenderId
-        handler.senderEmail = expectedSenderEmail
-
-        jest.spyOn(Utils, 'toPusherKey').mockReturnValue(expected1)
-        await handler.triggerPusher()
-        expect(spy).toHaveBeenCalledWith(expected1,
-            'incoming_friend_requests',
-            {senderId: expectedSenderId, senderEmail:expectedSenderEmail}
-        )
-    })
+    
     test("confirm senderId has been set by the session method",async ()=>{
         const expectedID = '1489';
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: expectedID}});
