@@ -1,23 +1,26 @@
 import '@testing-library/jest-dom';
 import FriendRequests from "@/components/FriendRequests";
 import {render, screen, waitFor, within, fireEvent} from "@testing-library/react";
-
 import axios from 'axios';
 import {useRouter} from "next/navigation";
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+
 jest.mock('next/navigation', () => ({
     useRouter: jest.fn(),
 }));
+
+jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('FriendRequests', () => {
     const requests1: FriendRequest []=  [
         {senderId:'foo', senderEmail: 'foo@bar.com'},
         {senderId: 'bar', senderEmail: 'bar@foo.com'}
     ];
+
     const requests2: FriendRequest [] = [
         {senderId:'foo', senderEmail: 'foo@bar.com'}
     ];
+
     const requests3: FriendRequest []  = [
         {senderId:'michael', senderEmail: 'michael@correlone.edu'},
         {senderId: 'sonny', senderEmail: 'santino@correlone.edu'},
