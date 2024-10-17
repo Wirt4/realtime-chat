@@ -15,7 +15,8 @@ const customJestConfig = {
         '/node_modules/(?!next-auth|@next-auth/upstash-redis-adapter|uuid/.*)', // Ensure uuid and other modules are transformed
     ],
     moduleNameMapper: {
-        "^uuid$": "uuid"
+        "^uuid$": "uuid",
+        "^@/(.*)$": "<rootDir>/src/$1"
     },
 };
 
