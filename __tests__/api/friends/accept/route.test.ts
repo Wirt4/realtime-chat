@@ -32,13 +32,13 @@ describe('/api/friends/accept', () => {
         jest.resetAllMocks();
     })
 
-    test('POST should run without throwing', async () => {
+    test('If is all anticcipated case, then POST runs without throwing', async () => {
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         const req = requestify('valid')
         await POST(req);
     });
 
-    test('method throws if value is not string', async () => {
+    test('If the request value is not a string, then POST returns a 422', async () => {
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         const req = requestify(42)
         const expectedResponse: expectedResponse = {
@@ -49,7 +49,7 @@ describe('/api/friends/accept', () => {
         assertResponse(response, expectedResponse)
     });
 
-    test('If session is null, return 401 UnAuthorized', async () => {
+    test("If the users's session is null, then POST returns a 401", async () => {
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue(null);
         const req = requestify('valid')
@@ -61,7 +61,7 @@ describe('/api/friends/accept', () => {
         assertResponse(response, expected);
     });
 
-    test('If session is not null, do not return 401 UnAuthorized', async () => {
+    test("If the user's session is valid, then  POST doesn't return 401 UnAuthorized", async () => {
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1701'}});
         const req = requestify('valid')
@@ -73,7 +73,7 @@ describe('/api/friends/accept', () => {
         assertNotResponse(response, notExpected);
     });
 
-    test('fetchRedis(sismember, user:1701:friends is truthy, response should be Already Friends 400', async () => {
+    test('If fetchRedis"(sismember, user:1701:friends)" is truthy, then POST returns 401, Already Friends', async () => {
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1701'}});
         const req = requestify('valid');
@@ -87,7 +87,8 @@ describe('/api/friends/accept', () => {
         assertResponse(response, expected)
     });
 
-    test('fetchRedis(sismember, user:1701:friends is falsy, response should not be Already Friends 400', async () => {
+    test('If fetchRedis("sismember, user:1701:friends)" is falsy, then POST does not return Already Friends 400',
+        async () => {
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1701'}});
         const req = requestify('valid');
@@ -101,23 +102,47 @@ describe('/api/friends/accept', () => {
         assertNotResponse(response, expected)
     });
 
-    test('fetchRedis should be called with sismember, user:1701:friends, 5468  ', async () => {
+    test('If POST is called by user 5468, then fetchRedis is called with second arg == "5468"', async () => {
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1701'}});
         const req = requestify('5468');
         await POST(req);
-        expect(fetchRedis as jest.Mock).toHaveBeenCalledWith('sismember','user:1701:friends', '5468');
+        expect(fetchRedis as jest.Mock).toHaveBeenCalledWith(expect.anything(),expect.anything(), '5468');
     });
 
-    test('fetchRedis should be called with sismember, user:1966:friends, 1701 ', async () => {
+    test('If POST is called with a request for 1701, then fetchRedis is called with first arg == "user:1701:friends" ', async () => {
+        fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1701'}});
+        const req = requestify('5468');
+        await POST(req);
+        expect(fetchRedis as jest.Mock).toHaveBeenCalledWith(expect.anything(),'user:1701:friends', expect.anything());
+    });
+
+    test('If POST is called , then fetchRedis is called with command == "sismember" ', async () => {
+        fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1701'}});
+        const req = requestify('5468');
+        await POST(req);
+        expect(fetchRedis as jest.Mock).toHaveBeenCalledWith("sismember",expect.anything(), expect.anything());
+    });
+
+    test('If POST is called by user 1701, then fetchRedis is be called with second arg == 1701 ', async () => {
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1966'}});
         const req = requestify('1701');
         await POST(req);
-        expect(fetchRedis as jest.Mock).toHaveBeenCalledWith('sismember','user:1966:friends', '1701');
+        expect(fetchRedis as jest.Mock).toHaveBeenCalledWith(expect.anything(),expect.anything(), '1701');
     });
 
-    test("fetcRedis' call to :incoming_friend_requests returns a falsy value", async()=>{
+    test('If POST is called with 1966 in payload, then fetchRedis should be called with first arg == user:1966:friends,', async () => {
+        fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1966'}});
+        const req = requestify('1701');
+        await POST(req);
+        expect(fetchRedis as jest.Mock).toHaveBeenCalledWith(expect.anything(),'user:1966:friends', expect.anything());
+    });
+
+    test(" If fetchRedis' call to :incoming_friend_requests returns a falsy value, then POST returns a 400", async()=>{
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1966'}});
         (fetchRedis as jest.Mock).mockImplementation(redisMock(false))
@@ -132,7 +157,7 @@ describe('/api/friends/accept', () => {
         assertResponse(response, expected);
     });
 
-    test("fetcRedis' call to :incoming_friend_requests returns a truthy value, expect db.sadd to be called", async()=>{
+    test("If fetcRedis' call to :incoming_friend_requests returns a truthy value,then POST calls db.sadd", async()=>{
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1966'}});
         (fetchRedis as jest.Mock).mockImplementation(redisMock())
@@ -143,7 +168,7 @@ describe('/api/friends/accept', () => {
         expect(db.sadd).toHaveBeenCalledWith('user:1701:friends', '1966');
     });
 
-    test("fetcRedis' call to :incoming_friend_requests returns a truthy value, expect db.sadd to be called, different data", async()=>{
+    test(" If fetcRedis' call to :incoming_friend_requests returns a truthy value, then POST calls db.sadd , different data", async()=>{
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'8569'}});
         (fetchRedis as jest.Mock).mockImplementation(redisMock());
@@ -155,7 +180,7 @@ describe('/api/friends/accept', () => {
         expect(db.sadd).toHaveBeenCalledWith('user:666:friends', '8569');
     });
 
-    test("expect the idtoAdd to be removed from the user's requests table", async()=>{
+    test("If POST is successfully called, then the idtoAdd is removed from the user's requests table", async()=>{
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'8569'}});
         (fetchRedis as jest.Mock).mockImplementation(redisMock());
@@ -166,7 +191,8 @@ describe('/api/friends/accept', () => {
         expect(db.srem).toHaveBeenCalledWith('user:8569:incoming_friend_requests', '666');
     });
 
-    test("expect the idtoAdd to be removed from the user's requests table", async()=>{
+    test("If POST is successfully called, then the idtoAdd is removed from the user's requests table, different data",
+        async()=>{
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'4567'}});
         (fetchRedis as jest.Mock).mockImplementation(redisMock());
