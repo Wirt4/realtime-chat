@@ -12,13 +12,13 @@ describe('Icons', ()=>{
     });
 
     test('Logo should return a react element', ()=>{
-        const logo = Icons.Logo()
+        const logo = Icons.Logo({})
         expect(React.isValidElement(logo)).toBe(true);
     });
 
-    test('should have a component called "AddUser"',()=>{
+    test('should have a component called "UserPlus"',()=>{
         expect(Icons).toEqual(
-            expect.objectContaining({AddUser:expect.anything()}));
+            expect.objectContaining({UserPlus:expect.anything()}));
     });
 
     test('should have a component called "User"',()=>{

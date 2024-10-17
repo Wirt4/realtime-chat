@@ -114,3 +114,39 @@
 .addfriend-success{
     @apply mt-1 text-sm text-green-600;
 }
+
+.friend-requests-wrapper{
+    @apply flex flex-col gap-4;
+}
+
+.friend-requests-nothing{
+    @apply text-sm text-zinc-500;
+}
+
+.friend-requests{
+    @apply flex gap-4 items-center;
+}
+
+.friend-requests-email{
+    @apply font-medium text-lg;
+}
+
+.friend-requests-check{
+    @apply w-8 h-8 bg-green-500 grid place-items-center rounded-full transition;
+}
+
+.friend-requests-check:hover{
+    @apply  bg-green-600 shadow-md;
+}
+
+.friend-requests-x{
+    @apply w-8 h-8 bg-red-500 grid place-items-center rounded-full transition;
+}
+
+.friend-requests-x:hover{
+    @apply  bg-red-600 shadow-md;
+}
+
+.friend-requests-button{
+    @apply font-semibold text-white w-3/4 h-3/4;
+}
