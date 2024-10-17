@@ -5,5 +5,5 @@ export const pusherClient = {
 }
 export const pusherServer =  {
     //stub
-    trigger:()=>{}
+    trigger:(foo: never, bar: never, bee: never)=>{}
 }
