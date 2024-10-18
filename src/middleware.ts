@@ -10,15 +10,15 @@ export const middleware = async (req: NextRequest)=>{
     const JWT = await getToken({req});
     const handler = new Handler(req, JWT);
 
+    if (handler.isAccessingSensitiveRoute() && !handler.isAuthenticated()){
+        return handler.redirectToLogin();
+    }
+
     if (handler.isLogin()){
         if (handler.isAuthenticated()){
             return handler.redirectToDashboard()
         }
         return handler.next();
-    }
-
-    if (handler.isAccessingSensitiveRoute() && !handler.isAuthenticated()){
-        return handler.redirectToLogin();
     }
 
     if (handler.isPointingToHome()){
@@ -50,11 +50,11 @@ class Handler {
     }
 
     redirectToDashboard(){
-        return NextResponse.redirect(`${this._url}/dashboard`);
+        return NextResponse.redirect(new URL('/dashboard', this._url));
     }
 
     redirectToLogin(){
-        return NextResponse.redirect(`${this._url}/login`);
+        return NextResponse.redirect(new URL('/login', this._url));
     }
 
     isAccessingSensitiveRoute(){
@@ -66,4 +66,12 @@ class Handler {
     }
 }
 
-export default withAuth(middleware);
+export default withAuth(
+    middleware,
+    {
+    callbacks:{
+        async authorized(){
+            return true;
+        }
+    }}
+);

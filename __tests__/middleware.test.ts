@@ -47,34 +47,65 @@ describe('Middleware, functionality tests', () => {
     test('if is login page and user is authenticated, then redirect to dashboard',async()=>{
         const MockRequest = {nextUrl:{pathname:'/login'}, url: 'http://localhost:8000'};
         (getToken as jest.Mock).mockResolvedValue(true);
-        const nextSpy = jest.spyOn(NextResponse, 'redirect');
+        const mockURL = jest.spyOn(global, 'URL').mockImplementation((url) => {
+            return {
+                href: url,
+                toString: () => url,
+                // Add more properties as needed
+            };
+        });
+        const redirectSpy = jest.spyOn(NextResponse, 'redirect');
         await middleware(MockRequest as NextRequest);
-        expect(nextSpy).toHaveBeenCalledWith("http://localhost:8000/dashboard");
+        expect(mockURL).toHaveBeenCalledWith("/dashboard", "http://localhost:8000");
+        expect(redirectSpy).toHaveBeenCalled();
     });
 
     test('if is login page and user is authenticated, then redirect to dashboard, different data',async()=>{
         const MockRequest = {nextUrl:{pathname:'/login'}, url: 'http://liveendpoint.com'};
         (getToken as jest.Mock).mockResolvedValue(true);
-        const nextSpy = jest.spyOn(NextResponse, 'redirect');
+        const mockURL = jest.spyOn(global, 'URL').mockImplementation((url) => {
+            return {
+                href: url,
+                toString: () => url,
+                // Add more properties as needed
+            };
+        });
         await middleware(MockRequest as NextRequest);
-        expect(nextSpy).toHaveBeenCalledWith('http://liveendpoint.com/dashboard');
+        const redirectSpy = jest.spyOn(NextResponse, 'redirect');
+        expect(mockURL).toHaveBeenCalledWith("/dashboard", "http://liveendpoint.com");
+        expect(redirectSpy).toHaveBeenCalled();
     });
 
     test('if request is not authenticated and accessing a pathname that starts with "/dashboard", then redirect to login',
         async()=>{
             const MockRequest = {nextUrl:{pathname:'/dashboard-extra-path-values'}, url: 'http://liveendpoint.com'};
             (getToken as jest.Mock).mockResolvedValue(null);
-            const nextSpy = jest.spyOn(NextResponse, 'redirect');
+            const mockURL = jest.spyOn(global, 'URL').mockImplementation((url) => {
+                return {
+                    href: url,
+                    toString: () => url,
+                    // Add more properties as needed
+                };
+            });
+            const redirectSpy = jest.spyOn(NextResponse, 'redirect');
             await middleware(MockRequest as NextRequest);
-            expect(nextSpy).toHaveBeenCalledWith('http://liveendpoint.com/login');
+            expect(mockURL).toHaveBeenCalledWith("/login", "http://liveendpoint.com");
+            expect(redirectSpy).toHaveBeenCalled();
         });
 
     test('if request is for the home page, then redirect to dashboard',
         async()=>{
             const MockRequest = {nextUrl:{pathname:'/'}, url: 'http://liveendpoint.com'};
             (getToken as jest.Mock).mockResolvedValue(null);
-            const nextSpy = jest.spyOn(NextResponse, 'redirect');
+            const mockURL = jest.spyOn(global, 'URL').mockImplementation((url) => {
+                return {
+                    href: url,
+                    toString: () => url,
+                    // Add more properties as needed
+                };
+            });
+
             await middleware(MockRequest as NextRequest);
-            expect(nextSpy).toHaveBeenCalledWith('http://liveendpoint.com/dashboard');
+            expect(mockURL).toHaveBeenCalledWith("/dashboard", "http://liveendpoint.com");
         });
 });
