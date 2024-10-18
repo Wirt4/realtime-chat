@@ -1,1 +1,1 @@
-export const config = {matchers: 'null'}
+export const config = {matchers:  ['login', '/', '/dashboard/:path*']}
