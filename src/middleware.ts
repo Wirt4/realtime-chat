@@ -1,0 +1,1 @@
+export const config = {matchers: 'null'}
