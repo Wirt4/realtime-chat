@@ -1,1 +1,3 @@
-export const config = {matchers:  ['login', '/', '/dashboard/:path*']}
+export const config = {
+    matchers:  ['login', '/', '/dashboard/:path*']
+}
