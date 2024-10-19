@@ -7,6 +7,7 @@ import layoutOptions from "@/app/(dashboard)/layoutOptions";
 import FriendRequestSidebarOptions from "@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions";
 import fetchRedis from "@/helpers/redis";
 import myGetServerSession from "@/lib/myGetServerSession";
+import SignOutButton from "@/components/signOutButton";
 
 interface LayoutProps {
     children: ReactNode
@@ -48,6 +49,9 @@ const Layout = async ({children}: LayoutProps = {children:null})=>{
                     </ul>
                     <li>
                         <FriendRequestSidebarOptions initialRequestCount={friendRequests.length} sessionId={session.user.id}/>
+                    </li>
+                    <li>
+                        <SignOutButton/>
                     </li>
                 </ul>
             </nav>

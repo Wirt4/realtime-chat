@@ -102,4 +102,10 @@ describe('Layout tests',()=>{
         render(await Layout());
         expect(fetchRedis as jest.Mock).toHaveBeenCalledWith('smembers', 'user:45654:incoming_friend_requests');
     });
+    test ('Should contain a SignOut Button', async ()=>{
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: '45654'}});
+        const {queryByLabelText} = render(await Layout());
+        const logoutButton = queryByLabelText('sign out button');
+        expect(logoutButton).toBeInTheDocument();
+    });
 });

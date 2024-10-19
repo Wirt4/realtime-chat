@@ -6,6 +6,7 @@ This is a real-time chat app.
 note: Make sure `docker` or `docker desktop` is running.
 We're using an Alpine Linux image in Docker to approximate Heroku's default dyno container, which uses a lightweight Linux distro.
 From the root directory
+
 ```bash
 docker compose up  
 ```
@@ -27,7 +28,7 @@ Please please please please please please please please please write unit tests 
 The app uses Upstash.com for database management, specifically the redis app. The REDIS_URL and REDIS_TOKEN are stored in  `.env.local`.
 
 ## Deploying the App
-Continuous integration is set up with Heroku (live version at https://salthouse-chat-2e94934e3b3e.herokuapp.com/), 
+The app is set up with Heroku (live version at https://salthouse-chat-2e94934e3b3e.herokuapp.com/), 
 when it's good to publish,
 1. merge changes from `dev` to `main`
 2. Open the heroku dashboard at `https://dashboard.heroku.com/apps/salthouse-chat/deploy/github`
