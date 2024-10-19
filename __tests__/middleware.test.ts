@@ -24,6 +24,7 @@ describe('Middleware, config tests', () => {
 describe('Middleware, functionality tests', () => {
     let nextSpy: jest.SpyInstance;
     let redirectSpy: jest.SpyInstance;
+
     beforeEach(()=>{
         jest.spyOn(global, 'URL').mockImplementation((url, baseUrl) => {
             return {
