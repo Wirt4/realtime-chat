@@ -14,15 +14,15 @@ const FriendRequestSidebarOptions: FC<FRSOProps> = ({initialRequestCount, sessio
     const [requestCount] = useState<number>(initialRequestCount);
     useEffect(FriendRequestEffect, [sessionId]);
 
-    return <>
-        <Link href='/dashboard/requests' className='dashboard-icon'>
-        <div className='dashboard-div'>
+    return <li>
+        <Link href='/dashboard/requests' className='link group'>
+        <div className='link-icon group-hover:border-black group-hover:black'>
             <User aria-label="User" className='icon'/>
             </div>
             <p>Friend Requests</p>
             { requestCount > 0 ? <div>{requestCount}</div> : null }
     </Link>
-    </>;
+    </li>;
 }
 
 export default FriendRequestSidebarOptions;
