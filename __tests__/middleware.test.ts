@@ -11,7 +11,7 @@ describe('Middleware, config tests', () => {
         expect(config).toEqual(
             expect.objectContaining({matchers: expect.anything()}))
     });
-    test('"matchers" includes /login, root and all dashboard pages', () => {
+    test('"matchers" includes /login, root, and all dashboard pages', () => {
         const expected  = ['login', '/', '/dashboard/:path*']
         expect(config).toEqual(
             expect.objectContaining({matchers:
