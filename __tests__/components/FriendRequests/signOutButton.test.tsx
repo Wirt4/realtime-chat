@@ -37,7 +37,9 @@ describe('SignOutButton', () => {
     test('If component is clicked, then signOut() is called',()=>{
         const {getByRole} = render(<SignOutButton/>);
         const button = getByRole('button');
+
         fireEvent.click(button);
+
         expect(signOut as jest.Mock).toHaveBeenCalled();
     });
 
