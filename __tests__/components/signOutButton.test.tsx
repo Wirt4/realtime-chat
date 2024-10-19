@@ -46,20 +46,25 @@ describe('SignOutButton', () => {
     test('If component not loading,then the icon should be "log out"',()=>{
         const {queryByLabelText} = render(<SignOutButton/>);
         const icon = queryByLabelText('log out');
+
         expect (icon).toBeInTheDocument();
     });
 
     test('If component is loading,then the icon should be "loading"',()=>{
         jest.spyOn(React, 'useState').mockImplementation(() => [true, jest.fn()]);
+
         const {queryByLabelText} = render(<SignOutButton/>);
         const icon = queryByLabelText('loading');
+
         expect (icon).toBeInTheDocument();
     });
 
     test('If the button is clicked, then setIsLoading is called with true and finally false',()=>{
         const {getByRole} = render(<SignOutButton/>);
         const button = getByRole('button');
+
         fireEvent.click(button);
+
         waitFor(()=>{
             expect (setIsLoading.mock.calls).toEqual([[true], [false]]);
         });
@@ -69,15 +74,18 @@ describe('SignOutButton', () => {
         (signOut as jest.Mock).mockRejectedValue('Bad!');
         const{ getByRole}  = render(<SignOutButton/>);
         const button = getByRole('button');
+
         fireEvent.click(button);
+
         waitFor(()=>{
             expect(toast.error).toHaveBeenCalledWith("There was a problem logging out");
         });
     });
 
-    test('Props passed to SignOutButton are passed to Button', () => {
+    test('If props passed to SignOutButton, then thet=y are passed to Button', () => {
         const { getByRole } = render(<SignOutButton value="grey" />);
         const button = getByRole('button');
+
         expect(button).toHaveAttribute('value', 'grey');
     });
 });
