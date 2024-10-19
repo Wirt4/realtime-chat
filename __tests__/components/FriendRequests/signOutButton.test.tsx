@@ -72,4 +72,10 @@ describe('SignOutButton', () => {
             expect(toast.error).toHaveBeenCalledWith("There was a problem logging out");
         });
     });
+
+    test('Props passed to SignOutButton are passed to Button', () => {
+        const { getByRole } = render(<SignOutButton value="grey" />);
+        const button = getByRole('button');
+        expect(button).toHaveAttribute('value', 'grey');
+    });
 });

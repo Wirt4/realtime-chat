@@ -1,13 +1,15 @@
 'use client'
-import {FC, useState} from "react";
+import {ButtonHTMLAttributes, FC, useState} from "react";
 import Button from "@/components/ui/button/Button";
 import {signOut} from "next-auth/react";
 import {LogOut, Loader2} from 'lucide-react'
 import {toast} from "react-hot-toast";
 
-const SignOutButton: FC = () => {
+interface SignOutProps extends ButtonHTMLAttributes<HTMLButtonElement> {}
+
+const SignOutButton: FC<SignOutProps> = ({...props}) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    return <Button onClick={async () => {
+    return <Button {...props} onClick={async () => {
         try{
             setIsLoading(true);
             await signOut();
@@ -17,7 +19,7 @@ const SignOutButton: FC = () => {
         }finally{
             setIsLoading(false)
         }
-    }}>
+    }} aria-label= 'sign out button'>
             {isLoading? (<Loader2 aria-label="loading"/>):(<LogOut aria-label="log out"/>)}
     </Button>
 }
