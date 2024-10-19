@@ -50,11 +50,15 @@ class Handler {
     }
 
     redirectToDashboard(){
-        return NextResponse.redirect(new URL('/dashboard', this._url));
+        return this.redirect('/dashboard');
     }
 
     redirectToLogin(){
-        return NextResponse.redirect(new URL('/login', this._url));
+        return this.redirect('/login');
+    }
+
+    redirect(endpoint: string){
+        return NextResponse.redirect(new URL(endpoint, this._url));
     }
 
     isAccessingSensitiveRoute(){

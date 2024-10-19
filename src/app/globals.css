@@ -150,3 +150,19 @@
 .friend-requests-button{
     @apply font-semibold text-white w-3/4 h-3/4;
 }
+
+.dashboard-icon{
+    @apply -mx-2 text-gray-700 flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold
+}
+
+.dashboard-icon:hover{
+    @apply  text-black bg-gray-50;
+}
+
+.dashboard-div{
+   @apply text-gray-400 border-gray-200 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white
+}
+
+.dashboard-div:hover{
+    @apply border-black text-black
+}
