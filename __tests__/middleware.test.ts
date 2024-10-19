@@ -11,8 +11,10 @@ describe('Middleware, config tests', () => {
         expect(config).toEqual(
             expect.objectContaining({matchers: expect.anything()}))
     });
+
     test('"matchers" includes /login, root, and all dashboard pages', () => {
-        const expected  = ['login', '/', '/dashboard/:path*']
+        const expected  = ['login', '/', '/dashboard/:path*'];
+
         expect(config).toEqual(
             expect.objectContaining({matchers:
                     expect.arrayContaining(expected)}));
@@ -29,7 +31,9 @@ describe('Middleware, functionality tests', () => {
                 baseUrl: baseUrl
             };
         });
+
         nextSpy = jest.spyOn(NextResponse, 'next');
+
         redirectSpy = jest.spyOn(NextResponse, 'redirect');
     })
     afterEach(()=>{
@@ -40,7 +44,9 @@ describe('Middleware, functionality tests', () => {
        async () => {
             (getToken as jest.Mock).mockResolvedValue(null);
             const MockRequest = {nextUrl:{pathname:'/login'}, url: 'http://localhost:8000'};
+
             await middleware(MockRequest as NextRequest);
+
             expect(nextSpy).toHaveBeenCalled();
     });
 
@@ -48,21 +54,27 @@ describe('Middleware, functionality tests', () => {
         async () => {
             (getToken as jest.Mock).mockResolvedValue(true);
             const MockRequest = {nextUrl:{pathname:'/login'}, url: 'http://localhost:8000'};
+
             await middleware(MockRequest as NextRequest);
+
             expect(nextSpy).not.toHaveBeenCalled();
         });
 
     test('if is login page and user is authenticated, then redirect to dashboard',async()=>{
         const MockRequest = {nextUrl:{pathname:'/login'}, url: 'http://localhost:8000'};
         (getToken as jest.Mock).mockResolvedValue(true);
+
         await middleware(MockRequest as NextRequest);
+
         expect(redirectSpy).toHaveBeenCalledWith({url: '/dashboard', baseUrl: "http://localhost:8000"});
     });
 
     test('if is login page and user is authenticated, then redirect to dashboard, different data',async()=>{
         const MockRequest = {nextUrl:{pathname:'/login'}, url: 'http://liveendpoint.com'};
         (getToken as jest.Mock).mockResolvedValue(true);
+
         await middleware(MockRequest as NextRequest);
+
         expect(redirectSpy).toHaveBeenCalledWith({url: '/dashboard', baseUrl: "http://liveendpoint.com"});
     });
 
@@ -70,7 +82,9 @@ describe('Middleware, functionality tests', () => {
         async()=>{
             const MockRequest = {nextUrl:{pathname:'/dashboard-extra-path-values'}, url: 'http://liveendpoint.com'};
             (getToken as jest.Mock).mockResolvedValue(null);
+
             await middleware(MockRequest as NextRequest);
+
             expect(redirectSpy).toHaveBeenCalledWith({url: '/login', baseUrl: "http://liveendpoint.com"});
         });
 
@@ -78,7 +92,9 @@ describe('Middleware, functionality tests', () => {
         async()=>{
             const MockRequest = {nextUrl:{pathname:'/'}, url: 'http://liveendpoint.com'};
             (getToken as jest.Mock).mockResolvedValue(null);
+
             await middleware(MockRequest as NextRequest);
+
             expect(redirectSpy).toHaveBeenCalledWith({url: '/dashboard', baseUrl: "http://liveendpoint.com"});
         });
 });
