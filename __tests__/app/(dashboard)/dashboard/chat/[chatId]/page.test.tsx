@@ -14,6 +14,11 @@ jest.mock("next/navigation", () => ({
 }));
 
 describe('ChatPage tests', () => {
+    beforeEach(()=>{
+        jest.resetAllMocks();
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{session:{id:'valid session'}}});
+    });
+
     test('page renders',async ()=>{
         render(await Page({params:{chatId: 'stub'}}));
     });
@@ -24,5 +29,11 @@ describe('ChatPage tests', () => {
         render(await Page({params:{chatId: 'stub'}}));
 
         expect(notFound).toHaveBeenCalled();
+    });
+
+    test("If the session is valid, then the page doesn't call notfound page", async ()=>{
+        render(await Page({params:{chatId: 'stub'}}));
+
+        expect(notFound).not.toHaveBeenCalled();
     });
 });
