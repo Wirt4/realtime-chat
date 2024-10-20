@@ -1,7 +1,13 @@
 import {FC} from "react";
 
-const Page: FC = () => {
-    return <div></div>
+interface ChatProps {
+    params:{
+        chatId: string;
+    }
+}
+
+const Page: FC<ChatProps> = ({params}) => {
+    return <div>foo</div>
 }
 
 export default Page;
