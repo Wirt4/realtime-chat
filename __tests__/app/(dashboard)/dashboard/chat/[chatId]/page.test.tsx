@@ -22,7 +22,7 @@ describe('ChatPage tests', () => {
         (myGetServerSession as jest.Mock).mockResolvedValueOnce(null);
 
         render(await Page({params:{chatId: 'stub'}}));
-        
+
         expect(notFound).toHaveBeenCalled();
     });
 });

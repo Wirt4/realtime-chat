@@ -1,4 +1,5 @@
 import {FC} from "react";
+import {notFound} from "next/navigation";
 
 interface ChatProps {
     params:{
@@ -6,7 +7,8 @@ interface ChatProps {
     }
 }
 
-const Page: FC<ChatProps> = ({params}) => {
+const Page: FC<ChatProps> = async ({params}) => {
+    notFound();
     return <div>foo</div>
 }
 
