@@ -6,7 +6,11 @@ import myGetServerSession from "@/lib/myGetServerSession";
 
 const Page: FC = async () => {
     const session = await myGetServerSession();
-    if (!session) notFound();
+
+    if (!session){
+        notFound();
+    }
+
     return <div/>
 }
 
