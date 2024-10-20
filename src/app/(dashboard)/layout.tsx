@@ -2,8 +2,7 @@ import React, {ReactNode} from "react";
 import {notFound} from "next/navigation";
 import Link from "next/link";
 import {Icons} from "@/components/Icons";
-import NavbarListItem from "@/app/(dashboard)/navbarlistitem";
-import layoutOptions from "@/app/(dashboard)/layoutOptions";
+import AddFriendListItem from "@/app/(dashboard)/addFriendListItem";
 import FriendRequestSidebarOptions from "@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions";
 import fetchRedis from "@/helpers/redis";
 import myGetServerSession from "@/lib/myGetServerSession";
@@ -21,9 +20,12 @@ const Layout = async ({children}: LayoutProps = {children:null})=>{
         return null;
     }
 
-
     const friendRequests = await fetchRedis("smembers", `user:${session?.user?.id}:incoming_friend_requests`);
 
+   const friendRequestProps = {
+        initialRequestCount: friendRequests.length,
+        sessionId: session?.user?.id
+    }
     return<div className='dashboard-window'>
         <div className='dashboard'>
         <Link href="/dashboard" className='dashboard-link'>
@@ -39,20 +41,12 @@ const Layout = async ({children}: LayoutProps = {children:null})=>{
                     </li>
                     <div className='dashboard-subheader'>Overview</div>
                     <ul role='list' className='dashboard-sub-ul'>
-                        {layoutOptions.map((option)=>{
-                            return <NavbarListItem key = {option.id}
-                                                   Icon = {option.Icon}
-                                                   name = {option.name}
-                                                   href = {option.href}
-                            />
-                        })}
+
+                            <AddFriendListItem/>
+                            <FriendRequestSidebarOptions {...friendRequestProps}/>
+                            <SignOutButton/>
                     </ul>
-                    <li>
-                        <FriendRequestSidebarOptions initialRequestCount={friendRequests.length} sessionId={session.user.id}/>
-                    </li>
-                    <li>
-                        <SignOutButton/>
-                    </li>
+                    <ul/>
                 </ul>
             </nav>
         </div>

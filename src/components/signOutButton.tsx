@@ -11,13 +11,14 @@ interface SignOutProps extends ButtonHTMLAttributes<HTMLButtonElement> {}
 const SignOutButton: FC<SignOutProps> = ({...props}) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    return <Button {...props} variant='ghost' onClick={clickHandler(setIsLoading)}
-                   aria-label= 'sign out button' className='dashboard-icon'>
-        <div className='dashboard-div'>
-            {logOutIcon(isLoading)}
-        </div>
-        <p>Sign Out</p>
-    </Button>
+    return<li>
+        <Button {...props} variant="ghost" onClick={clickHandler(setIsLoading)} className='link group' aria-label="sign out button">
+            <span className='link-icon group-hover:border-black group-hover:black'>
+                {logOutIcon(isLoading)}
+            </span>
+            <span className='truncate' >Sign Out</span>
+        </Button>
+    </li>
 }
 
 const clickHandler = (setIsLoading: (arg: boolean)=> void) =>{
@@ -38,7 +39,7 @@ const logOutIcon = (isLoading:boolean)=>{
     if (isLoading){
         return <Loader2 className='loading' aria-label="loading"/>;
     }
-    return <LogOut className='icon' aria-label="log out"/>;
+    return <LogOut className = 'icon' aria-label="log out"/>;
 }
 
 export default SignOutButton;
