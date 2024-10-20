@@ -2,7 +2,7 @@ import React, {ReactNode} from "react";
 import {notFound} from "next/navigation";
 import Link from "next/link";
 import {Icons} from "@/components/Icons";
-import AddFriendListItem from "@/app/(dashboard)/addFriendListItem";
+import AddFriendListItem from "@/app/(dashboard)/dashboard/addFriendListItem";
 import FriendRequestSidebarOptions from "@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions";
 import fetchRedis from "@/helpers/redis";
 import myGetServerSession from "@/lib/myGetServerSession";

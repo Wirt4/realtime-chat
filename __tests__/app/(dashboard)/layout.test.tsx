@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import Layout from "@/app/(dashboard)/layout"
+import Layout from "@/app/(dashboard)/dashboard/layout"
 import myGetServerSession from "@/lib/myGetServerSession";
 import {notFound} from "next/navigation"
 import fetchRedis from "@/helpers/redis";
