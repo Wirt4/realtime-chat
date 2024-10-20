@@ -22,6 +22,10 @@ const Layout = async ({children}: LayoutProps = {children:null})=>{
 
     const friendRequests = await fetchRedis("smembers", `user:${session?.user?.id}:incoming_friend_requests`);
 
+   const friendRequestProps = {
+        initialRequestCount: friendRequests.length,
+        sessionId: session?.user?.id
+    }
     return<div className='dashboard-window'>
         <div className='dashboard'>
         <Link href="/dashboard" className='dashboard-link'>
@@ -39,11 +43,9 @@ const Layout = async ({children}: LayoutProps = {children:null})=>{
                     <ul role='list' className='dashboard-sub-ul'>
 
                             <AddFriendListItem/>
-                            <FriendRequestSidebarOptions initialRequestCount={friendRequests.length}
-                                                         sessionId={session.user.id}/>
+                            <FriendRequestSidebarOptions {...friendRequestProps}/>
                             <SignOutButton/>
                     </ul>
-
                     <ul/>
                 </ul>
             </nav>

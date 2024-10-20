@@ -44,7 +44,7 @@
 }
 
 .dashboard-logo {
-    @apply h-20 w-auto text-black
+    @apply h-20 w-auto text-black;
 }
 
 .dashboard-subheader{
