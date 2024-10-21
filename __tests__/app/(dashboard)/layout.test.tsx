@@ -5,12 +5,14 @@ import {notFound} from "next/navigation"
 import fetchRedis from "@/helpers/redis";
 import {render, screen, waitFor} from "@testing-library/react";
 import FriendRequestSidebarOptions from "@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions";
+import getFriendsById from "@/helpers/getFriendsById";
 
 jest.mock("../../../src/components/friendRequestSidebarOptions/FriendRequestSidebarOptions")
 
 jest.mock("../../../src/lib/myGetServerSession",()=> jest.fn());
 
 jest.mock("../../../src/helpers/redis", ()=> jest.fn());
+jest.mock("@/helpers/getFriendsById", ()=>jest.fn());
 
 jest.mock("next/navigation", () => ({
     __esModule: true,
@@ -20,7 +22,13 @@ jest.mock("next/navigation", () => ({
 describe('Layout tests',()=>{
     beforeEach(()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
-        (fetchRedis as jest.Mock).mockResolvedValue(['foo'])
+        (fetchRedis as jest.Mock).mockResolvedValue(['foo']);
+        (getFriendsById as jest.Mock).mockResolvedValue([{
+            name: 'bob',
+            email: 'test.user@gmail.com',
+            image: 'stub',
+            id: '1701',
+        }]);
     })
     afterEach(()=>{
         jest.clearAllMocks();
@@ -63,6 +71,13 @@ describe('Layout tests',()=>{
         expect(text).toBeInTheDocument();
     });
 
+    test('If getFriendsById resolves empty,  then don\'t display "Your Chats"', async ()=> {
+        (getFriendsById as jest.Mock).mockResolvedValue([])
+        render(await Layout());
+        const text = screen.queryByText('Your Chats');
+        expect(text).not.toBeInTheDocument();
+    });
+
     test('Sidebar a nav for existing chats', async ()=> {
         render(await Layout());
         const navElement = await screen.findByRole('navigation');
@@ -102,10 +117,13 @@ describe('Layout tests',()=>{
         render(await Layout());
         expect(fetchRedis as jest.Mock).toHaveBeenCalledWith('smembers', 'user:45654:incoming_friend_requests');
     });
+
     test ('Should contain a SignOut Button', async ()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: '45654'}});
         const {queryByLabelText} = render(await Layout());
         const logoutButton = queryByLabelText('sign out button');
         expect(logoutButton).toBeInTheDocument();
     });
+
+
 });

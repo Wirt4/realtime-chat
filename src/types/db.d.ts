@@ -6,8 +6,8 @@ interface User {
 }
 
 interface Message{
-    senderId: string,
-    recieverId: string,
-    text: string,
+    senderId: string
+    receiverId: string
+    text: string
     timestamp: number
 }
