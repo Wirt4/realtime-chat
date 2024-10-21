@@ -3,14 +3,14 @@ import Layout from "@/app/(dashboard)/dashboard/layout"
 import myGetServerSession from "@/lib/myGetServerSession";
 import {notFound} from "next/navigation"
 import fetchRedis from "@/helpers/redis";
-import {render, screen, waitFor} from "@testing-library/react";
+import { render, screen, waitFor} from "@testing-library/react";
 import FriendRequestSidebarOptions from "@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions";
 import getFriendsById from "@/helpers/getFriendsById";
+import SidebarChatList from "@/components/SidebarChatList";
 
-jest.mock("@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions")
-
+jest.mock("@/components/SidebarChatList");
+jest.mock("@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions");
 jest.mock("@/lib/myGetServerSession",()=> jest.fn());
-
 jest.mock("@/helpers/redis", ()=> jest.fn());
 jest.mock("@/helpers/getFriendsById", ()=>jest.fn());
 
@@ -29,9 +29,12 @@ describe('Layout tests',()=>{
             image: 'stub',
             id: '1701',
         }]);
+        (SidebarChatList as jest.Mock).mockImplementation(() => {
+            return <ul aria-label='chat list'/>;
+        });
     })
     afterEach(()=>{
-        jest.clearAllMocks();
+        jest.resetAllMocks();
     });
 
     test('renders without crashing', async () => {
@@ -131,5 +134,45 @@ describe('Layout tests',()=>{
         render(await Layout());
 
         expect(getFriendsById as jest.Mock).toHaveBeenCalledWith('1234');
-    })
+    });
+
+    test('should contain a SidebarChatList component', async()=>{
+        const {queryByLabelText} = render(await Layout());
+
+        const sideBarOptions = queryByLabelText('chat list');
+        expect(sideBarOptions).toBeInTheDocument();
+    });
+
+    test('Output of getFriendsById is passed to  SidebarChatList', async ()=>{
+        (getFriendsById as jest.Mock).mockResolvedValue([]);
+        const childComponentSpy = jest.fn();
+        (SidebarChatList as jest.Mock).mockImplementation(({ friends }) => {
+            childComponentSpy(friends);
+            return <div data-testid="child-component">Mocked Child</div>;
+        });
+        render(await Layout());
+        await waitFor(() => expect(childComponentSpy).toHaveBeenCalledWith([]));
+    });
+
+    test('Output of getFriendsById is passed to SidebarChatList', async ()=>{
+        (getFriendsById as jest.Mock).mockResolvedValue([{
+            name: 'alice',
+            email: 'emailr@gmail.com',
+            image: 'stub',
+            id: '9177',
+        }]);
+        const childComponentSpy = jest.fn();
+        (SidebarChatList as jest.Mock).mockImplementation(({ friends }) => {
+            childComponentSpy(friends);
+            return <div data-testid="child-component">Mocked Child</div>;
+        });
+        render(await Layout());
+        await waitFor(() => expect(childComponentSpy).toHaveBeenCalledWith([{
+            name: 'alice',
+            email: 'emailr@gmail.com',
+            image: 'stub',
+            id: '9177',
+        }]));
+    });
+
 });

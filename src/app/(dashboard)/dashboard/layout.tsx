@@ -8,6 +8,7 @@ import fetchRedis from "@/helpers/redis";
 import myGetServerSession from "@/lib/myGetServerSession";
 import SignOutButton from "@/components/signOutButton";
 import getFriendsById from "@/helpers/getFriendsById";
+import SidebarChatList from "@/components/SidebarChatList";
 
 interface LayoutProps {
     children: ReactNode
@@ -18,7 +19,6 @@ const Layout = async ({children}: LayoutProps = {children:null})=>{
 
     if (!session){
         notFound();
-        return null;
     }
 
     const userId = session?.user?.id
@@ -37,21 +37,18 @@ const Layout = async ({children}: LayoutProps = {children:null})=>{
         <Link href="/dashboard" className='dashboard-link'>
            <Icons.Logo className='dashboard-logo'/>
         </Link>
-            {friends.length>0 ? <div className='dashboard-subheader'>
+            {friends.length > 0 ? <div className='dashboard-subheader'>
             Your Chats
         </div>: null}
             <nav className='dashboard-nav-cols'>
                 <ul role='list' className='dashboard-ul'>
-                    <li>
-                      To Be Determined: Chats that the user has
-                    </li>
+                    <SidebarChatList friends={friends} aria-label='chat list'/>
                     <div className='dashboard-subheader'>Overview</div>
-                    <ul role='list' className='dashboard-sub-ul'>
-
+                        <ul role='list' className='dashboard-sub-ul'>
                             <AddFriendListItem/>
                             <FriendRequestSidebarOptions {...friendRequestProps}/>
                             <SignOutButton/>
-                    </ul>
+                        </ul>
                     <ul/>
                 </ul>
             </nav>
