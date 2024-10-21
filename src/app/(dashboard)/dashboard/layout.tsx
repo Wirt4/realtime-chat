@@ -21,13 +21,16 @@ const Layout = async ({children}: LayoutProps = {children:null})=>{
         return null;
     }
 
-    const friendRequests = await fetchRedis("smembers", `user:${session?.user?.id}:incoming_friend_requests`);
+    const userId = session?.user?.id
+
+    const friendRequests = await fetchRedis("smembers", `user:${userId}:incoming_friend_requests`);
 
     const friendRequestProps = {
         initialRequestCount: friendRequests.length,
-        sessionId: session?.user?.id
+        sessionId: userId
     }
-    const friends = await getFriendsById();
+
+    const friends = await getFriendsById(userId);
 
     return<div className='dashboard-window'>
         <div className='dashboard'>

@@ -7,11 +7,11 @@ import {render, screen, waitFor} from "@testing-library/react";
 import FriendRequestSidebarOptions from "@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions";
 import getFriendsById from "@/helpers/getFriendsById";
 
-jest.mock("../../../src/components/friendRequestSidebarOptions/FriendRequestSidebarOptions")
+jest.mock("@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions")
 
-jest.mock("../../../src/lib/myGetServerSession",()=> jest.fn());
+jest.mock("@/lib/myGetServerSession",()=> jest.fn());
 
-jest.mock("../../../src/helpers/redis", ()=> jest.fn());
+jest.mock("@/helpers/redis", ()=> jest.fn());
 jest.mock("@/helpers/getFriendsById", ()=>jest.fn());
 
 jest.mock("next/navigation", () => ({
@@ -125,5 +125,11 @@ describe('Layout tests',()=>{
         expect(logoutButton).toBeInTheDocument();
     });
 
+    test('getFriendRequest should be called with the userid from the session', async()=>{
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: '1234'}});
 
+        render(await Layout());
+
+        expect(getFriendsById as jest.Mock).toHaveBeenCalledWith('1234');
+    })
 });

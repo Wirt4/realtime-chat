@@ -60,7 +60,7 @@ describe('getFriendsByUserId', () => {
             return ids[arg]
         });
 
-        const actual = await getFriendsByUserId();
+        const actual = await getFriendsByUserId('1234');
 
         expect(actual).toEqual(expect.arrayContaining([{
             name: 'alice',
