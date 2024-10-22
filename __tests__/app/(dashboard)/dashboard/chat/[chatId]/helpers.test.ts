@@ -72,7 +72,7 @@ describe('confirm getChatMessage is called with the output of fetchChatById', ()
     });
 });
 
-describe('confirm getChatMessage returns items in correct order', () => {
+describe('fetchByChatId returns an array with the most recent timestamp first,so onfirm getChatMessage returns items in correct order', () => {
     let helpers: Helpers;
     beforeEach(() => {
         helpers = new Helpers();
@@ -85,7 +85,7 @@ describe('confirm getChatMessage returns items in correct order', () => {
         jest.resetAllMocks();
     });
 
-    test('fetchByChatId returns an array with the most recent timestamp first,so return the array reversed', async()=>{
+    test('data set one', async()=>{
         const fetchedData = [
             "{\"id\": \"1701\", \"senderId\": \"bob\", \"recieverId\": \"1071\", \"text\":\"Hi Alice, what's up\", \"timestamp\":1729533949}",
             "{\"id\": \"1071\", \"senderId\": \"alice\", \"recieverId\":\"1701\", \"text\":\"Hi bob\", \"timestamp\":1729437427}"
@@ -100,7 +100,7 @@ describe('confirm getChatMessage returns items in correct order', () => {
        expect(result).toEqual([ {id: '1071', senderId: 'alice',recieverId:'1701', text:"Hi bob", timestamp:1729437427},{id: '1701', senderId: 'bob',recieverId: '1071', text:"Hi Alice, what's up", timestamp:1729533949}])
     });
 
-    test('fetchByChatId returns an array with the most recent timestamp first,so return the array reversed, different data', async()=>{
+    test('data set two', async()=>{
         const fetchedData = [
             "{\"id\": \"1701\", \"senderId\": \"bob\", \"recieverId\": \"1071\", \"text\":\"Hi Alice, what's up\", \"timestamp\":1729533949}",
             "{\"id\": \"1071\", \"senderId\": \"alice\", \"recieverId\":\"1701\", \"text\":\"Hi bob\", \"timestamp\":1729437427}",
