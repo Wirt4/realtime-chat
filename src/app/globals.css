@@ -186,3 +186,7 @@
 .unread-friend-requests-count{
     @apply bg-red-600 font-medium text-xs text-white w-4 h-4 rounded-full flex justify-center items-center  mt-1
 }
+
+.signout-ul{
+    @apply fixed bottom-8 dashboard-sub-ul
+}

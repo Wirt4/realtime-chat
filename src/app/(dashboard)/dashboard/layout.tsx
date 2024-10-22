@@ -46,8 +46,10 @@ const Layout = async ({children}: LayoutProps = {children:null})=>{
                         <ul role='list' className='dashboard-sub-ul'>
                             <AddFriendListItem/>
                             <FriendRequestSidebarOptions {...friendRequestProps}/>
-                            <SignOutButton/>
                         </ul>
+                    <ul role='list' className='signout-ul'>
+                        <SignOutButton/>
+                    </ul>
                     <ul/>
                 </ul>
             </nav>
