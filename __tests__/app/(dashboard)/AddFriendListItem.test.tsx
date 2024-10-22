@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import AddFriendListItem from "@/app/(dashboard)/addFriendListItem"
+import AddFriendListItem from "@/app/(dashboard)/dashboard/addFriendListItem"
 import {render, screen} from "@testing-library/react";
 
 describe('Add A Friend', () => {

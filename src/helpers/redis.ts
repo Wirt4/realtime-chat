@@ -1,6 +1,6 @@
 
 
-const fetchRedis = async (cmd: Command, ...args:string[])=>{
+const fetchRedis = async (cmd: Command, ...args:(string|number)[])=>{
     const opts= {
         headers: {
             Authorization: `Bearer ${process.env.REDIS_TOKEN}`,
