@@ -40,7 +40,7 @@ describe('test getChatMessage for 404 cases',()=>{
     });
 });
 
-describe('confirm getChatMessae is called with the output of getChat', () => {
+describe('confirm getChatMessage is called with the output of fetchChatById', () => {
     let helpers: Helpers;
     beforeEach(() => {
         helpers = new Helpers();
