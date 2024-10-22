@@ -3,9 +3,10 @@
 import React, {FC, useState} from "react";
 import SidebarChatListItem from "@/components/SidebarChatListItem";
 interface SidebarChatListProps {
-    friends: User[]
+    friends: User[],
+    sessionId: string
 }
-const SidebarChatList:FC<SidebarChatListProps> = ({friends})=>{
+const SidebarChatList:FC<SidebarChatListProps> = ({friends, sessionId})=>{
     const [activeChats, setActiveChats] = useState<User[]>(friends)
     const [unseenMessages, setUnseenMessages] = useState<Message[]>([])
     return (<ul aria-label='chat list'>
@@ -16,7 +17,8 @@ const SidebarChatList:FC<SidebarChatListProps> = ({friends})=>{
             return <SidebarChatListItem
                 key={friend.id}
                 friend = {friend}
-                unseenMessages={numberOfUnseenMessages} />
+                unseenMessages={numberOfUnseenMessages}
+                sessionId={sessionId}/>
         })}
     </ul>)
 }

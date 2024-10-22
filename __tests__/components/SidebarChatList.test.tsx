@@ -18,11 +18,11 @@ describe('SidebarChatList', () => {
         jest.resetAllMocks();
     })
     test('confirm component renders',()=>{
-        render(<SidebarChatList friends={[]}/>);
+        render(<SidebarChatList friends={[]} sessionId='foo'/>);
     });
 
     test('component should be or have a role of list',()=>{
-        const {queryByRole} = render(<SidebarChatList friends={[]}/>);
+        const {queryByRole} = render(<SidebarChatList friends={[]} sessionId='foo'/>);
         const list = queryByRole('list');
         expect(list).toBeInTheDocument();
     });
@@ -40,28 +40,24 @@ describe('SidebarChatList', () => {
             id: '54321'
         }];
         (useState as jest.Mock).mockReturnValue([activeChats, jest.fn()]);
-        const childComponentSpy = jest.fn();
-        (SidebarChatListItem as jest.Mock).mockImplementation(({ friend }) => {
-            childComponentSpy(friend);
-            return <div data-testid="child-component">Mocked Child</div>;
-        });
+        const listItemSpy = jest.fn();
+        mockSpy(listItemSpy);
 
+        render(<SidebarChatList friends={[]} sessionId='foo'/>);
 
-        render(<SidebarChatList friends={[]}/>);
-
-        expect(childComponentSpy.mock.calls).toEqual([
-            [{
-                name: 'Bela',
-                email: 'lugosi@hungary.eu',
-                image: 'stub',
-                id: '54321'
-            }],
-            [{
-               name: 'Boris',
-               email: 'karloff@spoooky.com',
-               image: 'stub',
-               id: '12345'
-            }]
+        expect(listItemSpy.mock.calls).toEqual([
+            [expect.objectContaining({friend:{
+                    name: 'Bela',
+                    email: 'lugosi@hungary.eu',
+                    image: 'stub',
+                    id: '54321'
+                }})],
+            [expect.objectContaining({friend:{
+                    name: 'Boris',
+                    email: 'karloff@spoooky.com',
+                    image: 'stub',
+                    id: '12345'
+                }})]
             ]);
     });
 
@@ -88,23 +84,12 @@ describe('SidebarChatList', () => {
             return [unreadMessages, jest.fn]
 
         });
-        const childComponentSpy = jest.fn();
-        (SidebarChatListItem as jest.Mock).mockImplementation((props) => {
-            childComponentSpy(props);
-            return <div data-testid="child-component">Mocked Child</div>;
-        });
+        const listItemSpy = jest.fn();
+        mockSpy(listItemSpy)
 
-        render(<SidebarChatList friends={[]}/>);
+        render(<SidebarChatList friends={[]} sessionId='foo'/>);
 
-        expect(childComponentSpy).toHaveBeenCalledWith({
-            friend:{
-                name: 'Bela',
-                email: 'lugosi@hungary.eu',
-                image: 'stub',
-                id: '54321'
-            },
-            unseenMessages: 1
-        });
+        expect(listItemSpy).toHaveBeenCalledWith(expect.objectContaining({unseenMessages: 1}));
     });
 
     test('component should call SidebarChatListItem with correct number of unseen messages, different data',()=>{
@@ -137,15 +122,12 @@ describe('SidebarChatList', () => {
             return [unreadMessages, jest.fn]
 
         });
-        const childComponentSpy = jest.fn();
-        (SidebarChatListItem as jest.Mock).mockImplementation((props) => {
-            childComponentSpy(props);
-            return <div data-testid="child-component">Mocked Child</div>;
-        });
+        const listItemSpy = jest.fn();
+        mockSpy(listItemSpy)
 
-        render(<SidebarChatList friends={[]}/>);
+        render(<SidebarChatList friends={[]} sessionId='foo'/>);
 
-        expect(childComponentSpy).toHaveBeenCalledWith(expect.objectContaining({unseenMessages: 2}));
+        expect(listItemSpy).toHaveBeenCalledWith(expect.objectContaining({unseenMessages: 2}));
     });
 
     test('component should call SidebarChatListItem with correct number of unseen messages, different data',()=>{
@@ -193,14 +175,63 @@ describe('SidebarChatList', () => {
             return [unreadMessages, jest.fn]
 
         });
-        const childComponentSpy = jest.fn();
-        (SidebarChatListItem as jest.Mock).mockImplementation((props) => {
-            childComponentSpy(props);
-            return <div data-testid="child-component">Mocked Child</div>;
-        });
+        const listItemSpy = jest.fn();
+        mockSpy(listItemSpy)
 
-        render(<SidebarChatList friends={[]}/>);
+        render(<SidebarChatList friends={[]} sessionId='foo'/>);
 
-        expect(childComponentSpy).toHaveBeenCalledWith(expect.objectContaining({unseenMessages: 2, friend:expect.objectContaining({name: "Sherlock"})}));
+        expect(listItemSpy).toHaveBeenCalledWith(
+            expect.objectContaining({unseenMessages: 2, friend:expect.objectContaining({name: "Sherlock"})}));
+    });
+
+    test('component should call SidebarChatListItem with correct number of unseen messages, different data',()=>{
+        oneChatNoUnread()
+        const listItemSpy = jest.fn();
+        mockSpy(listItemSpy)
+
+        render(<SidebarChatList friends={[]} sessionId="1701"/>);
+
+        expect(listItemSpy).toHaveBeenCalledWith(expect.objectContaining({sessionId: "1701"}));
+    });
+
+    test('component should call SidebarChatListItem with correct number of unseen messages, different data',()=>{
+       oneChatNoUnread()
+        const listItemSpy = jest.fn();
+        mockSpy(listItemSpy)
+
+        render(<SidebarChatList friends={[]} sessionId="batman"/>);
+
+        expect(listItemSpy).toHaveBeenCalledWith(expect.objectContaining({sessionId: "batman"}));
     });
 });
+
+const oneChatNoUnread=()=>{
+    let useStateCount = 0;
+    (useState as jest.Mock).mockImplementation(()=>{
+        useStateCount++;
+        if (useStateCount === 1) {
+            const activeChats = [{
+                name: 'Sherlock',
+                email: 'elementarary@detective.uk',
+                image: 'stub',
+                id: '221b'
+            },
+                {
+                    name: 'Bela',
+                    email: 'lugosi@hungary.eu',
+                    image: 'stub',
+                    id: '54321'
+                }]
+            return [activeChats, jest.fn];
+        }
+        return [[], jest.fn]
+    });
+}
+
+const mockSpy = (spy: jest.Mock) => {
+    (SidebarChatListItem as jest.Mock).mockImplementation((props) => {
+        spy(props);
+        return <div data-testid="child-component">Mocked Child</div>;
+    });
+
+}
