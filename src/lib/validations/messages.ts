@@ -9,4 +9,4 @@ export const messageSchema = z.object({
 
 export const messageArraySchema = z.array(messageSchema);
 
-export type Message = z.infer<typeof messageSchema>
+export type Message = z.infer<typeof messageSchema>;

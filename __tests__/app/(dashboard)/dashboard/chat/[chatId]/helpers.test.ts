@@ -12,11 +12,12 @@ jest.mock("next/navigation", () => ({
     notFound: jest.fn(),
 }));
 
-describe('getChatMessage Tests', () => {
+describe('test getChatMessage for 404 cases',()=>{
     let helpers: Helpers;
     beforeEach(() => {
         helpers = new Helpers();
-        jest.spyOn(helpers, 'fetchChatById').mockResolvedValue(["{\"id\": \"1701\", \"senderId\": \"bob\", \"text\":\"Hello world. My name's Gypsy, what's yours?\", \"timestamp\":1729437427}"]);
+        const userPayload = "{\"id\": \"1701\", \"senderId\": \"bob\", \"text\":\"Hello world. My name's Gypsy, what's yours?\", \"timestamp\":1729437427}"
+        jest.spyOn(helpers, 'fetchChatById').mockResolvedValue([userPayload]);
 
     })
 
@@ -37,24 +38,86 @@ describe('getChatMessage Tests', () => {
 
         expect(notFound).not.toHaveBeenCalled();
     });
+});
 
-    test('If getChatMessage is called, then messageArraySchema.parse is called with the output of fetchChat',async ()=>{
+describe('confirm getChatMessae is called with the output of getChat', () => {
+    let helpers: Helpers;
+    beforeEach(() => {
+        helpers = new Helpers();
+        const userPayload = "{\"id\": \"1701\", \"senderId\": \"bob\", \"text\":\"Hello world. My name's Gypsy, what's yours?\", \"timestamp\":1729437427}"
+        jest.spyOn(helpers, 'fetchChatById').mockResolvedValue([userPayload]);
+
+    })
+
+    afterEach(() => {
+        jest.resetAllMocks();
+    });
+
+    test('data set one',async ()=>{
         jest.spyOn(helpers, "fetchChatById").mockResolvedValue(["{\"id\": \"1701\", \"senderId\": \"bob\", \"text\":\"Hello world. My name's Gypsy, what's yours?\", \"timestamp\":1729437427}"]);
         const validatorSpy = jest.spyOn(messageArraySchema, 'parse');
 
         await helpers.getChatMessage("chat:userOne-userTwo:message");
 
         expect(validatorSpy).toHaveBeenCalledWith([{id: '1701', senderId: 'bob', text:"Hello world. My name's Gypsy, what's yours?", timestamp:1729437427}]);
+    });
+
+    test('data set two',async ()=>{
+        jest.spyOn(helpers, "fetchChatById").mockResolvedValue(["{\"id\": \"1701\", \"senderId\": \"bob\", \"text\":\"Captain, you're being hailed\", \"timestamp\":1729437427}"]);
+        const validatorSpy = jest.spyOn(messageArraySchema, 'parse');
+
+        await helpers.getChatMessage("chat:userOne-userTwo:message");
+
+        expect(validatorSpy).toHaveBeenCalledWith([{id: '1701', senderId: 'bob', text:"Captain, you're being hailed", timestamp:1729437427}]);
+    });
+});
+
+describe('confirm getChatMessage returns items in correct order', () => {
+    let helpers: Helpers;
+    beforeEach(() => {
+        helpers = new Helpers();
+        const userPayload = "{\"id\": \"1701\", \"senderId\": \"bob\", \"text\":\"Hello world. My name's Gypsy, what's yours?\", \"timestamp\":1729437427}"
+        jest.spyOn(helpers, 'fetchChatById').mockResolvedValue([userPayload]);
+
     })
 
-    test('if fetchByChatId returns an array with the most recent timestamp first, then return the array reversed', async()=>{
-        jest.spyOn(helpers, "fetchChatById").mockResolvedValue(["{\"id\": \"1701\", \"senderId\": \"bob\", \"recieverId\": \"1071\", \"text\":\"Hi Alice, what's up\", \"timestamp\":1729533949}",
-            "{\"id\": \"1071\", \"senderId\": \"alice\", \"recieverId\":\"1701\", \"text\":\"Hi bob\", \"timestamp\":1729437427}"]);
-        // @ts-expect-error rough mock for green parse
-       jest.spyOn(messageArraySchema, 'parse').mockImplementation((arr)=>{return arr})
+    afterEach(() => {
+        jest.resetAllMocks();
+    });
+
+    test('fetchByChatId returns an array with the most recent timestamp first,so return the array reversed', async()=>{
+        const fetchedData = [
+            "{\"id\": \"1701\", \"senderId\": \"bob\", \"recieverId\": \"1071\", \"text\":\"Hi Alice, what's up\", \"timestamp\":1729533949}",
+            "{\"id\": \"1071\", \"senderId\": \"alice\", \"recieverId\":\"1701\", \"text\":\"Hi bob\", \"timestamp\":1729437427}"
+        ]
+        jest.spyOn(helpers, "fetchChatById").mockResolvedValue(fetchedData);
+        jest.spyOn(messageArraySchema, 'parse').mockImplementation((data: unknown) => {
+           return data as { id: string; senderId: string; recieverId: string; text: string; timestamp: number }[];
+        });
+
        const result =  await helpers.getChatMessage("chat:1071-1701:message");
 
        expect(result).toEqual([ {id: '1071', senderId: 'alice',recieverId:'1701', text:"Hi bob", timestamp:1729437427},{id: '1701', senderId: 'bob',recieverId: '1071', text:"Hi Alice, what's up", timestamp:1729533949}])
+    });
+
+    test('fetchByChatId returns an array with the most recent timestamp first,so return the array reversed, different data', async()=>{
+        const fetchedData = [
+            "{\"id\": \"1701\", \"senderId\": \"bob\", \"recieverId\": \"1071\", \"text\":\"Hi Alice, what's up\", \"timestamp\":1729533949}",
+            "{\"id\": \"1071\", \"senderId\": \"alice\", \"recieverId\":\"1701\", \"text\":\"Hi bob\", \"timestamp\":1729437427}",
+            "{\"id\": \"1071\", \"senderId\": \"alice\", \"recieverId\":\"1701\", \"text\":\"Hey, it's 1970\", \"timestamp\":0}"
+        ]
+        jest.spyOn(helpers, "fetchChatById").mockResolvedValue(fetchedData);
+        jest.spyOn(messageArraySchema, 'parse').mockImplementation((data: unknown) => {
+            return data as { id: string; senderId: string; recieverId: string; text: string; timestamp: number }[];
+        });
+
+        const result =  await helpers.getChatMessage("chat:1071-1701:message");
+
+        expect(result).toEqual([
+            {id:'1071', senderId: 'alice', recieverId:"1701", text:"Hey, it's 1970", timestamp: 0},
+            {id: '1071', senderId: 'alice',recieverId:'1701', text:"Hi bob", timestamp:1729437427},
+            {id: '1701', senderId: 'bob',recieverId: '1071', text:"Hi Alice, what's up", timestamp:1729533949}
+        ])
     })
 });
 

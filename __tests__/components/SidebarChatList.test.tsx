@@ -233,5 +233,4 @@ const mockSpy = (spy: jest.Mock) => {
         spy(props);
         return <div data-testid="child-component">Mocked Child</div>;
     });
-
 }
