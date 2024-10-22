@@ -7,7 +7,8 @@ const getFriendsById = async(userId:string) => {
     }
 
     return Promise.all(ids.map(async(id) => {
-        return await fetchRedis('get', q(id)) as User;
+        const  ans = await fetchRedis('get', q(id));
+        return JSON.parse(ans) as User;
     }));
 }
 

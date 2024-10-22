@@ -31,7 +31,6 @@ const Layout = async ({children}: LayoutProps = {children:null})=>{
     }
 
     const friends = await getFriendsById(userId);
-
     return<div className='dashboard-window'>
         <div className='dashboard'>
         <Link href="/dashboard" className='dashboard-link'>

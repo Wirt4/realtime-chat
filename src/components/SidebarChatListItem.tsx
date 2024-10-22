@@ -10,8 +10,7 @@ interface SidebarChatListItemProps {
 }
 const SidebarChatListItem:FC<SidebarChatListItemProps> = ({friend, unseenMessages, sessionId})=>{
     const chatId = Utils.chatHrefConstructor(friend.id, sessionId);
-
-    return <li>
+    return <li key = {friend.id}>
         <a href = {`/dashboard/chat/${chatId}`}>
             {friend.name}
           <UnseenMessages messages={unseenMessages}/>
