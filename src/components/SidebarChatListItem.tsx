@@ -10,8 +10,8 @@ interface SidebarChatListItemProps {
 }
 const SidebarChatListItem:FC<SidebarChatListItemProps> = ({friend, unseenMessages, sessionId})=>{
     const chatId = Utils.chatHrefConstructor(friend.id, sessionId);
-    return <li key = {friend.id}>
-        <a href = {`/dashboard/chat/${chatId}`}>
+    return <li key = {friend.id} className="group">
+        <a href = {`/dashboard/chat/${chatId}`} className='sidebar-chat-list-item'>
             {friend.name}
           <UnseenMessages messages={unseenMessages}/>
         </a>
@@ -20,7 +20,7 @@ const SidebarChatListItem:FC<SidebarChatListItemProps> = ({friend, unseenMessage
 
 const UnseenMessages:FC<{messages: number}> = ({messages})=>{
     if(messages > 0){
-        return <div>
+        return <div className='unread-messages-count'>
             {messages}
         </div>
     }

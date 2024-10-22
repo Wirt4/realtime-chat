@@ -140,7 +140,7 @@
 }
 
 .friend-requests-x{
-    @apply w-8 h-8 bg-red-500 grid place-items-center rounded-full transition;
+    @apply w-8 h-8 bg-red-600 grid place-items-center rounded-full transition;
 }
 
 .friend-requests-x:hover{
@@ -165,4 +165,24 @@
 
 .dashboard-div:hover{
     @apply border-black text-black
+}
+
+.sidebar-chat-list{
+  @apply max-h-[25rem] overflow-y-auto -mx-2 space-y-1
+}
+
+.sidebar-chat-list-item{
+    @apply text-gray-700 flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold
+}
+
+.sidebar-chat-list-item:hover{
+    @apply font-extrabold bg-gray-50
+}
+
+.unread-messages-count{
+    @apply bg-red-600 font-medium text-xs text-white w-5 h-5 rounded-full flex justify-center items-center
+}
+
+.unread-friend-requests-count{
+    @apply bg-red-600 font-medium text-xs text-white w-4 h-4 rounded-full flex justify-center items-center  mt-1
 }
