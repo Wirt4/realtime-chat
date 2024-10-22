@@ -42,7 +42,7 @@ const Layout = async ({children}: LayoutProps = {children:null})=>{
         </div>: null}
             <nav className='dashboard-nav-cols'>
                 <ul role='list' className='dashboard-ul'>
-                    <SidebarChatList friends={friends} aria-label='chat list'/>
+                    <SidebarChatList friends={friends} aria-label='chat list' sessionId={userId}/>
                     <div className='dashboard-subheader'>Overview</div>
                         <ul role='list' className='dashboard-sub-ul'>
                             <AddFriendListItem/>

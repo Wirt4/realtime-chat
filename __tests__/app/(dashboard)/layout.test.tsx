@@ -89,24 +89,19 @@ describe('Layout tests',()=>{
 
     test('Output of fetchRedis is passed to  FriendRequestSidebarOptions', async ()=>{
         (fetchRedis as jest.Mock).mockResolvedValue(['first entry','second entry','third entry','fourth entry','fifth entry']);
-        const childComponentSpy = jest.fn();
-        (FriendRequestSidebarOptions as jest.Mock).mockImplementation(({ initialRequestCount }) => {
-                childComponentSpy(initialRequestCount);
-                return <div data-testid="child-component">Mocked Child</div>;
-        });
+        const friendRequestSpy = jest.fn();
+        mockSideBarOptions(friendRequestSpy);
         render(await Layout());
-        await waitFor(() => expect(childComponentSpy).toHaveBeenCalledWith(5));
+        await waitFor(() => expect(friendRequestSpy).toHaveBeenCalledWith(5));
     });
 
     test('Output of fetchRedis is passed to  FriendRequestSidebarOptions, different data', async ()=>{
         (fetchRedis as jest.Mock).mockResolvedValue(['first entry','second entry']);
-        const childComponentSpy = jest.fn();
-        (FriendRequestSidebarOptions as jest.Mock).mockImplementation(({ initialRequestCount }) => {
-            childComponentSpy(initialRequestCount);
-            return <div data-testid="child-component">Mocked Child</div>;
-        });
+        const friendRequestSpy = jest.fn();
+        mockSideBarOptions(friendRequestSpy);
+
         render(await Layout());
-        expect(childComponentSpy).toHaveBeenCalledWith(2);
+        expect(friendRequestSpy).toHaveBeenCalledWith(2);
     });
 
     test ('confirm input passed to fetchRedis', async ()=>{
@@ -145,13 +140,11 @@ describe('Layout tests',()=>{
 
     test('Output of getFriendsById is passed to  SidebarChatList', async ()=>{
         (getFriendsById as jest.Mock).mockResolvedValue([]);
-        const childComponentSpy = jest.fn();
-        (SidebarChatList as jest.Mock).mockImplementation(({ friends }) => {
-            childComponentSpy(friends);
-            return <div data-testid="child-component">Mocked Child</div>;
-        });
+        const chatListSpy = jest.fn();
+        mockSideBarChatList(chatListSpy)
+
         render(await Layout());
-        await waitFor(() => expect(childComponentSpy).toHaveBeenCalledWith([]));
+        await waitFor(() => expect(chatListSpy).toHaveBeenCalledWith(expect.objectContaining({friends:[]})));
     });
 
     test('Output of getFriendsById is passed to SidebarChatList', async ()=>{
@@ -175,4 +168,37 @@ describe('Layout tests',()=>{
         }]));
     });
 
+    test('Output of myGetServerSession is passed to SideBarChatList', async()=>{
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'thx-1138'}});
+        const chatListSpy = jest.fn();
+        mockSideBarChatList(chatListSpy)
+
+        render(await Layout());
+
+        expect(chatListSpy).toHaveBeenCalledWith(expect.objectContaining({sessionId: 'thx-1138'}));
+    })
+
+    test('Output of myGetServerSession is passed to SideBarChatList, different data', async()=>{
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'r2-d2'}});
+        const chatListSpy = jest.fn();
+        mockSideBarChatList(chatListSpy)
+
+        render(await Layout());
+
+        expect(chatListSpy).toHaveBeenCalledWith(expect.objectContaining({sessionId: 'r2-d2'}));
+    })
 });
+
+const mockSideBarChatList = (spy: jest.Mock)=>{
+    (SidebarChatList as jest.Mock).mockImplementation(props => {
+        spy(props);
+        return <div data-testid="child-component">Mocked Child</div>;
+    });
+}
+
+const mockSideBarOptions = (spy: jest.Mock)=>{
+    (FriendRequestSidebarOptions as jest.Mock).mockImplementation(({ initialRequestCount }) => {
+        spy(initialRequestCount);
+        return <div data-testid="child-component">Mocked Child</div>;
+    });
+}
