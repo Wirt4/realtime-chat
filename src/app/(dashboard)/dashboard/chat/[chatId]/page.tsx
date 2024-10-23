@@ -41,7 +41,7 @@ const Page: FC<ChatProps> = async ({params}) => {
                         </span>
                     </div>
                     <span className='chat-h'>
-                        spock@vulcanscience.edu
+                        {partner.email}
                     </span>
                 </div>
             </div>

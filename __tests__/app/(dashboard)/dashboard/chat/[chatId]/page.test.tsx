@@ -172,6 +172,19 @@ describe('ChatPage renders with expected content', () => {
         const email = getByText("spock@vulcanscience.edu")
         expect(email).toBeInTheDocument();
     })
+
+    test("document should display chat partner's email",async ()=>{
+        (db.get as jest.Mock).mockResolvedValue({
+            name: "spock",
+            email: "scooby@doo.com",
+            image: "/stub",
+            id: "userid2",
+        });
+
+        const {getByText} = render(await Page({params:{chatId: 'userid1--userid2'}}));
+        const email = getByText("scooby@doo.com")
+        expect(email).toBeInTheDocument();
+    })
 });
 
 describe('Chat page makes expected calls', ()=>{
