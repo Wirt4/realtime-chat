@@ -68,7 +68,7 @@ describe('ChatPage renders with expected content', () => {
     });
 
     test("chat image should be sourced from chat partner's name",async ()=>{
-        const url = "https://i.kym-cdn.com/entries/icons/original/000/023/846/lisa.jpg";
+        const url = "/uglyImage";
         (db.get as jest.Mock).mockResolvedValue({
             name: "stub",
             email: "stub",
@@ -83,7 +83,7 @@ describe('ChatPage renders with expected content', () => {
     });
 
     test("chat image should be sourced from chat partner's name, different data",async ()=>{
-        const url = "https://media.wired.com/photos/5f87340d114b38fa1f8339f9/master/w_1600,c_limit/Ideas_Surprised_Pikachu_HD.jpg";
+        const url = "/fancyImage";
         (db.get as jest.Mock).mockResolvedValue({
             name: "stub",
             email: "stub",
