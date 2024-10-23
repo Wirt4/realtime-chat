@@ -222,3 +222,7 @@
 .chat-g{
     @apply text-gray-700 ml-3 font-semibold
 }
+
+.chat-h{
+    @apply text-sm ml-3 text-gray-600
+}

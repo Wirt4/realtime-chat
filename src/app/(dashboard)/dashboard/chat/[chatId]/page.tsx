@@ -36,11 +36,13 @@ const Page: FC<ChatProps> = async ({params}) => {
                 </div>
                 <div className='chat-e'>
                     <div className='chat-f'>
-                        <span className='text-gray-700 ml-3 font-semibold'>
+                        <span className='chat-g'>
                             {partner.name}
                         </span>
                     </div>
-                    <span>spock@vulcanscience.edu</span>
+                    <span className='chat-h'>
+                        spock@vulcanscience.edu
+                    </span>
                 </div>
             </div>
         </div>
