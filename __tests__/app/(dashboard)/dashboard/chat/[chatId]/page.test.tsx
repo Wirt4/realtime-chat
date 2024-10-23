@@ -145,6 +145,20 @@ describe('ChatPage renders with expected content', () => {
 
         expect(name).toBeInTheDocument();
     })
+
+    test("document should display chat partner's name", async ()=>{
+        (db.get as jest.Mock).mockResolvedValue({
+            name: "spock",
+            email: "stub",
+            image: "/stub",
+            id: "userid2",
+        });
+
+        const {getByText} = render(await Page({params:{chatId: 'useri12--userid2'}}));
+        const name = getByText('spock')
+
+        expect(name).toBeInTheDocument();
+    })
 });
 
 describe('Chat page makes expected calls', ()=>{
