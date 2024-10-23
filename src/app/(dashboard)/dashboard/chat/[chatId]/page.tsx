@@ -34,7 +34,13 @@ const Page: FC<ChatProps> = async ({params}) => {
                                className='rounded-full ml-3'/>
                     </div>
                 </div>
-                <div><div><span>alice</span></div></div>
+                <div className='flex flex-col leading-tight'>
+                    <div className='text-xl flex items-center'>
+                        <span className='text-gray-700 ml-3 font-semibold'>
+                            alice
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
