@@ -5,7 +5,6 @@ import Page from '@/app/(dashboard)/dashboard/chat/[chatId]/page'
 import myGetServerSession from "@/lib/myGetServerSession";
 import {notFound} from "next/navigation";
 import {db} from "@/lib/db"
-import { JSX, ClassAttributes, ImgHTMLAttributes } from 'react';
 
 jest.mock("@/lib/myGetServerSession", () => ({
     __esModule: true,
@@ -18,11 +17,6 @@ jest.mock('@/lib/db', () => ({
     },
 }));
 
-// eslint-disable-next-line react/display-name
-jest.mock('next/image', () => (props: JSX.IntrinsicAttributes & ClassAttributes<HTMLImageElement> & ImgHTMLAttributes<HTMLImageElement>) => {
-    return <img {...props} />;
-});
-
 jest.mock("next/navigation", () => ({
     notFound: jest.fn(),
 }));
@@ -30,12 +24,12 @@ jest.mock("next/navigation", () => ({
 describe('ChatPage renders with expected content', () => {
     beforeEach(()=>{
         jest.resetAllMocks();
-        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'stub'}});
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'userid1'}});
         (db.get as jest.Mock).mockResolvedValue({
-            name: "stub",
+            name: "partner name",
             email: "stub",
-            image: "stub",
-            id: "stub",
+            image: "/stub",
+            id: "userid2",
         });
     });
 
@@ -69,35 +63,38 @@ describe('ChatPage renders with expected content', () => {
 
     test('chat page should render with an image',async ()=>{
         const {getByRole} = render(await Page({params:{chatId: 'userid1--userid2'}}));
-        expect(getByRole('img')).toBeInTheDocument();
+        const image = getByRole('img', { name: /partner name/i });
+        expect(image).toBeInTheDocument();
     });
 
     test("chat image should be sourced from chat partner's name",async ()=>{
+        const url = "https://i.kym-cdn.com/entries/icons/original/000/023/846/lisa.jpg";
         (db.get as jest.Mock).mockResolvedValue({
             name: "stub",
             email: "stub",
-            image: "https://i.kym-cdn.com/entries/icons/original/000/023/846/lisa.jpg",
+            image: url,
             id: "stub",
         });
 
         const {getByRole} = render(await Page({params:{chatId: 'userid1--userid2'}}));
         const element = getByRole('img');
         expect(element).toHaveAttribute('src',
-            expect.stringContaining("https://i.kym-cdn.com/entries/icons/original/000/023/846/lisa.jpg"));
+            expect.stringContaining(encodeUrl(url)));
     });
 
     test("chat image should be sourced from chat partner's name, different data",async ()=>{
+        const url = "https://media.wired.com/photos/5f87340d114b38fa1f8339f9/master/w_1600,c_limit/Ideas_Surprised_Pikachu_HD.jpg";
         (db.get as jest.Mock).mockResolvedValue({
             name: "stub",
             email: "stub",
-            image: "https://media.wired.com/photos/5f87340d114b38fa1f8339f9/master/w_1600,c_limit/Ideas_Surprised_Pikachu_HD.jpg",
+            image: url,
             id: "stub",
         });
 
         const {getByRole} = render(await Page({params:{chatId: 'userid1--userid2'}}));
         const element = getByRole('img');
         expect(element).toHaveAttribute('src',
-            expect.stringContaining("https://media.wired.com/photos/5f87340d114b38fa1f8339f9/master/w_1600,c_limit/Ideas_Surprised_Pikachu_HD.jpg"));
+            expect.stringContaining(encodeUrl(url)));
     });
 });
 
@@ -108,7 +105,7 @@ describe('Chat page makes expected calls', ()=>{
         (db.get as jest.Mock).mockResolvedValue({
             name: "stub",
             email: "stub",
-            image: "stub",
+            image: "/stub",
             id: "stub",
         });
     });
@@ -129,3 +126,8 @@ describe('Chat page makes expected calls', ()=>{
         expect(db.get as jest.Mock).toHaveBeenCalledWith('user:kirk');
     })
 })
+
+
+const encodeUrl = (url: string)=>{
+    return url.replaceAll(':','%3A').replaceAll('/','%2F').replaceAll(',','%2C');
+}
