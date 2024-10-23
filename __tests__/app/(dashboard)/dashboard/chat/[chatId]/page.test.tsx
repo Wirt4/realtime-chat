@@ -110,6 +110,20 @@ describe('ChatPage renders with expected content', () => {
         expect(element).toHaveAttribute('alt',
             expect.stringContaining('fooey'));
     })
+
+    test("chat image should have alt text for partner's name", async ()=>{
+        (db.get as jest.Mock).mockResolvedValue({
+            name: "alice",
+            email: "stub",
+            image: "/stub",
+            id: "userid2",
+        });
+
+        const {getByRole} = render(await Page({params:{chatId: 'userid1--userid2'}}))
+        const element = getByRole('img');
+        expect(element).toHaveAttribute('alt',
+            expect.stringContaining('alice'));
+    })
 });
 
 describe('Chat page makes expected calls', ()=>{
