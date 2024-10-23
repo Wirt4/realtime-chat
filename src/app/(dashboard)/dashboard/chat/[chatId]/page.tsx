@@ -53,6 +53,7 @@ const Display: FC<DisplayProps> = ({partner}) =>{
                 </div>
             </div>
         </div>
+        <div aria-label='messages'/>
     </div>
 }
 
