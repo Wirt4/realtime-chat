@@ -14,7 +14,7 @@ jest.mock("next/navigation", () => ({
     notFound: jest.fn(),
 }));
 
-describe('ChatPage tests', () => {
+describe('ChatPage renders with expected content', () => {
     beforeEach(()=>{
         jest.resetAllMocks();
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'stub'}});
@@ -48,7 +48,8 @@ describe('ChatPage tests', () => {
         expect(notFound).toHaveBeenCalled();
     });
 
-    test('if Page is called, the helper function "getChatMessages is called with the the chatId', async ()=>{
-      //TBD
-    });
+    test('chat page should render with an image',async ()=>{
+        const {getByRole} = render(await Page({params:{chatId: 'userid1--userid2'}}));
+        expect(getByRole('img')).toBeInTheDocument();
+    })
 });
