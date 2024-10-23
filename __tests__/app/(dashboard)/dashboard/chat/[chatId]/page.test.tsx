@@ -153,6 +153,14 @@ describe('Chat page makes expected calls', ()=>{
 
         expect(db.get as jest.Mock).toHaveBeenCalledWith('user:kirk');
     })
+
+    test('db is called with correct params for user',async ()=>{
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'mindy'}});
+
+        render(await Page({params:{chatId: 'mindy--mork'}}));
+
+        expect(db.get as jest.Mock).toHaveBeenCalledWith('user:mork');
+    })
 })
 
 
