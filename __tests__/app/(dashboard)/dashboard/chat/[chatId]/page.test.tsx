@@ -100,3 +100,24 @@ describe('ChatPage renders with expected content', () => {
             expect.stringContaining("https://media.wired.com/photos/5f87340d114b38fa1f8339f9/master/w_1600,c_limit/Ideas_Surprised_Pikachu_HD.jpg"));
     });
 });
+
+describe('Chat page makes expected calls', ()=>{
+    beforeEach(()=>{
+        jest.resetAllMocks();
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'stub'}});
+        (db.get as jest.Mock).mockResolvedValue({
+            name: "stub",
+            email: "stub",
+            image: "stub",
+            id: "stub",
+        });
+    });
+
+    test('db is called with correct params for user',async ()=>{
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'kirk'}});
+
+        render(await Page({params:{chatId: 'kirk--spock'}}));
+
+        expect(db.get as jest.Mock).toHaveBeenCalledWith('user:spock');
+    })
+})
