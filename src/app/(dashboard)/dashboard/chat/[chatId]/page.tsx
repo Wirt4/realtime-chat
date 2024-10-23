@@ -34,6 +34,7 @@ const Page: FC<ChatProps> = async ({params}) => {
                                className='rounded-full ml-3'/>
                     </div>
                 </div>
+                <div><div><span>alice</span></div></div>
             </div>
         </div>
     </div>
