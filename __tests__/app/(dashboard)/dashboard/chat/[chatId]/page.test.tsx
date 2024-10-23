@@ -154,10 +154,23 @@ describe('ChatPage renders with expected content', () => {
             id: "userid2",
         });
 
-        const {getByText} = render(await Page({params:{chatId: 'useri12--userid2'}}));
+        const {getByText} = render(await Page({params:{chatId: 'userid21-userid2'}}));
         const name = getByText('spock')
 
         expect(name).toBeInTheDocument();
+    })
+
+    test("document should display chat partner's email",async ()=>{
+        (db.get as jest.Mock).mockResolvedValue({
+            name: "spock",
+            email: "spock@vulcanscience.edu",
+            image: "/stub",
+            id: "userid2",
+        });
+
+        const {getByText} = render(await Page({params:{chatId: 'userid1--userid2'}}));
+        const email = getByText("spock@vulcanscience.edu")
+        expect(email).toBeInTheDocument();
     })
 });
 
