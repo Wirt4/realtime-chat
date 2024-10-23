@@ -40,6 +40,7 @@ const Page: FC<ChatProps> = async ({params}) => {
                             {partner.name}
                         </span>
                     </div>
+                    <span>spock@vulcanscience.edu</span>
                 </div>
             </div>
         </div>
