@@ -15,9 +15,9 @@ const Page: FC<ChatProps> = async ({params}) => {
     const participants = params.chatId.split('--')
     if (!session || !participants.includes(session.user.id)){
         notFound();
-        return
     }
-    const partnerId = session.user.id === 'kirk' ? 'spock' : 'kirk'
+
+    const partnerId = session?.user?.id === 'kirk' ? 'spock' : 'kirk'
     const partner = (await db.get(`user:${partnerId}`)) as User
 
     return<div className='chat-a'>
