@@ -21,7 +21,14 @@ const Page: FC<ChatProps> = async ({params}) => {
 
     const partnerId = userId === participants[0] ? participants[1] : participants[0]
     const partner = (await db.get(`user:${partnerId}`)) as User
+    return<Display partner={partner}/>
+}
 
+interface DisplayProps {
+    partner: User
+}
+
+const Display: FC<DisplayProps> = ({partner}) =>{
     return<div className='chat-a'>
         <div className='chat-b'>
             <div className='chat-c'>
@@ -48,6 +55,5 @@ const Page: FC<ChatProps> = async ({params}) => {
         </div>
     </div>
 }
-
 
 export default Page;
