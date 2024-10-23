@@ -26,16 +26,16 @@ const Page: FC<ChatProps> = async ({params}) => {
         <div className='chat-b'>
             <div className='chat-c'>
                 <div className='relative'>
-                    <div className='chat-image'>
+                    <div className='chat-d'>
                         <Image src={partner.image}
                                fill
                                alt={partner.name}
                                referrerPolicy='no-referrer'
-                               className='rounded-full ml-3'/>
+                               className='chat-image'/>
                     </div>
                 </div>
-                <div className='flex flex-col leading-tight'>
-                    <div className='text-xl flex items-center'>
+                <div className='chat-e'>
+                    <div className='chat-f'>
                         <span className='text-gray-700 ml-3 font-semibold'>
                             {partner.name}
                         </span>

@@ -191,7 +191,7 @@
     @apply fixed bottom-8 dashboard-sub-ul
 }
 
-.chat-image{
+.chat-d{
     @apply relative w-8 sm:w-12 sm:h-12
 }
 
@@ -205,4 +205,20 @@
 
 .chat-c{
     @apply relative flex items-center space-x-4
+}
+
+.chat-image{
+    @apply rounded-full ml-3
+}
+
+.chat-e{
+    @apply flex flex-col leading-tight
+}
+
+.chat-f{
+    @apply text-xl flex items-center
+}
+
+.chat-g{
+    @apply text-gray-700 ml-3 font-semibold
 }
