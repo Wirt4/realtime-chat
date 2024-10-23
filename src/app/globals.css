@@ -190,3 +190,19 @@
 .signout-ul{
     @apply fixed bottom-8 dashboard-sub-ul
 }
+
+.chat-image{
+    @apply relative w-8 sm:w-12 sm:h-12
+}
+
+.chat-a{
+    @apply flex-1 justify-between flex flex-col h-full max-h-[calc(100vh-6rem)
+}
+
+.chat-b{
+    @apply flex sm:items-center justify-between py-3 border-b-2 border-gray-200
+}
+
+.chat-c{
+    @apply relative flex items-center space-x-4
+}
