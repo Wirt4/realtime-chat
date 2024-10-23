@@ -1,6 +1,7 @@
 import {FC} from "react";
 import {notFound} from "next/navigation";
 import myGetServerSession from "@/lib/myGetServerSession";
+import Image from "next/image";
 
 interface ChatProps{
     params: {
@@ -14,7 +15,7 @@ const Page: FC<ChatProps> = async ({params}) => {
         notFound();
     }
 
-    return <div/>
+    return <div><Image src={"https://media.wired.com/photos/5f87340d114b38fa1f8339f9/master/w_1600,c_limit/Ideas_Surprised_Pikachu_HD.jpg"} width="40" height="40" alt={'pikachu'}/></div>
 }
 
 
