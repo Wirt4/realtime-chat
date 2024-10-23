@@ -3,6 +3,7 @@ import {notFound} from "next/navigation";
 import myGetServerSession from "@/lib/myGetServerSession";
 import Image from "next/image";
 import {db} from "@/lib/db";
+import Messages from "@/components/Messages";
 
 interface ChatProps{
     params: {
@@ -53,7 +54,7 @@ const Display: FC<DisplayProps> = ({partner}) =>{
                 </div>
             </div>
         </div>
-        <div aria-label='messages'/>
+        <Messages/>
     </div>
 }
 
