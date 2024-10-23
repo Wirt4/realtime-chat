@@ -67,7 +67,7 @@ describe('ChatPage renders with expected content', () => {
         expect(image).toBeInTheDocument();
     });
 
-    test("chat image should be sourced from chat partner's name",async ()=>{
+    test("chat image should be sourced from chat partner's ID",async ()=>{
         const url = "/uglyImage";
         (db.get as jest.Mock).mockResolvedValue({
             name: "stub",
@@ -96,6 +96,20 @@ describe('ChatPage renders with expected content', () => {
         expect(element).toHaveAttribute('src',
             expect.stringContaining(encodeUrl(url)));
     });
+
+    test("chat image should have alt text for partner's name", async ()=>{
+        (db.get as jest.Mock).mockResolvedValue({
+            name: "fooey",
+            email: "stub",
+            image: "/stub",
+            id: "userid2",
+        });
+
+        const {getByRole} = render(await Page({params:{chatId: 'userid1--userid2'}}))
+        const element = getByRole('img');
+        expect(element).toHaveAttribute('alt',
+            expect.stringContaining('fooey'));
+    })
 });
 
 describe('Chat page makes expected calls', ()=>{
