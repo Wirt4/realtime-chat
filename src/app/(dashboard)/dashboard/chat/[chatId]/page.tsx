@@ -37,7 +37,7 @@ const Page: FC<ChatProps> = async ({params}) => {
                 <div className='flex flex-col leading-tight'>
                     <div className='text-xl flex items-center'>
                         <span className='text-gray-700 ml-3 font-semibold'>
-                            alice
+                            {partner.name}
                         </span>
                     </div>
                 </div>
