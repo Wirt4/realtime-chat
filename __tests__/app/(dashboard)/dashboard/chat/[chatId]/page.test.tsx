@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import {render} from '@testing-library/react'
+import { render} from '@testing-library/react';
 import Page from '@/app/(dashboard)/dashboard/chat/[chatId]/page'
 
 import myGetServerSession from "@/lib/myGetServerSession";
@@ -184,6 +184,12 @@ describe('ChatPage renders with expected content', () => {
         const {getByText} = render(await Page({params:{chatId: 'userid1--userid2'}}));
         const email = getByText("scooby@doo.com")
         expect(email).toBeInTheDocument();
+    })
+
+    test("document should contain a messages component",async ()=>{
+        const {queryByLabelText} = render(await Page({params:{chatId: 'userid1--userid2'}}));
+        const messages = queryByLabelText('messages')
+        expect(messages).toBeInTheDocument();
     })
 });
 
