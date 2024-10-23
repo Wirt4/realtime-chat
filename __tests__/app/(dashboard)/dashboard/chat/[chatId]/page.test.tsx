@@ -125,11 +125,25 @@ describe('ChatPage renders with expected content', () => {
             expect.stringContaining('alice'));
     })
 
-    test('user is valide, but not for the chat', async ()=>{
+    test('user is valid, but not for the chat', async ()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'userid1'}});
         render(await Page({params:{chatId: 'userid2--userid3'}}));
 
         expect(notFound).toHaveBeenCalled();
+    })
+
+    test("document should display chat partner's name", async ()=>{
+        (db.get as jest.Mock).mockResolvedValue({
+            name: "alice",
+            email: "stub",
+            image: "/stub",
+            id: "userid2",
+        });
+
+        const {getByText} = render(await Page({params:{chatId: 'useri12--userid2'}}));
+        const name = getByText('alice')
+
+        expect(name).toBeInTheDocument();
     })
 });
 
