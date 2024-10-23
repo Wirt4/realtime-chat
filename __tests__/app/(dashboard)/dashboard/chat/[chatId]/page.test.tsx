@@ -51,5 +51,5 @@ describe('ChatPage renders with expected content', () => {
     test('chat page should render with an image',async ()=>{
         const {getByRole} = render(await Page({params:{chatId: 'userid1--userid2'}}));
         expect(getByRole('img')).toBeInTheDocument();
-    })
+    });
 });

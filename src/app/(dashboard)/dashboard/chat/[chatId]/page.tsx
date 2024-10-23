@@ -14,8 +14,9 @@ const Page: FC<ChatProps> = async ({params}) => {
     if (!session || !params.chatId.split('--').includes(session.user.id)){
         notFound();
     }
+    const imageSource ="https://media.wired.com/photos/5f87340d114b38fa1f8339f9/master/w_1600,c_limit/Ideas_Surprised_Pikachu_HD.jpg"
 
-    return <div><Image src={"https://media.wired.com/photos/5f87340d114b38fa1f8339f9/master/w_1600,c_limit/Ideas_Surprised_Pikachu_HD.jpg"} width="40" height="40" alt={'pikachu'}/></div>
+    return <div><Image src={imageSource} width="40" height="40" alt={'pikachu'}/></div>
 }
 
 
