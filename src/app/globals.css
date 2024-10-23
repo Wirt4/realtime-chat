@@ -196,7 +196,7 @@
 }
 
 .chat-a{
-    @apply flex-1 justify-between flex flex-col h-full max-h-[calc(100vh-6rem)
+    @apply flex-1 justify-between flex flex-col h-full max-h-[calc(100vh-6rem)]
 }
 
 .chat-b{

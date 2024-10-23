@@ -27,7 +27,11 @@ const Page: FC<ChatProps> = async ({params}) => {
             <div className='chat-c'>
                 <div className='relative'>
                     <div className='chat-image'>
-                        <Image src={partner.image} fill alt={partner.name} referrerPolicy='no-referrer'/>
+                        <Image src={partner.image}
+                               fill
+                               alt={partner.name}
+                               referrerPolicy='no-referrer'
+                               className='rounded-full ml-3'/>
                     </div>
                 </div>
             </div>
