@@ -15,7 +15,7 @@ const Page: FC<ChatProps> = async ({params}) => {
     const userId = session?.user?.id
     const participants = params.chatId.split('--')
 
-    if (!session || !participants.includes(userId as string)){
+    if (!(session && participants.includes(userId as string))){
         notFound();
     }
 
