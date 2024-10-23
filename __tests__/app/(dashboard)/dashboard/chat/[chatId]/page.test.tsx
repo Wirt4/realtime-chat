@@ -124,6 +124,13 @@ describe('ChatPage renders with expected content', () => {
         expect(element).toHaveAttribute('alt',
             expect.stringContaining('alice'));
     })
+
+    test('user is valide, but not for the chat', async ()=>{
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'userid1'}});
+        render(await Page({params:{chatId: 'userid2--userid3'}}));
+
+        expect(notFound).toHaveBeenCalled();
+    })
 });
 
 describe('Chat page makes expected calls', ()=>{

@@ -12,12 +12,14 @@ interface ChatProps{
 
 const Page: FC<ChatProps> = async ({params}) => {
     const session = await myGetServerSession();
+    const userId = session?.user?.id
     const participants = params.chatId.split('--')
-    if (!session || !participants.includes(session.user.id)){
+
+    if (!session || !userId){
         notFound();
     }
 
-    const partnerId = session?.user?.id === participants[0] ? participants[1] : participants[0]
+    const partnerId = userId === participants[0] ? participants[1] : participants[0]
     const partner = (await db.get(`user:${partnerId}`)) as User
 
     return<div className='chat-a'>
