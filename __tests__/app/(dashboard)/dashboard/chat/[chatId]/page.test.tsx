@@ -84,6 +84,19 @@ describe('ChatPage renders with expected content', () => {
         const element = getByRole('img');
         expect(element).toHaveAttribute('src',
             expect.stringContaining("https://i.kym-cdn.com/entries/icons/original/000/023/846/lisa.jpg"));
+    });
 
+    test("chat image should be sourced from chat partner's name, different data",async ()=>{
+        (db.get as jest.Mock).mockResolvedValue({
+            name: "stub",
+            email: "stub",
+            image: "https://media.wired.com/photos/5f87340d114b38fa1f8339f9/master/w_1600,c_limit/Ideas_Surprised_Pikachu_HD.jpg",
+            id: "stub",
+        });
+
+        const {getByRole} = render(await Page({params:{chatId: 'userid1--userid2'}}));
+        const element = getByRole('img');
+        expect(element).toHaveAttribute('src',
+            expect.stringContaining("https://media.wired.com/photos/5f87340d114b38fa1f8339f9/master/w_1600,c_limit/Ideas_Surprised_Pikachu_HD.jpg"));
     });
 });
