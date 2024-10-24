@@ -54,7 +54,7 @@ const Display: FC<DisplayProps> = ({partner}) =>{
                 </div>
             </div>
         </div>
-        <Messages/>
+        <Messages initialMessages={[]}/>
     </div>
 }
 
