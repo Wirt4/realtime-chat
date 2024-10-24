@@ -4,6 +4,29 @@ import myGetServerSession from "@/lib/myGetServerSession";
 import Image from "next/image";
 import {db} from "@/lib/db";
 import Messages from "@/components/Messages";
+import {Helpers} from "@/app/(dashboard)/dashboard/chat/[chatId]/helpers";
+import {Message} from "@/lib/validations/messages";
+
+class Participants{
+    private readonly userA: string
+    private readonly userB: string
+    private readonly sessionId: string
+
+    constructor(chatId: string, sessionId: string){
+        const participants = chatId.split('--')
+        this.userA = participants[0]
+        this.userB = participants[1]
+        this.sessionId = sessionId
+    }
+
+    includesSession(): boolean{
+        return this.userA == this.sessionId  ||  this.userB == this.sessionId
+    }
+
+    partnerId(): string{
+        return this.userA == this.sessionId? this.userB : this.userA;
+    }
+}
 
 interface ChatProps{
     params: {
@@ -13,48 +36,62 @@ interface ChatProps{
 
 const Page: FC<ChatProps> = async ({params}) => {
     const session = await myGetServerSession();
-    const userId = session?.user?.id
-    const participants = params.chatId.split('--')
+    const userId = session?.user?.id as string
+    const {chatId} = params
+    const participants = new Participants(chatId, userId as string)
+    const helpers = new Helpers()
+    const initialMessages = await helpers.getChatMessages(chatId)
 
-    if (!(session && participants.includes(userId as string))){
+    if (!(session && participants.includesSession())){
         notFound();
     }
 
-    const partnerId = userId === participants[0] ? participants[1] : participants[0]
-    const partner = (await db.get(`user:${partnerId}`)) as User
-    return<Display partner={partner}/>
+    const partner = (await db.get(`user:${participants.partnerId()}`)) as User;
+
+    return<Display partner={partner} messages={initialMessages} userId={userId}/>
 }
 
 interface DisplayProps {
     partner: User
+    messages: Message[]
+    userId: string
 }
 
-const Display: FC<DisplayProps> = ({partner}) =>{
+const Display: FC<DisplayProps> = ({partner, messages, userId}) =>{
     return<div className='chat-a'>
-        <div className='chat-b'>
-            <div className='chat-c'>
-                <div className='relative'>
-                    <div className='chat-d'>
-                        <Image src={partner.image}
-                               fill
-                               alt={partner.name}
-                               referrerPolicy='no-referrer'
-                               className='chat-image'/>
-                    </div>
-                </div>
-                <div className='chat-e'>
-                    <div className='chat-f'>
-                        <span className='chat-g'>
-                            {partner.name}
-                        </span>
-                    </div>
-                    <span className='chat-h'>
-                        {partner.email}
-                    </span>
+        <Header partner = {partner}/>
+        <Messages initialMessages={messages} sessionId={userId}/>
+    </div>
+}
+
+interface HeaderProps {
+    partner: User
+}
+
+const Header: FC<HeaderProps> = ({partner})=> {
+    const {image, name, email} = partner
+    return <div className='chat-b'>
+        <div className='chat-c'>
+            <div className='relative'>
+                <div className='chat-d'>
+                    <Image src={image}
+                           fill
+                           alt={name}
+                           referrerPolicy='no-referrer'
+                           className='chat-image'/>
                 </div>
             </div>
+            <div className='chat-e'>
+                <div className='chat-f'>
+                        <span className='chat-g'>
+                            {name}
+                        </span>
+                </div>
+                <span className='chat-h'>
+                        {email}
+                    </span>
+            </div>
         </div>
-        <Messages initialMessages={[]}/>
     </div>
 }
 

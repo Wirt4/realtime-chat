@@ -253,3 +253,15 @@
 }
 
 .scrolling-touch { -webkit-overflow-scrolling: touch; }
+
+.message-div-2{
+    @apply flex flex-col space-y-2 text-base max-w-xs mx-2
+}
+
+.message-span{
+    @apply px-4 py-2 rounded-lg inline-block
+}
+
+.message-date{
+    @apply ml-2 text-xs text-gray-400
+}

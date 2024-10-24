@@ -1,10 +1,17 @@
 import '@testing-library/jest-dom'
-import { render} from '@testing-library/react';
+import {render} from '@testing-library/react';
 import Page from '@/app/(dashboard)/dashboard/chat/[chatId]/page'
+import {Helpers} from '@/app/(dashboard)/dashboard/chat/[chatId]/helpers';
+import Messages from "@/components/Messages";
 
 import myGetServerSession from "@/lib/myGetServerSession";
 import {notFound} from "next/navigation";
 import {db} from "@/lib/db"
+
+jest.mock("@/components/Messages",() => ({
+    __esModule: true,
+    default: jest.fn(),
+}))
 
 jest.mock("@/lib/myGetServerSession", () => ({
     __esModule: true,
@@ -31,8 +38,8 @@ describe('ChatPage renders with expected content', () => {
             image: "/stub",
             id: "userid2",
         });
+        jest.spyOn(Helpers.prototype, "getChatMessages").mockResolvedValue([]);
     });
-
     test('page renders',async ()=>{
         render(await Page({params:{chatId: 'userid1--userid2'}}));
     });
@@ -187,7 +194,8 @@ describe('ChatPage renders with expected content', () => {
     })
 
     test("document should contain a messages component",async ()=>{
-        const {queryByLabelText} = render(await Page({params:{chatId: 'userid1--userid2'}}));
+        (Messages as jest.Mock).mockReturnValue(<div aria-label="messages" className="message-scroll"></div>)
+        const {queryByLabelText} = render(await Page({params: {chatId: 'userid1--userid2'}}));
         const messages = queryByLabelText('messages')
         expect(messages).toBeInTheDocument();
     })
@@ -203,6 +211,7 @@ describe('Chat page makes expected calls', ()=>{
             image: "/stub",
             id: "stub",
         });
+        jest.spyOn(Helpers.prototype, 'getChatMessages').mockResolvedValue([]);
     });
 
     test('db is called with correct params for user',async ()=>{
@@ -229,12 +238,52 @@ describe('Chat page makes expected calls', ()=>{
         expect(db.get as jest.Mock).toHaveBeenCalledWith('user:mork');
     })
 
-    test('Messages is called with ',async ()=>{
+    test('Messages is called with the output of getChatMessages and correct session id',async ()=>{
+        const msgs = [{
+            id: 'stub',
+            senderId:'stub',
+            text: 'Hello World',
+            timestamp: 0
+        }]
+        jest.spyOn(Helpers.prototype, 'getChatMessages').mockResolvedValue(msgs);
+
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'mork'}});
+
+        render(await Page({params:{chatId: 'mindy--mork'}}));
+        expect(Messages as jest.Mock).toHaveBeenCalledWith({initialMessages:msgs, sessionId:'mork'},{})
+    });
+
+    test('Messages is called with the output of getChatMessages and correct sesion id, different data',async ()=>{
+        const msgs = [{
+            id: 'stub',
+            senderId:'stub',
+            text: "My name's Gypsy, What's yours?",
+            timestamp: 0
+        }]
+        jest.spyOn(Helpers.prototype, 'getChatMessages').mockResolvedValue(msgs);
+
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'mindy'}});
+
+        render(await Page({params:{chatId: 'mindy--mork'}}));
+        expect(Messages as jest.Mock).toHaveBeenCalledWith({initialMessages:msgs, sessionId: 'mindy'},{})
+    })
+
+    test('confirm getChatMessages is called with the chatId', async()=>{
+        const spy =  jest.spyOn(Helpers.prototype, 'getChatMessages').mockResolvedValue([]);
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'mindy'}});
 
         render(await Page({params:{chatId: 'mindy--mork'}}));
 
-        expect(db.get as jest.Mock).toHaveBeenCalledWith('user:mork');
+        expect(spy).toHaveBeenCalledWith('mindy--mork');
+    })
+
+    test('confirm getChatMessages is called with the chatId, different data', async()=>{
+        const spy =  jest.spyOn(Helpers.prototype, 'getChatMessages').mockResolvedValue([]);
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'gimli'}});
+
+        render(await Page({params:{chatId: 'gimli--legolas'}}));
+
+        expect(spy).toHaveBeenCalledWith('gimli--legolas');
     })
 })
 
