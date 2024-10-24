@@ -14,11 +14,22 @@ describe('Messages renders with correct content', () => {
         const msg: Message = {
             id: 'stub',
             senderId:'stub',
-            text: 'stub',
+            text: 'Hello World',
             timestamp: 0
         }
         const {getByText} = render(<Messages initialMessages={[msg]}/>)
         const div = getByText('Hello World')
+        expect(div).toBeInTheDocument();
+    })
+    test('a message passed to the component is on the screen, different data',()=>{
+        const msg: Message = {
+            id: 'stub',
+            senderId:'stub',
+            text: "My name's Gypsy. What's yours?",
+            timestamp: 0
+        }
+        const {getByText} = render(<Messages initialMessages={[msg]}/>)
+        const div = getByText("My name's Gypsy. What's yours?")
         expect(div).toBeInTheDocument();
     })
 })
