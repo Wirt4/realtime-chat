@@ -10,7 +10,6 @@ interface ChatInputProps {
     chatId: string,
 }
 
-
 const ChatInput:FC<ChatInputProps> = ({chatPartner, chatId})=>{
     const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
