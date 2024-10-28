@@ -9,7 +9,7 @@ interface MessagesProps {
 }
 
 const Messages: FC<MessagesProps> = ({initialMessages, sessionId}) => {
-    const [messages, setMessages] = useState<Message[]>(initialMessages)
+    const [messages] = useState<Message[]>(initialMessages)
     const scrollDownRef = useRef<HTMLDivElement | null>(null)
 
     return <div aria-label='messages' className='message-scroll'>
