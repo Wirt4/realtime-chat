@@ -1,9 +1,15 @@
 import {POST} from "@/app/api/message/send/route";
 import myGetServerSession from "@/lib/myGetServerSession";
 import fetchRedis from "@/helpers/redis";
+import {db} from "@/lib/db"
 
 jest.mock("@/helpers/redis", ()=>jest.fn());
 jest.mock("@/lib/myGetServerSession",()=> jest.fn());
+jest.mock('@/lib/db', () => ({
+    db: {
+        zadd: jest.fn(),
+    },
+}));
 
 describe('api/message/send tests', () => {
     let request: Request
@@ -65,5 +71,22 @@ describe('api/message/send tests', () => {
         });
         await POST(request)
         expect(fetchRedis as jest.Mock).toHaveBeenCalledWith('smembers', 'user:bar:friends')
+    })
+})
+
+describe('api/message/send tests, parameters passed to database when authorization is green', () => {
+    let request: Request
+    beforeEach(()=>{
+        jest.resetAllMocks()
+        request = new Request("/message/send", {
+            method: "POST",
+            body: "{\"chatId\": \"bar--foo\"}",
+        });
+        (fetchRedis as jest.Mock).mockResolvedValue(['bar']);
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
+    })
+    test('db.zadd is called',async ()=>{
+        await POST(request)
+        expect(db.zadd as jest.Mock).toHaveBeenCalled();
     })
 })

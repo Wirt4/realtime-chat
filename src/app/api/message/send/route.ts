@@ -2,6 +2,7 @@ import myGetServerSession from "@/lib/myGetServerSession";
 import Participants from "@/lib/chatParticipants.js";
 import fetchRedis from "@/helpers/redis";
 import QueryBuilder from "@/lib/queryBuilder";
+import {db} from "@/lib/db";
 
 export async function POST(request: Request) {
     const session = await myGetServerSession()
@@ -16,4 +17,5 @@ export async function POST(request: Request) {
         return new Response('Unauthorized', {status: 401})
     }
 
+    await db.zadd('stub')
 }
