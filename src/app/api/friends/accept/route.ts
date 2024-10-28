@@ -2,6 +2,7 @@ import {z} from 'zod'
 import myGetServerSession from "@/lib/myGetServerSession";
 import fetchRedis from "@/helpers/redis";
 import {db} from "@/lib/db";
+import QueryBuilder from "@/lib/queryBuilder";
 
 export async function POST(request: Request):Promise<Response> {
     const idToAdd = await getIdToAdd(request);
@@ -76,7 +77,7 @@ class Handler{
     }
 
     userTable(id: string, suffix: 'friends'| 'incoming_friend_requests'){
-        return `user:${id}:${suffix}`; //find a way to fold this into query builder
+        return QueryBuilder.join(id, suffix);
     }
 }
 
