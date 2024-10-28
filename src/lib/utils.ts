@@ -82,4 +82,8 @@ export class Utils {
     static toPusherKey(s: string):string{
         return s.replace(/:/g, '__')
     }
+
+    static chatHrefConstructor(id1: string, id2:string):string{
+        return [id1, id2].sort().join('--');
+    }
 }

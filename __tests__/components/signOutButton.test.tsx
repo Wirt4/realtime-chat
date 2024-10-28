@@ -16,7 +16,7 @@ jest.mock('react-hot-toast', () => ({
 }));
 
 describe('SignOutButton', () => {
-    let setIsLoading: jest.Mock<any, any, any>
+    let setIsLoading: jest.Mock;
 
     beforeAll(()=>{
         setIsLoading = jest.fn();

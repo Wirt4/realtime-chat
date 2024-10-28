@@ -4,3 +4,10 @@ interface User {
     image: string
     id: string
 }
+
+interface Message{
+    senderId: string
+    receiverId: string
+    text: string
+    timestamp: number
+}

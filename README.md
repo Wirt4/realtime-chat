@@ -34,6 +34,10 @@ when it's good to publish,
 2. Open the heroku dashboard at `https://dashboard.heroku.com/apps/salthouse-chat/deploy/github`
 3. Hit "Deploy Branch from Main"
 
+
+## Navigation
+Chat id syntax is `${userId1}--${userId2}`
+
 ## Env Variables
 The app uses the following .env variables.
 ```

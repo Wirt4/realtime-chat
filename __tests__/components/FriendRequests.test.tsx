@@ -158,7 +158,6 @@ describe('FriendRequests', () => {
                 expect( screen.queryByText('fredo@correlone.edu')).not.toBeInTheDocument();
                 expect( screen.queryByText('santino@correlone.edu')).toBeInTheDocument();
                 expect( screen.queryByText('michael@correlone.edu')).toBeInTheDocument();
-
             });
         });
 
