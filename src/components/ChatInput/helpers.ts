@@ -18,8 +18,12 @@ export default class Helpers{
         this.chatId = chatId
     }
 
+    isUnShiftedEnter(event: React.KeyboardEvent<HTMLTextAreaElement>){
+        return event.key === "Enter" && !event.shiftKey
+    }
+
     HandleKeystroke  (event: React.KeyboardEvent<HTMLTextAreaElement>, input:string) {
-        if (event.key === "Enter" && !event.shiftKey) {
+        if (this.isUnShiftedEnter(event)) {
             event.preventDefault();
             this.SendMessage(input);
         }

@@ -15,8 +15,8 @@ const Messages: FC<MessagesProps> = ({initialMessages, sessionId}) => {
     return <div aria-label='messages' className='message-scroll'>
         <div ref={scrollDownRef}>
         {messages.map((message, index) => {
-            const foo = messages[index - 1]?.senderId === messages[index].senderId
-            const classes = new ClassNames(sessionId === message.senderId, foo)
+            const hasNextMessage = userHasNextMessage(messages, index)
+            const classes = new ClassNames(sessionId === message.senderId, hasNextMessage)
 
             return (
                <div key={listKey(message)} className={classes.div1}>
@@ -40,6 +40,9 @@ const listKey = (message: Message) =>{
     return `${id}-${timestamp}`
 }
 
+const userHasNextMessage = (messages: Message[], ndx: number) =>{
+    return messages[ndx - 1]?.senderId === messages[ndx].senderId
+}
 
 class ClassNames {
     private readonly isCurrentUser: boolean
@@ -50,7 +53,7 @@ class ClassNames {
         this.hasNextMessage = hasNextMessageFromSameUser
     }
 
-    class(base: string, ifIsUserId: string, ifNotUserId: string | null = null){
+    className(base: string, ifIsUserId: string, ifNotUserId: string | null = null){
         const suffix = this.isCurrentUser ? ifIsUserId : ifNotUserId
         if (!suffix){
             return base
@@ -59,11 +62,11 @@ class ClassNames {
     }
 
     get div1(): string{
-        return this.class('flex items-end', 'justify-end')
+        return this.className('flex items-end', 'justify-end')
     }
 
     get div2(): string{
-        return this.class('message-div-2','order-1 items-end', 'order-2 items-start' )
+        return this.className('message-div-2','order-1 items-end', 'order-2 items-start' )
     }
 
     bubble(isSpeechBalloon: boolean): string{
@@ -75,7 +78,7 @@ class ClassNames {
             partnerStyling += ' rounded-br-none'
         }
 
-        return this.class('px-4 py-2 rounded-lg inline-block', currentUserStyling, partnerStyling )
+        return this.className('px-4 py-2 rounded-lg inline-block', currentUserStyling, partnerStyling )
     }
 
    get span(): string{
