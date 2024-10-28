@@ -2,6 +2,7 @@ import {addFriendValidator} from "@/lib/validations/add-friend";
 import myGetServerSession from "@/lib/myGetServerSession";
 import fetchRedis from "@/helpers/redis";
 import {db} from "@/lib/db";
+import QueryBuilder from "@/lib/queryBuilder";
 
 interface errorProps{
     message: string,
@@ -68,12 +69,12 @@ export class PostFriendsRouteHandler {
     }
 
     async userExists(email:string):Promise<boolean>{
-        this.idToAdd = await fetchRedis("get",`user:email:${email}`)
+        this.idToAdd = await fetchRedis("get",QueryBuilder.email(email))
         return Boolean(this.idToAdd)
     }
 
     async redisSismember(userId: string, list: 'incoming_friend_requests' | 'friends', queryId:string):Promise<boolean>{
-        const result = await fetchRedis("sismember",  `user:${userId}:${list}`,queryId) as 0 | 1
+        const result = await fetchRedis("sismember",  QueryBuilder.join(userId, list), queryId) as 0 | 1
         return Boolean(result)
     }
 
@@ -86,7 +87,7 @@ export class PostFriendsRouteHandler {
     }
 
     async addToDB():Promise<void>{
-        await db.sadd(`user:${this.idToAdd}:incoming_friend_requests`,this.senderId )
+        await db.sadd(QueryBuilder.incomingFriendRequests(this.idToAdd),this.senderId )
     }
 
     isSameUser():boolean{

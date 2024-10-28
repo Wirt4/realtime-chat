@@ -28,13 +28,13 @@ describe('test getChatMessage for 404 cases',()=>{
     test('if fetchChatById throws, notFound is called', async () => {
         jest.spyOn(helpers, 'fetchChatById').mockRejectedValue('Bad')
 
-        await helpers.getChatMessage("chat:userOne-userTwo:message");
+        await helpers.getChatMessages("chat:userOne-userTwo:message");
 
         expect(notFound).toHaveBeenCalled();
     });
 
     test("if fetchRedis doesn't throw, notFound isn't called", async () => {
-        await helpers.getChatMessage("chat:userOne-userTwo:message");
+        await helpers.getChatMessages("chat:userOne-userTwo:message");
 
         expect(notFound).not.toHaveBeenCalled();
     });
@@ -57,7 +57,7 @@ describe('confirm getChatMessage is called with the output of fetchChatById', ()
         jest.spyOn(helpers, "fetchChatById").mockResolvedValue(["{\"id\": \"1701\", \"senderId\": \"bob\", \"text\":\"Hello world. My name's Gypsy, what's yours?\", \"timestamp\":1729437427}"]);
         const validatorSpy = jest.spyOn(messageArraySchema, 'parse');
 
-        await helpers.getChatMessage("chat:userOne-userTwo:message");
+        await helpers.getChatMessages("chat:userOne-userTwo:message");
 
         expect(validatorSpy).toHaveBeenCalledWith([{id: '1701', senderId: 'bob', text:"Hello world. My name's Gypsy, what's yours?", timestamp:1729437427}]);
     });
@@ -66,7 +66,7 @@ describe('confirm getChatMessage is called with the output of fetchChatById', ()
         jest.spyOn(helpers, "fetchChatById").mockResolvedValue(["{\"id\": \"1701\", \"senderId\": \"bob\", \"text\":\"Captain, you're being hailed\", \"timestamp\":1729437427}"]);
         const validatorSpy = jest.spyOn(messageArraySchema, 'parse');
 
-        await helpers.getChatMessage("chat:userOne-userTwo:message");
+        await helpers.getChatMessages("chat:userOne-userTwo:message");
 
         expect(validatorSpy).toHaveBeenCalledWith([{id: '1701', senderId: 'bob', text:"Captain, you're being hailed", timestamp:1729437427}]);
     });
@@ -95,7 +95,7 @@ describe('fetchByChatId returns an array with the most recent timestamp first,so
            return data as { id: string; senderId: string; recieverId: string; text: string; timestamp: number }[];
         });
 
-       const result =  await helpers.getChatMessage("chat:1071-1701:message");
+       const result =  await helpers.getChatMessages("chat:1071-1701:message");
 
        expect(result).toEqual([ {id: '1071', senderId: 'alice',recieverId:'1701', text:"Hi bob", timestamp:1729437427},{id: '1701', senderId: 'bob',recieverId: '1071', text:"Hi Alice, what's up", timestamp:1729533949}])
     });
@@ -111,7 +111,7 @@ describe('fetchByChatId returns an array with the most recent timestamp first,so
             return data as { id: string; senderId: string; recieverId: string; text: string; timestamp: number }[];
         });
 
-        const result =  await helpers.getChatMessage("chat:1071-1701:message");
+        const result =  await helpers.getChatMessages("chat:1071-1701:message");
 
         expect(result).toEqual([
             {id:'1071', senderId: 'alice', recieverId:"1701", text:"Hey, it's 1970", timestamp: 0},

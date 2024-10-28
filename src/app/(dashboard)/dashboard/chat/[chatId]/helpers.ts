@@ -3,7 +3,7 @@ import fetchRedis from "@/helpers/redis";
 import {messageArraySchema} from "@/lib/validations/messages";
 
 export class Helpers{
-    async getChatMessage(chatId: string){
+    async getChatMessages(chatId: string){
         try{
             const chats = await this.fetchChatById(chatId);
             const formattedChats = chats.map(chat => JSON.parse(chat) as Message)

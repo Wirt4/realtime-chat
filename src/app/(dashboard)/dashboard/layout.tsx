@@ -9,6 +9,7 @@ import myGetServerSession from "@/lib/myGetServerSession";
 import SignOutButton from "@/components/signOutButton";
 import getFriendsById from "@/helpers/getFriendsById";
 import SidebarChatList from "@/components/SidebarChatList";
+import QueryBuilder from "@/lib/queryBuilder";
 
 interface LayoutProps {
     children: ReactNode
@@ -23,7 +24,7 @@ const Layout = async ({children}: LayoutProps = {children:null})=>{
 
     const userId = session?.user?.id
 
-    const friendRequests = await fetchRedis("smembers", `user:${userId}:incoming_friend_requests`);
+    const friendRequests = await fetchRedis("smembers", QueryBuilder.incomingFriendRequests(userId));
 
     const friendRequestProps = {
         initialRequestCount: friendRequests.length,
@@ -31,6 +32,7 @@ const Layout = async ({children}: LayoutProps = {children:null})=>{
     }
 
     const friends = await getFriendsById(userId);
+
     return<div className='dashboard-window'>
         <div className='dashboard'>
         <Link href="/dashboard" className='dashboard-link'>
