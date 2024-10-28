@@ -12,11 +12,16 @@ const SignOutButton: FC<SignOutProps> = ({...props}) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     return<li>
-        <Button {...props} variant="ghost" onClick={clickHandler(setIsLoading)} className='link group' aria-label="sign out button">
+        <Button {...props} variant="ghost"
+                onClick={clickHandler(setIsLoading)}
+                className='link group'
+                aria-label="sign out button">
             <span className='link-icon group-hover:border-black group-hover:black'>
                 {logOutIcon(isLoading)}
             </span>
-            <span className='truncate' >Sign Out</span>
+            <span className='truncate' >
+                Sign Out
+            </span>
         </Button>
     </li>
 }
