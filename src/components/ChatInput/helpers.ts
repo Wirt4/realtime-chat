@@ -1,5 +1,6 @@
 import React from "react";
-import axios from "axios";
+import axios, {AxiosError} from "axios";
+import {toast} from "react-hot-toast";
 
 interface StateSetters {
     setIsLoading : React.Dispatch<React.SetStateAction<boolean>>
@@ -39,7 +40,7 @@ export default class Helpers{
            this.clearInput()
            this.setFocus()
        }catch(error){
-            console.error({error})
+                toast.error((error as AxiosError)?.message || 'Something went wrong. Try again')
        }finally{
            this.setters.setIsLoading(false)
        }
