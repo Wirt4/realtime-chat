@@ -8,8 +8,8 @@ interface SidebarChatListProps {
 }
 
 const SidebarChatList:FC<SidebarChatListProps> = ({friends, sessionId})=>{
-    const [activeChats, setActiveChats] = useState<User[]>(friends);
-    const [unseenMessages, setUnseenMessages] = useState<Message[]>([]);
+    const [activeChats] = useState<User[]>(friends);
+    const [unseenMessages] = useState<Message[]>([]);
 
     return (<ul key={sessionId} aria-label='chat list'  className='sidebar-chat-list'>
         {activeChats.sort((chatA: User, chatB: User)=>{
