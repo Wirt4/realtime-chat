@@ -2,6 +2,7 @@ import {POST} from "@/app/api/message/send/route";
 import myGetServerSession from "@/lib/myGetServerSession";
 import fetchRedis from "@/helpers/redis";
 import {db} from "@/lib/db"
+import {nanoid} from "nanoid";
 
 jest.mock("@/helpers/redis", ()=>jest.fn());
 jest.mock("@/lib/myGetServerSession",()=> jest.fn());
@@ -10,6 +11,10 @@ jest.mock('@/lib/db', () => ({
         zadd: jest.fn(),
     },
 }));
+
+jest.mock("nanoid",() => ({
+    nanoid: jest.fn(),
+}))
 
 describe('api/message/send tests', () => {
     let request: Request
@@ -129,5 +134,34 @@ describe('api/message/send tests, parameters passed to database when authorizati
         await POST(request)
         expect(db.zadd as jest.Mock).toHaveBeenCalledWith(expect.anything(),
             expect.objectContaining({score:522497054}));
+    })
+
+    test('db.zadd is called with correct message stringified and passed to member',async ()=>{
+        jest.setSystemTime(new Date(522497054));
+        (nanoid as jest.Mock).mockReturnValue('c-3po');
+        request = new Request("/message/send", {
+            method: "POST",
+            body: "{\"chatId\": \"anthony--kenny\"}",
+        });
+        (fetchRedis as jest.Mock).mockResolvedValue(['kenny']);
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'anthony'}});
+        const expected = "{\"id\":\"c-3po\",\"senderId\":\"anthony\",\"text\":\"hello\",\"timestamp\":522497054}"
+        await POST(request)
+        expect(db.zadd as jest.Mock).toHaveBeenCalledWith(expect.anything(),
+            expect.objectContaining({member:expected}));
+    })
+    test('db.zadd is called with correct message stringified and passed to member, differnt nanoid',async ()=>{
+        jest.setSystemTime(new Date(522497054));
+        (nanoid as jest.Mock).mockReturnValue('r2-d2');
+        request = new Request("/message/send", {
+            method: "POST",
+            body: "{\"chatId\":\"anthony--kenny\"}",
+        });
+        (fetchRedis as jest.Mock).mockResolvedValue(['kenny']);
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'anthony'}});
+        const expected = "{\"id\":\"r2-d2\",\"senderId\":\"anthony\",\"text\":\"hello\",\"timestamp\":522497054}"
+        await POST(request)
+        expect(db.zadd as jest.Mock).toHaveBeenCalledWith(expect.anything(),
+            expect.objectContaining({member:expected}));
     })
 })

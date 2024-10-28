@@ -3,6 +3,7 @@ import Participants from "@/lib/chatParticipants.js";
 import fetchRedis from "@/helpers/redis";
 import QueryBuilder from "@/lib/queryBuilder";
 import {db} from "@/lib/db";
+import {nanoid} from "nanoid";
 
 export async function POST(request: Request) {
     const session = await myGetServerSession()
@@ -17,5 +18,6 @@ export async function POST(request: Request) {
         return new Response('Unauthorized', {status: 401})
     }
     const dbDuery = QueryBuilder.messages(chatId)
-    db.zadd(dbDuery, {score: Date.now()})
+    const msg = {id: nanoid(), senderId:"anthony", text:"hello", timestamp:522497054}
+    db.zadd(dbDuery, {score: Date.now(), member: JSON.stringify(msg)})
 }
