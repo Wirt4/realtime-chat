@@ -8,6 +8,10 @@ export default class QueryBuilder {
         return args.join(':');
     }
 
+    static friends(userId: string):string{
+        return this.join(userId, 'friends')
+    }
+
     static incomingFriendRequests(userId: string): string {
         return this.join(userId, 'incoming_friend_requests')
     }

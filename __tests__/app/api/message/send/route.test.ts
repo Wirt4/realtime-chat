@@ -1,6 +1,8 @@
 import {POST} from "@/app/api/message/send/route";
 import myGetServerSession from "@/lib/myGetServerSession";
+import fetchRedis from "@/helpers/redis";
 
+jest.mock("@/helpers/redis", ()=>jest.fn());
 jest.mock("@/lib/myGetServerSession",()=> jest.fn());
 
 describe('api/message/send tests', () => {
@@ -11,6 +13,7 @@ describe('api/message/send tests', () => {
             method: "POST",
             body: "{\"chatId\": \"bar--foo\"}",
         });
+        (fetchRedis as jest.Mock).mockResolvedValue(['bar']);
     })
     test('If session is null, then return a 401 Unauthorized',async ()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue(null);
@@ -30,5 +33,37 @@ describe('api/message/send tests', () => {
         });
         const response = await POST(request)
         expect(response).toEqual(expect.objectContaining({status: 401, statusText: 'Unauthorized'}));
+    })
+    test('if the chat partner is not part of the users friends list, then should return unauthorized',async ()=>{
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
+        (fetchRedis as jest.Mock).mockResolvedValue([]);
+        request= new Request("/message/send", {
+            method: "POST",
+            body: "{\"chatId\": \"bar--foo\"}",
+        });
+        const response = await POST(request)
+        expect(response).toEqual(expect.objectContaining({status: 401, statusText: 'Unauthorized'}));
+    })
+
+    test('confirm fetchRedis is called with correct arguments',async ()=>{
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
+        (fetchRedis as jest.Mock).mockResolvedValue([]);
+        request= new Request("/message/send", {
+            method: "POST",
+            body: "{\"chatId\": \"bar--foo\"}",
+        });
+        await POST(request)
+        expect(fetchRedis as jest.Mock).toHaveBeenCalledWith('smembers', 'user:foo:friends')
+    })
+
+    test('confirm fetchRedis is called with correct arguments, different data',async ()=>{
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'bar'}});
+        (fetchRedis as jest.Mock).mockResolvedValue([]);
+        request= new Request("/message/send", {
+            method: "POST",
+            body: "{\"chatId\": \"bar--foo\"}",
+        });
+        await POST(request)
+        expect(fetchRedis as jest.Mock).toHaveBeenCalledWith('smembers', 'user:bar:friends')
     })
 })
