@@ -4,6 +4,6 @@ export default class QueryBuilder {
     }
 
     static incomingFriendRequests(userId: string): string {
-        return this.user(userId) + ':incoming_friend_requests'
+        return `${this.user(userId)}:incoming_friend_requests`
     }
 }
