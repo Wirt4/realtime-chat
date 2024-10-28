@@ -23,6 +23,7 @@
     "clsx": "^2.1.1",
     "jest-fetch-mock": "^3.0.3",
     "lucide-react": "^0.447.0",
+    "nanoid": "^5.0.8",
     "next": "14.2.13",
     "next-auth": "^4.24.8",
     "node-fetch": "^3.3.2",
