@@ -8,6 +8,6 @@ export default class QueryBuilder {
     }
 
     static join(userId: string, suffix: string): string {
-        return 'user:dracula:' + suffix;
+        return `${this.user(userId)}:${suffix}`
     }
 }
