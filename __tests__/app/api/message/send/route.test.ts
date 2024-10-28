@@ -76,6 +76,7 @@ describe('api/message/send tests', () => {
 
 describe('api/message/send tests, parameters passed to database when authorization is green', () => {
     let request: Request
+
     beforeEach(()=>{
         jest.resetAllMocks()
         request = new Request("/message/send", {
@@ -85,8 +86,25 @@ describe('api/message/send tests, parameters passed to database when authorizati
         (fetchRedis as jest.Mock).mockResolvedValue(['bar']);
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
     })
+
     test('db.zadd is called',async ()=>{
         await POST(request)
         expect(db.zadd as jest.Mock).toHaveBeenCalled();
+    })
+
+    test('db.zadd is called with chat:bar--foo:messages',async ()=>{
+        await POST(request)
+        expect(db.zadd as jest.Mock).toHaveBeenCalledWith('chat:bar--foo:messages');
+    })
+
+    test('db.zadd is called with chat:kirk--spock:messages',async ()=>{
+        request = new Request("/message/send", {
+            method: "POST",
+            body: "{\"chatId\": \"kirk--spock\"}",
+        });
+        (fetchRedis as jest.Mock).mockResolvedValue(['spock']);
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'kirk'}});
+        await POST(request)
+        expect(db.zadd as jest.Mock).toHaveBeenCalledWith('chat:kirk--spock:messages');
     })
 })

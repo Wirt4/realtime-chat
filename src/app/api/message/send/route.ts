@@ -6,16 +6,16 @@ import {db} from "@/lib/db";
 
 export async function POST(request: Request) {
     const session = await myGetServerSession()
-    const {chatId} = await request.json()
+    const {chatId}: {chatId: string} = await request.json()
 
     const chatParticipants = new Participants(chatId, session?.user?.id as string )
     const query = QueryBuilder.friends(session?.user.id as string )
 
     const friendList = await fetchRedis('smembers', query) as string[]
 
-    if (!chatParticipants.includesSession() || !friendList.includes(chatParticipants.partnerId())){
+    if (!(chatParticipants.includesSession() && friendList.includes(chatParticipants.partnerId()))){
         return new Response('Unauthorized', {status: 401})
     }
 
-    await db.zadd('stub')
+    db.zadd(QueryBuilder.messages(chatId))
 }
