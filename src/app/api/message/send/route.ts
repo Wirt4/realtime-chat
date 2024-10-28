@@ -16,6 +16,6 @@ export async function POST(request: Request) {
     if (!(chatParticipants.includesSession() && friendList.includes(chatParticipants.partnerId()))){
         return new Response('Unauthorized', {status: 401})
     }
-
-    db.zadd(QueryBuilder.messages(chatId))
+    const dbDuery = QueryBuilder.messages(chatId)
+    db.zadd(dbDuery, {score: Date.now()})
 }

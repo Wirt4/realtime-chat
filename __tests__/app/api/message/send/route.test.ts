@@ -77,6 +77,10 @@ describe('api/message/send tests', () => {
 describe('api/message/send tests, parameters passed to database when authorization is green', () => {
     let request: Request
 
+    beforeAll(()=>{
+        jest.useFakeTimers(); // Use modern fake timers
+    })
+
     beforeEach(()=>{
         jest.resetAllMocks()
         request = new Request("/message/send", {
@@ -85,6 +89,11 @@ describe('api/message/send tests, parameters passed to database when authorizati
         });
         (fetchRedis as jest.Mock).mockResolvedValue(['bar']);
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
+        jest.setSystemTime(new Date('2023-01-01T12:00:00Z'));
+    })
+
+    afterAll(()=>{
+        jest.useRealTimers()
     })
 
     test('db.zadd is called',async ()=>{
@@ -94,7 +103,7 @@ describe('api/message/send tests, parameters passed to database when authorizati
 
     test('db.zadd is called with chat:bar--foo:messages',async ()=>{
         await POST(request)
-        expect(db.zadd as jest.Mock).toHaveBeenCalledWith('chat:bar--foo:messages');
+        expect(db.zadd as jest.Mock).toHaveBeenCalledWith('chat:bar--foo:messages', expect.anything());
     })
 
     test('db.zadd is called with chat:kirk--spock:messages',async ()=>{
@@ -105,6 +114,20 @@ describe('api/message/send tests, parameters passed to database when authorizati
         (fetchRedis as jest.Mock).mockResolvedValue(['spock']);
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'kirk'}});
         await POST(request)
-        expect(db.zadd as jest.Mock).toHaveBeenCalledWith('chat:kirk--spock:messages');
+        expect(db.zadd as jest.Mock).toHaveBeenCalledWith('chat:kirk--spock:messages', expect.anything());
+    })
+
+    test('db.zadd is called with correct timestamp in second argument',async ()=>{
+        jest.setSystemTime(new Date(1730156654))
+        await POST(request)
+        expect(db.zadd as jest.Mock).toHaveBeenCalledWith(expect.anything(),
+            expect.objectContaining({score:1730156654}));
+    })
+
+    test('db.zadd is called with correct timestamp in second argument, different data',async ()=>{
+        jest.setSystemTime(new Date(522497054))
+        await POST(request)
+        expect(db.zadd as jest.Mock).toHaveBeenCalledWith(expect.anything(),
+            expect.objectContaining({score:522497054}));
     })
 })
