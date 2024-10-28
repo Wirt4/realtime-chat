@@ -27,6 +27,11 @@ class Participants{
     partnerId(): string{
         return this.userA == this.sessionId? this.userB : this.userA;
     }
+
+    getPartnerQuery():string{
+        /** note, this template string is EVERYWHERE, why not use some kind of utils function?**/
+        return `user:${this.partnerId()}`
+    }
 }
 
 interface ChatProps{
@@ -43,11 +48,10 @@ const Page: FC<ChatProps> = async ({params}) => {
     const helpers = new Helpers()
     const initialMessages = await helpers.getChatMessages(chatId)
 
-    if (!(session && participants.includesSession())){
+    if (!participants.includesSession()){
         notFound();
     }
-
-    const partner = (await db.get(`user:${participants.partnerId()}`)) as User;
+    const partner = (await db.get(participants.getPartnerQuery())) as User;
 
     return<Display partner={partner} messages={initialMessages} userId={userId} chatId={chatId}/>
 }
