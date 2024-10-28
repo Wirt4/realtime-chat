@@ -25,8 +25,12 @@ describe('QueryBuilder.join Test', () => {
     test('Should return user:dracula:friends', () => {
         expect(QueryBuilder.join('dracula', 'friends')).toEqual('user:dracula:friends');
     });
-    test('Should return user:dracula:friends', () => {
+    test('Should return user:dracula:incoming_friend_requests', () => {
         expect(QueryBuilder.join('dracula', 'incoming_friend_requests')).toEqual('user:dracula:incoming_friend_requests');
+    });
+
+    test('Should return user:frankenstein:friends', () => {
+        expect(QueryBuilder.join('frankenstein', 'incoming_friend_requests')).toEqual('user:frankenstein:incoming_friend_requests');
     });
 
 });
