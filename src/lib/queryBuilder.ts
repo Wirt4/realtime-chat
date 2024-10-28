@@ -1,5 +1,5 @@
 export default class QueryBuilder {
-    static user(){
+    static user(userId: string): QueryBuilder {
         return 'foo'
     }
 }
