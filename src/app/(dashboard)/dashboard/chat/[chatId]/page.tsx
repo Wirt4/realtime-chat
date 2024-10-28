@@ -7,6 +7,7 @@ import Messages from "@/components/Messages";
 import {Helpers} from "@/app/(dashboard)/dashboard/chat/[chatId]/helpers";
 import {Message} from "@/lib/validations/messages";
 import ChatInput from "@/components/ChatInput/ChatInput";
+import QueryBuilder from "@/lib/queryBuilder";
 
 class Participants{
     private readonly userA: string
@@ -29,8 +30,7 @@ class Participants{
     }
 
     getPartnerQuery():string{
-        /** note, this template string is EVERYWHERE, why not use some kind of utils function?**/
-        return `user:${this.partnerId()}`
+        return QueryBuilder.user(this.partnerId());
     }
 }
 

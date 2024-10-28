@@ -1,5 +1,9 @@
 export default class QueryBuilder {
-    static user(userId: string): QueryBuilder {
+    static user(userId: string): string {
         return `user:${userId}`;
+    }
+
+    static incomingFriendRequests(userId: string): string {
+        return this.user(userId) + ':incoming_friend_requests'
     }
 }
