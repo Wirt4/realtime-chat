@@ -76,7 +76,7 @@ class Handler{
     }
 
     userTable(id: string, suffix: 'friends'| 'incoming_friend_requests'){
-        return `user:${id}:${suffix}`;
+        return `user:${id}:${suffix}`; //find a way to fold this into query builder
     }
 }
 

@@ -20,3 +20,13 @@ describe('QueryBuilder.incomingFriendRequests Test', () => {
         expect(QueryBuilder.incomingFriendRequests('frank')).toEqual('user:frank:incoming_friend_requests');
     });
 });
+
+describe('QueryBuilder.join Test', () => {
+    test('Should return user:dracula:friends', () => {
+        expect(QueryBuilder.join('dracula', 'friends')).toEqual('user:dracula:friends');
+    });
+    test('Should return user:dracula:friends', () => {
+        expect(QueryBuilder.join('dracula', 'incoming_friend_requests')).toEqual('user:dracula:incoming_friend_requests');
+    });
+
+});
