@@ -8,8 +8,8 @@ import {nanoid} from "nanoid";
 export async function POST(request: Request) {
     const session = await myGetServerSession()
     const {chatId}: {chatId: string} = await request.json()
-
-    const chatParticipants = new Participants(chatId, session?.user?.id as string )
+    const senderId = session?.user?.id as string
+    const chatParticipants = new Participants(chatId, senderId)
     const query = QueryBuilder.friends(session?.user.id as string )
 
     const friendList = await fetchRedis('smembers', query) as string[]
@@ -18,6 +18,6 @@ export async function POST(request: Request) {
         return new Response('Unauthorized', {status: 401})
     }
     const dbDuery = QueryBuilder.messages(chatId)
-    const msg = {id: nanoid(), senderId:"anthony", text:"hello", timestamp:522497054}
+    const msg = {id: nanoid(), senderId, text:"hello", timestamp:522497054}
     db.zadd(dbDuery, {score: Date.now(), member: JSON.stringify(msg)})
 }

@@ -164,4 +164,19 @@ describe('api/message/send tests, parameters passed to database when authorizati
         expect(db.zadd as jest.Mock).toHaveBeenCalledWith(expect.anything(),
             expect.objectContaining({member:expected}));
     })
+
+    test('db.zadd is called with correct message stringified and passed to member, differnt senderid',async ()=>{
+        jest.setSystemTime(new Date(522497054));
+        (nanoid as jest.Mock).mockReturnValue('r2-d2');
+        request = new Request("/message/send", {
+            method: "POST",
+            body: "{\"chatId\":\"anthony--kenny\"}",
+        });
+        (fetchRedis as jest.Mock).mockResolvedValue(['anthony']);
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'kenny'}});
+        const expected = "{\"id\":\"r2-d2\",\"senderId\":\"kenny\",\"text\":\"hello\",\"timestamp\":522497054}"
+        await POST(request)
+        expect(db.zadd as jest.Mock).toHaveBeenCalledWith(expect.anything(),
+            expect.objectContaining({member:expected}));
+    })
 })
