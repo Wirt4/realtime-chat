@@ -7,8 +7,14 @@ import Messages from "@/components/Messages";
 import myGetServerSession from "@/lib/myGetServerSession";
 import {notFound} from "next/navigation";
 import {db} from "@/lib/db"
+import ChatInput from "@/components/ChatInput/ChatInput";
 
 jest.mock("@/components/Messages",() => ({
+    __esModule: true,
+    default: jest.fn(),
+}))
+
+jest.mock("@/components/ChatInput/ChatInput",() => ({
     __esModule: true,
     default: jest.fn(),
 }))
@@ -39,6 +45,7 @@ describe('ChatPage renders with expected content', () => {
             id: "userid2",
         });
         jest.spyOn(Helpers.prototype, "getChatMessages").mockResolvedValue([]);
+        (ChatInput as jest.Mock).mockReturnValue(<div aria-label='chat input'/> )
     });
     test('page renders',async ()=>{
         render(await Page({params:{chatId: 'userid1--userid2'}}));
@@ -199,6 +206,12 @@ describe('ChatPage renders with expected content', () => {
         const messages = queryByLabelText('messages')
         expect(messages).toBeInTheDocument();
     })
+
+    test('document should contain a ChatInput component',async ()=>{
+        const {getByLabelText} = render(await Page({params:{chatId: 'userid1--userid2'}}));
+        const chatInput = getByLabelText('chat input')
+        expect(chatInput).toBeInTheDocument();
+    })
 });
 
 describe('Chat page makes expected calls', ()=>{
@@ -284,6 +297,32 @@ describe('Chat page makes expected calls', ()=>{
         render(await Page({params:{chatId: 'gimli--legolas'}}));
 
         expect(spy).toHaveBeenCalledWith('gimli--legolas');
+    })
+
+    test('confirm ChatInput is called with chat partner data', async()=>{
+        const expected = {
+            name: "prettyBow",
+            email: "mithril@forest.com",
+            image: "/prettystub",
+            id: "legolas"
+        };
+        (db.get as jest.Mock).mockResolvedValue(expected);
+        render(await Page({params:{chatId: 'gimli--legolas'}}));
+
+        expect(ChatInput as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({chatPartner:expected}), expect.anything());
+    });
+
+    test('confirm ChatInput is called with chat partner data, different data', async()=>{
+        const expected = {
+            name: "mightyAx",
+            email: "iron@caves.com",
+            image: "/hairystub",
+            id: "gimli"
+        };
+        (db.get as jest.Mock).mockResolvedValue(expected);
+        render(await Page({params:{chatId: 'gimli--legolas'}}));
+
+        expect(ChatInput as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({chatPartner:expected}), expect.anything());
     })
 })
 

@@ -1,18 +1,23 @@
 'use client'
 
-import {FC, useState} from "react";
+import {FC, useRef, useState} from "react";
 import {Message} from "@/lib/validations/messages"
 
 interface MessagesProps {
     initialMessages: Message[],
     sessionId: string
 }
+
 const Messages: FC<MessagesProps> = ({initialMessages, sessionId}) => {
     const [messages, setMessages] = useState<Message[]>(initialMessages)
+    const scrollDownRef = useRef<HTMLDivElement | null>(null)
+
     return <div aria-label='messages' className='message-scroll'>
+        <div ref={scrollDownRef}>
         {messages.map((message, index) => {
             const foo = messages[index - 1]?.senderId === messages[index].senderId
             const classes = new ClassNames(sessionId === message.senderId, foo)
+
             return (
                <div key={listKey(message)} className={classes.div1}>
                    <div className={classes.div2}>
@@ -26,6 +31,7 @@ const Messages: FC<MessagesProps> = ({initialMessages, sessionId}) => {
                </div>
            )
         })}
+    </div>
     </div>
 }
 

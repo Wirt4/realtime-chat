@@ -6,6 +6,7 @@ import {db} from "@/lib/db";
 import Messages from "@/components/Messages";
 import {Helpers} from "@/app/(dashboard)/dashboard/chat/[chatId]/helpers";
 import {Message} from "@/lib/validations/messages";
+import ChatInput from "@/components/ChatInput/ChatInput";
 
 class Participants{
     private readonly userA: string
@@ -48,19 +49,21 @@ const Page: FC<ChatProps> = async ({params}) => {
 
     const partner = (await db.get(`user:${participants.partnerId()}`)) as User;
 
-    return<Display partner={partner} messages={initialMessages} userId={userId}/>
+    return<Display partner={partner} messages={initialMessages} userId={userId} chatId={chatId}/>
 }
 
 interface DisplayProps {
     partner: User
     messages: Message[]
     userId: string
+    chatId: string
 }
 
-const Display: FC<DisplayProps> = ({partner, messages, userId}) =>{
+const Display: FC<DisplayProps> = ({partner, messages, userId, chatId}) =>{
     return<div className='chat-a'>
         <Header partner = {partner}/>
         <Messages initialMessages={messages} sessionId={userId}/>
+        <ChatInput chatPartner={partner} chatId={chatId}/>
     </div>
 }
 
