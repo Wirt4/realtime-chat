@@ -1,6 +1,7 @@
 import {notFound} from "next/navigation";
 import fetchRedis from "@/helpers/redis";
 import {messageArraySchema} from "@/lib/validations/messages";
+import QueryBuilder from "@/lib/queryBuilder";
 
 export class Helpers{
     async getChatMessages(chatId: string){
@@ -15,6 +16,6 @@ export class Helpers{
     }
 
     async fetchChatById(chatId: string): Promise<string[]>{
-        return fetchRedis('zrange', `chat:${chatId}:messages`, 0, -1);
+        return fetchRedis('zrange', QueryBuilder.messages(chatId), 0, -1);
     }
 }
