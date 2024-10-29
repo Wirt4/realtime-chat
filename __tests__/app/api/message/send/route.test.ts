@@ -59,12 +59,12 @@ describe('api/message/send tests', () => {
         const response = await POST(request)
         expect(response).toEqual(expect.objectContaining({status: 401, statusText: 'Unauthorized'}));
     })
-    test('okay response, should be a 400 with message "Ok"',async ()=>{
+
+    test('okay response, should be a 200 with message "OK"',async ()=>{
         const response = await POST(request)
         expect(response).toEqual(expect.objectContaining({status: 200, statusText: 'OK'}));
-    })
-
-})
+    });
+});
 
 describe('determine arguments passed to fetchRedis', ()=>{
     let request: Request
