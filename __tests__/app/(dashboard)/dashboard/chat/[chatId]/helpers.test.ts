@@ -138,12 +138,12 @@ describe('fetchChat Tests',()=>{
     test('if getChatMessage is called with chatid "userOne--userTwo", then fetRedis with called with the second argument as "chat:userOne-userTwo:message"', async()=>{
         await helpers.fetchChatById("userOne--userTwo");
 
-        expect(fetchRedis as jest.Mock).toHaveBeenCalledWith(expect.anything(),"chat:userOne--userTwo:message", expect.anything(), expect.anything());
+        expect(fetchRedis as jest.Mock).toHaveBeenCalledWith(expect.anything(),"chat:userOne--userTwo:messages", expect.anything(), expect.anything());
     });
 
     test('if fetchChatbyId is called with chatid "userOne--userTwo", then fetRedis with called with the second argument as "chat:userOne-userTwo:message"', async()=>{
         await helpers.fetchChatById("kirk--spock");
 
-        expect(fetchRedis as jest.Mock).toHaveBeenCalledWith(expect.anything(),"chat:kirk--spock:message", expect.anything(), expect.anything());
+        expect(fetchRedis as jest.Mock).toHaveBeenCalledWith(expect.anything(),"chat:kirk--spock:messages", expect.anything(), expect.anything());
     });
 });
