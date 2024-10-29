@@ -27,6 +27,7 @@ describe('api/message/send tests', () => {
         });
         (fetchRedis as jest.Mock).mockResolvedValue(['bar']);
         (nanoid as jest.Mock).mockReturnValue('c-3po');
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'foo'}});
 
     })
     test('If session is null, then return a 401 Unauthorized',async ()=>{
@@ -58,11 +59,16 @@ describe('api/message/send tests', () => {
         const response = await POST(request)
         expect(response).toEqual(expect.objectContaining({status: 401, statusText: 'Unauthorized'}));
     })
+    test('okay response, should be a 400 with message "Ok"',async ()=>{
+        const response = await POST(request)
+        expect(response).toEqual(expect.objectContaining({status: 200, statusText: 'OK'}));
+    })
 
 })
 
 describe('determine arguments passed to fetchRedis', ()=>{
     let request: Request
+
     beforeEach(()=>{
         jest.resetAllMocks()
         request = new Request("/message/send", {
@@ -87,7 +93,7 @@ describe('determine arguments passed to fetchRedis', ()=>{
     test('confirm fetchRedis is called with correct arguments, different data',async ()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'bar'}});
         (fetchRedis as jest.Mock).mockResolvedValue([]);
-        request= new Request("/message/send", {
+        request = new Request("/message/send", {
             method: "POST",
             body: "{\"chatId\": \"bar--foo\"}",
         });
@@ -235,5 +241,42 @@ describe('api/message/send tests, parameters passed to database when authorizati
         await POST(request)
         expect(db.zadd as jest.Mock).toHaveBeenCalledWith(expect.anything(),
             expect.objectContaining({member:expected}));
+    })
+})
+
+describe('error cases',()=>{
+    let request: Request
+    beforeEach(()=>{
+        jest.resetAllMocks()
+        request = new Request("/message/send", {
+            method: "POST",
+            body: "{\"chatId\": \"bar--foo\",\"text\":\"hello\"}",
+        });
+        (fetchRedis as jest.Mock).mockResolvedValue(['bar']);
+        (nanoid as jest.Mock).mockReturnValue('c-3po');
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'foo'}});
+
+    })
+test('something throws an error with an instance of error',async ()=>{
+    (myGetServerSession as jest.Mock).mockImplementationOnce(()=>{
+        throw new Error('I am a teapot');
+    });
+    const response = await POST(request)
+    expect(response).toEqual(expect.objectContaining({status: 500, statusText: 'I am a teapot'}));
+})
+    test('something throws an error with an instance of error, different data',async ()=>{
+        (nanoid as jest.Mock).mockImplementationOnce(()=>{
+            throw new Error('You typed it wrong');
+        });
+        const response = await POST(request)
+        expect(response).toEqual(expect.objectContaining({status: 500, statusText: 'You typed it wrong'}));
+    })
+
+    test("Can't identfy the error, just do internal server",async ()=>{
+        (nanoid as jest.Mock).mockImplementationOnce(()=>{
+            throw false;
+        });
+        const response = await POST(request)
+        expect(response).toEqual(expect.objectContaining({status: 500, statusText: 'Internal Server Error'}));
     })
 })
