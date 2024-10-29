@@ -6,7 +6,6 @@ export class Helpers{
     async getChatMessages(chatId: string){
         try{
             const chats = await this.fetchChatById(chatId);
-            console.log(chats)
             const formattedChats = chats.map(chat => JSON.parse(chat) as Message)
             return messageArraySchema.parse(formattedChats).reverse();
         }catch(error){
