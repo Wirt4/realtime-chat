@@ -3,9 +3,21 @@ export default class QueryBuilder {
         return this._append(userId)
     }
 
+    private static _joinQuery(...args: string[]): string{
+        return args.join(':');
+    }
+
     private static _append( ...args: string[]): string {
         args.unshift('user')
-        return args.join(':');
+        return this._joinQuery(...args);
+    }
+
+    static friends(userId: string):string{
+        return this.join(userId, 'friends')
+    }
+
+    static messages(chatId: string):string{
+        return this._joinQuery('chat', chatId, 'messages')
     }
 
     static incomingFriendRequests(userId: string): string {

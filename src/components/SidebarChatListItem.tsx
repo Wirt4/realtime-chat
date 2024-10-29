@@ -8,6 +8,7 @@ interface SidebarChatListItemProps {
     unseenMessages: number
     sessionId: string
 }
+
 const SidebarChatListItem:FC<SidebarChatListItemProps> = ({friend, unseenMessages, sessionId})=>{
     const chatId = Utils.chatHrefConstructor(friend.id, sessionId);
     return <li key = {friend.id} className="group">
