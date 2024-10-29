@@ -6,6 +6,7 @@ export class Helpers{
     async getChatMessages(chatId: string){
         try{
             const chats = await this.fetchChatById(chatId);
+            console.log(chats)
             const formattedChats = chats.map(chat => JSON.parse(chat) as Message)
             return messageArraySchema.parse(formattedChats).reverse();
         }catch(error){
@@ -15,6 +16,6 @@ export class Helpers{
     }
 
     async fetchChatById(chatId: string): Promise<string[]>{
-        return fetchRedis('zrange', `chat:${chatId}:message`, 0, -1);
+        return fetchRedis('zrange', `chat:${chatId}:messages`, 0, -1);
     }
 }
