@@ -70,7 +70,7 @@ describe('Messages renders with correct content', () => {
 
         const sessionId = 'rose-16'
         const {getByText} = render(<Messages initialMessages={[msg]} sessionId={sessionId}/>)
-        const time = getByText("1729667463")
+        const time = getByText(/1729667463/i)
         expect(time).toBeInTheDocument()
     })
 })

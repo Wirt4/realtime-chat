@@ -5,5 +5,8 @@ interface messageTimestampProps {
 }
 
 export const MessageTimestamp: FC<messageTimestampProps>= ({unixTimestamp})=> {
-    return <span aria-label='timestamp'  className='message-date'><br/>Message sent at: {unixTimestamp}</span>
+    return <span className='message-date'>
+        <br/>
+        Message sent at: {unixTimestamp}
+    </span>
 }
