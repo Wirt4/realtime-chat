@@ -8,7 +8,7 @@ export class Helpers{
         try{
             const chats = await this.fetchChatById(chatId);
             const formattedChats = chats.map(chat => JSON.parse(chat) as Message)
-            return messageArraySchema.parse(formattedChats).reverse();
+            return messageArraySchema.parse(formattedChats);
         }catch(error){
             console.error({error});
             notFound();
