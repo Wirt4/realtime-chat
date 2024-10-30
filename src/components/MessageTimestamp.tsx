@@ -1,9 +1,9 @@
 import {FC} from "react";
 
-interface messageTimeStampProps {
+interface messageTimestampProps {
     unixTimestamp:number
 }
 
-export const MessageTimeStamp: FC<messageTimeStampProps>= ({unixTimestamp})=> {
+export const MessageTimestamp: FC<messageTimestampProps>= ({unixTimestamp})=> {
     return <span className='message-date'><br/>{unixTimestamp}</span>
 }

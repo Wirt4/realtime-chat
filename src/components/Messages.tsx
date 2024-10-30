@@ -2,7 +2,7 @@
 
 import {FC, useRef, useState} from "react";
 import {Message} from "@/lib/validations/messages"
-import {MessageTimeStamp} from "@/components/MessageTimeStamp";
+import {MessageTimestamp} from "@/components/MessageTimestamp";
 
 interface MessagesProps {
     initialMessages: Message[],
@@ -24,7 +24,7 @@ const Messages: FC<MessagesProps> = ({initialMessages, sessionId}) => {
                    <div className={classes.div2}>
                        <span className={classes.span}>
                            {message.text}{' '}
-                          <MessageTimeStamp unixTimestamp={message.timestamp}/>
+                          <MessageTimestamp unixTimestamp={message.timestamp}/>
                        </span>
                    </div>
                </div>
