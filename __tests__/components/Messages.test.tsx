@@ -43,8 +43,8 @@ describe('Messages renders with correct content', () => {
         const sessionId = 'louise-99'
         const {getByText} = render(<Messages initialMessages={[msg]} sessionId={sessionId}/>)
         const span = getByText("My name's Gypsy. What's yours?")
-        expect(span).toHaveClass('bg-blue-800')
-        expect(span).toHaveClass('text-white')
+        expect(span).toHaveClass('bg-white')
+        expect(span).toHaveClass('text-black')
     })
     test('if the message is not from sessionId, then display it with dark grey text and a light grey background',()=>{
         const msg: Message = {
@@ -57,8 +57,8 @@ describe('Messages renders with correct content', () => {
         const sessionId = 'rose-16'
         const {getByText} = render(<Messages initialMessages={[msg]} sessionId={sessionId}/>)
         const span = getByText("My name's Gypsy. What's yours?")
-        expect(span).toHaveClass('bg-gray-200')
-        expect(span).toHaveClass('text-gray-900')
+        expect(span).toHaveClass('bg-black')
+        expect(span).toHaveClass('text-white')
     })
     test('Message should display the time sent', ()=>{
         const msg: Message = {
