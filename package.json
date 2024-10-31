@@ -10,7 +10,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest",
+    "test": "TZ=UTC jest",
     "testWatch": "jest --watchAll"
   },
   "dependencies": {

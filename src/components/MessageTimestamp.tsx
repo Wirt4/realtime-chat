@@ -7,6 +7,6 @@ interface messageTimestampProps {
 export const MessageTimestamp: FC<messageTimestampProps>= ({unixTimestamp})=> {
     return <span className='message-date'>
         <br/>
-        Message sent at: {unixTimestamp}
+        Message sent at: 10:30 am
     </span>
 }
