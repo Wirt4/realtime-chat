@@ -22,6 +22,7 @@ export const MessageTimestamp: FC<messageTimestampProps>= ({unixTimestamp})=> {
 
 class DateWrapper{
     private _date: Date
+    private TWELVE = 12
 
     constructor(timestamp: number){
         this._date = new Date(timestamp);
@@ -36,9 +37,8 @@ class DateWrapper{
     }
 
     formatHour(){
-        const twelve = 12
-        const adjusted = this._date.getHours() % twelve
-        return adjusted == 0 ? twelve : adjusted
+        const adjusted = this._date.getHours() % this.TWELVE
+        return adjusted == 0 ? this.TWELVE : adjusted
     }
 
     get hour(){
@@ -50,7 +50,7 @@ class DateWrapper{
     }
 
     get timeOfDay(){
-        return this._date.getHours() < 12 ? 'am' : 'pm'
+        return this._date.getHours() < this.TWELVE ? 'am' : 'pm'
     }
 
     get minutes(){
