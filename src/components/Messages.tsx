@@ -76,9 +76,6 @@ class ClassNames {
         if (isSpeechBalloon){
             partnerStyling += ' rounded-br-none'
             currentUserStyling += ' rounded-bl-none'
-        }else{
-            partnerStyling += ' mr-4'
-            currentUserStyling += ' ml-4'
         }
 
         return this.className('px-4 py-2 rounded-lg inline-block', currentUserStyling, partnerStyling )

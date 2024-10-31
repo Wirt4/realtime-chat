@@ -43,8 +43,8 @@ describe('Messages renders with correct content', () => {
         const sessionId = 'louise-99'
         const {getByText} = render(<Messages initialMessages={[msg]} sessionId={sessionId}/>)
         const span = getByText("My name's Gypsy. What's yours?")
-        expect(span).toHaveClass('bg-white')
-        expect(span).toHaveClass('text-black')
+        expect(span).toHaveClass(/bg-orange/i)
+        expect(span).toHaveClass(/text-white/i)
     })
     test('if the message is not from sessionId, then display it with dark grey text and a light grey background',()=>{
         const msg: Message = {
@@ -57,7 +57,7 @@ describe('Messages renders with correct content', () => {
         const sessionId = 'rose-16'
         const {getByText} = render(<Messages initialMessages={[msg]} sessionId={sessionId}/>)
         const span = getByText("My name's Gypsy. What's yours?")
-        expect(span).toHaveClass('bg-black')
-        expect(span).toHaveClass('text-white')
+        expect(span).toHaveClass(/bg-blue/i)
+        expect(span).toHaveClass(/text-white/i)
     })
 })

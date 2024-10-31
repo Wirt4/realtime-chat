@@ -1,15 +1,23 @@
-import {FC} from "react";
+import {FC, useEffect, useState} from "react";
 
 interface messageTimestampProps {
     unixTimestamp:number
 }
 
 export const MessageTimestamp: FC<messageTimestampProps>= ({unixTimestamp})=> {
-    const date = new DateWrapper(unixTimestamp)
-    return <span className='message-date'>
-        <br/>
-        Sent {date.month}/{date.date}/{date.year}, {date.hour}:{date.minutes} {date.timeOfDay}
-    </span>
+    const [formattedDate, setFormattedDate] = useState<string | null>(null);
+
+    useEffect(() => {
+        const date = new DateWrapper(unixTimestamp);
+        setFormattedDate(
+            `Sent ${date.month}/${date.date}/${date.year}, ${date.hour}:${date.minutes} ${date.timeOfDay}`
+        );
+    }, [unixTimestamp]);
+
+    if (!formattedDate) return null; // or a placeholder if needed
+
+    return <span className="message-date">{formattedDate}</span>;
+
 }
 
 class DateWrapper{
