@@ -5,8 +5,9 @@ interface messageTimestampProps {
 }
 
 export const MessageTimestamp: FC<messageTimestampProps>= ({unixTimestamp})=> {
+    const date = new Date(unixTimestamp)
     return <span className='message-date'>
         <br/>
-        Message sent at: 10:30 am
+        Message sent at: 10:{date.getMinutes()} am
     </span>
 }

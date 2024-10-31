@@ -22,4 +22,11 @@ describe('MessageTimestamp renders with correct content', () => {
         const component = getByText(/Message sent at: 10:30 am/i)
         expect(component).toBeInTheDocument();
     })
+
+    test("If it's the same day, only display the time the message was sent, different data", ()=>{
+        jest.setSystemTime(1695666606000)
+        const {getByText} = render(<MessageTimestamp unixTimestamp={1695663246000} />);
+        const component = getByText(/Message sent at: 10:34 am/i)
+        expect(component).toBeInTheDocument();
+    })
 })
