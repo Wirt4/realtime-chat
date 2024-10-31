@@ -39,5 +39,11 @@ describe('MessageTimestamp renders with correct content, same day', () => {
         const component = getByText("Sent 10/30/2024, 7:56 pm")
         expect(component).toBeInTheDocument();
     })
+
+    test("leading zeroes", ()=>{
+        const {getByText} = render(<MessageTimestamp unixTimestamp={1702886946000} />);
+        const component = getByText("Sent 12/18/2023, 12:09 am")
+        expect(component).toBeInTheDocument();
+    })
 })
 

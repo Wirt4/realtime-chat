@@ -10,11 +10,11 @@ export const MessageTimestamp: FC<messageTimestampProps>= ({unixTimestamp})=> {
     useEffect(() => {
         const date = new DateWrapper(unixTimestamp);
         setFormattedDate(
-            `Sent ${date.month}/${date.date}/${date.year}, ${date.hour}:${date.minutes} ${date.timeOfDay}`
+            date.format
         );
     }, [unixTimestamp]);
 
-    if (!formattedDate) return null; // or a placeholder if needed
+    if (!formattedDate) return null;
 
     return <span className="message-date">{formattedDate}</span>;
 
@@ -55,6 +55,10 @@ class DateWrapper{
 
     get minutes(){
         return this._date.getMinutes()
+    }
+
+    get format(){
+        return  `Sent ${this.month}/${this.date}/${this.year}, ${this.hour}:${this.minutes} ${this.timeOfDay}`
     }
 }
 
