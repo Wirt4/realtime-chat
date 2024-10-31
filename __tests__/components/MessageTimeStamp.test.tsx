@@ -3,30 +3,41 @@ import {render} from "@testing-library/react";
 import React from "react";
 import {MessageTimestamp} from "@/components/MessageTimestamp";
 
-describe('MessageTimestamp renders with correct content', () => {
-    beforeAll(()=>{
-        jest.useFakeTimers()
-    })
-    afterAll(()=>{
-        jest.useRealTimers()
-    })
-    test('timestamp should render with text "message generated at:..."', ()=>{
-        const {getByText} = render(<MessageTimestamp unixTimestamp={1695663006000} />);
-        const component = getByText(/Message sent at: /i)
-        expect(component).toBeInTheDocument();
-    })
-
+describe('MessageTimestamp renders with correct content, same day', () => {
     test("If it's the same day, only display the time the message was sent", ()=>{
-        jest.setSystemTime(1695666606000)
         const {getByText} = render(<MessageTimestamp unixTimestamp={1695663006000} />);
-        const component = getByText(/Message sent at: 10:30 am/i)
+        const component = getByText("Sent 9/25/2023, 10:30 am")
         expect(component).toBeInTheDocument();
     })
 
     test("If it's the same day, only display the time the message was sent, different data", ()=>{
-        jest.setSystemTime(1695666606000)
         const {getByText} = render(<MessageTimestamp unixTimestamp={1695663246000} />);
-        const component = getByText(/Message sent at: 10:34 am/i)
+        const component = getByText("Sent 9/25/2023, 10:34 am")
+        expect(component).toBeInTheDocument();
+    })
+
+    test("If it's the same day, only display the time the message was sent, different data", ()=>{
+        const {getByText} = render(<MessageTimestamp unixTimestamp={1703514306000} />);
+        const component = getByText("Sent 12/25/2023, 6:25 am")
+        expect(component).toBeInTheDocument();
+    })
+
+    test("If it's the same day, only display the time the message was sent, pm", ()=>{
+        const {getByText} = render(<MessageTimestamp unixTimestamp={1703535486000} />);
+        const component = getByText("Sent 12/25/2023, 12:18 pm")
+        expect(component).toBeInTheDocument();
+    })
+
+    test("same day, midnight", ()=>{
+        const {getByText} = render(<MessageTimestamp unixTimestamp={1702888386000} />);
+        const component = getByText("Sent 12/18/2023, 12:33 am")
+        expect(component).toBeInTheDocument();
+    })
+
+    test("same day, midnight", ()=>{
+        const {getByText} = render(<MessageTimestamp unixTimestamp={1730343366000} />);
+        const component = getByText("Sent 10/30/2024, 7:56 pm")
         expect(component).toBeInTheDocument();
     })
 })
+

@@ -60,17 +60,4 @@ describe('Messages renders with correct content', () => {
         expect(span).toHaveClass('bg-black')
         expect(span).toHaveClass('text-white')
     })
-    test('Message should display the time sent', ()=>{
-        const msg: Message = {
-            id: 'stub',
-            senderId:'louise-99',
-            text: "My name's Gypsy. What's yours?",
-            timestamp: 1729667463
-        }
-
-        const sessionId = 'rose-16'
-        const {getByText} = render(<Messages initialMessages={[msg]} sessionId={sessionId}/>)
-        const time = getByText(/1729667463/i)
-        expect(time).toBeInTheDocument()
-    })
 })
