@@ -5,25 +5,48 @@ interface messageTimestampProps {
 }
 
 export const MessageTimestamp: FC<messageTimestampProps>= ({unixTimestamp})=> {
-    const date = new Date(unixTimestamp)
-    const mm = date.getMonth() + 1
-    const yyyy = date.getFullYear()
-    const dd = date.getDate()
-    const hh = adjustHour(date.getHours())
+    const date = new DateWrapper(unixTimestamp)
     return <span className='message-date'>
         <br/>
-        Sent {mm}/{dd}/{yyyy}, {hh}:{date.getMinutes()} {date.getHours() < 12 ? 'am' : 'pm'}
+        Sent {date.month}/{date.date}/{date.year}, {date.hour}:{date.minutes} {date.timeOfDay}
     </span>
 }
 
-const adjustHour=(hour:number)=>{
-    if (hour == 0){
-        return 12
+class DateWrapper{
+    private _date: Date
+
+    constructor(timestamp: number){
+        this._date = new Date(timestamp);
     }
 
-    if (hour > 12){
-        return hour -12
+    get month(){
+        return this._date.getMonth() + 1
     }
 
-    return hour
+    get date(){
+        return this._date.getDate()
+    }
+
+    formatHour(){
+        const twelve = 12
+        const adjusted = this._date.getHours() % twelve
+        return adjusted == 0 ? twelve : adjusted
+    }
+
+    get hour(){
+        return this.formatHour()
+    }
+
+    get year(){
+        return this._date.getFullYear()
+    }
+
+    get timeOfDay(){
+        return this._date.getHours() < 12 ? 'am' : 'pm'
+    }
+
+    get minutes(){
+        return this._date.getMinutes()
+    }
 }
+

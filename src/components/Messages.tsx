@@ -70,12 +70,15 @@ class ClassNames {
     }
 
     bubble(isSpeechBalloon: boolean): string{
-        let partnerStyling = 'bg-black text-white mt-1'
-        let currentUserStyling = 'bg-white text-black outline mt-2'
+        let partnerStyling = 'bg-blue-500 text-white outline'
+        let currentUserStyling = 'bg-orange-500 text-white outline'
 
         if (isSpeechBalloon){
             partnerStyling += ' rounded-br-none'
             currentUserStyling += ' rounded-bl-none'
+        }else{
+            partnerStyling += ' mr-4'
+            currentUserStyling += ' ml-4'
         }
 
         return this.className('px-4 py-2 rounded-lg inline-block', currentUserStyling, partnerStyling )
