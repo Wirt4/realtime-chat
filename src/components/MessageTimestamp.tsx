@@ -54,7 +54,7 @@ class DateWrapper{
     }
 
     get minutes(){
-        return this._date.getMinutes()
+        return this._date.getMinutes().toString().padStart(2,'0')
     }
 
     get format(){
