@@ -17,7 +17,13 @@ describe('Messages renders with correct content', () => {
             text: 'Hello World',
             timestamp: 0
         }
-        const {getByText} = render(<Messages initialMessages={[msg]} sessionId='stub'/>)
+        const stubUser = {id:'stub', email:'stub', image: '/stub', name:'stub'}
+        const participants = {
+            partner: stubUser,
+            user: stubUser,
+            sessionId:'stub'
+        }
+        const {getByText} = render(<Messages initialMessages={[msg]} participants={participants} />)
         const div = getByText('Hello World')
         expect(div).toBeInTheDocument();
     })
@@ -28,7 +34,13 @@ describe('Messages renders with correct content', () => {
             text: "My name's Gypsy. What's yours?",
             timestamp: 0
         }
-        const {getByText} = render(<Messages initialMessages={[msg]} sessionId='stub'/>)
+        const stubUser = {id:'stub', email:'stub', image: '/stub', name:'stub'}
+        const participants = {
+            partner: stubUser,
+            user: stubUser,
+            sessionId:'stub'
+        }
+        const {getByText} = render(<Messages initialMessages={[msg]} participants={participants} />)
         const div = getByText("My name's Gypsy. What's yours?")
         expect(div).toBeInTheDocument();
     })
@@ -41,7 +53,13 @@ describe('Messages renders with correct content', () => {
         }
 
         const sessionId = 'louise-99'
-        const {getByText} = render(<Messages initialMessages={[msg]} sessionId={sessionId}/>)
+        const stubUser = {id:'stub', email:'stub', image: '/stub', name:'stub'}
+        const participants = {
+            partner: stubUser,
+            user: stubUser,
+            sessionId
+        }
+        const {getByText} = render(<Messages initialMessages={[msg]} participants={participants} />)
         const span = getByText("My name's Gypsy. What's yours?")
         expect(span).toHaveClass(/bg-orange/i)
         expect(span).toHaveClass(/text-white/i)
@@ -55,7 +73,13 @@ describe('Messages renders with correct content', () => {
         }
 
         const sessionId = 'rose-16'
-        const {getByText} = render(<Messages initialMessages={[msg]} sessionId={sessionId} sessionImage='/stub' sessionName='/stub' partner={{name:'stub', email:'stub', image: '/stub', id:'foo'}}/>)
+        const stubUser = {id:'stub', email:'stub', image: '/stub', name:'stub'}
+        const participants = {
+            partner: stubUser,
+            user: stubUser,
+            sessionId
+        }
+        const {getByText} = render(<Messages initialMessages={[msg]} participants={participants} />)
         const span = getByText("My name's Gypsy. What's yours?")
         expect(span).toHaveClass(/bg-blue/i)
         expect(span).toHaveClass(/text-white/i)

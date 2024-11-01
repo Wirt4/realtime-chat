@@ -265,8 +265,9 @@ describe('Chat page makes expected calls', ()=>{
 
         render(await Page({params:{chatId: 'mindy--mork'}}));
         expect(Messages as jest.Mock).toHaveBeenCalledWith(
-            //where did the session id go?
-            expect.objectContaining({initialMessages:msgs, sessionId:'mork'}),{})
+            expect.objectContaining({initialMessages:msgs, participants:
+                    expect.objectContaining({sessionId:'mork'})}),
+            {})
     });
 
     test('Messages is called with the output of getChatMessages and correct session id, different data',async ()=>{
@@ -281,7 +282,10 @@ describe('Chat page makes expected calls', ()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'mindy'}});
 
         render(await Page({params:{chatId: 'mindy--mork'}}));
-        expect(Messages as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({initialMessages:msgs, sessionId: 'mindy'}),{})
+        expect(Messages as jest.Mock).toHaveBeenCalledWith(
+            expect.objectContaining({initialMessages:msgs, participants:
+                    expect.objectContaining({sessionId:'mindy'})}),
+            {})
     })
 
     test('confirm getChatMessages is called with the chatId', async()=>{

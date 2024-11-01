@@ -7,14 +7,16 @@ import MessageThumbnail from "@/components/MessageThumbnail";
 
 interface MessagesProps {
     initialMessages: Message[],
-    sessionId: string
-    sessionImage: string
-    sessionName: string
-    partner: User
+    participants: ChatParticipants,
 }
 
+interface ChatParticipants{
+    user: User
+    partner: User
+    sessionId: string
+}
 
-const Messages: FC<MessagesProps> = ({initialMessages, sessionId, sessionName, sessionImage, partner}) => {
+const Messages: FC<MessagesProps> = ({initialMessages, participants}) => {
     const [messages] = useState<Message[]>(initialMessages)
     const scrollDownRef = useRef<HTMLDivElement | null>(null)
 
@@ -22,10 +24,10 @@ const Messages: FC<MessagesProps> = ({initialMessages, sessionId, sessionName, s
         <div ref={scrollDownRef}>
         {messages.map((message, index) => {
             const hasNextMessage = userHasNextMessage(messages, index)
-            const currentUser = sessionId === message.senderId
+            const currentUser = participants.sessionId === message.senderId
             const classes = new ClassNames(currentUser, hasNextMessage)
-            const userName = currentUser ? sessionName : partner.name
-            const userImage = currentUser ? sessionImage: partner.image
+            const userName = currentUser ? participants.user.name : participants.partner.name
+            const userImage = currentUser ? participants.user.image: participants.partner.image
 
             return (
                <div key={listKey(message)} className={classes.div1}>
@@ -34,7 +36,8 @@ const Messages: FC<MessagesProps> = ({initialMessages, sessionId, sessionName, s
                            {message.text}{' '}
                           <MessageTimestamp unixTimestamp={message.timestamp}/>
                        </span>
-                       <MessageThumbnail userStatus={{hasNextMessage, currentUser}} userInfo={{userName, image: userImage}}/>
+                       <MessageThumbnail userStatus={{hasNextMessage, currentUser}}
+                                         userInfo={{userName, image: userImage}}/>
                    </div>
                </div>
            )

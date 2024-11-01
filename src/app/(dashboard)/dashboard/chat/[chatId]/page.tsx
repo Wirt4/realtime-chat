@@ -29,7 +29,9 @@ const Page: FC<ChatProps> = async ({params}) => {
     const partner = (await db.get(participants.getPartnerQuery())) as User;
     const sessionUser = (await db.get(participants.getSessionUserQuery())) as User;
 
-    return<Display chatInfo={{chatId:chatId, messages: initialMessages}} participants={{user: sessionUser, partner: partner, sessionId: userId}}/>
+    const chatInfo = {chatId:chatId, messages: initialMessages}
+    const chatters = {user: sessionUser, partner: partner, sessionId: userId}
+    return<Display chatInfo={chatInfo} participants={chatters}/>
 }
 
 interface DisplayProps {
@@ -52,9 +54,7 @@ const Display: FC<DisplayProps> = ({chatInfo, participants}) =>{
     return<div className='chat-a'>
         <Header partner = {participants.partner}/>
         <Messages initialMessages={chatInfo.messages}
-                  sessionId={participants.sessionId} partner={participants.partner}
-                  sessionImage={participants.user.image}
-                  sessionName={participants.user.name}/>
+                  participants={participants}/>
         <ChatInput chatPartner={participants.partner} chatId={chatInfo.chatId}/>
     </div>
 }
