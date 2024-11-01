@@ -1,6 +1,11 @@
 import {FC} from "react";
 import Image from "next/image";
 
+interface MessageThumbnailProps {
+    userStatus: userStatus
+    userInfo: userInfo
+}
+
 interface userStatus{
     hasNextMessage: boolean
     currentUser: boolean
@@ -11,26 +16,45 @@ interface userInfo{
     userName:string
 }
 
-interface MessageThumbnailProps {
-    userStatus: userStatus
-    userInfo: userInfo
-}
 
 const styling = (userStatus: userStatus| undefined) => {
-    const styles = 'relative h-6 w-6'
+    const styles = new Styles()
     if (userStatus){
-        return `${styles} order-${userStatus.currentUser? 1 : 2} ${userStatus.hasNextMessage? 'invisible': null}`
+        if (userStatus.currentUser){
+            styles.add('order-1');
+        }else{
+            styles.add('order-2');
+        }
+        if (userStatus.hasNextMessage){
+           styles.add('invisible')
+        }
     }
-    return styles
+    return styles.final
+}
+
+class Styles{
+    styles:string[]
+
+    constructor(){
+        this.styles = ['relative h-6 w-6']
+    }
+
+    add(style: string){
+        this.styles.push(style)
+    }
+
+    get final(): string{
+        return this.styles.join(' ')
+    }
 }
 
 const MessageThumbnail: FC<MessageThumbnailProps> = ({userStatus, userInfo}) => {
     return (<div
         aria-label="user thumbnail"
         className={styling(userStatus)}>
-            <Image src={userInfo?.image as string}
+            <Image src={userInfo.image}
                    fill
-                   alt={userInfo?.userName as string}/>
+                   alt={userInfo.userName}/>
         </div>)
 };
 
