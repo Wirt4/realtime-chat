@@ -2,18 +2,18 @@ import {FC} from "react";
 import Image from "next/image";
 
 interface userStatus{
-    hasNextMessage?: boolean
-    currentUser?: boolean
+    hasNextMessage: boolean
+    currentUser: boolean
 }
 
 interface userInfo{
-    image?:string
-    userName?:string
+    image:string
+    userName:string
 }
 
 interface MessageThumbnailProps {
-    userStatus?: userStatus
-    userInfo?: userInfo
+    userStatus: userStatus
+    userInfo: userInfo
 }
 
 const styling = (userStatus: userStatus| undefined) => {
