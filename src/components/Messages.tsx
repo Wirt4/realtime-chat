@@ -3,13 +3,18 @@
 import {FC, useRef, useState} from "react";
 import {Message} from "@/lib/validations/messages"
 import {MessageTimestamp} from "@/components/MessageTimestamp";
+import MessageThumbnail from "@/components/MessageThumbnail";
 
 interface MessagesProps {
     initialMessages: Message[],
     sessionId: string
+    sessionImage: string
+    sessionName: string
+    partner: User
 }
 
-const Messages: FC<MessagesProps> = ({initialMessages, sessionId}) => {
+
+const Messages: FC<MessagesProps> = ({initialMessages, sessionId, sessionName, sessionImage, partner}) => {
     const [messages] = useState<Message[]>(initialMessages)
     const scrollDownRef = useRef<HTMLDivElement | null>(null)
 
@@ -17,7 +22,10 @@ const Messages: FC<MessagesProps> = ({initialMessages, sessionId}) => {
         <div ref={scrollDownRef}>
         {messages.map((message, index) => {
             const hasNextMessage = userHasNextMessage(messages, index)
-            const classes = new ClassNames(sessionId === message.senderId, hasNextMessage)
+            const currentUser = sessionId === message.senderId
+            const classes = new ClassNames(currentUser, hasNextMessage)
+            const userName = currentUser ? sessionName : partner.name
+            const userImage = currentUser ? sessionImage: partner.image
 
             return (
                <div key={listKey(message)} className={classes.div1}>
@@ -26,6 +34,7 @@ const Messages: FC<MessagesProps> = ({initialMessages, sessionId}) => {
                            {message.text}{' '}
                           <MessageTimestamp unixTimestamp={message.timestamp}/>
                        </span>
+                       <MessageThumbnail userStatus={{hasNextMessage, currentUser}} userInfo={{userName, image: userImage}}/>
                    </div>
                </div>
            )

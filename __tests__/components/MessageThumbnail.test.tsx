@@ -20,6 +20,15 @@ describe('Tests to confirm component renders and styling', () => {
         expect(component).toBeInTheDocument();
     });
 
+    test('The component needs to have the height and width bound',()=>{
+        userStatus.hasNextMessage = true
+        const {getByLabelText} = render(<MessageThumbnail userStatus={userStatus} userInfo={userInfo} />)
+        const component = getByLabelText('user thumbnail')
+        expect(component).toHaveClass(/relative/i)
+        expect(component).toHaveClass(/h-6/i)
+        expect(component).toHaveClass(/w-6/i)
+    });
+
     test('If the component has the next message, then it should be invisible',()=>{
         userStatus.hasNextMessage = true
         const {getByLabelText} = render(<MessageThumbnail userStatus={userStatus} userInfo={userInfo} />)

@@ -17,10 +17,11 @@ interface MessageThumbnailProps {
 }
 
 const styling = (userStatus: userStatus| undefined) => {
+    const styles = 'relative h-6 w-6'
     if (userStatus){
-        return `order-${userStatus.currentUser? 1 : 2} ${userStatus.hasNextMessage? 'invisible': null}`
+        return `${styles} order-${userStatus.currentUser? 1 : 2} ${userStatus.hasNextMessage? 'invisible': null}`
     }
-    return ''
+    return styles
 }
 
 const MessageThumbnail: FC<MessageThumbnailProps> = ({userStatus, userInfo}) => {

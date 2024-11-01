@@ -55,7 +55,7 @@ describe('Messages renders with correct content', () => {
         }
 
         const sessionId = 'rose-16'
-        const {getByText} = render(<Messages initialMessages={[msg]} sessionId={sessionId}/>)
+        const {getByText} = render(<Messages initialMessages={[msg]} sessionId={sessionId} sessionImage='/stub' sessionName='/stub' partner={{name:'stub', email:'stub', image: '/stub', id:'foo'}}/>)
         const span = getByText("My name's Gypsy. What's yours?")
         expect(span).toHaveClass(/bg-blue/i)
         expect(span).toHaveClass(/text-white/i)
