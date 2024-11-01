@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import {render} from "@testing-library/react";
 import MessageThumbnail from "@/components/MessageThumbnail";
 
-describe('Tests to confirm component renders with correct attributes', () => {
+describe('Tests to confirm component renders and styling', () => {
     test('component Renders',()=>{
         render(<MessageThumbnail />)
     });
@@ -40,4 +40,14 @@ describe('Tests to confirm component renders with correct attributes', () => {
         const component = getByLabelText('user thumbnail')
         expect(component).toHaveClass(/order-1/i)
     });
-})
+});
+
+describe('image tests',()=>{
+    test("The component needs to contain an image",()=>{
+        const {getByRole} = render(<MessageThumbnail/>)
+        const component = getByRole('img')
+        expect(component).toBeInTheDocument()
+    });
+});
+
+

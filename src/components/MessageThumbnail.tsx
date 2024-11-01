@@ -1,4 +1,5 @@
 import {FC} from "react";
+import Image from "next/image";
 
 interface userStatus{
     hasNextMessage?: boolean;
@@ -17,9 +18,11 @@ const styling = (userStatus: userStatus| undefined) => {
 }
 
 const MessageThumbnail: FC<MessageThumbnailProps> = ({userStatus}) => {
-    return <div
+    return (<div
         aria-label="user thumbnail"
-        className={styling(userStatus)}/>;
+        className={styling(userStatus)}>
+            <Image src='/stub' fill alt='foo'/>
+        </div>)
 };
 
 export default MessageThumbnail;
