@@ -55,17 +55,39 @@ describe('image tests',()=>{
         expect(component).toBeInTheDocument()
     });
     test("The component needs to contain an with the image source passed to it",()=>{
-        const {getByRole} = render(<MessageThumbnail image='/provided-image'/>)
+        const userInfo={
+            image:'/provided-image'
+        }
+        const {getByRole} = render(<MessageThumbnail userInfo={userInfo}/>)
         const component = getByRole('img')
         expect(component).toHaveAttribute('src',
             expect.stringContaining(Utils.encodeUrl('/provided-image')));
     });
-    test("The component needs to contain an with the image source pased to it, different data",()=>{
-        const {getByRole} = render(<MessageThumbnail image='/icon'/>)
+    test("The component needs to contain an with the image source passed to it, different data",()=>{
+        const userInfo={
+            image:'/icon'
+        }
+        const {getByRole} = render(<MessageThumbnail userInfo={userInfo}/>)
         const component = getByRole('img')
         expect(component).toHaveAttribute('src',
             expect.stringContaining(Utils.encodeUrl('/icon')));
     });
+    test('image component needs the appropriate alt text',()=>{
+        const userInfo={
+            userName:'John Stamos'
+        }
+        const {getByRole} = render(<MessageThumbnail userInfo={userInfo}/>)
+        const component = getByRole('img')
+        expect(component).toHaveAttribute('alt', 'John Stamos');
+    })
+    test('image component needs the appropriate alt text',()=>{
+        const userInfo={
+            userName:'Ada Lovelace'
+        }
+        const {getByRole} = render(<MessageThumbnail userInfo={userInfo}/>)
+        const component = getByRole('img')
+        expect(component).toHaveAttribute('alt', 'Ada Lovelace');
+    })
 });
 
 

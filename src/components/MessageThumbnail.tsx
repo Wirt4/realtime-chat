@@ -6,9 +6,14 @@ interface userStatus{
     currentUser?: boolean
 }
 
+interface userInfo{
+    image?:string
+    userName?:string
+}
+
 interface MessageThumbnailProps {
-   userStatus?: userStatus
-   image?:string
+    userStatus?: userStatus
+    userInfo?: userInfo
 }
 
 const styling = (userStatus: userStatus| undefined) => {
@@ -18,13 +23,13 @@ const styling = (userStatus: userStatus| undefined) => {
     return ''
 }
 
-const MessageThumbnail: FC<MessageThumbnailProps> = ({userStatus, image}) => {
+const MessageThumbnail: FC<MessageThumbnailProps> = ({userStatus, userInfo}) => {
     return (<div
         aria-label="user thumbnail"
         className={styling(userStatus)}>
-            <Image src={image as string}
+            <Image src={userInfo?.image as string}
                    fill
-                   alt='foo'/>
+                   alt={userInfo?.userName as string}/>
         </div>)
 };
 
