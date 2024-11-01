@@ -24,10 +24,9 @@ const Messages: FC<MessagesProps> = ({initialMessages, participants}) => {
         <div ref={scrollDownRef}>
         {messages.map((message, index) => {
             const hasNextMessage = userHasNextMessage(messages, index)
-            const currentUser = participants.sessionId === message.senderId
-            const classes = new ClassNames(currentUser, hasNextMessage)
-            const userName = currentUser ? participants.user.name : participants.partner.name
-            const userImage = currentUser ? participants.user.image: participants.partner.image
+            const isCurrentUser = participants.sessionId === message.senderId
+            const classes = new ClassNames(isCurrentUser, hasNextMessage)
+            const userInfo = new ContextualUserInfo(participants)
 
             return (
                <div key={listKey(message)} className={classes.div1}>
@@ -36,14 +35,27 @@ const Messages: FC<MessagesProps> = ({initialMessages, participants}) => {
                            {message.text}{' '}
                           <MessageTimestamp unixTimestamp={message.timestamp}/>
                        </span>
-                       <MessageThumbnail userStatus={{hasNextMessage, currentUser}}
-                                         userInfo={{userName, image: userImage}}/>
+                       <MessageThumbnail userStatus={{hasNextMessage, currentUser: isCurrentUser}}
+                                         userInfo={userInfo.userInfo(isCurrentUser)}/>
                    </div>
                </div>
            )
         })}
     </div>
     </div>
+}
+
+class ContextualUserInfo{
+    participants: ChatParticipants
+
+    constructor(participants: ChatParticipants) {
+        this.participants = participants
+    }
+
+    userInfo(isCurrentUser: boolean): {userName:string, image:string}{
+        const {name, image} = isCurrentUser ? this.participants.user : this.participants.partner
+        return {userName: name, image}
+    }
 }
 
 const listKey = (message: Message) =>{
