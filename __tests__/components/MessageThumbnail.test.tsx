@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom';
 import {render} from "@testing-library/react";
 import MessageThumbnail from "@/components/MessageThumbnail";
+import {Utils} from "@/lib/utils";
 
 describe('Tests to confirm component renders and styling', () => {
     test('component Renders',()=>{
@@ -47,6 +48,23 @@ describe('image tests',()=>{
         const {getByRole} = render(<MessageThumbnail/>)
         const component = getByRole('img')
         expect(component).toBeInTheDocument()
+    });
+    test("The component needs to contain an with the image source pased to it",()=>{
+        const {getByRole} = render(<MessageThumbnail/>)
+        const component = getByRole('img')
+        expect(component).toBeInTheDocument()
+    });
+    test("The component needs to contain an with the image source passed to it",()=>{
+        const {getByRole} = render(<MessageThumbnail image='/provided-image'/>)
+        const component = getByRole('img')
+        expect(component).toHaveAttribute('src',
+            expect.stringContaining(Utils.encodeUrl('/provided-image')));
+    });
+    test("The component needs to contain an with the image source pased to it, different data",()=>{
+        const {getByRole} = render(<MessageThumbnail image='/icon'/>)
+        const component = getByRole('img')
+        expect(component).toHaveAttribute('src',
+            expect.stringContaining(Utils.encodeUrl('/icon')));
     });
 });
 

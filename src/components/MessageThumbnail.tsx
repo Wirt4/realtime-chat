@@ -2,12 +2,13 @@ import {FC} from "react";
 import Image from "next/image";
 
 interface userStatus{
-    hasNextMessage?: boolean;
+    hasNextMessage?: boolean
     currentUser?: boolean
 }
 
 interface MessageThumbnailProps {
-   userStatus?: userStatus;
+   userStatus?: userStatus
+   image?:string
 }
 
 const styling = (userStatus: userStatus| undefined) => {
@@ -17,11 +18,13 @@ const styling = (userStatus: userStatus| undefined) => {
     return ''
 }
 
-const MessageThumbnail: FC<MessageThumbnailProps> = ({userStatus}) => {
+const MessageThumbnail: FC<MessageThumbnailProps> = ({userStatus, image}) => {
     return (<div
         aria-label="user thumbnail"
         className={styling(userStatus)}>
-            <Image src='/stub' fill alt='foo'/>
+            <Image src={image as string}
+                   fill
+                   alt='foo'/>
         </div>)
 };
 

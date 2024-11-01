@@ -8,6 +8,7 @@ import myGetServerSession from "@/lib/myGetServerSession";
 import {notFound} from "next/navigation";
 import {db} from "@/lib/db"
 import ChatInput from "@/components/ChatInput/ChatInput";
+import {Utils} from "@/lib/utils";
 
 jest.mock("@/components/Messages",() => ({
     __esModule: true,
@@ -93,7 +94,7 @@ describe('ChatPage renders with expected content', () => {
         const {getByRole} = render(await Page({params:{chatId: 'userid1--userid2'}}));
         const element = getByRole('img');
         expect(element).toHaveAttribute('src',
-            expect.stringContaining(encodeUrl(url)));
+            expect.stringContaining(Utils.encodeUrl(url)));
     });
 
     test("chat image should be sourced from chat partner's name, different data",async ()=>{
@@ -108,7 +109,7 @@ describe('ChatPage renders with expected content', () => {
         const {getByRole} = render(await Page({params:{chatId: 'userid1--userid2'}}));
         const element = getByRole('img');
         expect(element).toHaveAttribute('src',
-            expect.stringContaining(encodeUrl(url)));
+            expect.stringContaining(Utils.encodeUrl(url)));
     });
 
     test("chat image should have alt text for partner's name", async ()=>{
@@ -325,8 +326,3 @@ describe('Chat page makes expected calls', ()=>{
         expect(ChatInput as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({chatPartner:expected}), expect.anything());
     })
 })
-
-
-const encodeUrl = (url: string)=>{
-    return url.replaceAll(':','%3A').replaceAll('/','%2F').replaceAll(',','%2C');
-}

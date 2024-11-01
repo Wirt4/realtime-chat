@@ -86,4 +86,8 @@ export class Utils {
     static chatHrefConstructor(id1: string, id2:string):string{
         return [id1, id2].sort().join('--');
     }
+
+    static encodeUrl (url: string):string{
+        return url.replaceAll(':','%3A').replaceAll('/','%2F').replaceAll(',','%2C');
+    }
 }
