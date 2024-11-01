@@ -1,5 +1,5 @@
 import myGetServerSession from "@/lib/myGetServerSession";
-import Participants from "@/lib/chatParticipants.js";
+import Participants from "@/lib/chatParticipants";
 import fetchRedis from "@/helpers/redis";
 import QueryBuilder from "@/lib/queryBuilder";
 import {db} from "@/lib/db";

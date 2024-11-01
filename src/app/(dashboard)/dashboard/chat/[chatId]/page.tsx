@@ -7,7 +7,7 @@ import Messages from "@/components/Messages";
 import {Helpers} from "@/app/(dashboard)/dashboard/chat/[chatId]/helpers";
 import {Message} from "@/lib/validations/messages";
 import ChatInput from "@/components/ChatInput/ChatInput";
-import Participants from "@/lib/chatParticipants.js";
+import Participants from "@/lib/chatParticipants";
 
 interface ChatProps{
     params: {
