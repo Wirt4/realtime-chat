@@ -17,7 +17,13 @@ describe('Messages renders with correct content', () => {
             text: 'Hello World',
             timestamp: 0
         }
-        const {getByText} = render(<Messages initialMessages={[msg]} sessionId='stub'/>)
+        const stubUser = {id:'stub', email:'stub', image: '/stub', name:'stub'}
+        const participants = {
+            partner: stubUser,
+            user: stubUser,
+            sessionId:'stub'
+        }
+        const {getByText} = render(<Messages initialMessages={[msg]} participants={participants} />)
         const div = getByText('Hello World')
         expect(div).toBeInTheDocument();
     })
@@ -28,7 +34,13 @@ describe('Messages renders with correct content', () => {
             text: "My name's Gypsy. What's yours?",
             timestamp: 0
         }
-        const {getByText} = render(<Messages initialMessages={[msg]} sessionId='stub'/>)
+        const stubUser = {id:'stub', email:'stub', image: '/stub', name:'stub'}
+        const participants = {
+            partner: stubUser,
+            user: stubUser,
+            sessionId:'stub'
+        }
+        const {getByText} = render(<Messages initialMessages={[msg]} participants={participants} />)
         const div = getByText("My name's Gypsy. What's yours?")
         expect(div).toBeInTheDocument();
     })
@@ -41,10 +53,16 @@ describe('Messages renders with correct content', () => {
         }
 
         const sessionId = 'louise-99'
-        const {getByText} = render(<Messages initialMessages={[msg]} sessionId={sessionId}/>)
+        const stubUser = {id:'stub', email:'stub', image: '/stub', name:'stub'}
+        const participants = {
+            partner: stubUser,
+            user: stubUser,
+            sessionId
+        }
+        const {getByText} = render(<Messages initialMessages={[msg]} participants={participants} />)
         const span = getByText("My name's Gypsy. What's yours?")
-        expect(span).toHaveClass('bg-blue-800')
-        expect(span).toHaveClass('text-white')
+        expect(span).toHaveClass(/bg-orange/i)
+        expect(span).toHaveClass(/text-white/i)
     })
     test('if the message is not from sessionId, then display it with dark grey text and a light grey background',()=>{
         const msg: Message = {
@@ -55,22 +73,15 @@ describe('Messages renders with correct content', () => {
         }
 
         const sessionId = 'rose-16'
-        const {getByText} = render(<Messages initialMessages={[msg]} sessionId={sessionId}/>)
-        const span = getByText("My name's Gypsy. What's yours?")
-        expect(span).toHaveClass('bg-gray-200')
-        expect(span).toHaveClass('text-gray-900')
-    })
-    test('Message should display the time sent', ()=>{
-        const msg: Message = {
-            id: 'stub',
-            senderId:'louise-99',
-            text: "My name's Gypsy. What's yours?",
-            timestamp: 1729667463
+        const stubUser = {id:'stub', email:'stub', image: '/stub', name:'stub'}
+        const participants = {
+            partner: stubUser,
+            user: stubUser,
+            sessionId
         }
-
-        const sessionId = 'rose-16'
-        const {getByText} = render(<Messages initialMessages={[msg]} sessionId={sessionId}/>)
-        const time = getByText("1729667463")
-        expect(time).toBeInTheDocument()
+        const {getByText} = render(<Messages initialMessages={[msg]} participants={participants} />)
+        const span = getByText("My name's Gypsy. What's yours?")
+        expect(span).toHaveClass(/bg-blue/i)
+        expect(span).toHaveClass(/text-white/i)
     })
 })

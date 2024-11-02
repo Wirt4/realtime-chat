@@ -7,7 +7,7 @@ import Messages from "@/components/Messages";
 import {Helpers} from "@/app/(dashboard)/dashboard/chat/[chatId]/helpers";
 import {Message} from "@/lib/validations/messages";
 import ChatInput from "@/components/ChatInput/ChatInput";
-import Participants from "@/lib/chatParticipants.js";
+import Participants from "@/lib/chatParticipants";
 
 interface ChatProps{
     params: {
@@ -27,22 +27,35 @@ const Page: FC<ChatProps> = async ({params}) => {
         notFound();
     }
     const partner = (await db.get(participants.getPartnerQuery())) as User;
+    const sessionUser = (await db.get(participants.getSessionUserQuery())) as User;
 
-    return<Display partner={partner} messages={initialMessages} userId={userId} chatId={chatId}/>
+    const chatInfo = {chatId:chatId, messages: initialMessages}
+    const chatters = {user: sessionUser, partner: partner, sessionId: userId}
+    return<Display chatInfo={chatInfo} participants={chatters}/>
 }
 
 interface DisplayProps {
-    partner: User
-    messages: Message[]
-    userId: string
-    chatId: string
+    chatInfo : ChatInfo
+    participants: ChatParticipants
 }
 
-const Display: FC<DisplayProps> = ({partner, messages, userId, chatId}) =>{
+interface ChatInfo{
+    chatId: string
+    messages: Message[]
+}
+
+interface ChatParticipants{
+    user: User
+    partner: User
+    sessionId: string
+}
+
+const Display: FC<DisplayProps> = ({chatInfo, participants}) =>{
     return<div className='chat-a'>
-        <Header partner = {partner}/>
-        <Messages initialMessages={messages} sessionId={userId}/>
-        <ChatInput chatPartner={partner} chatId={chatId}/>
+        <Header partner = {participants.partner}/>
+        <Messages initialMessages={chatInfo.messages}
+                  participants={participants}/>
+        <ChatInput chatPartner={participants.partner} chatId={chatInfo.chatId}/>
     </div>
 }
 

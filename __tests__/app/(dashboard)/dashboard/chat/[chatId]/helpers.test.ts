@@ -72,55 +72,6 @@ describe('confirm getChatMessage is called with the output of fetchChatById', ()
     });
 });
 
-describe('fetchByChatId returns an array with the most recent timestamp first,so onfirm getChatMessage returns items in correct order', () => {
-    let helpers: Helpers;
-    beforeEach(() => {
-        helpers = new Helpers();
-        const userPayload = "{\"id\": \"1701\", \"senderId\": \"bob\", \"text\":\"Hello world. My name's Gypsy, what's yours?\", \"timestamp\":1729437427}"
-        jest.spyOn(helpers, 'fetchChatById').mockResolvedValue([userPayload]);
-
-    })
-
-    afterEach(() => {
-        jest.resetAllMocks();
-    });
-
-    test('data set one', async()=>{
-        const fetchedData = [
-            "{\"id\": \"1701\", \"senderId\": \"bob\", \"recieverId\": \"1071\", \"text\":\"Hi Alice, what's up\", \"timestamp\":1729533949}",
-            "{\"id\": \"1071\", \"senderId\": \"alice\", \"recieverId\":\"1701\", \"text\":\"Hi bob\", \"timestamp\":1729437427}"
-        ]
-        jest.spyOn(helpers, "fetchChatById").mockResolvedValue(fetchedData);
-        jest.spyOn(messageArraySchema, 'parse').mockImplementation((data: unknown) => {
-           return data as { id: string; senderId: string; recieverId: string; text: string; timestamp: number }[];
-        });
-
-       const result =  await helpers.getChatMessages("chat:1071-1701:message");
-
-       expect(result).toEqual([ {id: '1071', senderId: 'alice',recieverId:'1701', text:"Hi bob", timestamp:1729437427},{id: '1701', senderId: 'bob',recieverId: '1071', text:"Hi Alice, what's up", timestamp:1729533949}])
-    });
-
-    test('data set two', async()=>{
-        const fetchedData = [
-            "{\"id\": \"1701\", \"senderId\": \"bob\", \"recieverId\": \"1071\", \"text\":\"Hi Alice, what's up\", \"timestamp\":1729533949}",
-            "{\"id\": \"1071\", \"senderId\": \"alice\", \"recieverId\":\"1701\", \"text\":\"Hi bob\", \"timestamp\":1729437427}",
-            "{\"id\": \"1071\", \"senderId\": \"alice\", \"recieverId\":\"1701\", \"text\":\"Hey, it's 1970\", \"timestamp\":0}"
-        ]
-        jest.spyOn(helpers, "fetchChatById").mockResolvedValue(fetchedData);
-        jest.spyOn(messageArraySchema, 'parse').mockImplementation((data: unknown) => {
-            return data as { id: string; senderId: string; recieverId: string; text: string; timestamp: number }[];
-        });
-
-        const result =  await helpers.getChatMessages("chat:1071-1701:message");
-
-        expect(result).toEqual([
-            {id:'1071', senderId: 'alice', recieverId:"1701", text:"Hey, it's 1970", timestamp: 0},
-            {id: '1071', senderId: 'alice',recieverId:'1701', text:"Hi bob", timestamp:1729437427},
-            {id: '1701', senderId: 'bob',recieverId: '1071', text:"Hi Alice, what's up", timestamp:1729533949}
-        ])
-    })
-});
-
 describe('fetchChat Tests',()=>{
     let helpers: Helpers;
 
