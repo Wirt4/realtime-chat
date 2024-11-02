@@ -228,28 +228,22 @@ describe('Chat page makes expected calls', ()=>{
         jest.spyOn(Helpers.prototype, 'getChatMessages').mockResolvedValue([]);
     });
 
-    test('db is called with correct params for user',async ()=>{
+    test('db is called with correct params for users',async ()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'kirk'}});
 
         render(await Page({params:{chatId: 'kirk--spock'}}));
 
         expect(db.get as jest.Mock).toHaveBeenCalledWith('user:spock');
-    })
-
-    test('db is called with correct params for user',async ()=>{
-        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'spock'}});
-
-        render(await Page({params:{chatId: 'kirk--spock'}}));
-
         expect(db.get as jest.Mock).toHaveBeenCalledWith('user:kirk');
     })
 
-    test('db is called with correct params for user',async ()=>{
+    test('db is called with correct params for users',async ()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'mindy'}});
 
         render(await Page({params:{chatId: 'mindy--mork'}}));
 
         expect(db.get as jest.Mock).toHaveBeenCalledWith('user:mork');
+        expect(db.get as jest.Mock).toHaveBeenCalledWith('user:mindy');
     })
 
     test('Messages is called with the output of getChatMessages and correct session id',async ()=>{
