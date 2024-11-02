@@ -8,6 +8,7 @@ import myGetServerSession from "@/lib/myGetServerSession";
 import {notFound} from "next/navigation";
 import {db} from "@/lib/db"
 import ChatInput from "@/components/ChatInput/ChatInput";
+import {Utils} from "@/lib/utils";
 
 jest.mock("@/components/Messages",() => ({
     __esModule: true,
@@ -93,7 +94,7 @@ describe('ChatPage renders with expected content', () => {
         const {getByRole} = render(await Page({params:{chatId: 'userid1--userid2'}}));
         const element = getByRole('img');
         expect(element).toHaveAttribute('src',
-            expect.stringContaining(encodeUrl(url)));
+            expect.stringContaining(Utils.encodeUrl(url)));
     });
 
     test("chat image should be sourced from chat partner's name, different data",async ()=>{
@@ -108,7 +109,7 @@ describe('ChatPage renders with expected content', () => {
         const {getByRole} = render(await Page({params:{chatId: 'userid1--userid2'}}));
         const element = getByRole('img');
         expect(element).toHaveAttribute('src',
-            expect.stringContaining(encodeUrl(url)));
+            expect.stringContaining(Utils.encodeUrl(url)));
     });
 
     test("chat image should have alt text for partner's name", async ()=>{
@@ -227,28 +228,22 @@ describe('Chat page makes expected calls', ()=>{
         jest.spyOn(Helpers.prototype, 'getChatMessages').mockResolvedValue([]);
     });
 
-    test('db is called with correct params for user',async ()=>{
+    test('Will get info for both users: ensure db is called with correct params',async ()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'kirk'}});
 
         render(await Page({params:{chatId: 'kirk--spock'}}));
 
         expect(db.get as jest.Mock).toHaveBeenCalledWith('user:spock');
-    })
-
-    test('db is called with correct params for user',async ()=>{
-        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'spock'}});
-
-        render(await Page({params:{chatId: 'kirk--spock'}}));
-
         expect(db.get as jest.Mock).toHaveBeenCalledWith('user:kirk');
     })
 
-    test('db is called with correct params for user',async ()=>{
+    test('ill get info for both users: ensure db is called with correct params, different data',async ()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'mindy'}});
 
         render(await Page({params:{chatId: 'mindy--mork'}}));
 
         expect(db.get as jest.Mock).toHaveBeenCalledWith('user:mork');
+        expect(db.get as jest.Mock).toHaveBeenCalledWith('user:mindy');
     })
 
     test('Messages is called with the output of getChatMessages and correct session id',async ()=>{
@@ -263,10 +258,13 @@ describe('Chat page makes expected calls', ()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'mork'}});
 
         render(await Page({params:{chatId: 'mindy--mork'}}));
-        expect(Messages as jest.Mock).toHaveBeenCalledWith({initialMessages:msgs, sessionId:'mork'},{})
+        expect(Messages as jest.Mock).toHaveBeenCalledWith(
+            expect.objectContaining({initialMessages:msgs, participants:
+                    expect.objectContaining({sessionId:'mork'})}),
+            {})
     });
 
-    test('Messages is called with the output of getChatMessages and correct sesion id, different data',async ()=>{
+    test('Messages is called with the output of getChatMessages and correct session id, different data',async ()=>{
         const msgs = [{
             id: 'stub',
             senderId:'stub',
@@ -278,7 +276,10 @@ describe('Chat page makes expected calls', ()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'mindy'}});
 
         render(await Page({params:{chatId: 'mindy--mork'}}));
-        expect(Messages as jest.Mock).toHaveBeenCalledWith({initialMessages:msgs, sessionId: 'mindy'},{})
+        expect(Messages as jest.Mock).toHaveBeenCalledWith(
+            expect.objectContaining({initialMessages:msgs, participants:
+                    expect.objectContaining({sessionId:'mindy'})}),
+            {})
     })
 
     test('confirm getChatMessages is called with the chatId', async()=>{
@@ -325,8 +326,3 @@ describe('Chat page makes expected calls', ()=>{
         expect(ChatInput as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({chatPartner:expected}), expect.anything());
     })
 })
-
-
-const encodeUrl = (url: string)=>{
-    return url.replaceAll(':','%3A').replaceAll('/','%2F').replaceAll(',','%2C');
-}

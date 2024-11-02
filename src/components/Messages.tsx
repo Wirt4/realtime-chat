@@ -3,13 +3,20 @@
 import {FC, useRef, useState} from "react";
 import {Message} from "@/lib/validations/messages"
 import {MessageTimestamp} from "@/components/MessageTimestamp";
+import MessageThumbnail from "@/components/MessageThumbnail";
 
 interface MessagesProps {
     initialMessages: Message[],
+    participants: ChatParticipants,
+}
+
+interface ChatParticipants{
+    user: User
+    partner: User
     sessionId: string
 }
 
-const Messages: FC<MessagesProps> = ({initialMessages, sessionId}) => {
+const Messages: FC<MessagesProps> = ({initialMessages, participants}) => {
     const [messages] = useState<Message[]>(initialMessages)
     const scrollDownRef = useRef<HTMLDivElement | null>(null)
 
@@ -17,7 +24,9 @@ const Messages: FC<MessagesProps> = ({initialMessages, sessionId}) => {
         <div ref={scrollDownRef}>
         {messages.map((message, index) => {
             const hasNextMessage = userHasNextMessage(messages, index)
-            const classes = new ClassNames(sessionId === message.senderId, hasNextMessage)
+            const isCurrentUser = participants.sessionId === message.senderId
+            const classes = new ClassNames(isCurrentUser, hasNextMessage)
+            const userInfo = new ContextualUserInfo(participants)
 
             return (
                <div key={listKey(message)} className={classes.div1}>
@@ -26,12 +35,27 @@ const Messages: FC<MessagesProps> = ({initialMessages, sessionId}) => {
                            {message.text}{' '}
                           <MessageTimestamp unixTimestamp={message.timestamp}/>
                        </span>
+                       <MessageThumbnail userStatus={{hasNextMessage, currentUser: isCurrentUser}}
+                                         userInfo={userInfo.userInfo(isCurrentUser)}/>
                    </div>
                </div>
            )
         })}
     </div>
     </div>
+}
+
+class ContextualUserInfo{
+    participants: ChatParticipants
+
+    constructor(participants: ChatParticipants) {
+        this.participants = participants
+    }
+
+    userInfo(isCurrentUser: boolean): {userName:string, image:string}{
+        const {name, image} = isCurrentUser ? this.participants.user : this.participants.partner
+        return {userName: name, image}
+    }
 }
 
 const listKey = (message: Message) =>{

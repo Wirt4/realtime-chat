@@ -26,5 +26,6 @@ services:
         - app
       environment:
         - NODE_ENV=test
+        - TZ=America/Los_Angeles
       tty: true
       command: npm run testWatch

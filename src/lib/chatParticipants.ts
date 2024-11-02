@@ -23,4 +23,8 @@ export default class Participants{
     getPartnerQuery():string{
         return QueryBuilder.user(this.partnerId());
     }
+
+    getSessionUserQuery():string{
+        return QueryBuilder.user(this.sessionId);
+    }
 }
