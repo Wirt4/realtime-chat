@@ -1,7 +1,10 @@
 import PusherServer from "pusher"
-import {getPusherServer} from "@/lib/pusher"
+import PusherClient from "pusher-js"
+import {getPusherServer, getPusherClient} from "@/lib/pusher"
 
 jest.mock("pusher")
+jest.mock("pusher-js")
+
 describe('pusher server creation tests', () => {
     let original_env:NodeJS.ProcessEnv
 
@@ -18,50 +21,86 @@ describe('pusher server creation tests', () => {
     })
 
     test('make sure pusher server is created with correct appId', ()=>{
-        testAppId('appname')
+        testServerAppId('appname')
     })
 
     test('make sure pusher server is created with correct appId', ()=>{
-        testAppId('different_id')
+        testServerAppId('different_id')
     })
 
     test('make sure pusher server is created with correct key', ()=>{
-        testAppKey('keyOne')
+        testServerKey('keyOne')
     })
 
     test('make sure pusher server is created with correct key', ()=>{
-        testAppKey('columbo')
+        testServerKey('columbo')
     })
 
     test('make sure pusher server is created with correct secret', ()=>{
-        testAppSecret('secret')
+        testServerAppSecret('secret')
     })
 
     test('make sure pusher server is called with US-3 cluster', ()=>{
-        expectContainting({cluster:'us3'})
+        expectServerContainting({cluster:'us3'})
     })
 
     test('make sure pusher server is called with useTLS:true', ()=>{
-        expectContainting({useTLS:true})
+        expectServerContainting({useTLS:true})
     })
 })
 
-function testAppId(id:string){
-    process.env.PUSHER_APP_ID = id
-    expectContainting({appId:id})
-}
+describe('pusher client creation tests', ()=>{
+    let original_env:NodeJS.ProcessEnv
 
-function testAppKey(pusherKey:string){
+    beforeAll(()=>{
+        original_env = process.env
+    })
+
+    beforeEach(()=>{
+        (PusherClient as unknown as jest.Mock).mockClear()
+    })
+
+    afterAll(()=>{
+        process.env = original_env
+    })
+
+    test('make sure pusher client is created with correct key', ()=>{
+        testClientKey('secretKey')
+    })
+
+    test('make sure pusher client is created with correct key', ()=>{
+        testClientKey('antibacterial')
+    })
+
+    test('make sure pusher client is called with us3 cluster', ()=>{
+        getPusherClient()
+        expect(PusherClient).toHaveBeenCalledWith(expect.anything(),
+            expect.objectContaining({cluster: 'us3'}));
+    })
+})
+
+function testClientKey(pusherKey:string){
     process.env.PUSHER_KEY = pusherKey
-    expectContainting({key:pusherKey})
+    getPusherClient()
+    expect(PusherClient).toHaveBeenCalledWith(pusherKey, expect.anything())
 }
 
-function testAppSecret(secret:string){
+function testServerAppId(id:string){
+    process.env.PUSHER_APP_ID = id
+    expectServerContainting({appId:id})
+}
+
+function testServerKey(pusherKey:string){
+    process.env.PUSHER_KEY = pusherKey
+    expectServerContainting({key:pusherKey})
+}
+
+function testServerAppSecret(secret:string){
     process.env.PUSHER_SECRET =secret
-    expectContainting({secret:secret})
+    expectServerContainting({secret:secret})
 }
 
-function expectContainting(prop: object){
+function expectServerContainting(prop: object){
     getPusherServer()
     expect(PusherServer).toHaveBeenCalledWith(expect.objectContaining(prop))
 }
