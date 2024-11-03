@@ -59,6 +59,11 @@ For Google, go to https://console.cloud.google.com/ to configure the credentials
 Authorized Javascript origin should be the homepage (for dev it's http://localhost:3000)
 For the authorized redirect URI, set it to `<homepage>/api/auth/callback/google`
 
+## Realtime and Pusher
+Have logged in to pusher.com with Github creds.
+Pusher supplies some credentials for accessing the service. They are in the env file with the keys` PUSHER_APP_ID`,
+`PUSHER_KEY`, `PUSHER_SECRET`, and `PUSHER_CLUSTER`.
+
 ![Screenshot 2024-10-01 at 2.32.50 PM.png](README%20assets/Screenshot%202024-10-01%20at%202.32.50%E2%80%AFPM.png)
 
 ## Credits
