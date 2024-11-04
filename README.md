@@ -1,8 +1,10 @@
+Welcome to a super-happy realtime chat app. The purpose of this READme is to give you, the developer, the tools 
+to run the app locally and some guidance on making changes.
 
 ## Running the App
 
 ### Dependencies
-The app is run in a docker container so you'll need a copy of Docker desktop. You'll also need to secute the correct \
+The app is run in a docker container so you'll need a copy of Docker desktop. You'll also need to secure the correct \
 values for the following env vars:
 - REDIS_URL
 - REDIS_TOKEN
