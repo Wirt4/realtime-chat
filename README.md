@@ -64,5 +64,3 @@ For the authorized redirect URI, set it to `<homepage>/api/auth/callback/google`
 ## Credits
 Built from template put forth by @johnrushx at [https://nextjsstarter.com/blog/build-nextjs-real-time-chat-app-in-5-steps/](https://nextjsstarter.com/blog/build-nextjs-real-time-chat-app-in-5-steps/)
 Icons sourced from https://www.svgrepo.com/collection/batch-interface-oval-icons/
-
-foo
