@@ -17,4 +17,18 @@ To host locally with the existing setup, you want NEXTAUTH_URL to be http://loca
 Get the docker desktop app and make sure it's running. Run `docker compose up` to start the app locally. 
 Run `docker compose down` to close it.
 
-When making changes, write code tests-first. 
+This application is an experiment in test-driven development(TDD). 
+We're operating on two hypotheses :
+ 1. TDD code is more readable and  faster to troubleshoot.
+ 2. TDD forces the programmer to prove they know what the hell they're doing. 
+
+ Commit Structure
+
+When making changes, write code tests-first. Nobody's perfect, and we need proof for stuff.
+Exceptions for tests-first:
+- Non-dynamic tailwind styling - don't test for css unless it's tied to programmatic logic.
+- user testing
+
+Here's the commit strategy. To avoid faking out the commit history, 
+commit the failing tests first, then the green tests, then any (green) refactors. The parsable error of composition 
+history should be the branch, not the commit
