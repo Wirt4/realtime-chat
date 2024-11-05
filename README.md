@@ -1,5 +1,5 @@
 # Real-time Chat
-Greetings, Programmer. The purpose of this README is to give you the tools 
+Greetings, Programmer. The purpose of this README is to give you the tools
 to run the app locally and some guidance on making changes.
 ![Screenshot 2024-11-04 at 5.15.40 PM.png](README%20assets/Screenshot%202024-11-04%20at%205.15.40%E2%80%AFPM.png)
 ## Running the App
@@ -51,7 +51,7 @@ Users can join then invite each other to 2-person chats using their email addres
 They'll need a Google account to use to log into the app using OAuth once it's up and running.
 
 ## Summary
-To run the app, you'll need Docker and a Google account. 
+To run the app, you'll need Docker and a Google account.
 You'll also need the credentials for Redis, NextAuth, GoogleClient, and Pusher.
 Make commits tests first.
 
