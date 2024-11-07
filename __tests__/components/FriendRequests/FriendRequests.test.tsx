@@ -253,6 +253,6 @@ describe('FriendRequest realtime functionality', () => {
     test('The rendered component should be called with method subscribeToPusherClient',()=>{
         const useEffectSpy = jest.spyOn(React, 'useEffect')
         render(<FriendRequests incomingFriendRequests={[]} />)
-        expect (useEffectSpy).toHaveBeenCalledWith(subscribeToPusherClient)
+        expect (useEffectSpy).toHaveBeenCalledWith(subscribeToPusherClient, expect.anything());
     })
 });
