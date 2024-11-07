@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom';
 import FriendRequests from "@/components/FriendRequests";
 import {render, screen, waitFor, within, fireEvent} from "@testing-library/react";
+import React from "react";
 import axios from 'axios';
 import {useRouter} from "next/navigation";
 
@@ -232,4 +233,12 @@ describe('FriendRequests', () => {
             expect(spy).toHaveBeenCalled();
         });
     });
+});
+
+describe('FriendRequest realtime functionality', () => {
+    test('component should call UseEffect', ()=>{
+        const useEffectSpy = jest.spyOn(React, 'useEffect')
+        render(<FriendRequests incomingFriendRequests={[]} />)
+        expect (useEffectSpy).toHaveBeenCalled()
+    })
 });
