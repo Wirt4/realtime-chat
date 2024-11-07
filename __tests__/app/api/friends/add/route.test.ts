@@ -369,8 +369,9 @@ describe("triggerPusherServer tests", ()=>{
         expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), 'incoming_friend_requests', expect.anything());
     })
 
-    test('the third  argument passed to server.trigger is {senderId: mork, senderEmail: mork@ork.nanu}',()=>{
+    test('the third  argument passed to server.trigger contains {senderId: mork',()=>{
         handler.triggerPusherServer()
-        expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.objectContaining({senderId: 'mork'}));
+        expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(),
+            expect.objectContaining({senderId: 'mork'}));
     })
 })
