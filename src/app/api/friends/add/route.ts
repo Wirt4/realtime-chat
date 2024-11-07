@@ -11,6 +11,7 @@ export async function  POST(req: Request):Promise<Response> {
         const {message, opts} = routeHandler.errorResponse()
         return new Response(message, opts)
     }
+
     routeHandler.triggerPusherServer()
     await routeHandler.addToDB()
     return new Response('OK')
