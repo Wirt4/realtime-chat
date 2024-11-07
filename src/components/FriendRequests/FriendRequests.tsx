@@ -8,11 +8,12 @@ import subscribeToPusherClient from "@/components/FriendRequests/helpers"
 
 interface FriendRequestsProps {
     incomingFriendRequests: FriendRequest[]
+    sessionId: string
 }
 
 type command = 'accept' | 'deny'
 
-const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests})=>{
+const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests, sessionId})=>{
     const router = useRouter()
     const [requests, setRequests] = useState<{
         senderId:string,
@@ -33,7 +34,7 @@ const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests})=>{
         await apiPost(senderId, 'deny')
     }
 
-    useEffect(subscribeToPusherClient, []);
+    useEffect(()=> subscribeToPusherClient(sessionId), []);
 
     return <div aria-label='friend requests'>
         {incomingFriendRequests.length == 0 ?

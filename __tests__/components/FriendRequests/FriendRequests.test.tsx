@@ -247,15 +247,13 @@ describe('FriendRequest realtime functionality', () => {
         (subscribeToPusherClient as jest.Mock).mockImplementation(jest.fn());
     });
 
-    test('Rendering the component should call UseEffect', ()=>{
-        const useEffectSpy = jest.spyOn(React, 'useEffect')
-        render(<FriendRequests incomingFriendRequests={[]} />);
-        expect (useEffectSpy).toHaveBeenCalled();
+    test('The rendered component should be called with method subscribeToPusherClient',()=>{
+        render(<FriendRequests incomingFriendRequests={[]} sessionId='stub' />);
+        expect(subscribeToPusherClient).toHaveBeenCalledWith('stub');
     });
 
     test('The rendered component should be called with method subscribeToPusherClient',()=>{
-        const useEffectSpy = jest.spyOn(React, 'useEffect');
-        render(<FriendRequests incomingFriendRequests={[]} />);
-        expect (useEffectSpy).toHaveBeenCalledWith(subscribeToPusherClient, expect.anything());
+        render(<FriendRequests incomingFriendRequests={[]} sessionId='other_stub' />);
+        expect(subscribeToPusherClient).toHaveBeenCalledWith('other_stub');
     });
 });
