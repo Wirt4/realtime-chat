@@ -370,14 +370,20 @@ describe("triggerPusherServer tests", ()=>{
     })
 
     test('the third  argument passed to server.trigger contains {senderId: mork',()=>{
-        handler.triggerPusherServer()
+        handler.triggerPusherServer('mindy', {senderId:'mork'})
         expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(),
             expect.objectContaining({senderId: 'mork'}));
     })
 
     test('the third  argument passed to server.trigger contains {senderId: mindy',()=>{
-        handler.triggerPusherServer()
+        handler.triggerPusherServer('mork', {senderId: 'mindy'})
         expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(),
             expect.objectContaining({senderId: 'mindy'}));
+    })
+
+    test('the third  argument passed to server.trigger contains {senderEmail: mindy@colorado.earth',()=>{
+        handler.triggerPusherServer('mork', {senderId: 'mindy'})
+        expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(),
+            expect.objectContaining({senderEmail: 'mindy@colorado.earth'}));
     })
 })

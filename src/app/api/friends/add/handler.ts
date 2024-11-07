@@ -11,6 +11,7 @@ interface errorProps{
         status: number
     }
 }
+
 export class PostFriendsRouteHandler {
     private status: number
     private message: string
@@ -114,13 +115,15 @@ export class PostFriendsRouteHandler {
         return session;
     }
 
-
-
-    triggerPusherServer(id:string = this.idToAdd){
+    triggerPusherServer(id:string = this.idToAdd, data: dataProps = {senderId: this.senderId}){
         const pusherServer = getPusherServer();
         const channel = QueryBuilder.incomingFriendRequestsPusher(id);
         const event = QueryBuilder.incoming_friend_requests
-        pusherServer.trigger(channel, event, {senderId: 'mork'});
+        pusherServer.trigger(channel, event, data);
     }
+}
+
+interface dataProps {
+    senderId: string;
 }
 
