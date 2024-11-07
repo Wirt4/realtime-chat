@@ -11,8 +11,8 @@ export default class PusherClientHandler{
     constructor(sessionId:string){
         this._sessionId = sessionId
         this._pusherClient = getPusherClient()
-        this._subscribeQuery = QueryBuilder.incomingFriendRequests(this._sessionId).replace(/:/g, '__')
-        this._bindField = 'incoming_friend_requests'
+        this._subscribeQuery = QueryBuilder.incomingFriendRequestsPusher(this._sessionId)
+        this._bindField = QueryBuilder.incoming_friend_requests
     }
 
     subscribeToPusherClient (){

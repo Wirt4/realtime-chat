@@ -21,7 +21,7 @@ export default class QueryBuilder {
     }
 
     static incomingFriendRequests(userId: string): string {
-        return this.join(userId, 'incoming_friend_requests')
+        return this.join(userId, this.incoming_friend_requests)
     }
 
     static join(userId: string, suffix: string): string {
@@ -30,5 +30,13 @@ export default class QueryBuilder {
 
     static email(email: string): string {
        return  this._append('email', email)
+    }
+
+    static incomingFriendRequestsPusher(userId: string):string {
+        return this.incomingFriendRequests(userId).replace(/:/g, '__')
+    }
+
+    static get incoming_friend_requests () {
+        return 'incoming_friend_requests'
     }
 }
