@@ -89,11 +89,13 @@ describe('tearDown tests, unsubscribe and unbind', ()=>{
         unBindSpy = jest.fn();
         (getPusherClient as jest.Mock).mockReturnValue({unsubscribe: unSubscribeSpy, unbind: unBindSpy});
     })
+
     test('if the sessionID is 12345, then subscribe is called with user:12345:incoming_friend_requests',()=>{
         const client = new PusherClientHandler('12345')
         client.tearDown()
         expect(unSubscribeSpy).toHaveBeenCalledWith('user__12345__incoming_friend_requests');
     })
+
     test('if the sessionID is 54321, then subscribe is called with user:12345:incoming_friend_requests',()=>{
         const client = new PusherClientHandler('54321')
         client.tearDown()

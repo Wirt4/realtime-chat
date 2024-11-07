@@ -4,15 +4,17 @@ import {render, screen, waitFor, within, fireEvent} from "@testing-library/react
 import React from "react";
 import axios from 'axios';
 import {useRouter} from "next/navigation";
-import subscribeToPusherClient from "@/components/FriendRequests/helpers"
+import PusherClientHandler from "@/components/FriendRequests/helpers";
 
 jest.mock('next/navigation', () => ({
     useRouter: jest.fn(),
 }));
 
-jest.mock("@/components/FriendRequests/helpers", () => {
-    return jest.fn()
-});
+jest.mock("@/lib/pusher",()=>({
+    getPusherClient: jest.fn()
+}));
+
+jest.spyOn(PusherClientHandler.prototype, 'subscribeToPusherClient').mockImplementation(jest.fn());
 
 jest.mock('axios');
 
@@ -242,18 +244,14 @@ describe('FriendRequests', () => {
 });
 
 describe('FriendRequest realtime functionality', () => {
+    let subscribeSpy: jest.SpyInstance
     beforeEach(()=>{
-        jest.resetAllMocks();
-        (subscribeToPusherClient as jest.Mock).mockImplementation(jest.fn());
+        subscribeSpy = jest.fn();
+        subscribeSpy = jest.spyOn(PusherClientHandler.prototype, 'subscribeToPusherClient').mockReturnValue(jest.fn())
     });
 
     test('The rendered component should be called with method subscribeToPusherClient',()=>{
         render(<FriendRequests incomingFriendRequests={[]} sessionId='stub' />);
-        expect(subscribeToPusherClient).toHaveBeenCalledWith('stub');
-    });
-
-    test('The rendered component should be called with method subscribeToPusherClient',()=>{
-        render(<FriendRequests incomingFriendRequests={[]} sessionId='other_stub' />);
-        expect(subscribeToPusherClient).toHaveBeenCalledWith('other_stub');
+        expect(subscribeSpy).toHaveBeenCalled();
     });
 });

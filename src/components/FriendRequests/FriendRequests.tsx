@@ -4,7 +4,6 @@ import {FC, useEffect, useState} from "react";
 import {Check, UserPlus, X} from 'lucide-react';
 import axios from "axios";
 import { useRouter } from 'next/navigation';
-import subscribeToPusherClient from "@/components/FriendRequests/helpers"
 import PusherClientHandler from "@/components/FriendRequests/helpers";
 
 interface FriendRequestsProps {
@@ -37,7 +36,7 @@ const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests, session
 
     const client = new PusherClientHandler(sessionId)
 
-    useEffect(()=> client.subscribeToPusherClient, []);
+    useEffect(()=> client.subscribeToPusherClient(), []);
 
     return <div aria-label='friend requests'>
         {incomingFriendRequests.length == 0 ?
