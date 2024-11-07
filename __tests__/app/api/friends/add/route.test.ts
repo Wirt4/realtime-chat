@@ -1,7 +1,7 @@
 import {PostFriendsRouteHandler} from '@/app/api/friends/add/handler'
 import fetchRedis from "@/helpers/redis"
 import { db } from '@/lib/db';
-import {getPusherClient, getPusherServer} from "@/lib/pusher";
+import { getPusherServer} from "@/lib/pusher";
 
 jest.mock("@/lib/myGetServerSession",()=>({
     __esModule: true,
@@ -370,20 +370,26 @@ describe("triggerPusherServer tests", ()=>{
     })
 
     test('the third  argument passed to server.trigger contains {senderId: mork',()=>{
-        handler.triggerPusherServer('mindy', {senderId:'mork'})
+        handler.triggerPusherServer('mindy', {senderId:'mork', senderEmail: 'mork@ork.nanu'})
         expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(),
             expect.objectContaining({senderId: 'mork'}));
     })
 
     test('the third  argument passed to server.trigger contains {senderId: mindy',()=>{
-        handler.triggerPusherServer('mork', {senderId: 'mindy'})
+        handler.triggerPusherServer('mork', {senderId: 'mindy', senderEmail: 'mindy@colorado.earth'})
         expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(),
             expect.objectContaining({senderId: 'mindy'}));
     })
 
     test('the third  argument passed to server.trigger contains {senderEmail: mindy@colorado.earth',()=>{
-        handler.triggerPusherServer('mork', {senderId: 'mindy'})
+        handler.triggerPusherServer('mork', {senderId: 'mindy', senderEmail: 'mindy@colorado.earth'})
         expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(),
             expect.objectContaining({senderEmail: 'mindy@colorado.earth'}));
+    })
+
+    test('the third  argument passed to server.trigger contains {senderEmail: mork@ork.nanu',()=>{
+        handler.triggerPusherServer('mork', {senderId: 'mork', senderEmail: 'mork@ork.nanu'})
+        expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(),
+            expect.objectContaining({senderEmail: 'mork@ork.nanu'}));
     })
 })

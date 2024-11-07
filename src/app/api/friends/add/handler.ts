@@ -115,7 +115,9 @@ export class PostFriendsRouteHandler {
         return session;
     }
 
-    triggerPusherServer(id:string = this.idToAdd, data: dataProps = {senderId: this.senderId}){
+    triggerPusherServer(id:string = this.idToAdd,
+                        data: dataProps = {senderId: this.senderId, senderEmail: this.senderEmail}){
+
         const pusherServer = getPusherServer();
         const channel = QueryBuilder.incomingFriendRequestsPusher(id);
         const event = QueryBuilder.incoming_friend_requests
@@ -125,5 +127,6 @@ export class PostFriendsRouteHandler {
 
 interface dataProps {
     senderId: string;
+    senderEmail: string;
 }
 
