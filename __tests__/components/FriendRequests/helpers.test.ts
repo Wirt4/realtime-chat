@@ -63,3 +63,19 @@ describe('subscribeToPusher tests, bind tests', ()=>{
         expect(bindSpy).toHaveBeenCalledWith(expect.anything(), client.friendRequestHandler);
     })
 })
+
+describe('subscribeToPusher tests, return value tests', ()=>{
+    let subscribeSpy: jest.SpyInstance;
+    let bindSpy: jest.SpyInstance;
+    beforeEach(()=>{
+        jest.resetAllMocks();
+        subscribeSpy = jest.fn();
+        bindSpy = jest.fn();
+        (getPusherClient as jest.Mock).mockReturnValue({subscribe: subscribeSpy, bind: bindSpy});
+    })
+    test('the function returns the teardown method, which is a callable hook', ()=>{
+        const client = new PusherClientHandler('stub')
+        const actual = client.subscribeToPusherClient()
+        expect(actual).toBe(client.tearDown)
+    })
+})

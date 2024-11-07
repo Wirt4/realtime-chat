@@ -15,5 +15,8 @@ export default class PusherClientHandler{
         pusherClient.subscribe(QueryBuilder.incomingFriendRequests(this._sessionId).replace(/:/g, '__'));
         pusherClient.bind('incoming_friend_requests', this.friendRequestHandler)
     }
+
     friendRequestHandler(){}
+
+    tearDown(){}
 }
