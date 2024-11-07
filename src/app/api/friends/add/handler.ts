@@ -3,6 +3,7 @@ import myGetServerSession from "@/lib/myGetServerSession";
 import fetchRedis from "@/helpers/redis";
 import {db} from "@/lib/db";
 import QueryBuilder from "@/lib/queryBuilder";
+import {getPusherServer} from "@/lib/pusher";
 
 interface errorProps{
     message: string,
@@ -108,5 +109,8 @@ export class PostFriendsRouteHandler {
         return session
     }
 
-    triggerPusherServer(){}
+    triggerPusherServer(){
+        const pusherServer = getPusherServer()
+        pusherServer.trigger('stub', 'stub', 'stub')
+    }
 }
