@@ -14,17 +14,17 @@ describe('subscribeToPusherClient tests', ()=>{
     })
 
     test('calling function should call PusherClient.subscribe', ()=>{
-        subscribeToPusherClient();
+        subscribeToPusherClient('stub');
         expect(subscribeSpy).toHaveBeenCalled();
     })
 
     test('if the sessionID is 12345, then subscribe is called with user:12345:incoming_friend_requests',()=>{
-        subscribeToPusherClient();
+        subscribeToPusherClient('12345');
         expect(subscribeSpy).toHaveBeenCalledWith('user:12345:incoming_friend_requests');
     })
 
     test('if the sessionID is 54321 , then subscribe is called with user:54321:incoming_friend_requests',()=>{
-        subscribeToPusherClient();
+        subscribeToPusherClient('54321');
         expect(subscribeSpy).toHaveBeenCalledWith('user:54321:incoming_friend_requests');
     })
 })

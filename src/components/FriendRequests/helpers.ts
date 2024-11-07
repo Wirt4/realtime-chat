@@ -1,6 +1,6 @@
 import {getPusherClient} from "@/lib/pusher";
 
-export default function subscribeToPusherClient (){
+export default function subscribeToPusherClient (sessionId: string){
     const pusherClient = getPusherClient();
-    pusherClient.subscribe('user:12345:incoming_friend_requests');
+    pusherClient.subscribe(`user:${sessionId}:incoming_friend_requests`);
 }
