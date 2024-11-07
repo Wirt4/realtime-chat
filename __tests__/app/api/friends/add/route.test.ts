@@ -340,10 +340,16 @@ describe("isSameUserTests",()=>{
 });
 
 describe("triggerPusherServer tests", ()=>{
-    test('should call pusherServer trigger',()=>{
-        const handler = new PostFriendsRouteHandler();
-        const triggerSpy = jest.fn();
+    let handler: PostFriendsRouteHandler;
+    let triggerSpy: jest.Mock;
+
+    beforeEach(()=>{
+        handler = new PostFriendsRouteHandler();
+        triggerSpy = jest.fn();
         (getPusherServer as jest.Mock).mockReturnValue({trigger: triggerSpy});
+    })
+
+    test('should call pusherServer trigger',()=>{
         handler.triggerPusherServer()
         expect(triggerSpy).toHaveBeenCalled();
     })
