@@ -120,7 +120,7 @@ export class PostFriendsRouteHandler {
         const pusherServer = getPusherServer();
         const channel = QueryBuilder.incomingFriendRequestsPusher(id);
         const event = QueryBuilder.incoming_friend_requests
-        pusherServer.trigger(channel, event, 'stub');
+        pusherServer.trigger(channel, event, {senderId: 'mork'});
     }
 }
 
