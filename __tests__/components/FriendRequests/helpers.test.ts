@@ -107,3 +107,12 @@ describe('tearDown tests, unsubscribe and unbind', ()=>{
         expect(unBindSpy).toHaveBeenCalledWith('incoming_friend_requests');
     })
 })
+
+describe('friendRequestHandler tests', ()=>{
+    test('the setter should be called with concatenation of the existing state and the new values', ()=>{
+        const setterSpy = jest.fn();
+        const client = new PusherClientHandler('stub')
+        client.friendRequestHandler()
+        expect(setterSpy).toHaveBeenCalledWith([{senderId:'foo', senderEmail:'bar'}]);
+    })
+})

@@ -86,17 +86,17 @@ function testClientKey(pusherKey:string){
 }
 
 function testServerAppId(id:string){
-    process.env.PUSHER_APP_ID = id
+    process.env.NEXT_PUBLIC_PUSHER_APP_ID = id
     expectServerContainting({appId:id})
 }
 
 function testServerKey(pusherKey:string){
-    process.env.PUSHER_KEY = pusherKey
+    process.env.NEXT_PUBLIC_PUSHER_CLIENT_KEY = pusherKey
     expectServerContainting({key:pusherKey})
 }
 
 function testServerAppSecret(secret:string){
-    process.env.PUSHER_SECRET =secret
+    process.env.NEXT_PUBLIC_PUSHER_CLIENT_SECRET =secret
     expectServerContainting({secret:secret})
 }
 
