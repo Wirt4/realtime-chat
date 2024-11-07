@@ -2,8 +2,6 @@ import {getPusherClient} from "@/lib/pusher";
 import QueryBuilder from "@/lib/queryBuilder";
 import PusherClient from "pusher-js";
 
-
-
 export default class PusherClientHandler{
     private readonly _sessionId: string
     private _pusherClient: PusherClient;

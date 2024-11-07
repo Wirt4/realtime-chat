@@ -101,4 +101,9 @@ describe('tearDown tests, unsubscribe and unbind', ()=>{
         client.tearDown()
         expect(unSubscribeSpy).toHaveBeenCalledWith('user__54321__incoming_friend_requests');
     })
+    test('if the sessionID is 54321, then subscribe is called with user:12345:incoming_friend_requests',()=>{
+        const client = new PusherClientHandler('54321')
+        client.tearDown()
+        expect(unBindSpy).toHaveBeenCalledWith('incoming_friend_requests');
+    })
 })
