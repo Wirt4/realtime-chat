@@ -47,33 +47,33 @@ describe('FriendRequests', () => {
     });
 
     test('final state of friend requests is 0, should render "Nothing to show here..." ',()=>{
-        render(<FriendRequests incomingFriendRequests={[]} />);
+        render(<FriendRequests incomingFriendRequests={[]} sessionId='stub' />);
         const text = screen.getByText('Nothing to show here...');
         expect(text).toBeInTheDocument();
     });
 
     test('if the component receives a list of length 2, then there should be two UserPlus icons in the document',
         ()=>{
-        render(<FriendRequests incomingFriendRequests = {requests1}/>);
+        render(<FriendRequests incomingFriendRequests = {requests1} sessionId='stub'/>);
         const icons = screen.getAllByLabelText('add user');
         expect(icons).toHaveLength(2);
     });
 
     test('if the component receives a list of length 2, then there should be two UserPlus icons in the document',
         ()=>{
-        render(<FriendRequests incomingFriendRequests = {requests2} />);
+        render(<FriendRequests incomingFriendRequests = {requests2} sessionId='stub' />);
         const icons = screen.getAllByLabelText('add user');
         expect(icons).toHaveLength(1);
     });
 
     test('if (final) requests are greater than 0, do not render "Nothing to show here...',()=>{
-        render(<FriendRequests incomingFriendRequests = {requests1}/>);
+        render(<FriendRequests incomingFriendRequests = {requests1} sessionId='stub'/>);
         const text = screen.queryByText('Nothing to show here...');
         expect(text).not.toBeInTheDocument();
     });
 
     test('sender emails should be listed',()=>{
-        const {queryByText} =render(<FriendRequests incomingFriendRequests ={requests1}/>);
+        const {queryByText} =render(<FriendRequests incomingFriendRequests ={requests1} sessionId='stub'/>);
         const button1 = queryByText('foo@bar.com');
         const button2 = queryByText('bar@foo.com');
         expect(button1).toBeInTheDocument();
@@ -82,19 +82,19 @@ describe('FriendRequests', () => {
 
     test('if the component receives a list of length 2, then there should be two elements with the label "accept friend"',
         ()=>{
-        render(<FriendRequests incomingFriendRequests = {requests1}/>);
+        render(<FriendRequests incomingFriendRequests = {requests1} sessionId='stub'/>);
         const buttons = screen.getAllByLabelText(/accept friend*/i);
         expect(buttons).toHaveLength(2);
     });
 
     test('elements with the label "accept friend" should be a button',()=>{
-        render(<FriendRequests incomingFriendRequests = {requests2}/>);
+        render(<FriendRequests incomingFriendRequests = {requests2} sessionId='stub'/>);
         const button = screen.getByLabelText(/accept friend*/i);
         expect(button.tagName).toBe('BUTTON');
     });
 
     test('accept friend should contain a checkmark',()=>{
-        render(<FriendRequests incomingFriendRequests = {requests2}/>);
+        render(<FriendRequests incomingFriendRequests = {requests2} sessionId='stub'/>);
         const button = screen.getByLabelText(/accept friend*/i);
         const check = within(button).getByLabelText('checkmark');
         expect(check).toBeInTheDocument();
@@ -102,19 +102,19 @@ describe('FriendRequests', () => {
 
     test('if the component receives a list of length 2, then there should be two elements with the label "deny friend"',
         ()=>{
-        render(<FriendRequests incomingFriendRequests = {requests1}/>);
+        render(<FriendRequests incomingFriendRequests = {requests1} sessionId='stub'/>);
         const buttons = screen.getAllByLabelText(/deny friend*/i);
         expect(buttons).toHaveLength(2);
     });
 
     test('elements with the label "deny friend" should be a button',()=>{
-        render(<FriendRequests incomingFriendRequests = {requests2}/>);
+        render(<FriendRequests incomingFriendRequests = {requests2} sessionId='stub'/>);
         const button = screen.getByLabelText(/deny friend*/i);
         expect(button.tagName).toBe('BUTTON');
     });
 
     test('deny friend should contain a x',()=>{
-        render(<FriendRequests incomingFriendRequests = {requests2}/>);
+        render(<FriendRequests incomingFriendRequests = {requests2} sessionId='stub'/>);
         const button = screen.getByLabelText(/deny friend*/i);
         const check = within(button).getByLabelText('x');
         expect(check).toBeInTheDocument();
@@ -122,7 +122,7 @@ describe('FriendRequests', () => {
 
     test('when accept friend is clicked, axios should be called with the endpoint /api/friends/accept',
         async ()=>{
-        const {getByLabelText} = render(<FriendRequests incomingFriendRequests = {requests2}/>);
+        const {getByLabelText} = render(<FriendRequests incomingFriendRequests = {requests2} sessionId='stub'/>);
         const button = getByLabelText(/accept friend*/i);
         fireEvent.click(button);
 
@@ -132,7 +132,7 @@ describe('FriendRequests', () => {
     });
 
     test('when accept friend is clicked, axios should be called with the opts {id: senderId}', async ()=>{
-        const {getByLabelText} = render(<FriendRequests incomingFriendRequests = {requests2}/>);
+        const {getByLabelText} = render(<FriendRequests incomingFriendRequests = {requests2} sessionId='stub'/>);
         const button = getByLabelText(/accept friend*/i);
         fireEvent.click(button);
 
@@ -143,7 +143,7 @@ describe('FriendRequests', () => {
 
     test('when accept friend is clicked, axios should be called with the opts {id: senderId}, different data',
         async ()=>{
-        const {getByLabelText} =  render(<FriendRequests incomingFriendRequests = {requests2}/>);
+        const {getByLabelText} =  render(<FriendRequests incomingFriendRequests = {requests2} sessionId='stub'/>);
         const button = getByLabelText(/accept friend*/i);
         fireEvent.click(button);
 
@@ -154,7 +154,7 @@ describe('FriendRequests', () => {
 
     test('if accept friend is clicked,  current id should be removed from page',
         async ()=>{
-            const {getByRole} = render(<FriendRequests incomingFriendRequests={requests3} />);
+            const {getByRole} = render(<FriendRequests incomingFriendRequests={requests3} sessionId='stub' />);
             const button = getByRole('button', {
                 name: /accept friend: fredo@correlone.edu/i
             });
@@ -174,7 +174,7 @@ describe('FriendRequests', () => {
             refresh: spy
         });
 
-        const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests2} />);
+        const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests2} sessionId='stub' />);
         const button = getByLabelText(/accept friend*/i);
         fireEvent.click(button);
         await waitFor(()=>{
@@ -183,7 +183,7 @@ describe('FriendRequests', () => {
     });
 
     test('when deny friend is clicked, axios should be called with /api/friends/deny', async ()=>{
-            const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests2} />);
+            const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests2} sessionId='stub'/>);
             const button = getByLabelText(/deny friend*/i);
             fireEvent.click(button);
             await waitFor(()=>{
@@ -192,7 +192,7 @@ describe('FriendRequests', () => {
         });
 
     test('when deny friend is clicked, axios should be called with the opts {id: senderId}', async ()=>{
-        const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests2} />);
+        const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests2} sessionId='stub'/>);
         const button = getByLabelText(/deny friend*/i);
         fireEvent.click(button);
         await waitFor(()=>{
@@ -202,7 +202,7 @@ describe('FriendRequests', () => {
 
     test('when deny friend is clicked, axios should be called with the opts {id: senderId}, different data',
         async ()=>{
-            const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests2} />);
+            const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests2} sessionId='stub'/>);
             const button = getByLabelText(/deny friend*/i);
             fireEvent.click(button);
             await waitFor(()=>{
@@ -212,7 +212,7 @@ describe('FriendRequests', () => {
 
     test('if deny friend is clicked, current sender id should be removed',
         async ()=>{
-            const {getByRole} = render(<FriendRequests incomingFriendRequests={requests3} />);
+            const {getByRole} = render(<FriendRequests incomingFriendRequests={requests3} sessionId='stub'/>);
             const button = getByRole('button', {
                 name: /deny friend: fredo@correlone.edu/i
             });
@@ -232,7 +232,7 @@ describe('FriendRequests', () => {
             refresh: spy,
         });
 
-        const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests2} />);
+        const {getByLabelText} = render(<FriendRequests incomingFriendRequests={requests2} sessionId='stub'/>);
         const button = getByLabelText(/deny friend*/i);
         fireEvent.click(button);
         await waitFor(()=>{
