@@ -41,11 +41,11 @@ describe('pusher server creation tests', () => {
     })
 
     test('make sure pusher server is called with US-3 cluster', ()=>{
-        expectServerContainting({cluster:'us3'})
+        expectServerContaining({cluster:'us3'})
     })
 
     test('make sure pusher server is called with useTLS:true', ()=>{
-        expectServerContainting({useTLS:true})
+        expectServerContaining({useTLS:true})
     })
 })
 
@@ -87,20 +87,20 @@ function testClientKey(pusherKey:string){
 
 function testServerAppId(id:string){
     process.env.NEXT_PUBLIC_PUSHER_APP_ID = id
-    expectServerContainting({appId:id})
+    expectServerContaining({appId:id})
 }
 
 function testServerKey(pusherKey:string){
     process.env.NEXT_PUBLIC_PUSHER_CLIENT_KEY = pusherKey
-    expectServerContainting({key:pusherKey})
+    expectServerContaining({key:pusherKey})
 }
 
 function testServerAppSecret(secret:string){
     process.env.NEXT_PUBLIC_PUSHER_SECRET = secret
-    expectServerContainting({secret:secret})
+    expectServerContaining({secret:secret})
 }
 
-function expectServerContainting(prop: object){
+function expectServerContaining(prop: object){
     getPusherServer()
     expect(PusherServer).toHaveBeenCalledWith(expect.objectContaining(prop))
 }

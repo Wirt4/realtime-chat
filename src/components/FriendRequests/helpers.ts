@@ -8,7 +8,7 @@ export default class PusherClientHandler{
     private _pusherClient: PusherClient;
     private readonly _subscribeQuery: string;
     private readonly _bindField: string;
-    private _setFriendRequests: Dispatch<SetStateAction<FriendRequest[]>>;
+    private readonly _setFriendRequests: Dispatch<SetStateAction<FriendRequest[]>>;
 
     constructor(sessionId:string, setFriendRequests: Dispatch<SetStateAction<FriendRequest[]>>){
         this._sessionId = sessionId
