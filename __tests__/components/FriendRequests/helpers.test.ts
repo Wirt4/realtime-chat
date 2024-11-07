@@ -132,7 +132,7 @@ describe('friendRequestHandler tests', ()=>{
     test('the setter should be called with concatenation of the existing state and the new values', ()=>{
         const setterSpy = jest.fn();
         const prev = [{senderId:'foo', senderEmail:'bar'}];
-        const client = new PusherClientHandler('stub',{senderId:'frasier', senderEmail:'imlistening@kacl.com'}, setterSpy);
+        const client = new PusherClientHandler('stub',{senderId:'frasier', senderEmail:'imlistening@kacl.com'}, setterSpy, prev);
         client.friendRequestHandler()
         expect(setterSpy).toHaveBeenCalledWith([{senderId:'foo', senderEmail:'bar'},
             {senderId:'frasier', senderEmail:'imlistening@kacl.com'}]);

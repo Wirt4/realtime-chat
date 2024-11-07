@@ -15,10 +15,8 @@ type command = 'accept' | 'deny'
 
 const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests, sessionId})=>{
     const router = useRouter()
-    const [requests, setRequests] = useState<{
-        senderId:string,
-        senderEmail:string
-    }[]>(incomingFriendRequests);
+    const [requests, setRequests] = useState<FriendRequest[]>(incomingFriendRequests);
+
 
     const apiPost = async (senderId: string, cmd: command) =>{
         await axios.post(`/api/friends/${cmd}`, {id: senderId});

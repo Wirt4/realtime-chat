@@ -10,14 +10,16 @@ export default class PusherClientHandler{
     private readonly _bindField: string;
     private readonly _setFriendRequests: Dispatch<SetStateAction<FriendRequest[]>>;
     private readonly _currentRequest: FriendRequest
+    private readonly _existingFriendRequests: FriendRequest[]
 
-    constructor(sessionId:string, currentRequest: FriendRequest, setFriendRequests: Dispatch<SetStateAction<FriendRequest[]>>){
+    constructor(sessionId:string, currentRequest: FriendRequest, setFriendRequests: Dispatch<SetStateAction<FriendRequest[]>>, existingFriendRequests: FriendRequest[] = []){
         this._sessionId = sessionId
         this._pusherClient = getPusherClient()
         this._subscribeQuery = QueryBuilder.incomingFriendRequestsPusher(this._sessionId)
         this._bindField = QueryBuilder.incoming_friend_requests
         this._setFriendRequests = setFriendRequests
         this._currentRequest = currentRequest
+        this._existingFriendRequests = existingFriendRequests
     }
 
     subscribeToPusherClient (){
@@ -27,7 +29,7 @@ export default class PusherClientHandler{
     }
 
     friendRequestHandler(){
-        this._setFriendRequests([this._currentRequest])
+        this._setFriendRequests([ ... this._existingFriendRequests, this._currentRequest])
     }
 
     tearDown(){
