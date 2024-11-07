@@ -358,4 +358,9 @@ describe("triggerPusherServer tests", ()=>{
         handler.triggerPusherServer()
         expect(triggerSpy).toHaveBeenCalledWith('user__1235__friend_requests', expect.anything(), expect.anything());
     })
+
+    test('if the id to add is 1701, then the first argument passed to server.trigger is user__1701__friend_requests',()=>{
+        handler.triggerPusherServer()
+        expect(triggerSpy).toHaveBeenCalledWith('user__1701__friend_requests', expect.anything(), expect.anything());
+    })
 })
