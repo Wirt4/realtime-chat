@@ -15,6 +15,7 @@ jest.mock("@/components/FriendRequests/helpers", () => {
 });
 
 jest.mock('axios');
+
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('FriendRequests', () => {
@@ -244,15 +245,17 @@ describe('FriendRequest realtime functionality', () => {
     beforeEach(()=>{
         jest.resetAllMocks();
         (subscribeToPusherClient as jest.Mock).mockImplementation(jest.fn());
-    })
+    });
+
     test('Rendering the component should call UseEffect', ()=>{
         const useEffectSpy = jest.spyOn(React, 'useEffect')
-        render(<FriendRequests incomingFriendRequests={[]} />)
-        expect (useEffectSpy).toHaveBeenCalled()
-    })
+        render(<FriendRequests incomingFriendRequests={[]} />);
+        expect (useEffectSpy).toHaveBeenCalled();
+    });
+
     test('The rendered component should be called with method subscribeToPusherClient',()=>{
-        const useEffectSpy = jest.spyOn(React, 'useEffect')
-        render(<FriendRequests incomingFriendRequests={[]} />)
+        const useEffectSpy = jest.spyOn(React, 'useEffect');
+        render(<FriendRequests incomingFriendRequests={[]} />);
         expect (useEffectSpy).toHaveBeenCalledWith(subscribeToPusherClient, expect.anything());
-    })
+    });
 });
