@@ -1,18 +1,21 @@
 import {getPusherClient} from "@/lib/pusher";
 import QueryBuilder from "@/lib/queryBuilder";
 import PusherClient from "pusher-js";
+import {Dispatch, SetStateAction} from "react";
 
 export default class PusherClientHandler{
     private readonly _sessionId: string
     private _pusherClient: PusherClient;
     private readonly _subscribeQuery: string;
     private readonly _bindField: string;
+    private _setFriendRequests: Dispatch<SetStateAction<FriendRequest[]>>;
 
-    constructor(sessionId:string){
+    constructor(sessionId:string, setFriendRequests: Dispatch<SetStateAction<FriendRequest[]>>){
         this._sessionId = sessionId
         this._pusherClient = getPusherClient()
         this._subscribeQuery = QueryBuilder.incomingFriendRequestsPusher(this._sessionId)
         this._bindField = QueryBuilder.incoming_friend_requests
+        this._setFriendRequests = setFriendRequests
     }
 
     subscribeToPusherClient (){
@@ -21,7 +24,9 @@ export default class PusherClientHandler{
         return this.tearDown
     }
 
-    friendRequestHandler(){}
+    friendRequestHandler(){
+        this._setFriendRequests([{senderId:'foo', senderEmail:'bar'}])
+    }
 
     tearDown(){
         this._pusherClient.unsubscribe(this._subscribeQuery);

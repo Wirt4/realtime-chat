@@ -96,7 +96,7 @@ function testServerKey(pusherKey:string){
 }
 
 function testServerAppSecret(secret:string){
-    process.env.NEXT_PUBLIC_PUSHER_CLIENT_SECRET =secret
+    process.env.NEXT_PUBLIC_PUSHER_SECRET = secret
     expectServerContainting({secret:secret})
 }
 
