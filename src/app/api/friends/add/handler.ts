@@ -116,6 +116,8 @@ export class PostFriendsRouteHandler {
 
     triggerPusherServer( id:string = this.senderId){
         const pusherServer = getPusherServer();
-        pusherServer.trigger(QueryBuilder.incomingFriendRequestsPusher(id), QueryBuilder.incoming_friend_requests, 'stub');
+        const channel = QueryBuilder.incomingFriendRequestsPusher(id);
+        const event = QueryBuilder.incoming_friend_requests
+        pusherServer.trigger(channel, event, 'stub');
     }
 }
