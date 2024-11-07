@@ -32,7 +32,12 @@ const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests, session
         await apiPost(senderId, 'deny')
     }
 
-    const client = new PusherClientHandler(sessionId)
+    const state = {
+        setFriendRequests: setRequests,
+        existingFriendRequests: requests
+    }
+
+    const client = new PusherClientHandler(sessionId, state)
 
     useEffect(()=> {
         console.log('useEffect called')
