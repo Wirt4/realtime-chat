@@ -114,8 +114,8 @@ export class PostFriendsRouteHandler {
         return session;
     }
 
-    triggerPusherServer(){
+    triggerPusherServer( id:string = this.senderId){
         const pusherServer = getPusherServer();
-        pusherServer.trigger('user__1235__friend_requests', 'stub', 'stub');
+        pusherServer.trigger('user__'+id+'__friend_requests', 'stub', 'stub');
     }
 }
