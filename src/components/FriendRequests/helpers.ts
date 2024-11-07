@@ -4,5 +4,5 @@ import QueryBuilder from "@/lib/queryBuilder";
 export default function subscribeToPusherClient (sessionId: string){
     const pusherClient = getPusherClient();
     pusherClient.subscribe(QueryBuilder.incomingFriendRequests(sessionId).replace(/:/g, '__'));
-    pusherClient.bind('stub', ()=>{})
+    pusherClient.bind('incoming_friend_requests', ()=>{})
 }
