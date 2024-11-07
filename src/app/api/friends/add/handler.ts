@@ -111,6 +111,6 @@ export class PostFriendsRouteHandler {
 
     triggerPusherServer(){
         const pusherServer = getPusherServer()
-        pusherServer.trigger('stub', 'stub', 'stub')
+        pusherServer.trigger('user__1235__friend_requests', 'stub', 'stub')
     }
 }
