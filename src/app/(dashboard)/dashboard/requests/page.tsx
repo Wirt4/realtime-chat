@@ -1,7 +1,7 @@
 import {FC} from "react";
 import myGetServerSession from "@/lib/myGetServerSession";
 import {notFound} from "next/navigation";
-import FriendRequests from "@/components/FriendRequests";
+import FriendRequests from "@/components/FriendRequests/FriendRequests";
 import getFriendRequests from "@/app/(dashboard)/dashboard/requests/getFriendRequests";
 
 const Page: FC = async () =>{

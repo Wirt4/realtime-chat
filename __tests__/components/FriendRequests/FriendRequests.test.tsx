@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import FriendRequests from "@/components/FriendRequests";
+import FriendRequests from "@/components/FriendRequests/FriendRequests";
 import {render, screen, waitFor, within, fireEvent} from "@testing-library/react";
 import React from "react";
 import axios from 'axios';
