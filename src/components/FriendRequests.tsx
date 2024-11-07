@@ -1,6 +1,6 @@
 'use client'
 
-import {FC, useState} from "react";
+import {FC, useEffect, useState} from "react";
 import {Check, UserPlus, X} from 'lucide-react';
 import axios from "axios";
 import { useRouter } from 'next/navigation';
@@ -31,6 +31,8 @@ const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests})=>{
     const deny = async (senderId: string)=>{
         await apiPost(senderId, 'deny')
     }
+
+    useEffect(() => {}, []);
 
     return <div aria-label='friend requests'>
         {incomingFriendRequests.length == 0 ?
