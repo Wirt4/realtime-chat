@@ -54,6 +54,6 @@ describe('subscribeToPusher tests, bind tests', ()=>{
 
     test('second argument to  PusherClient.bind should be the method friendRequestHandler', ()=>{
         subscribeToPusherClient('stub');
-        expect(bindSpy).toHaveBeenCalledWith(expect.anything, friendRequestHandler);
+        expect(bindSpy).toHaveBeenCalledWith(expect.anything(), friendRequestHandler);
     })
 })
