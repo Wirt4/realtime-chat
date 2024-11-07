@@ -114,10 +114,13 @@ export class PostFriendsRouteHandler {
         return session;
     }
 
-    triggerPusherServer( id:string = this.senderId){
+
+
+    triggerPusherServer(id:string = this.idToAdd){
         const pusherServer = getPusherServer();
         const channel = QueryBuilder.incomingFriendRequestsPusher(id);
         const event = QueryBuilder.incoming_friend_requests
         pusherServer.trigger(channel, event, 'stub');
     }
 }
+
