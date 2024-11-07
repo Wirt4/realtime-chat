@@ -23,5 +23,6 @@ export default class PusherClientHandler{
 
     tearDown(){
         this._pusherClient.unsubscribe(this._subscribeQuery);
+        this._pusherClient.unbind('incoming_friend_requests');
     }
 }
