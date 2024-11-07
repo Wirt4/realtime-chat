@@ -36,7 +36,10 @@ const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests, session
 
     const client = new PusherClientHandler(sessionId)
 
-    useEffect(()=> client.subscribeToPusherClient(), []);
+    useEffect(()=> {
+        console.log('useEffect called')
+        client.subscribeToPusherClient()
+    }, []);
 
     return <div aria-label='friend requests'>
         {incomingFriendRequests.length == 0 ?

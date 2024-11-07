@@ -14,5 +14,15 @@ export function getPusherServer(){
 }
 
 export function getPusherClient(){
-    return new PusherClient(process.env.PUSHER_KEY as string,{cluster})
+    return new PusherClient(getPusherCredentials().pusherKey, {cluster})
+}
+
+function getPusherCredentials(){
+    const pusherKey  = process.env.NEXT_PUBLIC_PUSHER_CLIENT_KEY
+
+    if (!pusherKey || pusherKey.length === 0) {
+        throw new Error('Missing NEXT_PUBLIC_PUSHER_CLIENT_KEY')
+    }
+
+    return {pusherKey}
 }
