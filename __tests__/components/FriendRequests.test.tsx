@@ -236,7 +236,7 @@ describe('FriendRequests', () => {
 });
 
 describe('FriendRequest realtime functionality', () => {
-    test('component should call UseEffect', ()=>{
+    test('Rendering the component should call UseEffect', ()=>{
         const useEffectSpy = jest.spyOn(React, 'useEffect')
         render(<FriendRequests incomingFriendRequests={[]} />)
         expect (useEffectSpy).toHaveBeenCalled()
