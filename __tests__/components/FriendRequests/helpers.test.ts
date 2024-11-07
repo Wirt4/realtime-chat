@@ -46,4 +46,9 @@ describe('subscribeToPusher tests, bind tests', ()=>{
         subscribeToPusherClient('stub');
         expect(bindSpy).toHaveBeenCalled();
     })
+
+    test('first argument to  PusherClient.bind should be "incoming_friend_requests"', ()=>{
+        subscribeToPusherClient('stub');
+        expect(bindSpy).toHaveBeenCalledWith("incoming_friend_requests", expect.anything());
+    })
 })
