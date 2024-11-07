@@ -4,10 +4,15 @@ import {render, screen, waitFor, within, fireEvent} from "@testing-library/react
 import React from "react";
 import axios from 'axios';
 import {useRouter} from "next/navigation";
+import subscribeToPusherClient from "@/components/FriendRequests/helpers"
 
 jest.mock('next/navigation', () => ({
     useRouter: jest.fn(),
 }));
+
+jest.mock("@/components/FriendRequests/helpers", () => {
+    return jest.fn()
+});
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -236,9 +241,18 @@ describe('FriendRequests', () => {
 });
 
 describe('FriendRequest realtime functionality', () => {
+    beforeEach(()=>{
+        jest.resetAllMocks();
+        (subscribeToPusherClient as jest.Mock).mockImplementation(jest.fn());
+    })
     test('Rendering the component should call UseEffect', ()=>{
         const useEffectSpy = jest.spyOn(React, 'useEffect')
         render(<FriendRequests incomingFriendRequests={[]} />)
         expect (useEffectSpy).toHaveBeenCalled()
+    })
+    test('The rendered component should be called with method subscribeToPusherClient',()=>{
+        const useEffectSpy = jest.spyOn(React, 'useEffect')
+        render(<FriendRequests incomingFriendRequests={[]} />)
+        expect (useEffectSpy).toHaveBeenCalledWith(subscribeToPusherClient)
     })
 });
