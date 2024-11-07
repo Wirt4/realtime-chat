@@ -1,4 +1,4 @@
-import subscribeToPusherClient from "@/components/FriendRequests/helpers";
+import subscribeToPusherClient, {friendRequestHandler} from "@/components/FriendRequests/helpers";
 import {getPusherClient} from "@/lib/pusher";
 
 jest.mock("@/lib/pusher",()=>({
@@ -50,5 +50,10 @@ describe('subscribeToPusher tests, bind tests', ()=>{
     test('first argument to  PusherClient.bind should be "incoming_friend_requests"', ()=>{
         subscribeToPusherClient('stub');
         expect(bindSpy).toHaveBeenCalledWith("incoming_friend_requests", expect.anything());
+    })
+
+    test('second argument to  PusherClient.bind should be the method friendRequestHandler', ()=>{
+        subscribeToPusherClient('stub');
+        expect(bindSpy).toHaveBeenCalledWith(expect.anything, friendRequestHandler);
     })
 })

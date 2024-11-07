@@ -6,3 +6,5 @@ export default function subscribeToPusherClient (sessionId: string){
     pusherClient.subscribe(QueryBuilder.incomingFriendRequests(sessionId).replace(/:/g, '__'));
     pusherClient.bind('incoming_friend_requests', ()=>{})
 }
+
+export function friendRequestHandler(){}
