@@ -80,7 +80,7 @@ describe('pusher client creation tests', ()=>{
 })
 
 function testClientKey(pusherKey:string){
-    process.env.PUSHER_KEY = pusherKey
+    process.env.NEXT_PUBLIC_PUSHER_CLIENT_KEY = pusherKey
     getPusherClient()
     expect(PusherClient).toHaveBeenCalledWith(pusherKey, expect.anything())
 }
