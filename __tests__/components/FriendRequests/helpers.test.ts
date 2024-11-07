@@ -5,7 +5,7 @@ jest.mock("@/lib/pusher",()=>({
     getPusherClient: jest.fn()
 }));
 
-describe('subscribeToPusherClient tests', ()=>{
+describe('subscribeToPusherClient tests, subscribe tests', ()=>{
     let subscribeSpy: jest.SpyInstance;
     let bindSpy: jest.SpyInstance;
     beforeEach(()=>{
@@ -28,6 +28,18 @@ describe('subscribeToPusherClient tests', ()=>{
     test('if the sessionID is 54321 , then subscribe is called with user:54321:incoming_friend_requests',()=>{
         subscribeToPusherClient('54321');
         expect(subscribeSpy).toHaveBeenCalledWith('user__54321__incoming_friend_requests');
+    })
+
+})
+
+describe('subscribeToPusher tests, bind tests', ()=>{
+    let subscribeSpy: jest.SpyInstance;
+    let bindSpy: jest.SpyInstance;
+    beforeEach(()=>{
+        jest.resetAllMocks();
+        subscribeSpy = jest.fn();
+        bindSpy = jest.fn();
+        (getPusherClient as jest.Mock).mockReturnValue({subscribe: subscribeSpy, bind: bindSpy});
     })
 
     test('calling function should call PusherClient.bind', ()=>{
