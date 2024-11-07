@@ -107,4 +107,6 @@ export class PostFriendsRouteHandler {
         this.senderEmail= session?.user?.email as string
         return session
     }
+
+    triggerPusherServer(){}
 }

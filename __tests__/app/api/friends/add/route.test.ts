@@ -1,6 +1,7 @@
 import {PostFriendsRouteHandler} from '@/app/api/friends/add/handler'
 import fetchRedis from "@/helpers/redis"
 import { db } from '@/lib/db';
+import {getPusherClient, getPusherServer} from "@/lib/pusher";
 
 jest.mock("@/lib/myGetServerSession",()=>({
     __esModule: true,
@@ -17,6 +18,10 @@ jest.mock("@/lib/db",()=>({
     db: {
         sadd: jest.fn() // Mock the sadd method
     }
+}));
+
+jest.mock("@/lib/pusher",()=>({
+    getPusherServer: jest.fn()
 }));
 
 describe('Validate Tests - true verses false', () => {
@@ -333,3 +338,13 @@ describe("isSameUserTests",()=>{
         expect(handler.isSameUser()).toEqual(false);
     });
 });
+
+describe("triggerPusherServer tests", ()=>{
+    test('should call pusherServer trigger',()=>{
+        const handler = new PostFriendsRouteHandler();
+        const triggerSpy = jest.fn();
+        (getPusherServer as jest.Mock).mockReturnValue({trigger: triggerSpy});
+        handler.triggerPusherServer()
+        expect(triggerSpy).toHaveBeenCalled();
+    })
+})
