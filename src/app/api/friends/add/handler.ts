@@ -129,4 +129,3 @@ interface dataProps {
     senderId: string;
     senderEmail: string;
 }
-
