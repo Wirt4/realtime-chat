@@ -1,5 +1,6 @@
 import PusherClientHandler from "@/components/friendRequestSidebarOptions/helpers";
 import {getPusherClient} from "@/lib/pusher";
+import {unsubscribe} from "node:diagnostics_channel";
 
 jest.mock("@/lib/pusher",()=>({
     getPusherClient: jest.fn()
@@ -99,18 +100,34 @@ describe('PusherClientHandler return tests', () => {
     let bindSpy: jest.SpyInstance;
     let subscribeSpy: jest.SpyInstance;
     let client: PusherClientHandler;
+    let unsubscribeSpy: jest.SpyInstance;
 
     beforeEach(()=>{
         jest.resetAllMocks();
         bindSpy = jest.fn();
         unBindSpy = jest.fn();
+        unsubscribeSpy = jest.fn();
         subscribeSpy = jest.fn(()=>{return {bind: bindSpy, unbind: unBindSpy}});
-        (getPusherClient as jest.Mock).mockReturnValue({subscribe: subscribeSpy});
+        (getPusherClient as jest.Mock).mockReturnValue({subscribe: subscribeSpy, unsubscribe: unsubscribeSpy});
         client = new PusherClientHandler('stub', 0)
     })
     test('return is a function, it should call unbind',()=>{
         const func = client.subscribeToPusher(jest.fn())
         func()
         expect(unBindSpy).toHaveBeenCalledWith('incoming_friend_requests', expect.anything())
+    })
+
+    test('return is a function, it should call unbind with the result of handleRequest',()=>{
+        function expected(){}
+        jest.spyOn(client, 'handleRequest').mockReturnValue(expected)
+        const func = client.subscribeToPusher(jest.fn())
+        func()
+        expect(unBindSpy).toHaveBeenCalledWith(expect.anything(), expected)
+    })
+
+    test('return is a function, it should call unsubscribe on the pusher client',()=>{
+        const func = client.subscribeToPusher(jest.fn())
+        func()
+        expect(unsubscribeSpy).toHaveBeenCalled()
     })
 })
