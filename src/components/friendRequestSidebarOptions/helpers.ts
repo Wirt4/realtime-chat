@@ -9,6 +9,7 @@ export default class PusherClientHandler{
 
     subscribeToPusher(){
         const client = getPusherClient();
-        client.subscribe(QueryBuilder.incomingFriendRequestsPusher(this.id))
+        const channel = client.subscribe(QueryBuilder.incomingFriendRequestsPusher(this.id))
+        channel.bind('stub', ()=>{})
     }
 }

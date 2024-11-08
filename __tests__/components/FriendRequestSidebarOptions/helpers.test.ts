@@ -7,10 +7,12 @@ jest.mock("@/lib/pusher",()=>({
 
 describe('PusherClientHandler tests', () => {
     let subscribeSpy: jest.SpyInstance;
+    let bindSpy: jest.SpyInstance;
 
     beforeEach(()=>{
         jest.resetAllMocks();
-        subscribeSpy = jest.fn();
+        bindSpy = jest.fn();
+        subscribeSpy = jest.fn(()=>{return {bind: bindSpy}});
         (getPusherClient as jest.Mock).mockReturnValue({subscribe: subscribeSpy});
     })
 
@@ -45,10 +47,8 @@ describe('PusherClientHandler bind tests', () => {
     })
 
     test('calling function should call channel.bind', ()=>{
-        test('calling function should call PusherClient.bind', ()=>{
-            const client = new PusherClientHandler('stub')
-            client.subscribeToPusher()
-            expect(bindSpy).toHaveBeenCalled();
-        })
+        const client = new PusherClientHandler('stub')
+        client.subscribeToPusher()
+        expect(bindSpy).toHaveBeenCalled();
     })
 })
