@@ -27,8 +27,28 @@ describe('PusherClientHandler tests', () => {
     })
 
     test('if the sessionID is 54321, then subscribe is called with user:12345:incoming_friend_requests',()=>{
-        const client = new PusherClientHandler('12345')
+        const client = new PusherClientHandler('54321')
         client.subscribeToPusher()
         expect(subscribeSpy).toHaveBeenCalledWith('user__54321__incoming_friend_requests');
+    })
+})
+
+describe('PusherClientHandler bind tests', () => {
+    let subscribeSpy: jest.SpyInstance;
+    let bindSpy: jest.SpyInstance;
+
+    beforeEach(()=>{
+        jest.resetAllMocks();
+        bindSpy = jest.fn();
+        subscribeSpy = jest.fn(()=>{return {bind: bindSpy}});
+        (getPusherClient as jest.Mock).mockReturnValue({subscribe: subscribeSpy});
+    })
+
+    test('calling function should call channel.bind', ()=>{
+        test('calling function should call PusherClient.bind', ()=>{
+            const client = new PusherClientHandler('stub')
+            client.subscribeToPusher()
+            expect(bindSpy).toHaveBeenCalled();
+        })
     })
 })
