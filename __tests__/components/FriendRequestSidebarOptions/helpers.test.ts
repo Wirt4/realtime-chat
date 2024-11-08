@@ -1,3 +1,3 @@
-describe('pusher tests', () => {
+describe('PusherClientHandler tests', () => {
     test('stub',()=>{})
 })
