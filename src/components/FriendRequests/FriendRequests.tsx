@@ -34,7 +34,6 @@ const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests, session
 
     useEffect(()=> {
         const client = new PusherClientHandler(sessionId, requests)
-        console.log('useEffect called')
         client.subscribeToPusherClient(setRequests)
     }, [sessionId, requests]);
 
