@@ -51,20 +51,14 @@ describe('subscribeToPusher tests, bind tests', ()=>{
 
     test('calling function should call PusherClient.bind', ()=>{
         const client = new PusherClientHandler('stub', state)
-        client.subscribeToPusherClient()
+        client.subscribeToPusherClient(jest.fn)
         expect(bindSpy).toHaveBeenCalled();
     })
 
     test('first argument to  PusherClient.bind should be "incoming_friend_requests"', ()=>{
         const client = new PusherClientHandler('stub', state)
-        client.subscribeToPusherClient()
+        client.subscribeToPusherClient(jest.fn)
         expect(bindSpy).toHaveBeenCalledWith("incoming_friend_requests", expect.anything());
-    })
-
-    test('second argument to  PusherClient.bind should be the method friendRequestHandler', ()=>{
-        const client = new PusherClientHandler('stub', state)
-        client.subscribeToPusherClient()
-        expect(bindSpy).toHaveBeenCalledWith(expect.anything(), client.friendRequestHandler);
     })
 })
 
@@ -81,7 +75,7 @@ describe('subscribeToPusher tests, return value tests', ()=>{
     })
     test('the function returns the teardown method, which is a callable hook', ()=>{
         const client = new PusherClientHandler('stub', state)
-        const actual = client.subscribeToPusherClient()
+        const actual = client.subscribeToPusherClient(jest.fn)
         expect(actual).toBe(client.tearDown)
     })
 })
@@ -121,7 +115,8 @@ describe('friendRequestHandler tests', ()=>{
         const setterSpy = jest.fn();
         const state = { setFriendRequests: setterSpy, existingFriendRequests: [] };
         const client = new PusherClientHandler('stub', state);
-        client.friendRequestHandler({senderId:'foo', senderEmail:'bar'})
+        const fn = client.friendRequestHandler(setterSpy)
+        fn({senderId:'foo', senderEmail:'bar'})
         expect(setterSpy).toHaveBeenCalledWith([{senderId:'foo', senderEmail:'bar'}]);
     })
 
@@ -129,7 +124,8 @@ describe('friendRequestHandler tests', ()=>{
         const setterSpy = jest.fn();
         const state = { setFriendRequests: setterSpy, existingFriendRequests: [] };
         const client = new PusherClientHandler('stub', state);
-        client.friendRequestHandler({senderId:'frasier', senderEmail:'imlistening@kacl.com'})
+        const fn = client.friendRequestHandler(setterSpy)
+        fn({senderId:'frasier', senderEmail:'imlistening@kacl.com'})
         expect(setterSpy).toHaveBeenCalledWith([{senderId:'frasier', senderEmail:'imlistening@kacl.com'}]);
     })
 
@@ -138,7 +134,8 @@ describe('friendRequestHandler tests', ()=>{
         const prev = [{senderId:'foo', senderEmail:'bar'}];
         const state = { setFriendRequests: setterSpy, existingFriendRequests: prev };
         const client = new PusherClientHandler('stub', state);
-        client.friendRequestHandler({senderId:'frasier', senderEmail:'imlistening@kacl.com'})
+        const fn = client.friendRequestHandler(setterSpy)
+        fn({senderId:'frasier', senderEmail:'imlistening@kacl.com'})
         expect(setterSpy).toHaveBeenCalledWith([{senderId:'foo', senderEmail:'bar'},
             {senderId:'frasier', senderEmail:'imlistening@kacl.com'}]);
     })
