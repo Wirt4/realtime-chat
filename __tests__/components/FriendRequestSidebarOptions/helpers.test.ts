@@ -130,4 +130,11 @@ describe('PusherClientHandler return tests', () => {
         func()
         expect(unsubscribeSpy).toHaveBeenCalled()
     })
+
+    test('return is a function, it should call unsubscribe on the pusher client',()=>{
+        const client = new PusherClientHandler('54321', 0)
+        const func = client.subscribeToPusher(jest.fn())
+        func()
+        expect(unsubscribeSpy).toHaveBeenCalledWith('user__54321__incoming_friend_requests');
+    })
 })
