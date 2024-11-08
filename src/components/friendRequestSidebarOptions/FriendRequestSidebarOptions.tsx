@@ -14,7 +14,7 @@ const FriendRequestSidebarOptions: FC<FRSOProps> = ({initialRequestCount, sessio
     const [requestCount, setRequestCount] = useState<number>(initialRequestCount);
 
     useEffect(()=> {
-        const client = new PusherClientHandler(sessionId)
+        const client = new PusherClientHandler(sessionId, requestCount)
         client.subscribeToPusher()
     }, [sessionId]);
 

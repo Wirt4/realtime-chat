@@ -4,19 +4,21 @@ import {Dispatch, SetStateAction} from "react";
 
 export default class PusherClientHandler{
     private readonly id:string
-    constructor(id:string){
+    private readonly count: number;
+    constructor(id:string, count: number){
         this.id=id;
+        this.count = count;
     }
 
-    subscribeToPusher(){
+    subscribeToPusher(setter: (n:number)=>void){
         const client = getPusherClient();
         const channel = client.subscribe(QueryBuilder.incomingFriendRequestsPusher(this.id))
-        channel.bind(QueryBuilder.incoming_friend_requests, this.handleRequest)
+        channel.bind(QueryBuilder.incoming_friend_requests, this.handleRequest(jest.fn))
     }
 
     handleRequest( func: Dispatch<SetStateAction<number>>){
         return ()=>{
-            func(2)
+            func(this.count+1)
         }
     }
 }
