@@ -1,5 +1,6 @@
 import {getPusherClient} from "@/lib/pusher";
 import PusherClientHandler from "@/components/FriendRequests/helpers";
+import {Channel} from "pusher-js";
 
 jest.mock("@/lib/pusher",()=>({
     getPusherClient: jest.fn()
@@ -11,9 +12,9 @@ describe('subscribeToPusherClient tests, subscribe tests', ()=>{
 
     beforeEach(()=>{
         jest.resetAllMocks();
-        subscribeSpy = jest.fn();
         bindSpy = jest.fn();
-        (getPusherClient as jest.Mock).mockReturnValue({subscribe: subscribeSpy, bind: bindSpy});
+        subscribeSpy = jest.fn(()=> {return { bind: bindSpy}});
+        (getPusherClient as jest.Mock).mockReturnValue({subscribe: subscribeSpy});
     })
 
     test('calling function should call PusherClient.subscribe', ()=>{
@@ -42,9 +43,9 @@ describe('subscribeToPusher tests, bind tests', ()=>{
 
     beforeEach(()=>{
         jest.resetAllMocks();
-        subscribeSpy = jest.fn();
         bindSpy = jest.fn();
-        (getPusherClient as jest.Mock).mockReturnValue({subscribe: subscribeSpy, bind: bindSpy});
+        subscribeSpy = jest.fn(()=> {return { bind: bindSpy}});
+        (getPusherClient as jest.Mock).mockReturnValue({subscribe: subscribeSpy});
     })
 
     test('calling function should call PusherClient.bind', ()=>{
@@ -63,18 +64,19 @@ describe('subscribeToPusher tests, bind tests', ()=>{
 describe('subscribeToPusher tests, return value tests', ()=>{
     let subscribeSpy: jest.SpyInstance;
     let bindSpy: jest.SpyInstance;
-    const state = {setFriendRequests: jest.fn, existingFriendRequests:[]}
 
     beforeEach(()=>{
         jest.resetAllMocks();
-        subscribeSpy = jest.fn();
         bindSpy = jest.fn();
-        (getPusherClient as jest.Mock).mockReturnValue({subscribe: subscribeSpy, bind: bindSpy});
+        subscribeSpy = jest.fn(()=> {return { bind: bindSpy}});
+        (getPusherClient as jest.Mock).mockReturnValue({subscribe: subscribeSpy});
     })
-    test('the function returns the teardown method, which is a callable hook', ()=>{
-        const client = new PusherClientHandler('stub', state)
+    test('the function returns the output of teardown metho. That return valueis a callable hook', ()=>{
+        const client = new PusherClientHandler('stub', [])
+        function expected(){}
+        jest.spyOn(client, 'tearDown').mockReturnValue(expected)
         const actual = client.subscribeToPusherClient(jest.fn)
-        expect(actual).toBe(client.tearDown)
+        expect(actual).toBe(expected)
     })
 })
 
@@ -84,25 +86,28 @@ describe('tearDown tests, unsubscribe and unbind', ()=>{
 
     beforeEach(()=>{
         jest.resetAllMocks();
-        unSubscribeSpy = jest.fn();
         unBindSpy = jest.fn();
-        (getPusherClient as jest.Mock).mockReturnValue({unsubscribe: unSubscribeSpy, unbind: unBindSpy});
+        unSubscribeSpy = jest.fn(()=> {return { unbind: unBindSpy}});
+        (getPusherClient as jest.Mock).mockReturnValue({unsubscribe: unSubscribeSpy});
     })
 
     test('if the sessionID is 12345, then subscribe is called with user:12345:incoming_friend_requests',()=>{
         const client = new PusherClientHandler('12345', [])
-        client.tearDown()
+        const func =  client.tearDown({unbind: unBindSpy} as unknown as Channel)
+        func()
         expect(unSubscribeSpy).toHaveBeenCalledWith('user__12345__incoming_friend_requests');
     })
 
     test('if the sessionID is 54321, then subscribe is called with user:12345:incoming_friend_requests',()=>{
         const client = new PusherClientHandler('54321',  [])
-        client.tearDown()
+        const func =  client.tearDown({unbind: unBindSpy} as unknown as Channel)
+        func()
         expect(unSubscribeSpy).toHaveBeenCalledWith('user__54321__incoming_friend_requests');
     })
     test('if the sessionID is 54321, then subscribe is called with user:12345:incoming_friend_requests',()=>{
         const client = new PusherClientHandler('54321',  [])
-        client.tearDown()
+        const func =  client.tearDown({unbind: unBindSpy} as unknown as Channel)
+        func()
         expect(unBindSpy).toHaveBeenCalledWith('incoming_friend_requests');
     })
 })
