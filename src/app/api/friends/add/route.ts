@@ -12,7 +12,7 @@ export async function  POST(req: Request):Promise<Response> {
         return new Response(message, opts)
     }
 
-    routeHandler.triggerPusherServer()
+    await routeHandler.triggerPusherServer()
     await routeHandler.addToDB()
     return new Response('OK')
 

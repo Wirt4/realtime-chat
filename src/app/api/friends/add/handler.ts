@@ -115,7 +115,7 @@ export class PostFriendsRouteHandler {
         return session;
     }
 
-    triggerPusherServer(id:string = this.idToAdd,
+    async triggerPusherServer(id:string = this.idToAdd,
                         data: dataProps = {senderId: this.senderId, senderEmail: this.senderEmail}){
 
         const pusherServer = getPusherServer();

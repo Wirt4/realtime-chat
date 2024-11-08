@@ -37,15 +37,15 @@ const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests, session
         existingFriendRequests: requests
     }
 
-    const client = new PusherClientHandler(sessionId, state)
 
     useEffect(()=> {
+        const client = new PusherClientHandler(sessionId, state)
         console.log('useEffect called')
-        client.subscribeToPusherClient()
-    }, []);
+        client.subscribeToPusherClient(setRequests)
+    }, [sessionId, state]);
 
     return <div aria-label='friend requests'>
-        {incomingFriendRequests.length == 0 ?
+        {requests.length == 0 ?
         <p className='friend-requests-nothing'>
             Nothing to show here...
         </p>:

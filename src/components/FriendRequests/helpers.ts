@@ -25,14 +25,17 @@ export default class PusherClientHandler{
         this._existingFriendRequests = requestState.existingFriendRequests
     }
 
-    subscribeToPusherClient (){
+    subscribeToPusherClient (f: Dispatch<SetStateAction<FriendRequest[]>>){
         this._pusherClient.subscribe(this._subscribeQuery);
-        this._pusherClient.bind(this._bindField, this.friendRequestHandler)
+        this._pusherClient.bind(this._bindField, this.friendRequestHandler(f))
         return this.tearDown
     }
 
-    friendRequestHandler(request: FriendRequest){
-        this._setFriendRequests([ ... this._existingFriendRequests, request])
+    friendRequestHandler(f: Dispatch<SetStateAction<FriendRequest[]>>){
+       return (request: FriendRequest)=>{
+               f([ ... this._existingFriendRequests, request])
+       }
+
     }
 
     tearDown(){
