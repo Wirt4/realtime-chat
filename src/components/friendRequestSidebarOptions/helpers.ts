@@ -17,7 +17,7 @@ export default class PusherClientHandler{
         channel.bind(QueryBuilder.incoming_friend_requests, this.handleRequest(setter))
         return ()=>{
             channel.unbind(QueryBuilder.incoming_friend_requests, this.handleRequest(setter))
-            client.unsubscribe('any')
+            client.unsubscribe('user__54321__incoming_friend_requests')
         }
     }
 
