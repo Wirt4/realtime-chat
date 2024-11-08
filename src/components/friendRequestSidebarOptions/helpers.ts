@@ -13,7 +13,7 @@ export default class PusherClientHandler{
     subscribeToPusher(setter: (n:number)=>void){
         const client = getPusherClient();
         const channel = client.subscribe(QueryBuilder.incomingFriendRequestsPusher(this.id))
-        channel.bind(QueryBuilder.incoming_friend_requests, this.handleRequest(jest.fn))
+        channel.bind(QueryBuilder.incoming_friend_requests, this.handleRequest(setter))
     }
 
     handleRequest( func: Dispatch<SetStateAction<number>>){
