@@ -1,8 +1,7 @@
 'use client';
-import {FC, useState, useEffect} from "react";
+import {FC, useState} from "react";
 import Link from "next/link";
 import {Icons} from "@/components/Icons";
-import FriendRequestEffect from "@/components/friendRequestSidebarOptions/FriendRequestEffect";
 const User = Icons['User']
 
 interface FRSOProps{
@@ -12,7 +11,6 @@ interface FRSOProps{
 
 const FriendRequestSidebarOptions: FC<FRSOProps> = ({initialRequestCount, sessionId})=>{
     const [requestCount] = useState<number>(initialRequestCount);
-    useEffect(FriendRequestEffect, [sessionId]);
 
     return <li>
         <Link href='/dashboard/requests' className='link'>

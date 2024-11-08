@@ -2,14 +2,14 @@ import '@testing-library/jest-dom';
 import {render, screen} from '@testing-library/react';
 import FriendRequestSidebarOptions from "@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions";
 import { useState } from 'react';
-import FriendRequestEffect from "@/components/friendRequestSidebarOptions/FriendRequestEffect";
+import Helpers from "@/components/friendRequestSidebarOptions/helpers";
 
 jest.mock('react', ()=>({
     ...jest.requireActual('react'),
     useState: jest.fn()
 }));
 
-jest.mock("../../../src/components/friendRequestSidebarOptions/FriendRequestEffect", () => jest.fn());
+jest.mock("@/components/friendRequestSidebarOptions/helpers", () => jest.fn());
 
 describe('FriendRequestSidebarOptions', () => {
     beforeEach(()=>{
@@ -74,8 +74,8 @@ describe('FriendRequestSidebarOptions', () => {
         expect(label).not.toBeInTheDocument();
     });
 
-    test("confirm FriendRequestEffect() has been called",()=>{
+    test("confirm Helpers() has been called",()=>{
         render(<FriendRequestSidebarOptions sessionId='stub' initialRequestCount={-50}/>);
-        expect(FriendRequestEffect).toHaveBeenCalledTimes(1);
+        expect(Helpers).toHaveBeenCalledTimes(1);
     });
 });
