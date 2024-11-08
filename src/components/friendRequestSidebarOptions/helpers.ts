@@ -12,4 +12,6 @@ export default class PusherClientHandler{
         const channel = client.subscribe(QueryBuilder.incomingFriendRequestsPusher(this.id))
         channel.bind(QueryBuilder.incoming_friend_requests, ()=>{})
     }
+
+    handleRequest(){}
 }
