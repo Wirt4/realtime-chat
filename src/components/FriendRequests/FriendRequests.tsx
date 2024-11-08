@@ -32,17 +32,11 @@ const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests, session
         await apiPost(senderId, 'deny')
     }
 
-    const state = {
-        setFriendRequests: setRequests,
-        existingFriendRequests: requests
-    }
-
-
     useEffect(()=> {
-        const client = new PusherClientHandler(sessionId, state)
+        const client = new PusherClientHandler(sessionId, requests)
         console.log('useEffect called')
         client.subscribeToPusherClient(setRequests)
-    }, [sessionId, state]);
+    }, [sessionId, requests]);
 
     return <div aria-label='friend requests'>
         {requests.length == 0 ?

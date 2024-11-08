@@ -112,28 +112,25 @@ describe('tearDown tests, unsubscribe and unbind', ()=>{
 
 describe('friendRequestHandler tests', ()=>{
     test('the setter should be called with concatenation of the existing state and the new values', ()=>{
-        const setterSpy = jest.fn();
-        const state = { setFriendRequests: setterSpy, existingFriendRequests: [] };
-        const client = new PusherClientHandler('stub', state);
+        const setterSpy = jest.fn()
+        const client = new PusherClientHandler('stub', []);
         const fn = client.friendRequestHandler(setterSpy)
         fn({senderId:'foo', senderEmail:'bar'})
         expect(setterSpy).toHaveBeenCalledWith([{senderId:'foo', senderEmail:'bar'}]);
     })
 
     test('the setter should be called with concatenation of the existing state and the new values, different data', ()=>{
-        const setterSpy = jest.fn();
-        const state = { setFriendRequests: setterSpy, existingFriendRequests: [] };
-        const client = new PusherClientHandler('stub', state);
+        const setterSpy = jest.fn()
+        const client = new PusherClientHandler('stub', []);
         const fn = client.friendRequestHandler(setterSpy)
         fn({senderId:'frasier', senderEmail:'imlistening@kacl.com'})
         expect(setterSpy).toHaveBeenCalledWith([{senderId:'frasier', senderEmail:'imlistening@kacl.com'}]);
     })
 
     test('the setter should be called with concatenation of the existing state and the new values', ()=>{
-        const setterSpy = jest.fn();
+        const setterSpy = jest.fn()
         const prev = [{senderId:'foo', senderEmail:'bar'}];
-        const state = { setFriendRequests: setterSpy, existingFriendRequests: prev };
-        const client = new PusherClientHandler('stub', state);
+        const client = new PusherClientHandler('stub', prev);
         const fn = client.friendRequestHandler(setterSpy)
         fn({senderId:'frasier', senderEmail:'imlistening@kacl.com'})
         expect(setterSpy).toHaveBeenCalledWith([{senderId:'foo', senderEmail:'bar'},
