@@ -16,6 +16,7 @@ export default class PusherClientHandler{
 
     handleRequest( func: Dispatch<SetStateAction<number>>){
         return ()=>{
+            func(2)
         }
     }
 }
