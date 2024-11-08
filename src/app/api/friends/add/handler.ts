@@ -117,11 +117,10 @@ export class PostFriendsRouteHandler {
 
     async triggerPusherServer(id:string = this.idToAdd,
                         data: dataProps = {senderId: this.senderId, senderEmail: this.senderEmail}){
-
         const pusherServer = getPusherServer();
         const channel = QueryBuilder.incomingFriendRequestsPusher(id);
         const event = QueryBuilder.incoming_friend_requests;
-        pusherServer.trigger(channel, event, data);
+        await pusherServer.trigger(channel, event, data);
     }
 }
 
