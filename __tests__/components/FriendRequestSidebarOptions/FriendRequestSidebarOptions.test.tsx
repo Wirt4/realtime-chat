@@ -2,21 +2,23 @@ import '@testing-library/jest-dom';
 import {render, screen} from '@testing-library/react';
 import FriendRequestSidebarOptions from "@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions";
 import { useState } from 'react';
-import Helpers from "@/components/friendRequestSidebarOptions/helpers";
+import PusherClientHandler from "@/components/friendRequestSidebarOptions/helpers";
 
 jest.mock('react', ()=>({
     ...jest.requireActual('react'),
     useState: jest.fn()
 }));
 
-jest.mock("@/components/friendRequestSidebarOptions/helpers", () => jest.fn());
+jest.spyOn(PusherClientHandler.prototype, 'subscribeToPusher').mockImplementation(jest.fn());
 
 describe('FriendRequestSidebarOptions', () => {
+    let subscribeSpy: jest.SpyInstance;
     beforeEach(()=>{
         (useState as jest.Mock).mockImplementation(()=>{ return [0, jest.fn()]});
+        subscribeSpy = jest.spyOn(PusherClientHandler.prototype, 'subscribeToPusher');
     });
     afterEach(()=>{
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     })
 
     test('Component renders without error', ()=>{
@@ -76,6 +78,6 @@ describe('FriendRequestSidebarOptions', () => {
 
     test("confirm Helpers() has been called",()=>{
         render(<FriendRequestSidebarOptions sessionId='stub' initialRequestCount={-50}/>);
-        expect(Helpers).toHaveBeenCalledTimes(1);
+        expect(subscribeSpy).toHaveBeenCalledTimes(1);
     });
 });
