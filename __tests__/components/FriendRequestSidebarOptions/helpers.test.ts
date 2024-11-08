@@ -38,30 +38,28 @@ describe('PusherClientHandler tests', () => {
 describe('PusherClientHandler bind tests', () => {
     let subscribeSpy: jest.SpyInstance;
     let bindSpy: jest.SpyInstance;
+    let client: PusherClientHandler;
 
     beforeEach(()=>{
         jest.resetAllMocks();
         bindSpy = jest.fn();
         subscribeSpy = jest.fn(()=>{return {bind: bindSpy}});
         (getPusherClient as jest.Mock).mockReturnValue({subscribe: subscribeSpy});
+        client = new PusherClientHandler('stub')
     })
 
     test('calling function should call channel.bind', ()=>{
-        const client = new PusherClientHandler('stub')
         client.subscribeToPusher()
         expect(bindSpy).toHaveBeenCalled();
     })
 
     test('first argument to channel.bind should be "incoming_friend_requests"', ()=>{
-        const client = new PusherClientHandler('stub')
         client.subscribeToPusher()
         expect(bindSpy).toHaveBeenCalledWith("incoming_friend_requests", expect.anything());
     })
 
     test('second argument to channel.bind should be the method handleRequest', ()=>{
-        const client = new PusherClientHandler('stub')
         client.subscribeToPusher()
         expect(bindSpy).toHaveBeenCalledWith(expect.anything(), client.handleRequest);
     })
 })
-
