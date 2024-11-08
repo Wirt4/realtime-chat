@@ -1,5 +1,9 @@
-import PusherClientHandler from "@/components/FriendRequests/helpers";
+import PusherClientHandler from "@/components/friendRequestSidebarOptions/helpers";
 import {getPusherClient} from "@/lib/pusher";
+
+jest.mock("@/lib/pusher",()=>({
+    getPusherClient: jest.fn()
+}));
 
 describe('PusherClientHandler tests', () => {
     let subscribeSpy: jest.SpyInstance;
@@ -12,8 +16,8 @@ describe('PusherClientHandler tests', () => {
         (getPusherClient as jest.Mock).mockReturnValue({subscribe: subscribeSpy});
     })
     test('calling function should call PusherClient.subscribe', ()=>{
-        const client = new PusherClientHandler('stub',  [])
-        client.subscribeToPusherClient(jest.fn())
+        const client = new PusherClientHandler()
+        client.subscribeToPusher()
         expect(subscribeSpy).toHaveBeenCalled();
     })
 })
