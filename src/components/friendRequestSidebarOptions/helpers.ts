@@ -1,5 +1,6 @@
 import {getPusherClient} from "@/lib/pusher";
 import QueryBuilder from "@/lib/queryBuilder";
+import {Dispatch, SetStateAction} from "react";
 
 export default class PusherClientHandler{
     private readonly id:string
@@ -13,5 +14,8 @@ export default class PusherClientHandler{
         channel.bind(QueryBuilder.incoming_friend_requests, this.handleRequest)
     }
 
-    handleRequest(){}
+    handleRequest( func: Dispatch<SetStateAction<number>>){
+        return ()=>{
+        }
+    }
 }
