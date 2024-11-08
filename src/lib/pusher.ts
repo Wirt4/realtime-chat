@@ -20,14 +20,7 @@ export function getPusherClient(){
 
 function getPusherCredentials(){
     const pusherKey  = process.env.NEXT_PUBLIC_PUSHER_CLIENT_KEY as string
-
-
     const appId = process.env.NEXT_PUBLIC_PUSHER_APP_ID as string
-
-
-
     const secret =  process.env.NEXT_PUBLIC_PUSHER_SECRET as string
-
-
     return {pusherKey, appId, secret}
 }
