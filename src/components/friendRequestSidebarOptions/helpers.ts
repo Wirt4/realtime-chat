@@ -1,10 +1,11 @@
 import {getPusherClient} from "@/lib/pusher";
+import QueryBuilder from "@/lib/queryBuilder";
 
 export default class PusherClientHandler{
     constructor( id:string){}
 
     subscribeToPusher(){
         const client = getPusherClient();
-        client.subscribe("user__12345__incoming_friend_requests")
+        client.subscribe(QueryBuilder.incomingFriendRequestsPusher("12345"))
     }
 }

@@ -15,7 +15,7 @@ describe('PusherClientHandler tests', () => {
     })
 
     test('calling function should call PusherClient.subscribe', ()=>{
-        const client = new PusherClientHandler()
+        const client = new PusherClientHandler('stub')
         client.subscribeToPusher()
         expect(subscribeSpy).toHaveBeenCalled();
     })
