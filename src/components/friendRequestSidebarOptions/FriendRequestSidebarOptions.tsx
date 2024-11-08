@@ -15,8 +15,8 @@ const FriendRequestSidebarOptions: FC<FRSOProps> = ({initialRequestCount, sessio
 
     useEffect(()=> {
         const client = new PusherClientHandler(sessionId, requestCount)
-        client.subscribeToPusher()
-    }, [sessionId]);
+        client.subscribeToPusher(setRequestCount)
+    }, [sessionId, requestCount]);
 
     return <li>
         <Link href='/dashboard/requests' className='link'>

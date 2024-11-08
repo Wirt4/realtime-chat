@@ -5,6 +5,7 @@ import {Dispatch, SetStateAction} from "react";
 export default class PusherClientHandler{
     private readonly id:string
     private readonly count: number;
+
     constructor(id:string, count: number){
         this.id=id;
         this.count = count;
@@ -14,6 +15,9 @@ export default class PusherClientHandler{
         const client = getPusherClient();
         const channel = client.subscribe(QueryBuilder.incomingFriendRequestsPusher(this.id))
         channel.bind(QueryBuilder.incoming_friend_requests, this.handleRequest(setter))
+        return ()=>{
+            channel.unbind('wrong', ()=>{})
+        }
     }
 
     handleRequest( func: Dispatch<SetStateAction<number>>){
