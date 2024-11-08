@@ -74,7 +74,7 @@ describe('FriendRequestSidebarOptions', () => {
         expect(label).not.toBeInTheDocument();
     });
 
-    test("confirm FriendReuqestEffect() has been called",()=>{
+    test("confirm FriendRequestEffect() has been called",()=>{
         render(<FriendRequestSidebarOptions sessionId='stub' initialRequestCount={-50}/>);
         expect(FriendRequestEffect).toHaveBeenCalledTimes(1);
     });

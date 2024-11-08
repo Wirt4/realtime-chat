@@ -23,9 +23,7 @@ const Layout = async ({children}: LayoutProps = {children:null})=>{
     }
 
     const userId = session?.user?.id
-
     const friendRequests = await fetchRedis("smembers", QueryBuilder.incomingFriendRequests(userId));
-
     const friendRequestProps = {
         initialRequestCount: friendRequests.length,
         sessionId: userId
