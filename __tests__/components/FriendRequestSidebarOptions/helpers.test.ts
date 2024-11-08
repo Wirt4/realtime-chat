@@ -51,4 +51,10 @@ describe('PusherClientHandler bind tests', () => {
         client.subscribeToPusher()
         expect(bindSpy).toHaveBeenCalled();
     })
+
+    test('first argument to channel.bind should be "incoming_friend_requests"', ()=>{
+        const client = new PusherClientHandler('stub')
+        client.subscribeToPusher()
+        expect(bindSpy).toHaveBeenCalledWith("incoming_friend_requests", expect.anything());
+    })
 })
