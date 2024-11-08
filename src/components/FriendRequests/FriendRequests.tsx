@@ -37,12 +37,16 @@ const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests, session
         client.subscribeToPusherClient(setRequests)
     }, [sessionId, requests]);
 
+    if (requests.length ==0){
+        return <div aria-label='friend requests'>
+            <p className='friend-requests-nothing'>
+                Nothing to show here...
+            </p>
+        </div>
+    }
+
     return <div aria-label='friend requests'>
-        {requests.length == 0 ?
-        <p className='friend-requests-nothing'>
-            Nothing to show here...
-        </p>:
-            requests.map((request)=>{
+        {requests.map((request)=>{
                 return (<div className='friend-requests' key={request.senderId}>
                     <UserPlus  aria-label='add user'/>
                     <p className='friend-requests-email'>
@@ -65,8 +69,7 @@ const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests, session
                         />
                     </button>
                 </div>)
-            })
-        }</div>
+            })}</div>
 }
 
 export default FriendRequests;
