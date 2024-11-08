@@ -8,7 +8,6 @@ jest.mock("@/lib/pusher",()=>({
 describe('subscribeToPusherClient tests, subscribe tests', ()=>{
     let subscribeSpy: jest.SpyInstance;
     let bindSpy: jest.SpyInstance;
-    const state = {setFriendRequests: jest.fn, existingFriendRequests:[]}
 
     beforeEach(()=>{
         jest.resetAllMocks();
@@ -18,20 +17,20 @@ describe('subscribeToPusherClient tests, subscribe tests', ()=>{
     })
 
     test('calling function should call PusherClient.subscribe', ()=>{
-        const client = new PusherClientHandler('stub',  state)
-        client.subscribeToPusherClient()
+        const client = new PusherClientHandler('stub',  [])
+        client.subscribeToPusherClient(jest.fn())
         expect(subscribeSpy).toHaveBeenCalled();
     })
 
     test('if the sessionID is 12345, then subscribe is called with user:12345:incoming_friend_requests',()=>{
-        const client = new PusherClientHandler('12345', state)
-        client.subscribeToPusherClient()
+        const client = new PusherClientHandler('12345', [])
+        client.subscribeToPusherClient(jest.fn())
         expect(subscribeSpy).toHaveBeenCalledWith('user__12345__incoming_friend_requests');
     })
 
     test('if the sessionID is 54321 , then subscribe is called with user:54321:incoming_friend_requests',()=>{
-        const client = new PusherClientHandler('54321', state)
-        client.subscribeToPusherClient()
+        const client = new PusherClientHandler('54321', [])
+        client.subscribeToPusherClient(jest.fn())
         expect(subscribeSpy).toHaveBeenCalledWith('user__54321__incoming_friend_requests');
     })
 
@@ -40,7 +39,6 @@ describe('subscribeToPusherClient tests, subscribe tests', ()=>{
 describe('subscribeToPusher tests, bind tests', ()=>{
     let subscribeSpy: jest.SpyInstance;
     let bindSpy: jest.SpyInstance;
-    const state = {setFriendRequests: jest.fn, existingFriendRequests:[]}
 
     beforeEach(()=>{
         jest.resetAllMocks();
@@ -50,13 +48,13 @@ describe('subscribeToPusher tests, bind tests', ()=>{
     })
 
     test('calling function should call PusherClient.bind', ()=>{
-        const client = new PusherClientHandler('stub', state)
+        const client = new PusherClientHandler('stub', [])
         client.subscribeToPusherClient(jest.fn)
         expect(bindSpy).toHaveBeenCalled();
     })
 
     test('first argument to  PusherClient.bind should be "incoming_friend_requests"', ()=>{
-        const client = new PusherClientHandler('stub', state)
+        const client = new PusherClientHandler('stub', [])
         client.subscribeToPusherClient(jest.fn)
         expect(bindSpy).toHaveBeenCalledWith("incoming_friend_requests", expect.anything());
     })
@@ -83,7 +81,6 @@ describe('subscribeToPusher tests, return value tests', ()=>{
 describe('tearDown tests, unsubscribe and unbind', ()=>{
     let unSubscribeSpy: jest.SpyInstance;
     let unBindSpy: jest.SpyInstance;
-    const state = {setFriendRequests: jest.fn, existingFriendRequests:[]}
 
     beforeEach(()=>{
         jest.resetAllMocks();
@@ -93,18 +90,18 @@ describe('tearDown tests, unsubscribe and unbind', ()=>{
     })
 
     test('if the sessionID is 12345, then subscribe is called with user:12345:incoming_friend_requests',()=>{
-        const client = new PusherClientHandler('12345', state)
+        const client = new PusherClientHandler('12345', [])
         client.tearDown()
         expect(unSubscribeSpy).toHaveBeenCalledWith('user__12345__incoming_friend_requests');
     })
 
     test('if the sessionID is 54321, then subscribe is called with user:12345:incoming_friend_requests',()=>{
-        const client = new PusherClientHandler('54321',  state)
+        const client = new PusherClientHandler('54321',  [])
         client.tearDown()
         expect(unSubscribeSpy).toHaveBeenCalledWith('user__54321__incoming_friend_requests');
     })
     test('if the sessionID is 54321, then subscribe is called with user:12345:incoming_friend_requests',()=>{
-        const client = new PusherClientHandler('54321',  state)
+        const client = new PusherClientHandler('54321',  [])
         client.tearDown()
         expect(unBindSpy).toHaveBeenCalledWith('incoming_friend_requests');
     })
