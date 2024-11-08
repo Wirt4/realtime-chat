@@ -1,6 +1,7 @@
 import {PostFriendsRouteHandler} from '@/app/api/friends/add/handler'
 import fetchRedis from "@/helpers/redis"
 import { db } from '@/lib/db';
+import { getPusherServer} from "@/lib/pusher";
 
 jest.mock("@/lib/myGetServerSession",()=>({
     __esModule: true,
@@ -17,6 +18,10 @@ jest.mock("@/lib/db",()=>({
     db: {
         sadd: jest.fn() // Mock the sadd method
     }
+}));
+
+jest.mock("@/lib/pusher",()=>({
+    getPusherServer: jest.fn()
 }));
 
 describe('Validate Tests - true verses false', () => {
@@ -333,3 +338,58 @@ describe("isSameUserTests",()=>{
         expect(handler.isSameUser()).toEqual(false);
     });
 });
+
+describe("triggerPusherServer tests", ()=>{
+    let handler: PostFriendsRouteHandler;
+    let triggerSpy: jest.Mock;
+
+    beforeEach(()=>{
+        handler = new PostFriendsRouteHandler();
+        triggerSpy = jest.fn();
+        (getPusherServer as jest.Mock).mockReturnValue({trigger: triggerSpy});
+    })
+
+    test('should call pusherServer trigger',()=>{
+        handler.triggerPusherServer()
+        expect(triggerSpy).toHaveBeenCalled();
+    })
+
+    test('if the id to add is 1235, then the first argument passed to server.trigger is user__1235__incoming_friend_requests',()=>{
+        handler.triggerPusherServer('1235')
+        expect(triggerSpy).toHaveBeenCalledWith('user__1235__incoming_friend_requests', expect.anything(), expect.anything());
+    })
+
+    test('if the id to add is 1701, then the first argument passed to server.trigger is user__1701__friend_requests',()=>{
+        handler.triggerPusherServer('1701')
+        expect(triggerSpy).toHaveBeenCalledWith('user__1701__incoming_friend_requests', expect.anything(), expect.anything());
+    })
+
+    test('the second argument passed to server.trigger is incoming_friend_requests',()=>{
+        handler.triggerPusherServer()
+        expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), 'incoming_friend_requests', expect.anything());
+    })
+
+    test('the third  argument passed to server.trigger contains {senderId: mork',()=>{
+        handler.triggerPusherServer('mindy', {senderId:'mork', senderEmail: 'mork@ork.nanu'})
+        expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(),
+            expect.objectContaining({senderId: 'mork'}));
+    })
+
+    test('the third  argument passed to server.trigger contains {senderId: mindy',()=>{
+        handler.triggerPusherServer('mork', {senderId: 'mindy', senderEmail: 'mindy@colorado.earth'})
+        expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(),
+            expect.objectContaining({senderId: 'mindy'}));
+    })
+
+    test('the third  argument passed to server.trigger contains {senderEmail: mindy@colorado.earth',()=>{
+        handler.triggerPusherServer('mork', {senderId: 'mindy', senderEmail: 'mindy@colorado.earth'})
+        expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(),
+            expect.objectContaining({senderEmail: 'mindy@colorado.earth'}));
+    })
+
+    test('the third  argument passed to server.trigger contains {senderEmail: mork@ork.nanu',()=>{
+        handler.triggerPusherServer('mork', {senderId: 'mork', senderEmail: 'mork@ork.nanu'})
+        expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(),
+            expect.objectContaining({senderEmail: 'mork@ork.nanu'}));
+    })
+})

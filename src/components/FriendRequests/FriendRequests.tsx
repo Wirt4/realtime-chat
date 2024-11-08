@@ -1,22 +1,22 @@
 'use client'
 
-import {FC, useState} from "react";
+import {FC, useEffect, useState} from "react";
 import {Check, UserPlus, X} from 'lucide-react';
 import axios from "axios";
 import { useRouter } from 'next/navigation';
+import PusherClientHandler from "@/components/FriendRequests/helpers";
 
 interface FriendRequestsProps {
     incomingFriendRequests: FriendRequest[]
+    sessionId: string
 }
 
 type command = 'accept' | 'deny'
 
-const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests})=>{
+const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests, sessionId})=>{
     const router = useRouter()
-    const [requests, setRequests] = useState<{
-        senderId:string,
-        senderEmail:string
-    }[]>(incomingFriendRequests);
+    const [requests, setRequests] = useState<FriendRequest[]>(incomingFriendRequests);
+
 
     const apiPost = async (senderId: string, cmd: command) =>{
         await axios.post(`/api/friends/${cmd}`, {id: senderId});
@@ -32,12 +32,21 @@ const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests})=>{
         await apiPost(senderId, 'deny')
     }
 
+    useEffect(()=> {
+        const client = new PusherClientHandler(sessionId, requests)
+        client.subscribeToPusherClient(setRequests)
+    }, [sessionId, requests]);
+
+    if (requests.length ==0){
+        return <div aria-label='friend requests'>
+            <p className='friend-requests-nothing'>
+                Nothing to show here...
+            </p>
+        </div>
+    }
+
     return <div aria-label='friend requests'>
-        {incomingFriendRequests.length == 0 ?
-        <p className='friend-requests-nothing'>
-            Nothing to show here...
-        </p>:
-            requests.map((request)=>{
+        {requests.map((request)=>{
                 return (<div className='friend-requests' key={request.senderId}>
                     <UserPlus  aria-label='add user'/>
                     <p className='friend-requests-email'>
@@ -60,8 +69,7 @@ const FriendRequests :FC<FriendRequestsProps> =({incomingFriendRequests})=>{
                         />
                     </button>
                 </div>)
-            })
-        }</div>
+            })}</div>
 }
 
 export default FriendRequests;
