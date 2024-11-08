@@ -65,11 +65,18 @@ describe('PusherClientHandler bind tests', () => {
 })
 
 describe('PusherClientHandler handleRequest tests', () => {
-    test('the existing count + 1 is passed to the function handlerRequest',()=>{
+    test('the existing count is 1, so 2 is passed to the setter',()=>{
         const setterSpy = jest.fn();
         const client = new PusherClientHandler('stub')
         const func = client.handleRequest(setterSpy)
         func()
         expect(setterSpy).toHaveBeenCalledWith(2)
+    })
+    test('the existing count is 8, so 9 is passed to the setter',()=>{
+        const setterSpy = jest.fn();
+        const client = new PusherClientHandler('stub')
+        const func = client.handleRequest(setterSpy)
+        func()
+        expect(setterSpy).toHaveBeenCalledWith(9)
     })
 })
