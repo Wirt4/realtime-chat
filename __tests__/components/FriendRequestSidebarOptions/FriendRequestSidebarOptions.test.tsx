@@ -9,6 +9,8 @@ jest.mock('react', ()=>({
     useState: jest.fn()
 }));
 
+jest.mock("@/components/friendRequestSidebarOptions/helpers");
+
 jest.spyOn(PusherClientHandler.prototype, 'subscribeToPusher').mockImplementation(jest.fn());
 
 describe('FriendRequestSidebarOptions', () => {
