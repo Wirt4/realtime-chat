@@ -157,7 +157,7 @@ describe('PusherClientHandler decrementCount tests', () => {
         expect(setterSpy).toHaveBeenCalledWith(0)
     })
 
-    test('the existing count is 0, dont call the  setter',()=>{
+    test('the existing count is 0, dont call the setter',()=>{
         client = new PusherClientHandler('stub_id', 0)
         const func = client.decrementCount(setterSpy)
         func()
@@ -173,7 +173,8 @@ describe('PusherClientHandler decrementCount tests', () => {
 })
 
 describe('PusherClientHandler return tests', () => {
-    let unBindSpy: jest.SpyInstance;
+    let requestsUnbindSpy: jest.SpyInstance;
+    let friendsUnbindSpy: jest.SpyInstance;
     let bindSpy: jest.SpyInstance;
     let subscribeSpy: jest.SpyInstance;
     let client: PusherClientHandler;
@@ -182,25 +183,32 @@ describe('PusherClientHandler return tests', () => {
     beforeEach(()=>{
         jest.resetAllMocks();
         bindSpy = jest.fn();
-        unBindSpy = jest.fn();
+        requestsUnbindSpy = jest.fn();
         unsubscribeSpy = jest.fn();
-        subscribeSpy = jest.fn(()=>{return {bind: bindSpy, unbind: unBindSpy}});
+        subscribeSpy = jest.fn(()=>{return {bind: bindSpy, unbind: requestsUnbindSpy}});
         (getPusherClient as jest.Mock).mockReturnValue({subscribe: subscribeSpy, unsubscribe: unsubscribeSpy});
         client = new PusherClientHandler('stub_id', 0)
     })
 
-    test('return is a function, it should call unbind',()=>{
+    test('return is a function, it should call unbind for friend requests',()=>{
         const func = client.subscribeToPusher(jest.fn())
         func()
-        expect(unBindSpy).toHaveBeenCalledWith('incoming_friend_requests', expect.anything())
+        expect(requestsUnbindSpy).toHaveBeenCalledWith('incoming_friend_requests', expect.anything())
     })
+
+    test('return is a function, it should call unbind for new_friend',()=>{
+        const func = client.subscribeToPusher(jest.fn())
+        func()
+        expect(requestsUnbindSpy).toHaveBeenCalledWith('new_friend', expect.anything())
+    })
+
 
     test('return is a function, it should call unbind with the result of handleRequest',()=>{
         function expected(){}
         jest.spyOn(client, 'incrementCount').mockReturnValue(expected)
         const func = client.subscribeToPusher(jest.fn())
         func()
-        expect(unBindSpy).toHaveBeenCalledWith(expect.anything(), expected)
+        expect(requestsUnbindSpy).toHaveBeenCalledWith(expect.anything(), expected)
     })
 
     test('return is a function, it should call unsubscribe on the pusher client',()=>{

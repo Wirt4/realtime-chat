@@ -270,6 +270,7 @@ describe('calls to pusher',()=>{
             id: '1701'
         });
     })
+
     test('needs two calls: one for the user and one for the id to add', async ()=>{
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1701'}});

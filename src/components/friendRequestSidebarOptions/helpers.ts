@@ -23,6 +23,7 @@ export default class PusherClientHandler{
         friendRequestsChannel.bind(QueryBuilder.incoming_friend_requests, this.incrementCount(setter))
 
         return ()=>{
+            friendsChannel.unbind(QueryBuilder.new_friend, this.decrementCount(setter))
             friendRequestsChannel.unbind(QueryBuilder.incoming_friend_requests, this.incrementCount(setter))
             client.unsubscribe(requestsChannelName)
         }
