@@ -47,5 +47,4 @@ export default class QueryBuilder {
     static get incoming_friend_requests () {
         return 'incoming_friend_requests'
     }
-
 }

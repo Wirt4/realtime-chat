@@ -270,6 +270,24 @@ describe('calls to pusher',()=>{
             id: '1701'
         });
     })
+    test('needs two calls: one for the user and one for the id to add', async ()=>{
+        fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1701'}});
+        const req = requestFromId('1966')
+        await POST(req);
+        expect(triggerSpy).toHaveBeenCalledWith("user__1966__friends", 'new_friend', {
+            name: 'William',
+            email: 'bill@canda.ca',
+            image: 'stub',
+            id: '1701'
+        });
+        expect(triggerSpy).toHaveBeenCalledWith("user__1701__friends", 'new_friend', {
+            name: 'Adam',
+            email: 'adam@batcave.com',
+            image: 'stub',
+            id: '1966'
+        });
+    })
 })
 
 function assertResponse( response: Response, expected: expectedResponse): void{
