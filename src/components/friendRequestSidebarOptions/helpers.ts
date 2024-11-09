@@ -7,19 +7,20 @@ export default class PusherClientHandler{
     private readonly count: number;
 
     constructor(id:string, count: number){
-        this.id=id;
-        this.count = count;
+        this.id = id
+        this.count = count
     }
 
     subscribeToPusher(setter: Dispatch<SetStateAction<number>>){
         const client = getPusherClient()
         client.subscribe(QueryBuilder.friendsPusher(this.id))
-        const channel = client.subscribe(QueryBuilder.incomingFriendRequestsPusher(this.id))
-        channel.bind(QueryBuilder.incoming_friend_requests, this.handleRequest(setter))
+        const requestsChannelName = QueryBuilder.incomingFriendRequestsPusher(this.id)
+        const friendRequestsChannel = client.subscribe(requestsChannelName)
+        friendRequestsChannel.bind(QueryBuilder.incoming_friend_requests, this.handleRequest(setter))
 
         return ()=>{
-            channel.unbind(QueryBuilder.incoming_friend_requests, this.handleRequest(setter))
-            client.unsubscribe(QueryBuilder.incomingFriendRequestsPusher(this.id))
+            friendRequestsChannel.unbind(QueryBuilder.incoming_friend_requests, this.handleRequest(setter))
+            client.unsubscribe(requestsChannelName)
         }
     }
 

@@ -50,32 +50,46 @@ describe('PusherClientHandler tests', () => {
 
 describe('PusherClientHandler bind tests', () => {
     let subscribeSpy: jest.SpyInstance;
-    let bindSpy: jest.SpyInstance;
+    let requestBindSpy: jest.SpyInstance;
+    let friendBindSpy: jest.SpyInstance;
     let client: PusherClientHandler;
 
     beforeEach(()=>{
         jest.resetAllMocks();
-        bindSpy = jest.fn();
-        subscribeSpy = jest.fn(()=>{return {bind: bindSpy}});
-        (getPusherClient as jest.Mock).mockReturnValue({subscribe: subscribeSpy});
+        requestBindSpy = jest.fn();
+        subscribeSpy = jest.fn((channel: string)=>{
+            if (channel.endsWith('requests')){
+                return {bind: requestBindSpy}
+            }
+            return {bind: friendBindSpy}
+        });
+
+        (getPusherClient as jest.Mock).mockImplementation(()=>{
+            return {subscribe: subscribeSpy}
+        });
         client = new PusherClientHandler('stub_id', 0)
     })
 
-    test('calling function should call channel.bind', ()=>{
+    test("calling function should call the request channel's bind method", ()=>{
         client.subscribeToPusher(jest.fn())
-        expect(bindSpy).toHaveBeenCalled();
+        expect(requestBindSpy).toHaveBeenCalled();
+    })
+
+    test("calling function should call the friends channel's bind method",()=>{
+        client.subscribeToPusher(jest.fn())
+        expect(friendBindSpy).toHaveBeenCalled();
     })
 
     test('first argument to channel.bind should be "incoming_friend_requests"', ()=>{
         client.subscribeToPusher(jest.fn())
-        expect(bindSpy).toHaveBeenCalledWith("incoming_friend_requests", expect.anything());
+        expect(requestBindSpy).toHaveBeenCalledWith("incoming_friend_requests", expect.anything());
     })
 
     test('second argument to channel.bind should be the the output of  method handleRequest', ()=>{
         function expected(){}
         jest.spyOn(client, 'handleRequest').mockReturnValue(expected)
         client.subscribeToPusher(jest.fn())
-        expect(bindSpy).toHaveBeenCalledWith(expect.anything(), expected);
+        expect(requestBindSpy).toHaveBeenCalledWith(expect.anything(), expected);
     })
 
     test('argument from subscribeToPusher should be the same passed to handleSpy', ()=>{
