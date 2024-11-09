@@ -19,7 +19,7 @@ export default class PusherClientHandler{
         const friendsChannel = client.subscribe(friendsChannelName)
         const friendRequestsChannel = client.subscribe(requestsChannelName)
 
-        friendsChannel.bind(QueryBuilder.new_friend, this.decrementCount())
+        friendsChannel.bind(QueryBuilder.new_friend, this.decrementCount(setter))
         friendRequestsChannel.bind(QueryBuilder.incoming_friend_requests, this.incrementCount(setter))
 
         return ()=>{
