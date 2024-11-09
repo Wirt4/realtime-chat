@@ -19,7 +19,7 @@ export default class PusherClientHandler{
         const friendsChannel = client.subscribe(friendsChannelName)
         const friendRequestsChannel = client.subscribe(requestsChannelName)
 
-        friendsChannel.bind(QueryBuilder.new_friend, this.decrementCount(jest.fn()))
+        friendsChannel.bind(QueryBuilder.new_friend, this.decrementCount())
         friendRequestsChannel.bind(QueryBuilder.incoming_friend_requests, this.incrementCount(setter))
 
         return ()=>{
@@ -34,7 +34,7 @@ export default class PusherClientHandler{
         }
     }
 
-    decrementCount(func: Dispatch<SetStateAction<number>>){
+    decrementCount(){
         return ()=>{}
     }
 }
