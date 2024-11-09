@@ -2,6 +2,11 @@ import { POST } from "@/app/api/friends/accept/route";
 import myGetServerSession from "@/lib/myGetServerSession";
 import fetchRedis from "@/helpers/redis";
 import { db } from '@/lib/db';
+import {getPusherClient, getPusherServer} from "@/lib/pusher";
+
+jest.mock("@/lib/pusher",()=>({
+    getPusherServer: jest.fn()
+}));
 
 jest.mock("@/lib/myGetServerSession",()=>({
     __esModule: true,
@@ -203,6 +208,27 @@ describe('/api/friends/accept', () => {
         expect(db.srem).toHaveBeenCalledWith('user:4567:incoming_friend_requests', '7777');
     });
 });
+
+describe('calls to pusher',()=>{
+    let triggerSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+        triggerSpy = jest.fn();
+        (getPusherServer as jest.Mock).mockReturnValue({triggerSpy: triggerSpy});
+        (fetchRedis as jest.Mock).mockResolvedValue(false);
+    })
+
+    afterEach(()=>{
+        jest.resetAllMocks();
+    })
+
+    test('expect pusher.trigger to be called with first arg "user__12345__friends"', async ()=>{
+        fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
+        const req = requestify('valid')
+        await POST(req);
+        expect(triggerSpy).toHaveBeenCalledWith('user__12345__incoming_friend_requests', expect.anything());
+    })
+})
 
 function assertResponse( response: Response, expected: expectedResponse): void{
     expect(response.status).toEqual(expected.status);

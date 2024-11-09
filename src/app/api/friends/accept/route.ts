@@ -29,7 +29,7 @@ export async function POST(request: Request):Promise<Response> {
         return respond('No Existing Friend Request', 400);
     }
 
-    await handler.addtoFriendsTabeles();
+    await handler.addToFriendsTables();
     await handler.removeRequestFromTable();
     return new Response('OK');
 }
@@ -55,7 +55,7 @@ class Handler{
         return  fetchRedis('sismember', table, this.idToAdd);
     }
 
-    async addtoFriendsTabeles():Promise<void>{
+    async addToFriendsTables():Promise<void>{
         await this.addToFriendsTable(this.userId, this.idToAdd);
         await this.addToFriendsTable(this.idToAdd, this.userId);
     }
@@ -97,8 +97,7 @@ async function getIdToAdd(request: Request):Promise<string | boolean> {
     try{
         const { id: idToAdd } =  z.object({id: z.string()}).parse(body);
         return idToAdd;
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    }catch(error){
+    }catch{
         return false;
     }
 }
