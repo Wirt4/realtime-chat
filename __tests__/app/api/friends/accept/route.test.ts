@@ -247,14 +247,6 @@ describe('calls to pusher',()=>{
     })
 
     test('expect pusher.trigger to be called with data of the current user', async ()=>{
-        (fetchRedis as jest.Mock).mockResolvedValueOnce(false)
-            .mockResolvedValueOnce(true)
-            .mockResolvedValueOnce({
-                name: 'Adam',
-                email: 'adam@batcave.com',
-                image: 'stub',
-                id: '1966'
-            })
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1966'}});
         const req = requestFromId('54321')
@@ -267,14 +259,6 @@ describe('calls to pusher',()=>{
         });
     })
     test('expect pusher.trigger to be called with data of the current user, different data', async ()=>{
-        (fetchRedis as jest.Mock).mockResolvedValueOnce(false)
-            .mockResolvedValueOnce(true)
-            .mockResolvedValueOnce({
-            name: 'William',
-            email: 'bill@canda.ca',
-            image: 'stub',
-            id: '1701'
-        })
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1701'}});
         const req = requestFromId('54321')
