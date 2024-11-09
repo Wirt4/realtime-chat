@@ -101,11 +101,18 @@ describe('PusherClientHandler bind tests', () => {
         expect(friendBindSpy).toHaveBeenCalledWith(expect.anything(), expected);
     })
 
-    test('argument from subscribeToPusher should be the same passed to handleSpy', ()=>{
+    test('argument from subscribeToPusher should be the same passed to incrementCount', ()=>{
         function expected(){}
         const incrementCountSpy = jest.spyOn(client, 'incrementCount')
         client.subscribeToPusher(expected)
         expect(incrementCountSpy).toHaveBeenCalledWith(expected);
+    })
+
+    test('argument from subscribeToPusher should be the same passed to incrementCount', ()=>{
+        function expected(){}
+        const decrementCountSpy = jest.spyOn(client, 'decrementCount')
+        client.subscribeToPusher(expected)
+        expect(decrementCountSpy).toHaveBeenCalledWith(expected);
     })
 
     test('first argument passed to friendsChannel.bind should be "new_friend"',()=>{
