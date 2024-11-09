@@ -3,6 +3,7 @@ import myGetServerSession from "@/lib/myGetServerSession";
 import fetchRedis from "@/helpers/redis";
 import {db} from "@/lib/db";
 import QueryBuilder from "@/lib/queryBuilder";
+import {getPusherServer} from "@/lib/pusher";
 
 export async function POST(request: Request):Promise<Response> {
     const idToAdd = await getIdToAdd(request);
@@ -29,6 +30,8 @@ export async function POST(request: Request):Promise<Response> {
         return respond('No Existing Friend Request', 400);
     }
 
+    const pusherServer = getPusherServer()
+    await pusherServer.trigger("user__12345__friends", 'stub', 'stub')
     await handler.addToFriendsTables();
     await handler.removeRequestFromTable();
     return new Response('OK');

@@ -2,7 +2,8 @@ import { POST } from "@/app/api/friends/accept/route";
 import myGetServerSession from "@/lib/myGetServerSession";
 import fetchRedis from "@/helpers/redis";
 import { db } from '@/lib/db';
-import {getPusherClient, getPusherServer} from "@/lib/pusher";
+import { getPusherServer} from "@/lib/pusher";
+import QueryBuilder from "@/lib/queryBuilder";
 
 jest.mock("@/lib/pusher",()=>({
     getPusherServer: jest.fn()
@@ -31,13 +32,14 @@ interface expectedResponse {
 describe('/api/friends/accept', () => {
     beforeEach(() => {
         (fetchRedis as jest.Mock).mockResolvedValue(false);
+        (getPusherServer as jest.Mock).mockReturnValue({trigger: jest.fn()});
     });
 
     afterEach(()=>{
         jest.resetAllMocks();
     })
 
-    test('If is all anticcipated case, then POST runs without throwing', async () => {
+    test('If is all anticipated case, then POST runs without throwing', async () => {
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         const req = requestify('valid')
         await POST(req);
@@ -54,7 +56,7 @@ describe('/api/friends/accept', () => {
         assertResponse(response, expectedResponse)
     });
 
-    test("If the users's session is null, then POST returns a 401", async () => {
+    test("If the user's session is null, then POST returns a 401", async () => {
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue(null);
         const req = requestify('valid')
@@ -214,19 +216,20 @@ describe('calls to pusher',()=>{
 
     beforeEach(() => {
         triggerSpy = jest.fn();
-        (getPusherServer as jest.Mock).mockReturnValue({triggerSpy: triggerSpy});
-        (fetchRedis as jest.Mock).mockResolvedValue(false);
+        (getPusherServer as jest.Mock).mockReturnValue({trigger: triggerSpy});
+        (fetchRedis as jest.Mock).mockResolvedValueOnce(false).mockResolvedValueOnce(true)
     })
 
     afterEach(()=>{
         jest.resetAllMocks();
     })
 
-    test('expect pusher.trigger to be called with first arg "user__12345__friends"', async ()=>{
+    test('id to add is 12345 expect pusher.trigger to be called with first arg "user__12345__friends"', async ()=>{
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1966'}});
         const req = requestify('valid')
         await POST(req);
-        expect(triggerSpy).toHaveBeenCalledWith('user__12345__incoming_friend_requests', expect.anything());
+        expect(triggerSpy).toHaveBeenCalledWith(QueryBuilder.friendsPusher('12345'), expect.anything(), expect.anything());
     })
 })
 
