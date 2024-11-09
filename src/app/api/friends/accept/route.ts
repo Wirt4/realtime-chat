@@ -5,7 +5,6 @@ import {db} from "@/lib/db";
 import QueryBuilder from "@/lib/queryBuilder";
 import {getPusherServer} from "@/lib/pusher";
 import Pusher from "pusher";
-import {aw} from "@upstash/redis/zmscore-Dc6Llqgr";
 
 export async function POST(request: Request):Promise<Response> {
     const idToAdd = await getIdToAdd(request);
@@ -48,15 +47,11 @@ class Handler{
     }
 
     async triggerPusher(){
-        const pusherServer = getPusherServer()
-        await this.temp(pusherServer, this.userId, this.idToAdd)
-        await this.temp(pusherServer, this.idToAdd, this.userId)
-    }
-
-    async temp(server:Pusher, fromId: string, toId:string ){
-        const channel = QueryBuilder.friendsPusher(fromId)
-        const user = await fetchRedis('get', QueryBuilder.user(toId))
-        await server.trigger(channel, 'new_friend',user)
+        const pusherServer =new PusherServerWrapper()
+        await Promise.all([
+            pusherServer.trigger(this.userId, this.idToAdd),
+            pusherServer.trigger(this.idToAdd, this.userId)
+        ])
     }
 
     async areFriends(): Promise<boolean>{
@@ -72,8 +67,10 @@ class Handler{
     }
 
     async addToFriendsTables():Promise<void>{
-        await this.addToFriendsTable(this.userId, this.idToAdd);
-        await this.addToFriendsTable(this.idToAdd, this.userId);
+        await Promise.all([
+            this.addToFriendsTable(this.userId, this.idToAdd),
+            this.addToFriendsTable(this.idToAdd, this.userId)
+        ])
     }
 
     async removeRequestFromTable():Promise<void>{
@@ -97,6 +94,18 @@ class Handler{
     }
 }
 
+class PusherServerWrapper {
+    pusher: Pusher
+    constructor() {
+        this.pusher = getPusherServer()
+    }
+
+    async trigger(senderId: string, recipientId: string){
+        const channel = QueryBuilder.friendsPusher(senderId)
+        const user = await fetchRedis('get', QueryBuilder.user(recipientId))
+        await this.pusher.trigger(channel, 'new_friend',user)
+    }
+}
 
 function respond(text: string, status: number): Response
 {
