@@ -68,6 +68,7 @@ describe('PusherClientHandler bind tests', () => {
         (getPusherClient as jest.Mock).mockImplementation(()=>{
             return {subscribe: subscribeSpy}
         });
+
         client = new PusherClientHandler('stub_id', 0)
     })
 
@@ -81,12 +82,12 @@ describe('PusherClientHandler bind tests', () => {
         expect(friendBindSpy).toHaveBeenCalled();
     })
 
-    test('first argument to channel.bind should be "incoming_friend_requests"', ()=>{
+    test('first argument to requestChannel.bind should be "incoming_friend_requests"', ()=>{
         client.subscribeToPusher(jest.fn())
         expect(requestBindSpy).toHaveBeenCalledWith("incoming_friend_requests", expect.anything());
     })
 
-    test('second argument to channel.bind should be the the output of  method handleRequest', ()=>{
+    test('second argument to requestsChannel.bind should be the the output of method handleRequest', ()=>{
         function expected(){}
         jest.spyOn(client, 'handleRequest').mockReturnValue(expected)
         client.subscribeToPusher(jest.fn())
@@ -98,6 +99,11 @@ describe('PusherClientHandler bind tests', () => {
         const handleSpy = jest.spyOn(client, 'handleRequest')
         client.subscribeToPusher(expected)
         expect(handleSpy).toHaveBeenCalledWith(expected);
+    })
+
+    test('first argument passed to friendsChannel.bind should be "new_friend"',()=>{
+        client.subscribeToPusher(jest.fn())
+        expect(friendBindSpy).toHaveBeenCalledWith("new_friend", expect.anything());
     })
 })
 
