@@ -157,6 +157,13 @@ describe('PusherClientHandler decrementCount tests', () => {
         expect(setterSpy).toHaveBeenCalledWith(0)
     })
 
+    test('the existing count is 0, dont call the  setter',()=>{
+        client = new PusherClientHandler('stub_id', 0)
+        const func = client.decrementCount(setterSpy)
+        func()
+        expect(setterSpy).not.toHaveBeenCalled()
+    })
+
     test('the existing count is 8, so 7 is passed to the setter',()=>{
         client = new PusherClientHandler('stub_id', 7)
         const func = client.decrementCount(setterSpy)
