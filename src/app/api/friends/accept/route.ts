@@ -47,7 +47,12 @@ class Handler{
 
     async triggerPusher(){
         const pusherServer = getPusherServer()
-        await pusherServer.trigger(QueryBuilder.friendsPusher(this.idToAdd), 'new_friend', 'stub')
+        await pusherServer.trigger(QueryBuilder.friendsPusher(this.idToAdd), 'new_friend', {
+            name: 'Adam',
+            email: 'adam@batcave.com',
+            image: 'stub',
+            id: '1966'
+        })
     }
 
     async areFriends(): Promise<boolean>{
