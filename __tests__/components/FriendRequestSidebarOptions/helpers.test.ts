@@ -202,8 +202,15 @@ describe('PusherClientHandler return tests', () => {
         expect(requestsUnbindSpy).toHaveBeenCalledWith('new_friend', expect.anything())
     })
 
+    test('return is a function, it should call unbind with the result of decrementCount',()=>{
+        function expected(){}
+        jest.spyOn(client, 'decrementCount').mockReturnValue(expected)
+        const func = client.subscribeToPusher(jest.fn())
+        func()
+        expect(requestsUnbindSpy).toHaveBeenCalledWith(expect.anything(), expected)
+    })
 
-    test('return is a function, it should call unbind with the result of handleRequest',()=>{
+    test('return is a function, it should call unbind with the result of incrementCount',()=>{
         function expected(){}
         jest.spyOn(client, 'incrementCount').mockReturnValue(expected)
         const func = client.subscribeToPusher(jest.fn())
@@ -217,17 +224,24 @@ describe('PusherClientHandler return tests', () => {
         expect(unsubscribeSpy).toHaveBeenCalled()
     })
 
-    test('return is a function, it should call unsubscribe on the pusher client',()=>{
+    test('return is a function, it should call unsubscribe on the pusher client friend requests',()=>{
         const client = new PusherClientHandler('54321', 0)
         const func = client.subscribeToPusher(jest.fn())
         func()
         expect(unsubscribeSpy).toHaveBeenCalledWith('user__54321__incoming_friend_requests');
     })
 
-    test('return is a function, it should call unsubscribe on the pusher client',()=>{
+    test('return is a function, it should call unsubscribe on the pusher client friend requests',()=>{
         const client = new PusherClientHandler('12345', 0)
         const func = client.subscribeToPusher(jest.fn())
         func()
         expect(unsubscribeSpy).toHaveBeenCalledWith('user__12345__incoming_friend_requests');
+    })
+
+    test('return is a function, it should call unsubscribe on the pusher clientfriends ',()=>{
+        const client = new PusherClientHandler('54321', 0)
+        const func = client.subscribeToPusher(jest.fn())
+        func()
+        expect(unsubscribeSpy).toHaveBeenCalledWith('user__54321__friends');
     })
 })
