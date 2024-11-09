@@ -1,8 +1,8 @@
 'use client';
-import {FC, useState, useEffect} from "react";
+import {FC, useEffect, useState} from "react";
 import Link from "next/link";
 import {Icons} from "@/components/Icons";
-import FriendRequestEffect from "@/components/friendRequestSidebarOptions/FriendRequestEffect";
+import PusherClientHandler from "@/components/friendRequestSidebarOptions/helpers"
 const User = Icons['User']
 
 interface FRSOProps{
@@ -11,8 +11,12 @@ interface FRSOProps{
 }
 
 const FriendRequestSidebarOptions: FC<FRSOProps> = ({initialRequestCount, sessionId})=>{
-    const [requestCount] = useState<number>(initialRequestCount);
-    useEffect(FriendRequestEffect, [sessionId]);
+    const [requestCount, setRequestCount] = useState<number>(initialRequestCount);
+
+    useEffect(()=> {
+        const client = new PusherClientHandler(sessionId, requestCount)
+        client.subscribeToPusher(setRequestCount)
+    }, [sessionId, requestCount]);
 
     return <li>
         <Link href='/dashboard/requests' className='link'>
