@@ -1,6 +1,5 @@
 import PusherClientHandler from "@/components/friendRequestSidebarOptions/helpers";
 import {getPusherClient} from "@/lib/pusher";
-import {unsubscribe} from "node:diagnostics_channel";
 
 jest.mock("@/lib/pusher",()=>({
     getPusherClient: jest.fn()
@@ -16,7 +15,7 @@ describe('PusherClientHandler tests', () => {
         bindSpy = jest.fn();
         subscribeSpy = jest.fn(()=>{return {bind: bindSpy}});
         (getPusherClient as jest.Mock).mockReturnValue({subscribe: subscribeSpy});
-        client = new PusherClientHandler('stub', 0)
+        client = new PusherClientHandler('stub_id', 0)
     })
 
     test('calling function should call PusherClient.subscribe', ()=>{
@@ -47,7 +46,7 @@ describe('PusherClientHandler bind tests', () => {
         bindSpy = jest.fn();
         subscribeSpy = jest.fn(()=>{return {bind: bindSpy}});
         (getPusherClient as jest.Mock).mockReturnValue({subscribe: subscribeSpy});
-        client = new PusherClientHandler('stub', 0)
+        client = new PusherClientHandler('stub_id', 0)
     })
 
     test('calling function should call channel.bind', ()=>{
@@ -81,14 +80,16 @@ describe('PusherClientHandler handleRequest tests', () => {
     beforeEach(()=>{
         setterSpy = jest.fn()
     })
+
     test('the existing count is 1, so 2 is passed to the setter',()=>{
-        client = new PusherClientHandler('stub', 1)
+        client = new PusherClientHandler('stub_id', 1)
         const func = client.handleRequest(setterSpy)
         func()
         expect(setterSpy).toHaveBeenCalledWith(2)
     })
+
     test('the existing count is 8, so 9 is passed to the setter',()=>{
-        client = new PusherClientHandler('stub', 8)
+        client = new PusherClientHandler('stub_id', 8)
         const func = client.handleRequest(setterSpy)
         func()
         expect(setterSpy).toHaveBeenCalledWith(9)
@@ -109,8 +110,9 @@ describe('PusherClientHandler return tests', () => {
         unsubscribeSpy = jest.fn();
         subscribeSpy = jest.fn(()=>{return {bind: bindSpy, unbind: unBindSpy}});
         (getPusherClient as jest.Mock).mockReturnValue({subscribe: subscribeSpy, unsubscribe: unsubscribeSpy});
-        client = new PusherClientHandler('stub', 0)
+        client = new PusherClientHandler('stub_id', 0)
     })
+
     test('return is a function, it should call unbind',()=>{
         const func = client.subscribeToPusher(jest.fn())
         func()
