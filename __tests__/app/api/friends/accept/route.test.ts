@@ -238,6 +238,14 @@ describe('calls to pusher',()=>{
         await POST(req);
         expect(triggerSpy).toHaveBeenCalledWith("user__54321__friends", expect.anything(), expect.anything());
     })
+
+    test('id to add is 54321 expect pusher.trigger to be called with event "new_friend"', async ()=>{
+        fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1966'}});
+        const req = requestify('54321')
+        await POST(req);
+        expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), 'new_friend', expect.anything());
+    })
 })
 
 function assertResponse( response: Response, expected: expectedResponse): void{
