@@ -48,7 +48,6 @@ class Handler{
     async triggerPusher(){
         const pusherServer = getPusherServer()
         const user = await fetchRedis('get', 'user:1966')
-        console.log(user)
         const channel = QueryBuilder.friendsPusher(this.idToAdd)
         await pusherServer.trigger(channel, 'new_friend',user)
     }
