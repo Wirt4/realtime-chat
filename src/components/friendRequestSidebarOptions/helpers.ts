@@ -4,11 +4,11 @@ import {Dispatch, SetStateAction} from "react";
 import PusherClient, {Channel} from "pusher-js";
 
 export default class PusherClientHandler{
-    private readonly count: number;
-    private readonly id: string;
-    private readonly client: PusherClient;
+    private readonly count: number
+    private readonly id: string
+    private readonly client: PusherClient
     private readonly channelNames: {requests:string, friends: string}
-    private channels: { requests: Channel; friends: Channel; } | undefined
+    private channels: { requests: Channel, friends: Channel } | undefined
 
     constructor(id:string, count: number){
         this.id = id
