@@ -4,6 +4,8 @@ import fetchRedis from "@/helpers/redis";
 import {db} from "@/lib/db";
 import QueryBuilder from "@/lib/queryBuilder";
 import {getPusherServer} from "@/lib/pusher";
+import Pusher from "pusher";
+import {aw} from "@upstash/redis/zmscore-Dc6Llqgr";
 
 export async function POST(request: Request):Promise<Response> {
     const idToAdd = await getIdToAdd(request);
@@ -47,11 +49,14 @@ class Handler{
 
     async triggerPusher(){
         const pusherServer = getPusherServer()
-        const user = await fetchRedis('get', QueryBuilder.user(this.userId))
-        const friend = await fetchRedis('get', QueryBuilder.user(this.idToAdd));
-        const channel = QueryBuilder.friendsPusher(this.idToAdd)
-        await pusherServer.trigger(channel, 'new_friend',user)
-        await pusherServer.trigger(QueryBuilder.friendsPusher(this.userId), 'new_friend',friend)
+        await this.temp(pusherServer, this.userId, this.idToAdd)
+        await this.temp(pusherServer, this.idToAdd, this.userId)
+    }
+
+    async temp(server:Pusher, fromId: string, toId:string ){
+        const channel = QueryBuilder.friendsPusher(fromId)
+        const user = await fetchRedis('get', QueryBuilder.user(toId))
+        await server.trigger(channel, 'new_friend',user)
     }
 
     async areFriends(): Promise<boolean>{
