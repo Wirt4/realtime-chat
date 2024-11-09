@@ -87,18 +87,25 @@ describe('PusherClientHandler bind tests', () => {
         expect(requestBindSpy).toHaveBeenCalledWith("incoming_friend_requests", expect.anything());
     })
 
-    test('second argument to requestsChannel.bind should be the the output of method handleRequest', ()=>{
+    test('second argument to requestsChannel.bind should be the the output of method incrementCount', ()=>{
         function expected(){}
-        jest.spyOn(client, 'handleRequest').mockReturnValue(expected)
+        jest.spyOn(client, 'incrementCount').mockReturnValue(expected)
         client.subscribeToPusher(jest.fn())
         expect(requestBindSpy).toHaveBeenCalledWith(expect.anything(), expected);
     })
 
+    test('second argument to friendsChanel.bind should be the the output of method decrementCount', ()=>{
+        function expected(){}
+        jest.spyOn(client, 'decrementCount').mockReturnValue(expected)
+        client.subscribeToPusher(jest.fn())
+        expect(friendBindSpy).toHaveBeenCalledWith(expect.anything(), expected);
+    })
+
     test('argument from subscribeToPusher should be the same passed to handleSpy', ()=>{
         function expected(){}
-        const handleSpy = jest.spyOn(client, 'handleRequest')
+        const incrementCountSpy = jest.spyOn(client, 'incrementCount')
         client.subscribeToPusher(expected)
-        expect(handleSpy).toHaveBeenCalledWith(expected);
+        expect(incrementCountSpy).toHaveBeenCalledWith(expected);
     })
 
     test('first argument passed to friendsChannel.bind should be "new_friend"',()=>{
@@ -116,14 +123,14 @@ describe('PusherClientHandler handleRequest tests', () => {
 
     test('the existing count is 1, so 2 is passed to the setter',()=>{
         client = new PusherClientHandler('stub_id', 1)
-        const func = client.handleRequest(setterSpy)
+        const func = client.incrementCount(setterSpy)
         func()
         expect(setterSpy).toHaveBeenCalledWith(2)
     })
 
     test('the existing count is 8, so 9 is passed to the setter',()=>{
         client = new PusherClientHandler('stub_id', 8)
-        const func = client.handleRequest(setterSpy)
+        const func = client.incrementCount(setterSpy)
         func()
         expect(setterSpy).toHaveBeenCalledWith(9)
     })
@@ -154,7 +161,7 @@ describe('PusherClientHandler return tests', () => {
 
     test('return is a function, it should call unbind with the result of handleRequest',()=>{
         function expected(){}
-        jest.spyOn(client, 'handleRequest').mockReturnValue(expected)
+        jest.spyOn(client, 'incrementCount').mockReturnValue(expected)
         const func = client.subscribeToPusher(jest.fn())
         func()
         expect(unBindSpy).toHaveBeenCalledWith(expect.anything(), expected)

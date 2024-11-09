@@ -20,17 +20,21 @@ export default class PusherClientHandler{
         const friendRequestsChannel = client.subscribe(requestsChannelName)
 
         friendsChannel.bind(QueryBuilder.new_friend, ()=>{})
-        friendRequestsChannel.bind(QueryBuilder.incoming_friend_requests, this.handleRequest(setter))
+        friendRequestsChannel.bind(QueryBuilder.incoming_friend_requests, this.incrementCount(setter))
 
         return ()=>{
-            friendRequestsChannel.unbind(QueryBuilder.incoming_friend_requests, this.handleRequest(setter))
+            friendRequestsChannel.unbind(QueryBuilder.incoming_friend_requests, this.incrementCount(setter))
             client.unsubscribe(requestsChannelName)
         }
     }
 
-    handleRequest( func: Dispatch<SetStateAction<number>>){
+    incrementCount(func: Dispatch<SetStateAction<number>>){
         return ()=>{
             func(this.count+1)
         }
+    }
+
+    decrementCount(func: Dispatch<SetStateAction<number>>){
+        return ()=>{}
     }
 }
