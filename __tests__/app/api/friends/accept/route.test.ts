@@ -215,12 +215,7 @@ describe('calls to pusher',()=>{
     beforeEach(() => {
         triggerSpy = jest.fn();
         (getPusherServer as jest.Mock).mockReturnValue({trigger: triggerSpy});
-        (fetchRedis as jest.Mock).mockResolvedValueOnce(false).mockResolvedValueOnce(true).mockResolvedValueOnce({
-            name: 'William',
-            email: 'bill@canda.ca',
-            image: 'stub',
-            id: '1701'
-        })
+        (fetchRedis as jest.Mock).mockImplementation(redisMock());
     })
 
     afterEach(()=>{
@@ -271,7 +266,7 @@ describe('calls to pusher',()=>{
             id: '1966'
         });
     })
-    test('expect pusher.trigger to be called with data of the current user, diferent data', async ()=>{
+    test('expect pusher.trigger to be called with data of the current user, different data', async ()=>{
         (fetchRedis as jest.Mock).mockResolvedValueOnce(false)
             .mockResolvedValueOnce(true)
             .mockResolvedValueOnce({
@@ -312,6 +307,7 @@ function requestFromId(id: string | number): Request{
 
 function redisMock(isGreen: boolean = true){
     return async ( command: string, query:string, opts:string)=>{
+        console.log(query)
         if (command == 'sismember'){
             const arr = query.split(':');
             const query_name = arr[arr.length-1];
@@ -324,15 +320,17 @@ function redisMock(isGreen: boolean = true){
                     throw new Error('invalid table');
             }
         }
-        switch(query){
-            case 'user:1966':
+        const arr = query.split(':');
+        const query_name = arr[arr.length-1];
+        switch(query_name){
+            case '1966':
                 return {
                     name: 'Adam',
                     email: 'adam@batcave.com',
                     image: 'stub',
                     id: '1966'
                 }
-            case 'user:1701':
+            case '1701':
                 return {
                     name: 'William',
                     email: 'bill@canda.ca',
