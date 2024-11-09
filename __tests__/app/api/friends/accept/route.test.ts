@@ -159,7 +159,6 @@ describe('/api/friends/accept', () => {
 
         const request = requestFromId('1701');
         const response = await POST(request);
-
         assertResponse(response, expected);
     });
 
@@ -216,7 +215,12 @@ describe('calls to pusher',()=>{
     beforeEach(() => {
         triggerSpy = jest.fn();
         (getPusherServer as jest.Mock).mockReturnValue({trigger: triggerSpy});
-        (fetchRedis as jest.Mock).mockResolvedValueOnce(false).mockResolvedValueOnce(true)
+        (fetchRedis as jest.Mock).mockResolvedValueOnce(false).mockResolvedValueOnce(true).mockResolvedValueOnce({
+            name: 'William',
+            email: 'bill@canda.ca',
+            image: 'stub',
+            id: '1701'
+        })
     })
 
     afterEach(()=>{
@@ -248,6 +252,14 @@ describe('calls to pusher',()=>{
     })
 
     test('expect pusher.trigger to be called with data of the current user', async ()=>{
+        (fetchRedis as jest.Mock).mockResolvedValueOnce(false)
+            .mockResolvedValueOnce(true)
+            .mockResolvedValueOnce({
+                name: 'Adam',
+                email: 'adam@batcave.com',
+                image: 'stub',
+                id: '1966'
+            })
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1966'}});
         const req = requestFromId('54321')
@@ -260,6 +272,14 @@ describe('calls to pusher',()=>{
         });
     })
     test('expect pusher.trigger to be called with data of the current user, diferent data', async ()=>{
+        (fetchRedis as jest.Mock).mockResolvedValueOnce(false)
+            .mockResolvedValueOnce(true)
+            .mockResolvedValueOnce({
+            name: 'William',
+            email: 'bill@canda.ca',
+            image: 'stub',
+            id: '1701'
+        })
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1701'}});
         const req = requestFromId('54321')
@@ -292,15 +312,35 @@ function requestFromId(id: string | number): Request{
 
 function redisMock(isGreen: boolean = true){
     return async ( command: string, query:string, opts:string)=>{
-        const arr = query.split(':');
-        const table_name = arr[arr.length-1];
-        switch(table_name){
-            case 'friends':
-                return false;
-            case 'incoming_friend_requests':
-                return isGreen ? 1 : 0;
-            default:
-                throw new Error('invalid table');
+        if (command == 'sismember'){
+            const arr = query.split(':');
+            const query_name = arr[arr.length-1];
+            switch(query_name){
+                case 'friends':
+                    return false;
+                case 'incoming_friend_requests':
+                    return isGreen ? 1 : 0;
+                default:
+                    throw new Error('invalid table');
+            }
+        }
+        switch(query){
+            case 'user:1966':
+                return {
+                    name: 'Adam',
+                    email: 'adam@batcave.com',
+                    image: 'stub',
+                    id: '1966'
+                }
+            case 'user:1701':
+                return {
+                    name: 'William',
+                    email: 'bill@canda.ca',
+                    image: 'stub',
+                    id: '1701'
+                }
+                default:
+                    return {}
         }
     }
 }

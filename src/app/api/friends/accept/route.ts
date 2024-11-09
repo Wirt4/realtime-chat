@@ -12,7 +12,7 @@ export async function POST(request: Request):Promise<Response> {
         return respond('Invalid Request', 422);
     }
 
-    const  userId = await getUserId();
+    const userId = await getUserId();
     if (!userId) {
         return respond('Unauthorized', 401);
     }
@@ -47,12 +47,7 @@ class Handler{
 
     async triggerPusher(){
         const pusherServer = getPusherServer()
-        const user ={
-            name: 'Adam',
-            email: 'adam@batcave.com',
-            image: 'stub',
-            id: '1966'
-        }
+        const user = await fetchRedis('get')
         const channel = QueryBuilder.friendsPusher(this.idToAdd)
         await pusherServer.trigger(channel, 'new_friend',user)
     }
