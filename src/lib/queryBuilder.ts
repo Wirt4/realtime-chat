@@ -44,6 +44,10 @@ export default class QueryBuilder {
         return query.replace(/:/g, '__')
     }
 
+    static get new_friend (){
+        return 'new_friend'
+    }
+
     static get incoming_friend_requests () {
         return 'incoming_friend_requests'
     }

@@ -103,7 +103,7 @@ class PusherServerWrapper {
     async trigger(senderId: string, recipientId: string){
         const channel = QueryBuilder.friendsPusher(senderId)
         const user = await fetchRedis('get', QueryBuilder.user(recipientId))
-        await this.pusher.trigger(channel, 'new_friend',user)
+        await this.pusher.trigger(channel, QueryBuilder.new_friend, user)
     }
 }
 
