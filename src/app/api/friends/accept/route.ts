@@ -31,7 +31,7 @@ export async function POST(request: Request):Promise<Response> {
     }
 
     const pusherServer = getPusherServer()
-    await pusherServer.trigger(QueryBuilder.friendsPusher(idToAdd as string), 'stub', 'stub')
+    await pusherServer.trigger(QueryBuilder.friendsPusher(idToAdd as string), 'new_friend', 'stub')
     await handler.addToFriendsTables();
     await handler.removeRequestFromTable();
     return new Response('OK');
