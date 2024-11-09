@@ -229,7 +229,15 @@ describe('calls to pusher',()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1966'}});
         const req = requestify('valid')
         await POST(req);
-        expect(triggerSpy).toHaveBeenCalledWith(QueryBuilder.friendsPusher('12345'), expect.anything(), expect.anything());
+        expect(triggerSpy).toHaveBeenCalledWith("user__12345__friends", expect.anything(), expect.anything());
+    })
+
+    test('id to add is 54321 expect pusher.trigger to be called with first arg "user__12345__friends"', async ()=>{
+        fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1966'}});
+        const req = requestify('valid')
+        await POST(req);
+        expect(triggerSpy).toHaveBeenCalledWith("user__54321__friends", expect.anything(), expect.anything());
     })
 })
 
