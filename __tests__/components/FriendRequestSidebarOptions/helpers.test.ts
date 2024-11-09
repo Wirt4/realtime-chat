@@ -108,7 +108,7 @@ describe('PusherClientHandler bind tests', () => {
         expect(incrementCountSpy).toHaveBeenCalledWith(expected);
     })
 
-    test('argument from subscribeToPusher should be the same passed to incrementCount', ()=>{
+    test('argument from subscribeToPusher should be the same passed to decrementCount', ()=>{
         function expected(){}
         const decrementCountSpy = jest.spyOn(client, 'decrementCount')
         client.subscribeToPusher(expected)
@@ -121,7 +121,7 @@ describe('PusherClientHandler bind tests', () => {
     })
 })
 
-describe('PusherClientHandler handleRequest tests', () => {
+describe('PusherClientHandler incrementCount tests', () => {
     let client: PusherClientHandler;
     let setterSpy: jest.Mock
     beforeEach(()=>{
@@ -138,6 +138,28 @@ describe('PusherClientHandler handleRequest tests', () => {
     test('the existing count is 8, so 9 is passed to the setter',()=>{
         client = new PusherClientHandler('stub_id', 8)
         const func = client.incrementCount(setterSpy)
+        func()
+        expect(setterSpy).toHaveBeenCalledWith(9)
+    })
+})
+
+describe('PusherClientHandler decrementCount tests', () => {
+    let client: PusherClientHandler;
+    let setterSpy: jest.Mock
+    beforeEach(()=>{
+        setterSpy = jest.fn()
+    })
+
+    test('the existing count is 1, so 0 is passed to the setter',()=>{
+        client = new PusherClientHandler('stub_id', 1)
+        const func = client.decrementCount(setterSpy)
+        func()
+        expect(setterSpy).toHaveBeenCalledWith(0)
+    })
+
+    test('the existing count is 8, so 7 is passed to the setter',()=>{
+        client = new PusherClientHandler('stub_id', 7)
+        const func = client.decrementCount(setterSpy)
         func()
         expect(setterSpy).toHaveBeenCalledWith(9)
     })
