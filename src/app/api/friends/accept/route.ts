@@ -30,8 +30,7 @@ export async function POST(request: Request):Promise<Response> {
         return respond('No Existing Friend Request', 400);
     }
 
-    const pusherServer = getPusherServer()
-    await pusherServer.trigger(QueryBuilder.friendsPusher(idToAdd as string), 'new_friend', 'stub')
+    await handler.triggerPusher()
     await handler.addToFriendsTables();
     await handler.removeRequestFromTable();
     return new Response('OK');
@@ -44,6 +43,11 @@ class Handler{
     constructor(idToAdd: string, userId: string) {
         this.idToAdd = idToAdd;
         this.userId = userId;
+    }
+
+    async triggerPusher(){
+        const pusherServer = getPusherServer()
+        await pusherServer.trigger(QueryBuilder.friendsPusher(this.idToAdd), 'new_friend', 'stub')
     }
 
     async areFriends(): Promise<boolean>{
