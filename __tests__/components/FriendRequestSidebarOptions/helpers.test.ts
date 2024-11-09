@@ -57,6 +57,7 @@ describe('PusherClientHandler bind tests', () => {
     beforeEach(()=>{
         jest.resetAllMocks();
         requestBindSpy = jest.fn();
+        friendBindSpy = jest.fn();
         subscribeSpy = jest.fn((channel: string)=>{
             if (channel.endsWith('requests')){
                 return {bind: requestBindSpy}
