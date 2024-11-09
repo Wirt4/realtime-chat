@@ -15,6 +15,7 @@ export default class PusherClientHandler{
         const client = getPusherClient();
         const channel = client.subscribe(QueryBuilder.incomingFriendRequestsPusher(this.id))
         channel.bind(QueryBuilder.incoming_friend_requests, this.handleRequest(setter))
+
         return ()=>{
             channel.unbind(QueryBuilder.incoming_friend_requests, this.handleRequest(setter))
             client.unsubscribe(QueryBuilder.incomingFriendRequestsPusher(this.id))
