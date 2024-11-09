@@ -35,8 +35,11 @@ export default class PusherClientHandler{
     }
 
     decrementCount(func: Dispatch<SetStateAction<number>>){
-        return ()=>{
-            func(this.count-1)
+        if (this.count > 0){
+            return ()=>{
+                func(this.count-1)
+            }
         }
+        return ()=>{}
     }
 }
