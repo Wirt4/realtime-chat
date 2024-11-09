@@ -3,7 +3,6 @@ import myGetServerSession from "@/lib/myGetServerSession";
 import fetchRedis from "@/helpers/redis";
 import { db } from '@/lib/db';
 import { getPusherServer} from "@/lib/pusher";
-import QueryBuilder from "@/lib/queryBuilder";
 
 jest.mock("@/lib/pusher",()=>({
     getPusherServer: jest.fn()
@@ -68,7 +67,7 @@ describe('/api/friends/accept', () => {
         assertResponse(response, expected);
     });
 
-    test("If the user's session is valid, then  POST doesn't return 401 UnAuthorized", async () => {
+    test("If the user's session is valid, then  POST doesn't return 401 Unauthorized", async () => {
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1701'}});
         const req = requestify('valid')
@@ -227,7 +226,7 @@ describe('calls to pusher',()=>{
     test('id to add is 12345 expect pusher.trigger to be called with first arg "user__12345__friends"', async ()=>{
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1966'}});
-        const req = requestify('valid')
+        const req = requestify('12345')
         await POST(req);
         expect(triggerSpy).toHaveBeenCalledWith("user__12345__friends", expect.anything(), expect.anything());
     })
@@ -235,7 +234,7 @@ describe('calls to pusher',()=>{
     test('id to add is 54321 expect pusher.trigger to be called with first arg "user__12345__friends"', async ()=>{
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1966'}});
-        const req = requestify('valid')
+        const req = requestify('54321')
         await POST(req);
         expect(triggerSpy).toHaveBeenCalledWith("user__54321__friends", expect.anything(), expect.anything());
     })
