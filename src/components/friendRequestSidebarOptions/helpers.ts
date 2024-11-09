@@ -14,8 +14,9 @@ export default class PusherClientHandler{
     subscribeToPusher(setter: Dispatch<SetStateAction<number>>){
         const client =  getPusherClient()
         const requestsChannelName = QueryBuilder.incomingFriendRequestsPusher(this.id)
+        const friendsChannelName = QueryBuilder.friendsPusher(this.id)
 
-        const friendsChannel = client.subscribe(QueryBuilder.friendsPusher(this.id))
+        const friendsChannel = client.subscribe(friendsChannelName)
         const friendRequestsChannel = client.subscribe(requestsChannelName)
 
         friendsChannel.bind(QueryBuilder.new_friend, ()=>{})
