@@ -259,6 +259,18 @@ describe('calls to pusher',()=>{
             id: '1966'
         });
     })
+    test('expect pusher.trigger to be called with data of the current user, diferent data', async ()=>{
+        fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1701'}});
+        const req = requestFromId('54321')
+        await POST(req);
+        expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(), {
+            name: 'William',
+            email: 'bill@canda.ca',
+            image: 'stub',
+            id: '1701'
+        });
+    })
 })
 
 function assertResponse( response: Response, expected: expectedResponse): void{
