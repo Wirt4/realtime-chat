@@ -29,6 +29,12 @@ describe('PusherClientHandler tests', () => {
         expect(subscribeSpy).toHaveBeenCalledWith('user__12345__friends');
     })
 
+    test('if the sessionID is 54321, then subscribe is called with user__54321__friends',()=>{
+        client = new PusherClientHandler('54321', 0)
+        client.subscribeToPusher(jest.fn())
+        expect(subscribeSpy).toHaveBeenCalledWith('user__54321__friends');
+    })
+
     test('if the sessionID is 12345, then subscribe is called with user__12345__incoming_friend_requests',()=>{
         client = new PusherClientHandler('12345', 0)
         client.subscribeToPusher(jest.fn())
