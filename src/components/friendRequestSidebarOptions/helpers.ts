@@ -1,7 +1,6 @@
 import {getPusherClient} from "@/lib/pusher";
 import QueryBuilder from "@/lib/queryBuilder";
 import {Dispatch, SetStateAction} from "react";
-import Pusher from "pusher-js";
 
 export default class PusherClientHandler{
     private readonly count: number;
@@ -19,7 +18,7 @@ export default class PusherClientHandler{
         const friendsChannel = client.subscribe(QueryBuilder.friendsPusher(this.id))
         const friendRequestsChannel = client.subscribe(requestsChannelName)
 
-        friendsChannel.bind('stub', ()=>{})
+        friendsChannel.bind('new_friend', ()=>{})
         friendRequestsChannel.bind(QueryBuilder.incoming_friend_requests, this.handleRequest(setter))
 
         return ()=>{
