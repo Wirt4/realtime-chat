@@ -1,16 +1,12 @@
 import {Helpers} from "@/app/(dashboard)/dashboard/chat/[chatId]/helpers";
 import {notFound} from "next/navigation";
-import fetchRedis from "@/helpers/redis";
 import {messageArraySchema} from "@/lib/validations/messages"
 
-jest.mock("@/helpers/redis", () => ({
-    __esModule: true,
-    default: jest.fn(),
-}));
 
 jest.mock("next/navigation", () => ({
     notFound: jest.fn(),
 }));
+
 
 describe('test getChatMessage for 404 cases',()=>{
     let helpers: Helpers;
