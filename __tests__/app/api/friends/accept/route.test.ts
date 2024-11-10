@@ -257,7 +257,8 @@ describe('calls to pusher',()=>{
             image: 'stub',
             id: '1966'
         });
-    })
+    });
+
     test('expect pusher.trigger to be called with data of the current user, different data', async ()=>{
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'1701'}});
