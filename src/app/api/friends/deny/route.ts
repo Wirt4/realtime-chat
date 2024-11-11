@@ -2,16 +2,10 @@ import myGetServerSession from "@/lib/myGetServerSession";
 import {z} from "zod";
 import {removeDbEntry} from "@/lib/dbWrapper";
 import QueryBuilder from "@/lib/queryBuilder";
-import {getPusherClient, getPusherServer} from "@/lib/pusher";
+import {getPusherServer} from "@/lib/pusher";
 
 export async function POST(req: Request) {
     try {
-        const session = await myGetServerSession()
-
-        if (!session) {
-            return respond('Unauthorized', 401)
-        }
-
         let body: object
         let id: string
 
@@ -22,17 +16,28 @@ export async function POST(req: Request) {
         }catch{
             return respond('Invalid Request Payload', 422);
         }
+
+        const session = await myGetServerSession()
+
+        if (!session) {
+            return respond('Unauthorized', 401)
+        }
+
+        const userId = session.user.id
+
         try{
             const client = getPusherServer()
-            await client.trigger("user__"+session.user.id+"__friends", 'bar', 'spam')
+            await client.trigger(`user__${userId}__friends`, 'bar', 'spam')
         }catch{
             return respond('Pusher Error', 424)
         }
-        await removeDbEntry(QueryBuilder.incomingFriendRequests(session.user.id), id)
+
+        await removeDbEntry(QueryBuilder.incomingFriendRequests(userId), id)
     } catch (error) {
         if (error instanceof z.ZodError) {
             return respond('Invalid Request Payload', 422)
         }
+
         return respond('Redis Error', 424)
     }
 
