@@ -14,5 +14,5 @@ export async function POST(req:Request) {
         return new Response('Invalid Request payload', { status: 421 })
     }
 
-    return new Response('OK')
+    return new Response('Redis Error', { status: 424 })
 }

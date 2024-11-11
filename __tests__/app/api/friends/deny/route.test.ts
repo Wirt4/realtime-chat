@@ -96,6 +96,6 @@ describe('error cases', ()=>{
         }));
         const response = await POST(request);
         expect(response.status).toEqual(424);
-        expect(response.body?.toString()).not.toEqual('Redis Error');
+        expect(response.body?.toString()).toEqual('Redis Error');
     })
 })
