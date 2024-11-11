@@ -1,29 +1,21 @@
 import { getServerSession } from 'next-auth';
 import {POST} from "@/app/api/friends/deny/route";
-import {Redis} from "@upstash/redis";
+import {removeEntry} from "@/lib/dbWrapper";
 
 jest.mock('next-auth', () => ({
     getServerSession: jest.fn(),
 }));
 
-jest.mock('@upstash/redis', () => {
-    const originalModule = jest.requireActual('@upstash/redis');
-    return {
-        ...originalModule,
-        Redis: jest.fn().mockImplementation(() => ({
-            srem: jest.fn(),
-        })),
-    };
-});
+jest.mock("@/lib/dbWrapper", () => ({
+    removeEntry: jest.fn(),
+}));
 
 
 describe('error cases', ()=>{
     beforeEach(()=>{
         jest.resetAllMocks();
         (getServerSession as jest.Mock).mockResolvedValue(false);
-        (Redis as unknown as jest.Mock).mockImplementation(() => ({
-            srem: jest.fn(),
-        }));
+        (removeEntry as jest.Mock).mockImplementation(()=>jest.fn());
     })
     test('given the server session is falsy when the api is called then it should return a 401', async ()=>{
         const request = new Request('/api/friends/accept', {
@@ -95,9 +87,7 @@ describe('error cases', ()=>{
             body: JSON.stringify({ id: 'validID' }),
             headers: { 'Content-Type': 'application/json' }
         });
-        (Redis as unknown as jest.Mock).mockImplementation(() => ({
-            srem: jest.fn().mockRejectedValue('BAD'),
-        }));
+        (removeEntry as jest.Mock).mockImplementation(()=>{throw new Error('Bad')});
         const response = await POST(request);
         expect(response.status).toEqual(424);
         expect(response.body?.toString()).toEqual('Redis Error');

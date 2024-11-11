@@ -1,5 +1,7 @@
 import myGetServerSession from "@/lib/myGetServerSession";
 import {z} from "zod";
+import {db} from "@/lib/db";
+import {removeEntry} from "@/lib/dbWrapper";
 
 export async function POST(req:Request) {
     const session = await myGetServerSession()
@@ -15,7 +17,13 @@ export async function POST(req:Request) {
         return returnResponse('Invalid Request payload', 421)
     }
 
-    return returnResponse('Redis Error', 424)
+    try{
+        await removeEntry('foo', 'bar')
+        return returnResponse('OK', 200);
+    }catch{
+        return returnResponse('Redis Error', 424)
+    }
+
 }
 
 function returnResponse(message: string, status: number): Response {
