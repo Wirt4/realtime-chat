@@ -1,3 +1,3 @@
 export async function POST() {
-    return {status: 'stub', body: 'stub'}
+    return {status: '401', body: 'Unauthorized'}
 }
