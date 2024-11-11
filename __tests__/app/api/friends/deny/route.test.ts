@@ -12,21 +12,36 @@ describe('error cases', ()=>{
         (getServerSession as jest.Mock).mockResolvedValue(false);
     })
     test('given the server session is falsy when the api is called then it should return a 401', async ()=>{
+        const request = new Request('/api/friends/accept', {
+            method: 'POST',
+            body: JSON.stringify({ id: 'validID' }),
+            headers: { 'Content-Type': 'application/json' }
+        });
         (getServerSession as jest.Mock).mockResolvedValue(false);
-        const response = await POST('');
+        const response = await POST(request);
         expect(response.status).toEqual(401);
         expect(response.body?.toString()).toEqual('Unauthorized');
     });
 
     test('given the server session is falsy when the api is called then it should return a 401', async ()=>{
         (getServerSession as jest.Mock).mockResolvedValue({user:{id:'stub'}});
-        const response = await POST('');
+        const request = new Request('/api/friends/accept', {
+            method: 'POST',
+            body: JSON.stringify({ id: 'validID' }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        const response = await POST(request);
         expect(response.status).not.toEqual(401);
         expect(response.body?.toString()).not.toEqual('Unauthorized');
     });
 
-    test('given nothing throws an uncaught error, when the api is called then it should return a Respone Object', async ()=>{
-        const response = await POST('');
+    test('given nothing throws an uncaught error, when the api is called then it should return a Response Object', async ()=>{
+        const request = new Request('/api/friends/accept', {
+            method: 'POST',
+            body: JSON.stringify({ id: 'validID' }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        const response = await POST(request);
         const expectedType = new Response('OK')
         expect(typeof response).toEqual(typeof expectedType);
     });
