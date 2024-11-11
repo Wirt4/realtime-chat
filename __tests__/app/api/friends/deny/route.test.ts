@@ -1,5 +1,6 @@
 import { getServerSession } from 'next-auth';
 import {POST} from "@/app/api/friends/deny/route";
+import {request} from "node:http";
 
 jest.mock('next-auth', () => ({
     getServerSession: jest.fn(),
@@ -32,8 +33,25 @@ describe('error cases', ()=>{
 
     test("given the session works but the  parameter isn't formatted correctly, when the api is called, it should return a 422", async()=>{
         (getServerSession as jest.Mock).mockResolvedValue({user:{id:'stub'}});
-        const response = await POST('non-formatted string');
+        const request = new Request('/api/friends/accept', {
+            method: 'POST',
+            body: 'non-formatted string',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        const response = await POST(request);
         expect(response.status).toEqual(421);
         expect(response.body?.toString()).toEqual('Invalid Request payload');
+    })
+
+    test("given the session works and the parameter is formatted correctly, when the api is called, then it won't return a 422", async()=>{
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'stub'}});
+        const request = new Request('/api/friends/accept', {
+            method: 'POST',
+            body: JSON.stringify({ id: 'validID' }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        const response = await POST( request);
+        expect(response.status).not.toEqual(421);
+        expect(response.body?.toString()).not.toEqual('Invalid Request payload');
     })
 })
