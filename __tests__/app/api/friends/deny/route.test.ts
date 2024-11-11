@@ -17,6 +17,7 @@ describe('error cases', ()=>{
         (getServerSession as jest.Mock).mockResolvedValue(false);
         (removeEntry as jest.Mock).mockImplementation(()=>jest.fn());
     })
+
     test('given the server session is falsy when the api is called then it should return a 401', async ()=>{
         const request = new Request('/api/friends/accept', {
             method: 'POST',
@@ -104,5 +105,22 @@ describe('error cases', ()=>{
         const response = await POST(request);
         expect(response.status).toEqual(200);
         expect(response.body?.toString()).toEqual('OK');
+    })
+})
+
+describe('Arguments passed to database',()=>{
+    beforeAll(()=>{
+        jest.resetAllMocks()
+    })
+    test('given a user id of "12345", when the endpoint is called, ' +
+        'then the first argument to wrapper "removeEntry" is "user:12345:incoming_friend_requests"',async ()=>{
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'12345'}});
+        const request = new Request('/api/friends/accept', {
+            method: 'POST',
+            body: JSON.stringify({ id: 'stub' }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        await POST(request);
+        expect(removeEntry as jest.Mock).toHaveBeenCalledWith('user:12345:incoming_friend_requests', expect.anything());
     })
 })

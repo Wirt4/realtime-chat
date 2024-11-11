@@ -1,6 +1,5 @@
 import myGetServerSession from "@/lib/myGetServerSession";
 import {z} from "zod";
-import {db} from "@/lib/db";
 import {removeEntry} from "@/lib/dbWrapper";
 
 export async function POST(req:Request) {
