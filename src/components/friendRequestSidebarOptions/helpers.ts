@@ -19,6 +19,7 @@ export default class PusherClientHandler{
             requests:  QueryBuilder.incomingFriendRequestsPusher(this.id),
             friends: QueryBuilder.friendsPusher(this.id)
         }
+
     }
 
     subscribeToPusher(setter: Dispatch<SetStateAction<number>>){
@@ -46,7 +47,7 @@ export default class PusherClientHandler{
     bindAllChannels(func: Dispatch<SetStateAction<number>>){
         if (this.channels){
             this.channels.friends.bind(QueryBuilder.new_friend, this.decrementCount(func))
-            this.channels.requests.bind(QueryBuilder.deny_friend, this.decrementCount(func))
+            this.channels.friends.bind(QueryBuilder.deny_friend, this.decrementCount(func))
             this.channels.requests.bind(QueryBuilder.incoming_friend_requests, this.incrementCount(func))
         }
     }
@@ -54,7 +55,7 @@ export default class PusherClientHandler{
     unbindAllChannels(func: Dispatch<SetStateAction<number>>){
         if (this.channels){
             this.channels.friends.unbind(QueryBuilder.new_friend, this.decrementCount(func))
-            this.channels.requests.unbind(QueryBuilder.deny_friend, this.decrementCount(func))
+            this.channels.friends.unbind(QueryBuilder.deny_friend, this.decrementCount(func))
             this.channels.requests.unbind(QueryBuilder.incoming_friend_requests, this.incrementCount(func))
         }
     }
