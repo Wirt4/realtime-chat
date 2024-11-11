@@ -1,29 +1,13 @@
 import '@testing-library/jest-dom'
+
 import {render} from '@testing-library/react';
 import Page from '@/app/(dashboard)/dashboard/chat/[chatId]/page'
-import {Helpers} from '@/app/(dashboard)/dashboard/chat/[chatId]/helpers';
-import Messages from "@/components/Messages";
-
-import myGetServerSession from "@/lib/myGetServerSession";
 import {notFound} from "next/navigation";
 import {db} from "@/lib/db"
-import ChatInput from "@/components/ChatInput/ChatInput";
+import { getServerSession } from 'next-auth';
 import {Utils} from "@/lib/utils";
+import fetchMock from "jest-fetch-mock";
 
-jest.mock("@/components/Messages",() => ({
-    __esModule: true,
-    default: jest.fn(),
-}))
-
-jest.mock("@/components/ChatInput/ChatInput",() => ({
-    __esModule: true,
-    default: jest.fn(),
-}))
-
-jest.mock("@/lib/myGetServerSession", () => ({
-    __esModule: true,
-    default: jest.fn(),
-}));
 
 jest.mock('@/lib/db', () => ({
     db: {
@@ -35,44 +19,47 @@ jest.mock("next/navigation", () => ({
     notFound: jest.fn(),
 }));
 
+jest.mock('next-auth', () => ({
+    getServerSession: jest.fn(), // Create a mock for getServerSession
+}));
+
 describe('ChatPage renders with expected content', () => {
     beforeEach(()=>{
         jest.resetAllMocks();
-        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'userid1'}});
+        fetchMock.resetMocks();
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'userid1'}});
         (db.get as jest.Mock).mockResolvedValue({
             name: "partner name",
             email: "stub",
             image: "/stub",
             id: "userid2",
         });
-        jest.spyOn(Helpers.prototype, "getChatMessages").mockResolvedValue([]);
-        (ChatInput as jest.Mock).mockReturnValue(<div aria-label='chat input'/> )
+        fetchMock.mockResponseOnce(JSON.stringify({ result: [] }));
     });
+
     test('page renders',async ()=>{
         render(await Page({params:{chatId: 'userid1--userid2'}}));
     });
 
-    test('If the session is null, the page call notfound page',async ()=>{
-        (myGetServerSession as jest.Mock).mockResolvedValueOnce(null);
-
-        render(await Page({params:{chatId: 'userid1--userid2'}}));
-
-        expect(notFound).toHaveBeenCalled();
-    });
-
     test("If the session is valid, then the page doesn't call notfound page", async ()=>{
-        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'stub'}});
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'stub'}});
 
         render(await Page({params:{chatId: 'stub--stub'}}));
 
         expect(notFound).not.toHaveBeenCalled();
     });
 
-    test('If the user is not a participant in the conversation, then the page calls notFound',async ()=>{
-        (myGetServerSession as jest.Mock).mockResolvedValue({user:{session:{id:'1701'}}});
+    test('If the session is null, the page call notfound page',async ()=>{
+        (getServerSession as jest.Mock).mockResolvedValue(null);
 
         render(await Page({params:{chatId: 'userid1--userid2'}}));
 
+        expect(notFound).toHaveBeenCalled();
+    });
+
+    test('If the user is not a participant in the conversation, then the page calls notFound',async ()=>{
+        (getServerSession as jest.Mock).mockResolvedValue({user:{session:{id:'1701'}}});
+        render(await Page({params:{chatId: 'userid1--userid2'}}));
         expect(notFound).toHaveBeenCalled();
     });
 
@@ -141,7 +128,7 @@ describe('ChatPage renders with expected content', () => {
     })
 
     test('user is valid, but not for the chat', async ()=>{
-        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'userid1'}});
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'userid1'}});
         render(await Page({params:{chatId: 'userid2--userid3'}}));
 
         expect(notFound).toHaveBeenCalled();
@@ -202,7 +189,6 @@ describe('ChatPage renders with expected content', () => {
     })
 
     test("document should contain a messages component",async ()=>{
-        (Messages as jest.Mock).mockReturnValue(<div aria-label="messages" className="message-scroll"></div>)
         const {queryByLabelText} = render(await Page({params: {chatId: 'userid1--userid2'}}));
         const messages = queryByLabelText('messages')
         expect(messages).toBeInTheDocument();
@@ -218,18 +204,19 @@ describe('ChatPage renders with expected content', () => {
 describe('Chat page makes expected calls', ()=>{
     beforeEach(()=>{
         jest.resetAllMocks();
-        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'stub'}});
+        fetchMock.resetMocks();
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'stub'}});
         (db.get as jest.Mock).mockResolvedValue({
             name: "stub",
             email: "stub",
             image: "/stub",
             id: "stub",
         });
-        jest.spyOn(Helpers.prototype, 'getChatMessages').mockResolvedValue([]);
+        fetchMock.mockResponseOnce(JSON.stringify({ result: [] }));
     });
 
     test('Will get info for both users: ensure db is called with correct params',async ()=>{
-        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'kirk'}});
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'kirk'}});
 
         render(await Page({params:{chatId: 'kirk--spock'}}));
 
@@ -238,7 +225,7 @@ describe('Chat page makes expected calls', ()=>{
     })
 
     test('ill get info for both users: ensure db is called with correct params, different data',async ()=>{
-        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'mindy'}});
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'mindy'}});
 
         render(await Page({params:{chatId: 'mindy--mork'}}));
 
@@ -246,61 +233,60 @@ describe('Chat page makes expected calls', ()=>{
         expect(db.get as jest.Mock).toHaveBeenCalledWith('user:mindy');
     })
 
-    test('Messages is called with the output of getChatMessages and correct session id',async ()=>{
-        const msgs = [{
+    test('Given an array of messages returned from Redis When the page component is created then expect to see the information in the doc',async ()=>{
+        const msgs = [JSON.stringify({
             id: 'stub',
-            senderId:'stub',
+            senderId:'mork',
             text: 'Hello World',
             timestamp: 0
-        }]
-        jest.spyOn(Helpers.prototype, 'getChatMessages').mockResolvedValue(msgs);
+        })]
+        fetchMock.resetMocks()
+        fetchMock.mockResponseOnce(JSON.stringify({ result: msgs }));
 
-        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'mork'}});
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'mork'}});
 
-        render(await Page({params:{chatId: 'mindy--mork'}}));
-        expect(Messages as jest.Mock).toHaveBeenCalledWith(
-            expect.objectContaining({initialMessages:msgs, participants:
-                    expect.objectContaining({sessionId:'mork'})}),
-            {})
+        const {getByText} = render(await Page({params:{chatId: 'mindy--mork'}}));
+        const component = getByText('Hello World')
+        expect(component).toBeInTheDocument()
     });
 
-    test('Messages is called with the output of getChatMessages and correct session id, different data',async ()=>{
-        const msgs = [{
+    test('Messages is called with the output of getChatMessages and correct session id, different data',async ()=> {
+        const msgs = [JSON.stringify({
             id: 'stub',
-            senderId:'stub',
+            senderId: 'stub',
             text: "My name's Gypsy, What's yours?",
             timestamp: 0
-        }]
-        jest.spyOn(Helpers.prototype, 'getChatMessages').mockResolvedValue(msgs);
+        })]
+        fetchMock.resetMocks()
+        fetchMock.mockResponseOnce(JSON.stringify({result: msgs}));
 
-        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'mindy'}});
+        (getServerSession as jest.Mock).mockResolvedValue({user: {id: 'mindy'}});
 
-        render(await Page({params:{chatId: 'mindy--mork'}}));
-        expect(Messages as jest.Mock).toHaveBeenCalledWith(
-            expect.objectContaining({initialMessages:msgs, participants:
-                    expect.objectContaining({sessionId:'mindy'})}),
-            {})
+        const {getByText} = render(await Page({params: {chatId: 'mindy--mork'}}));
+
+        const msgtext = getByText("My name's Gypsy, What's yours?")
+        expect(msgtext).toBeInTheDocument()
     })
 
-    test('confirm getChatMessages is called with the chatId', async()=>{
-        const spy =  jest.spyOn(Helpers.prototype, 'getChatMessages').mockResolvedValue([]);
-        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'mindy'}});
+    test('confirm fetch is called with url containing the chatId', async()=>{
+        fetchMock.mockResponseOnce(JSON.stringify({ result: [] }));
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'mindy'}});
 
         render(await Page({params:{chatId: 'mindy--mork'}}));
 
-        expect(spy).toHaveBeenCalledWith('mindy--mork');
+        expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining('mindy--mork'), expect.anything());
     })
 
-    test('confirm getChatMessages is called with the chatId, different data', async()=>{
-        const spy =  jest.spyOn(Helpers.prototype, 'getChatMessages').mockResolvedValue([]);
-        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'gimli'}});
+    test('confirm fetch is called with url containing the chatId, different data', async()=>{
+        fetchMock.mockResponseOnce(JSON.stringify({ result: [] }));
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'gimli'}});
 
         render(await Page({params:{chatId: 'gimli--legolas'}}));
 
-        expect(spy).toHaveBeenCalledWith('gimli--legolas');
+        expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining('gimli--legolas'), expect.anything());
     })
 
-    test('confirm ChatInput is called with chat partner data', async()=>{
+    test('confirm ChatInput is called with chat partner data', async()=> {
         const expected = {
             name: "prettyBow",
             email: "mithril@forest.com",
@@ -308,10 +294,11 @@ describe('Chat page makes expected calls', ()=>{
             id: "legolas"
         };
         (db.get as jest.Mock).mockResolvedValue(expected);
-        render(await Page({params:{chatId: 'gimli--legolas'}}));
+        const {getByPlaceholderText} = render(await Page({params: {chatId: 'gimli--legolas'}}));
+        const placeholder = getByPlaceholderText('Send prettyBow a message')
 
-        expect(ChatInput as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({chatPartner:expected}), expect.anything());
-    });
+        expect(placeholder).toBeInTheDocument();
+    })
 
     test('confirm ChatInput is called with chat partner data, different data', async()=>{
         const expected = {
@@ -321,8 +308,10 @@ describe('Chat page makes expected calls', ()=>{
             id: "gimli"
         };
         (db.get as jest.Mock).mockResolvedValue(expected);
-        render(await Page({params:{chatId: 'gimli--legolas'}}));
+        const {getByPlaceholderText} = render(await Page({params:{chatId: 'gimli--legolas'}}));
 
-        expect(ChatInput as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({chatPartner:expected}), expect.anything());
+        const placeholder = getByPlaceholderText('Send mightyAx a message')
+
+        expect(placeholder).toBeInTheDocument();
     })
 })

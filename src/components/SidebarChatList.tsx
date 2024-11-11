@@ -1,6 +1,6 @@
 "use client";
 
-import React, {FC, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import SidebarChatListItem from "@/components/SidebarChatListItem";
 interface SidebarChatListProps {
     friends: User[],
@@ -8,8 +8,12 @@ interface SidebarChatListProps {
 }
 
 const SidebarChatList:FC<SidebarChatListProps> = ({friends, sessionId})=>{
-    const [activeChats] = useState<User[]>(friends);
+    const [activeChats, setActiveChats] = useState<User[]>(friends);
     const [unseenMessages] = useState<Message[]>([]);
+
+    useEffect(() => {
+        setActiveChats(friends);
+    }, [friends]);
 
     return (<ul key={sessionId} aria-label='chat list'  className='sidebar-chat-list'>
         {activeChats.sort((chatA: User, chatB: User)=>{

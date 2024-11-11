@@ -1,66 +1,59 @@
-## Functionality
-This is a real-time chat app. 
+# Real-time Chat
+Greetings, Programmer. The purpose of this README is to give you the tools
+to run the app locally and some guidance on making changes.
+![Screenshot 2024-11-04 at 5.15.40 PM.png](README%20assets/Screenshot%202024-11-04%20at%205.15.40%E2%80%AFPM.png)
 ## Running the App
-### Docker
-#### Building the Container
-note: Make sure `docker` or `docker desktop` is running.
-We're using an Alpine Linux image in Docker to approximate Heroku's default dyno container, which uses a lightweight Linux distro.
-From the root directory
 
+### Dependencies
+Like many Node apps, this chat leans on .env variables.  Set NEXTAUTH_URL to http://localhost:3000 and PUSHER_CLUSTER to us3.
+Double check that you have the correct credentials for the following:
+- `REDIS_URL`
+- `REDIS_TOKEN`
+- `NEXTAUTH_SECRET`
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
+- `PUSHER_APP_ID`
+- `PUSHER_KEY`
+- `PUSHER_SECRET`
+
+#### Turning it on and off again
+To run this app locally, you'll need Docker.
+To turn the app on, run:
 ```bash
 docker compose up  
 ```
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-#### Stopping the Container
+To shut it down, run:
 ```bash
 docker compose down
 ```
 
-## Running Tests
-The docker-compose file is rigged for live test watching. When running `docker compose up`,
-the container `realtime-chat-jest` will run the unit tests and pass or fail accordingly.
+## Making Changes
 
-If you're not running the docker container, you can manually run the tests with the `jest` command.
-Please please please please please please please please please write unit tests before implementing anything.
+### Editing
+This is a Test-Driven project, so unless it's a CSS issue, write the failing tests first and commit them to prove they fail.
+The cycle is "red", "green", "refactor".
 
-## Accessing the Database
-The app uses Upstash.com for database management, specifically the redis app. The REDIS_URL and REDIS_TOKEN are stored in  `.env.local`.
+Don't worry about changing tests.
+It's normal for tests to be updated for new features. And like any other code, unit tests are only right
+until proven wrong. So don't be afraid to change, maintain and refactor the test suites.
 
-## Deploying the App
-The app is set up with Heroku (live version at https://salthouse-chat-2e94934e3b3e.herokuapp.com/), 
-when it's good to publish,
+### Deploying
+The app is set up with Heroku (live version at https://salthouse-chat-2e94934e3b3e.herokuapp.com/).
+When it's ready to publish,
 1. merge changes from `dev` to `main`
 2. Open the heroku dashboard at `https://dashboard.heroku.com/apps/salthouse-chat/deploy/github`
 3. Hit "Deploy Branch from Main"
-
-
-## Navigation
-Chat id syntax is `${userId1}--${userId2}`
-
-## Env Variables
-The app uses the following .env variables.
-```
-REDIS_URL
-REDIS_TOKEN
-GOOGLE_CLIENT_ID
-GOOGLE_CLIENT_SECRET
-NEXTAUTH_SECRET
-```
-`REDIS` is for accessing the redis database via upstash.com
-`GOOGLE_CLIENT` is for OAuth login via the users' google account
-
-`NEXTAUTH_SECRET` is defined by the app developer, so I'm not sharing it with you here
-## Accessing the DB
-The app uses Redis on the backend, so log on to upstash.com with GitHub credenitals. 
-
-## OAuth
-For Google, go to https://console.cloud.google.com/ to configure the credentials.
-Authorized Javascript origin should be the homepage (for dev it's http://localhost:3000)
-For the authorized redirect URI, set it to `<homepage>/api/auth/callback/google`
-
 ![Screenshot 2024-10-01 at 2.32.50 PM.png](README%20assets/Screenshot%202024-10-01%20at%202.32.50%E2%80%AFPM.png)
 
+Users can join then invite each other to 2-person chats using their email addresses as identifiers.
+They'll need a Google account to use to log into the app using OAuth once it's up and running.
+
+## Summary
+To run the app, you'll need Docker and a Google account.
+You'll also need the credentials for Redis, NextAuth, GoogleClient, and Pusher.
+Make commits tests first.
+
 ## Credits
-Built from template put forth by @johnrushx at [https://nextjsstarter.com/blog/build-nextjs-real-time-chat-app-in-5-steps/](https://nextjsstarter.com/blog/build-nextjs-real-time-chat-app-in-5-steps/)
-Icons sourced from https://www.svgrepo.com/collection/batch-interface-oval-icons/
+Built from template put forth by https://github.com/joschan21 at [https://nextjsstarter.com/blog/build-nextjs-real-time-chat-app-in-5-steps/](https://nextjsstarter.com/blog/build-nextjs-real-time-chat-app-in-5-steps/)

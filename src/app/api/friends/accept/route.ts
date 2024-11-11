@@ -3,6 +3,8 @@ import myGetServerSession from "@/lib/myGetServerSession";
 import fetchRedis from "@/helpers/redis";
 import {db} from "@/lib/db";
 import QueryBuilder from "@/lib/queryBuilder";
+import {getPusherServer} from "@/lib/pusher";
+import Pusher from "pusher";
 
 export async function POST(request: Request):Promise<Response> {
     const idToAdd = await getIdToAdd(request);
@@ -11,7 +13,7 @@ export async function POST(request: Request):Promise<Response> {
         return respond('Invalid Request', 422);
     }
 
-    const  userId = await getUserId();
+    const userId = await getUserId();
     if (!userId) {
         return respond('Unauthorized', 401);
     }
@@ -29,7 +31,8 @@ export async function POST(request: Request):Promise<Response> {
         return respond('No Existing Friend Request', 400);
     }
 
-    await handler.addtoFriendsTabeles();
+    await handler.triggerPusher()
+    await handler.addToFriendsTables();
     await handler.removeRequestFromTable();
     return new Response('OK');
 }
@@ -41,6 +44,14 @@ class Handler{
     constructor(idToAdd: string, userId: string) {
         this.idToAdd = idToAdd;
         this.userId = userId;
+    }
+
+    async triggerPusher(){
+        const pusherServer =new PusherServerWrapper()
+        await Promise.all([
+            pusherServer.trigger(this.userId, this.idToAdd),
+            pusherServer.trigger(this.idToAdd, this.userId)
+        ])
     }
 
     async areFriends(): Promise<boolean>{
@@ -55,9 +66,11 @@ class Handler{
         return  fetchRedis('sismember', table, this.idToAdd);
     }
 
-    async addtoFriendsTabeles():Promise<void>{
-        await this.addToFriendsTable(this.userId, this.idToAdd);
-        await this.addToFriendsTable(this.idToAdd, this.userId);
+    async addToFriendsTables():Promise<void>{
+        await Promise.all([
+            this.addToFriendsTable(this.userId, this.idToAdd),
+            this.addToFriendsTable(this.idToAdd, this.userId)
+        ])
     }
 
     async removeRequestFromTable():Promise<void>{
@@ -81,6 +94,18 @@ class Handler{
     }
 }
 
+class PusherServerWrapper {
+    pusher: Pusher
+    constructor() {
+        this.pusher = getPusherServer()
+    }
+
+    async trigger(senderId: string, recipientId: string){
+        const channel = QueryBuilder.friendsPusher(senderId)
+        const user = await fetchRedis('get', QueryBuilder.user(recipientId))
+        await this.pusher.trigger(channel, QueryBuilder.new_friend, user)
+    }
+}
 
 function respond(text: string, status: number): Response
 {
@@ -97,8 +122,7 @@ async function getIdToAdd(request: Request):Promise<string | boolean> {
     try{
         const { id: idToAdd } =  z.object({id: z.string()}).parse(body);
         return idToAdd;
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    }catch(error){
+    }catch{
         return false;
     }
 }
