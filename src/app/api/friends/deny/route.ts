@@ -1,3 +1,9 @@
+import myGetServerSession from "@/lib/myGetServerSession";
+
 export async function POST() {
-    return {status: '401', body: 'Unauthorized'}
+    const session = await myGetServerSession()
+    if (!session){
+        return new Response('Unauthorized', { status: 401 })
+    }
+    return {}
 }
