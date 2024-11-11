@@ -172,7 +172,8 @@ describe('Arguments passed to database',()=>{
 })
 
 describe('events sent to pusher',()=>{
-    test("Given, when the endpoint is called, then the trigger is called with the user's channel", async()=>{
+    test("Given a session user id of 1966, when the endpoint is called, " +
+        "then the trigger is called with the channel 'user__1966__friends'", async()=>{
         (getServerSession as jest.Mock).mockResolvedValue({user:{id:'1966'}});
         const triggerSpy= jest.fn();
         (getPusherServer as jest.Mock).mockReturnValue({trigger: triggerSpy});
@@ -183,5 +184,19 @@ describe('events sent to pusher',()=>{
         });
         await POST(request);
         expect(triggerSpy).toHaveBeenCalledWith("user__1966__friends", expect.anything(), expect.anything());
+    })
+
+    test("Given a session user id of 1701, when the endpoint is called, " +
+        "then the trigger is called with the channel 'user__1701__friends'", async()=>{
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'1966'}});
+        const triggerSpy= jest.fn();
+        (getPusherServer as jest.Mock).mockReturnValue({trigger: triggerSpy});
+        const request = new Request('/api/friends/deny', {
+            method: 'POST',
+            body: JSON.stringify({ id: 'stub' }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        await POST(request);
+        expect(triggerSpy).toHaveBeenCalledWith("user__1701__friends", expect.anything(), expect.anything());
     })
 })
