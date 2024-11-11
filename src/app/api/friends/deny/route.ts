@@ -18,7 +18,7 @@ export async function POST(req:Request) {
     }
 
     try{
-        await removeDbEntry(QueryBuilder.incomingFriendRequests(session.user.id), 'bar')
+        await removeDbEntry(QueryBuilder.incomingFriendRequests(session.user.id), 'lColumbo')
         return returnResponse('OK', 200);
     }catch{
         return returnResponse('Redis Error', 424)
