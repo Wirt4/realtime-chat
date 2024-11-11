@@ -69,6 +69,7 @@ export default class PusherClientHandler{
                 func(this.count - 1)
             }
         }
+
         return ()=>{}
     }
 }

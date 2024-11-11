@@ -43,11 +43,11 @@ describe('PusherClientHandler tests', () => {
         expect(subscribeSpy).toHaveBeenCalledWith('user__12345__incoming_friend_requests');
     })
 
-    test('Given that the sessionID is 54321, when the method is run, ' +
+    test('Given that the sessionID is 54321, when subscribeToPusher is run, ' +
         ' then subscribe is called with user:12345:incoming_friend_requests',()=>{
         const client = new PusherClientHandler('54321', 0)
         client.subscribeToPusher(jest.fn())
-        expect(subscribeSpy).toHaveBeenCalledWith('user__54321__incoming_friend_requests');
+        expect(subscribeSpy).toHaveBeenCalledWith('user__54321__incoming_friend_requests')
     })
 })
 
@@ -123,12 +123,21 @@ describe('PusherClientHandler return tests', () => {
     //TODO: test here for "deny_friend"
 
     test('Given that the return is a function: When that function is called, ' +
-        'then the new_friends event is unbound with the decrementCount callback',()=>{
+        'then the new_friend event is unbound with the decrementCount callback',()=>{
         function expected(){}
         jest.spyOn(client, 'decrementCount').mockReturnValue(expected)
         const func = client.subscribeToPusher(jest.fn())
         func()
         expect(requestsUnbindSpy).toHaveBeenCalledWith('new_friend', expected)
+    })
+
+    test('Given that the return is a function: When that function is called, ' +
+        'then the deny_friend event is unbound with the decrementCount callback',()=>{
+        function expected(){}
+        jest.spyOn(client, 'decrementCount').mockReturnValue(expected)
+        const func = client.subscribeToPusher(jest.fn())
+        func()
+        expect(requestsUnbindSpy).toHaveBeenCalledWith('deny_friend', expected)
     })
 
     test('Given return is a function: when that function is called, ' +
