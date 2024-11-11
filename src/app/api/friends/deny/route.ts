@@ -7,12 +7,12 @@ import {getPusherServer} from "@/lib/pusher";
 export async function POST(req: Request) {
     try {
         let body: object
-        let id: string
+        let senderId: string
 
         try {
-             body = await req.json()
+            body = await req.json()
             const { id: idToDeny } = z.object({ id: z.string() }).parse(body)
-            id = idToDeny
+            senderId = idToDeny
         }catch{
             return respond('Invalid Request Payload', 422);
         }
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
             return respond('Pusher Error', 424)
         }
 
-        await removeDbEntry(QueryBuilder.incomingFriendRequests(userId), id)
+        await removeDbEntry(QueryBuilder.incomingFriendRequests(userId), senderId)
     } catch (error) {
         if (error instanceof z.ZodError) {
             return respond('Invalid Request Payload', 422)
