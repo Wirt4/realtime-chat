@@ -209,6 +209,6 @@ describe('events sent to pusher',()=>{
             headers: { 'Content-Type': 'application/json' }
         });
         await POST(request);
-        expect(triggerSpy).toHaveBeenCalledWith(expect.anything, 'deny_friend', expect.anything());
+        expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), 'deny_friend', expect.anything());
     })
 })
