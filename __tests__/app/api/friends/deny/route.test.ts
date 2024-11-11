@@ -109,8 +109,9 @@ describe('error cases', ()=>{
 })
 
 describe('Arguments passed to database',()=>{
-    beforeAll(()=>{
-        jest.resetAllMocks()
+    beforeEach(()=>{
+        jest.resetAllMocks();
+        (removeDbEntry as jest.Mock).mockImplementation(()=>jest.fn());
     })
 
     test('given a user id of "12345", when the endpoint is called, ' +
@@ -127,7 +128,7 @@ describe('Arguments passed to database',()=>{
 
     test('given a user id of "lColumbo", when the endpoint is called, ' +
         'then the first argument to wrapper "removeEntry" is "user:lColumbo:incoming_friend_requests"',async ()=>{
-        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'12345'}});
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'lColumbo'}});
         const request = new Request('/api/friends/accept', {
             method: 'POST',
             body: JSON.stringify({ id: 'stub' }),
