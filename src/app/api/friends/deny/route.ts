@@ -3,16 +3,21 @@ import {z} from "zod";
 
 export async function POST(req:Request) {
     const session = await myGetServerSession()
+    
     if (!session) {
-        return new Response('Unauthorized', { status: 401 })
+        return respondWith('Unauthorized', 401)
     }
 
     try{
         const body = await req.json()
         z.object({ id: z.string() }).parse(body)
     }catch{
-        return new Response('Invalid Request payload', { status: 421 })
+        return respondWith('Invalid Request payload', 421)
     }
 
-    return new Response('Redis Error', { status: 424 })
+    return respondWith('Redis Error', 424)
+}
+
+function respondWith(message: string, status: number): Response {
+    return new Response(message, {status})
 }
