@@ -112,6 +112,7 @@ describe('Arguments passed to database',()=>{
     beforeAll(()=>{
         jest.resetAllMocks()
     })
+
     test('given a user id of "12345", when the endpoint is called, ' +
         'then the first argument to wrapper "removeEntry" is "user:12345:incoming_friend_requests"',async ()=>{
         (getServerSession as jest.Mock).mockResolvedValue({user:{id:'12345'}});
@@ -122,5 +123,18 @@ describe('Arguments passed to database',()=>{
         });
         await POST(request);
         expect(removeDbEntry as jest.Mock).toHaveBeenCalledWith('user:12345:incoming_friend_requests', expect.anything());
+    })
+
+    test('given a user id of "lColumbo", when the endpoint is called, ' +
+        'then the first argument to wrapper "removeEntry" is "user:lColumbo:incoming_friend_requests"',async ()=>{
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'12345'}});
+        const request = new Request('/api/friends/accept', {
+            method: 'POST',
+            body: JSON.stringify({ id: 'stub' }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        await POST(request);
+        expect(removeDbEntry as jest.Mock).toHaveBeenCalledWith('user:lColumbo:incoming_friend_requests',
+            expect.anything());
     })
 })
