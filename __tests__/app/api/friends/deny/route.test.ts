@@ -30,9 +30,10 @@ describe('error cases', ()=>{
         expect(typeof response).toEqual(typeof expectedType);
     });
 
-    test("given the parameter isn't formatted correctly, when the api is called, it should return a 422", async()=>{
+    test("given the session works but the  parameter isn't formatted correctly, when the api is called, it should return a 422", async()=>{
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'stub'}});
         const response = await POST('non-formatted string');
         expect(response.status).toEqual(421);
-        expect(response.body?.toString()).not.toEqual('Invalid Request payload');
+        expect(response.body?.toString()).toEqual('Invalid Request payload');
     })
 })
