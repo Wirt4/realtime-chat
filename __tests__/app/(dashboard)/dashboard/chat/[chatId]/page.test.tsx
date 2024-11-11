@@ -20,7 +20,7 @@ jest.mock("next/navigation", () => ({
 }));
 
 jest.mock('next-auth', () => ({
-    getServerSession: jest.fn(), // Create a mock for getServerSession
+    getServerSession: jest.fn(),
 }));
 
 describe('ChatPage renders with expected content', () => {
