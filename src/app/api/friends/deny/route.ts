@@ -5,5 +5,5 @@ export async function POST() {
     if (!session){
         return new Response('Unauthorized', { status: 401 })
     }
-    return {}
+    return new Response('OK')
 }
