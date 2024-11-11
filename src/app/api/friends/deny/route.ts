@@ -2,6 +2,7 @@ import myGetServerSession from "@/lib/myGetServerSession";
 import {z} from "zod";
 import {removeDbEntry} from "@/lib/dbWrapper";
 import QueryBuilder from "@/lib/queryBuilder";
+import {getPusherClient, getPusherServer} from "@/lib/pusher";
 
 export async function POST(req: Request) {
     try {
@@ -21,6 +22,8 @@ export async function POST(req: Request) {
         }catch{
             return respond('Invalid Request Payload', 422);
         }
+        const client = getPusherServer()
+        await client.trigger("user__1966__friends", 'bar', 'spam')
 
         await removeDbEntry(QueryBuilder.incomingFriendRequests(session.user.id), id)
     } catch (error) {

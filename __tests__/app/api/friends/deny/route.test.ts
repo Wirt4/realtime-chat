@@ -21,6 +21,7 @@ describe('error cases', ()=>{
         jest.resetAllMocks();
         (getServerSession as jest.Mock).mockResolvedValue(false);
         (removeDbEntry as jest.Mock).mockImplementation(()=>jest.fn());
+        (getPusherServer as jest.Mock).mockReturnValue({trigger: jest.fn()});
     })
 
     test('given the server session is falsy when the api is called then it should return a 401', async ()=>{
@@ -117,6 +118,7 @@ describe('Arguments passed to database',()=>{
     beforeEach(()=>{
         jest.resetAllMocks();
         (removeDbEntry as jest.Mock).mockImplementation(()=>jest.fn());
+        (getPusherServer as jest.Mock).mockReturnValue({trigger: jest.fn()});
     })
 
     test('given a user id of "12345", when the endpoint is called, ' +
