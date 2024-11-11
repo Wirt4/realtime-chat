@@ -17,7 +17,7 @@ export async function POST(req:Request) {
     }
 
     try{
-        await removeEntry('foo', 'bar')
+        await removeEntry('user:12345:incoming_friend_requests', 'bar')
         return returnResponse('OK', 200);
     }catch{
         return returnResponse('Redis Error', 424)
