@@ -225,4 +225,17 @@ describe('events sent to pusher',()=>{
         await POST(request);
         expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(), '1966');
     })
+
+    test("Given a call with body id of abercrombe, When the endpoint is called, then the pusher trigger is called with the data 'abercrombe'", async()=>{
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'stub'}});
+        const triggerSpy= jest.fn();
+        (getPusherServer as jest.Mock).mockReturnValue({trigger: triggerSpy});
+        const request = new Request('/api/friends/deny', {
+            method: 'POST',
+            body: JSON.stringify({ id: 'abercrombe' }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        await POST(request);
+        expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(), 'abercrombe');
+    })
 })
