@@ -63,8 +63,8 @@ describe('error cases', ()=>{
             headers: { 'Content-Type': 'application/json' }
         });
         const response = await POST(request);
-        expect(response.status).toEqual(421);
-        expect(response.body?.toString()).toEqual('Invalid Request payload');
+        expect(response.status).toEqual(422);
+        expect(response.body?.toString()).toEqual('Invalid Request Payload');
     })
 
     test("given the session works and the parameter is formatted correctly, when the api is called, " +
@@ -156,7 +156,7 @@ describe('Arguments passed to database',()=>{
         (getServerSession as jest.Mock).mockResolvedValue({user:{id:'stub'}});
         const request = new Request('/api/friends/accept', {
             method: 'POST',
-            body: JSON.stringify({ id: 'lColumbo' }),
+            body: JSON.stringify({ id: 'bruceWayne' }),
             headers: { 'Content-Type': 'application/json' }
         });
         await POST(request);

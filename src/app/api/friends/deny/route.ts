@@ -1,31 +1,31 @@
 import myGetServerSession from "@/lib/myGetServerSession";
 import {z} from "zod";
 import {removeDbEntry} from "@/lib/dbWrapper";
-import QueryBuilder from "@/lib/queryBuilder";
 
-export async function POST(req:Request) {
-    const session = await myGetServerSession()
-    
-    if (!session) {
-        return returnResponse('Unauthorized', 401)
+export async function POST(req: Request) {
+    try {
+        let body: object
+        try {
+             body = await req.json()
+        }catch{
+            return new Response('Invalid Request Payload', { status: 422 })
+        }
+        const session = await myGetServerSession()
+
+        if (!session) {
+            return new Response('Unauthorized', { status: 401 })
+        }
+
+        const { id: idToDeny } = z.object({ id: z.string() }).parse(body)
+
+        await removeDbEntry(`user:${session.user.id}:incoming_friend_requests`, idToDeny)
+
+        return new Response('OK')
+    } catch (error) {
+        if (error instanceof z.ZodError) {
+            return new Response('Invalid Request Payload', { status: 422 })
+        }
+
+        return new Response('Redis Error', { status: 424 })
     }
-
-    try{
-        const body = await req.json()
-        z.object({ id: z.string() }).parse(body)
-    }catch{
-        return returnResponse('Invalid Request payload', 421)
-    }
-
-    try{
-        await removeDbEntry(QueryBuilder.incomingFriendRequests(session.user.id), 'lColumbo')
-        return returnResponse('OK', 200);
-    }catch{
-        return returnResponse('Redis Error', 424)
-    }
-
-}
-
-function returnResponse(message: string, status: number): Response {
-    return new Response(message, {status})
 }
