@@ -1,22 +1,17 @@
 import '@testing-library/jest-dom';
 import {render} from '@testing-library/react';
 import FriendRequestSidebarOptions from "@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions";
-import {act} from "react";
 
-
-const bindMock = jest.fn();
-
-jest.mock('@/lib/pusher', () => ({
+jest.mock("@/lib/pusher",()=>({
     getPusherClient: jest.fn().mockReturnValue({
         subscribe: jest.fn().mockReturnValue({
-            bind: jest.fn((event, callback) => {
-                if (event === 'deny_friend') {
-                    setTimeout(() => callback('userIdThatGetsCancelled'), 0);
-                }
-            }),
+            bind: jest.fn(),
+            unbind: jest.fn()
         }),
-    }),
+        unsubscribe: jest.fn()
+    })
 }));
+
 
 describe('FriendRequestSidebarOptions', () => {
     test('Component renders without error', ()=>{
