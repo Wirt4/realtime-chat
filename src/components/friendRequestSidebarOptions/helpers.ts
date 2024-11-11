@@ -53,6 +53,7 @@ export default class PusherClientHandler{
     unbindAllChannels(func: Dispatch<SetStateAction<number>>){
         if (this.channels){
             this.channels.friends.unbind(QueryBuilder.new_friend, this.decrementCount(func))
+            this.channels.requests.unbind('deny_friend', this.decrementCount(func))
             this.channels.requests.unbind(QueryBuilder.incoming_friend_requests, this.incrementCount(func))
         }
     }
