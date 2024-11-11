@@ -24,7 +24,7 @@ export async function POST(req: Request) {
         }
         try{
             const client = getPusherServer()
-            await client.trigger("user__1966__friends", 'bar', 'spam')
+            await client.trigger("user__"+session.user.id+"__friends", 'bar', 'spam')
         }catch{
             return respond('Pusher Error', 424)
         }

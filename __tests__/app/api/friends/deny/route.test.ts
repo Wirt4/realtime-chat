@@ -188,7 +188,7 @@ describe('events sent to pusher',()=>{
 
     test("Given a session user id of 1701, when the endpoint is called, " +
         "then the trigger is called with the channel 'user__1701__friends'", async()=>{
-        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'1966'}});
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'1701'}});
         const triggerSpy= jest.fn();
         (getPusherServer as jest.Mock).mockReturnValue({trigger: triggerSpy});
         const request = new Request('/api/friends/deny', {
