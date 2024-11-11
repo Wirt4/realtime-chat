@@ -33,11 +33,7 @@ export async function POST(req: Request) {
         }
 
         await removeDbEntry(QueryBuilder.incomingFriendRequests(userId), senderId)
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            return respond('Invalid Request Payload', 422)
-        }
-
+    } catch {
         return respond('Redis Error', 424)
     }
 
