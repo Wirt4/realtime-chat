@@ -22,9 +22,12 @@ export async function POST(req: Request) {
         }catch{
             return respond('Invalid Request Payload', 422);
         }
-        const client = getPusherServer()
-        await client.trigger("user__1966__friends", 'bar', 'spam')
-
+        try{
+            const client = getPusherServer()
+            await client.trigger("user__1966__friends", 'bar', 'spam')
+        }catch{
+            return respond('Pusher Error', 424)
+        }
         await removeDbEntry(QueryBuilder.incomingFriendRequests(session.user.id), id)
     } catch (error) {
         if (error instanceof z.ZodError) {
