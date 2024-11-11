@@ -1,6 +1,6 @@
 import myGetServerSession from "@/lib/myGetServerSession";
 import {z} from "zod";
-import {removeEntry} from "@/lib/dbWrapper";
+import {removeDbEntry} from "@/lib/dbWrapper";
 
 export async function POST(req:Request) {
     const session = await myGetServerSession()
@@ -17,7 +17,7 @@ export async function POST(req:Request) {
     }
 
     try{
-        await removeEntry('user:12345:incoming_friend_requests', 'bar')
+        await removeDbEntry('user:12345:incoming_friend_requests', 'bar')
         return returnResponse('OK', 200);
     }catch{
         return returnResponse('Redis Error', 424)

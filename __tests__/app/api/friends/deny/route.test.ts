@@ -1,13 +1,13 @@
 import { getServerSession } from 'next-auth';
 import {POST} from "@/app/api/friends/deny/route";
-import {removeEntry} from "@/lib/dbWrapper";
+import {removeDbEntry} from "@/lib/dbWrapper";
 
 jest.mock('next-auth', () => ({
     getServerSession: jest.fn(),
 }));
 
 jest.mock("@/lib/dbWrapper", () => ({
-    removeEntry: jest.fn(),
+    removeDbEntry: jest.fn(),
 }));
 
 
@@ -15,7 +15,7 @@ describe('error cases', ()=>{
     beforeEach(()=>{
         jest.resetAllMocks();
         (getServerSession as jest.Mock).mockResolvedValue(false);
-        (removeEntry as jest.Mock).mockImplementation(()=>jest.fn());
+        (removeDbEntry as jest.Mock).mockImplementation(()=>jest.fn());
     })
 
     test('given the server session is falsy when the api is called then it should return a 401', async ()=>{
@@ -88,7 +88,7 @@ describe('error cases', ()=>{
             body: JSON.stringify({ id: 'validID' }),
             headers: { 'Content-Type': 'application/json' }
         });
-        (removeEntry as jest.Mock).mockImplementation(()=>{throw new Error('Bad')});
+        (removeDbEntry as jest.Mock).mockImplementation(()=>{throw new Error('Bad')});
         const response = await POST(request);
         expect(response.status).toEqual(424);
         expect(response.body?.toString()).toEqual('Redis Error');
@@ -121,6 +121,6 @@ describe('Arguments passed to database',()=>{
             headers: { 'Content-Type': 'application/json' }
         });
         await POST(request);
-        expect(removeEntry as jest.Mock).toHaveBeenCalledWith('user:12345:incoming_friend_requests', expect.anything());
+        expect(removeDbEntry as jest.Mock).toHaveBeenCalledWith('user:12345:incoming_friend_requests', expect.anything());
     })
 })
