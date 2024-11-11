@@ -1,15 +1,29 @@
 import { getServerSession } from 'next-auth';
 import {POST} from "@/app/api/friends/deny/route";
-import {request} from "node:http";
+import {Redis} from "@upstash/redis";
 
 jest.mock('next-auth', () => ({
     getServerSession: jest.fn(),
 }));
 
+jest.mock('@upstash/redis', () => {
+    const originalModule = jest.requireActual('@upstash/redis');
+    return {
+        ...originalModule,
+        Redis: jest.fn().mockImplementation(() => ({
+            srem: jest.fn(),
+        })),
+    };
+});
+
+
 describe('error cases', ()=>{
     beforeEach(()=>{
         jest.resetAllMocks();
         (getServerSession as jest.Mock).mockResolvedValue(false);
+        (Redis as unknown as jest.Mock).mockImplementation(() => ({
+            srem: jest.fn(),
+        }));
     })
     test('given the server session is falsy when the api is called then it should return a 401', async ()=>{
         const request = new Request('/api/friends/accept', {
@@ -68,5 +82,20 @@ describe('error cases', ()=>{
         const response = await POST( request);
         expect(response.status).not.toEqual(421);
         expect(response.body?.toString()).not.toEqual('Invalid Request payload');
+    })
+
+    test("given the session works, the parameter is formatted correctly and the database throws, when the api is called, then it won't return a 400", async()=>{
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'stub'}});
+        const request = new Request('/api/friends/accept', {
+            method: 'POST',
+            body: JSON.stringify({ id: 'validID' }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        (Redis as unknown as jest.Mock).mockImplementation(() => ({
+            srem: jest.fn().mockRejectedValue('BAD'),
+        }));
+        const response = await POST(request);
+        expect(response.status).toEqual(424);
+        expect(response.body?.toString()).not.toEqual('Redis Error');
     })
 })
