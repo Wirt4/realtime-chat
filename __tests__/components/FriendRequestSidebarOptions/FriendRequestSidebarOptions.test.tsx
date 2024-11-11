@@ -1,21 +1,24 @@
 import '@testing-library/jest-dom';
 import {render} from '@testing-library/react';
 import FriendRequestSidebarOptions from "@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions";
+import {act} from "react";
 
 
-jest.mock('@/lib/pusher',()=>({
-    getPusherClient:jest.fn().mockReturnValue({
-        subscribe: jest.fn().mockReturnValue({bind: jest.fn()})
-    })
-}))
+const bindMock = jest.fn();
+
+jest.mock('@/lib/pusher', () => ({
+    getPusherClient: jest.fn().mockReturnValue({
+        subscribe: jest.fn().mockReturnValue({
+            bind: jest.fn((event, callback) => {
+                if (event === 'deny_friend') {
+                    setTimeout(() => callback('userIdThatGetsCancelled'), 0);
+                }
+            }),
+        }),
+    }),
+}));
 
 describe('FriendRequestSidebarOptions', () => {
-   // let subscribeSpy: jest.SpyInstance;
-
-   /** afterEach(()=>{
-        jest.clearAllMocks();
-    })**/
-
     test('Component renders without error', ()=>{
         render(<FriendRequestSidebarOptions sessionId='stub' initialRequestCount={0}/>);
     });
@@ -72,9 +75,23 @@ describe('FriendRequestSidebarOptions', () => {
     });
 });
 
-describe('Decrement display update tests',()=>{
+describe('Decrement display update tests',  ()=>{
     test("Given the initial request count is 4  sidebar shows a count of 4 requests: " +
-        "When the user's friend_requests pusher channel fires a deny_friend event, Then the sidebar shows a count of 3 requests",()=>{
+        "When the user's friend_requests pusher channel fires a deny_friend event, " +
+        "Then the sidebar shows a count of 3 requests",async ()=>{
+        bindMock.mockImplementation((event, callback)=>{
+            if (event === 'deny_friend') {
+                setTimeout(() => callback('deniedUserId'), 0); // Simulate data from the event
+            }
+        })
+        const {queryByText} = render(<FriendRequestSidebarOptions sessionId='stub' initialRequestCount={4}/>);
+        const label = queryByText("4")
+        expect(label).toBeInTheDocument();
+        await act(async () => {
+            // Wait for the setTimeout to trigger and update the component
+        });
 
+        const labelAfter = queryByText("3")
+        expect(labelAfter).toBeInTheDocument();
     })
 })
