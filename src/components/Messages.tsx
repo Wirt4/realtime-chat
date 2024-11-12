@@ -25,17 +25,17 @@ const Messages: FC<MessagesProps> = ({initialMessages, participants, chatId}) =>
 
     useEffect(() => {
         const pusherClient = getPusherClient()
-        const channel = pusherClient.subscribe("chat__"+ chatId)
-
+        const channelName = "chat__"+ chatId
+        const channel = pusherClient.subscribe(channelName)
         const messageHandler = (message: Message) => {
             setMessages((prev) => [message, ...prev])
         }
-
-        channel.bind('incoming_message', messageHandler)
+        const event = 'incoming_message'
+        channel.bind(event, messageHandler)
 
         return () => {
-            channel.bind('incoming_message', messageHandler)
-            pusherClient.unsubscribe("chat__"+ chatId)
+            channel.bind(event, messageHandler)
+            pusherClient.unsubscribe(channelName)
         }
     }, [chatId])
 
