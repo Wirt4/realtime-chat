@@ -288,6 +288,7 @@ test('something throws an error with an instance of error',async ()=>{
 
 describe('events sent to pusher',()=>{
     let request: Request
+    let triggerSpy: jest.Mock
 
     beforeAll(()=>{
         jest.useFakeTimers(); // Use modern fake timers
@@ -303,7 +304,9 @@ describe('events sent to pusher',()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
         jest.setSystemTime(new Date('2023-01-01T12:00:00Z'));
         // @ts-expect-error coerce for testing
-        jest.spyOn(messageSchema, 'parse').mockImplementation(a=>a)
+        jest.spyOn(messageSchema, 'parse').mockImplementation(a=>a);
+        triggerSpy = jest.fn();
+        (getPusherServer as jest.Mock).mockReturnValue({trigger: triggerSpy});
     })
 
     afterAll(()=>{
@@ -313,8 +316,6 @@ describe('events sent to pusher',()=>{
         ' when the endpoint is called, then pusher.trigger is called with the channel "chat__batman--robin"', async()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'batman'}});
         (fetchRedis as jest.Mock).mockResolvedValue(['robin']);
-        const triggerSpy = jest.fn();
-        (getPusherServer as jest.Mock).mockReturnValue({trigger: triggerSpy});
 
         request = new Request("/message/send", {
             method: "POST",
@@ -330,8 +331,6 @@ describe('events sent to pusher',()=>{
         ' when the endpoint is called, then pusher.trigger is called with the channel "chat__illia--napoleon"', async()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'illia'}});
         (fetchRedis as jest.Mock).mockResolvedValue(['napoleon']);
-        const triggerSpy = jest.fn();
-        (getPusherServer as jest.Mock).mockReturnValue({trigger: triggerSpy});
 
         request = new Request("/message/send", {
             method: "POST",
@@ -344,8 +343,6 @@ describe('events sent to pusher',()=>{
     })
 
     test('Given an error free call: when the endpoint is called, then pusher.trigger is called with the event "incoming_messages"', async()=>{
-        const triggerSpy = jest.fn();
-        (getPusherServer as jest.Mock).mockReturnValue({trigger: triggerSpy});
         await POST(request);
 
         expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), 'incoming_message', expect.anything());
