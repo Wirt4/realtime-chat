@@ -37,7 +37,7 @@ export async function POST(request: Request) {
 
 const triggerPusher = async (chatId: string)=>{
     const pusher = getPusherServer()
-    await pusher.trigger(`chat__${chatId}`, 'incoming_message', 'stub')
+    await pusher.trigger(`chat__${chatId}`, 'incoming_message', {id:'r2-d2'})
 }
 
 const fetchSenderId = async()=>{
