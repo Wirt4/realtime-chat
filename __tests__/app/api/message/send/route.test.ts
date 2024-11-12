@@ -5,6 +5,8 @@ import {db} from "@/lib/db"
 import {nanoid} from "nanoid";
 import {messageSchema} from "@/lib/validations/messages";
 import {getPusherServer} from "@/lib/pusher";
+import exp from "node:constants";
+import {exec} from "node:child_process";
 
 jest.mock("@/helpers/redis", ()=>jest.fn());
 jest.mock("@/lib/myGetServerSession",()=> jest.fn());
@@ -344,5 +346,11 @@ describe('events sent to pusher',()=>{
     test('Given an error free call: when the endpoint is called, then pusher.trigger is called with the event "incoming_messages"', async()=>{
         await POST(request);
         expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), 'incoming_message', expect.anything());
+    })
+
+    test("Given a nano id return of 'r2-d2' and no errors: when the endpoint is called, then pusher.trigger is called with the of an object containting 'id: r2-d2'", async()=>{
+        (nanoid as jest.Mock).mockReturnValue('r2-d2');
+        await POST(request);
+        expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.objectContaining({id: 'r2-d2'}));
     })
 })
