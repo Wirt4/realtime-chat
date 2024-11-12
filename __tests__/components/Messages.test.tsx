@@ -1,12 +1,24 @@
 import '@testing-library/jest-dom';
-import { render} from "@testing-library/react";
+import {act, render, screen} from "@testing-library/react";
 import Messages from "@/components/Messages";
 import {Message} from "@/lib/validations/messages"
 import React from "react";
 
+import {getPusherClient, pusherClient} from "@/lib/pusher";
+
+jest.mock('@/lib/pusher', () => ({
+    getPusherClient: jest.fn(),
+}))
+
 describe('Messages renders with correct content', () => {
     test('renders with a div labeled "messages"', () => {
-        const {getByLabelText} = render(<Messages initialMessages={[]} sessionId="stub"/>)
+        const stubUser = {id:'stub', email:'stub', image: '/stub', name:'stub'}
+        const participants = {
+            partner: stubUser,
+            user: stubUser,
+            sessionId:'stub'
+        }
+        const {getByLabelText} = render(<Messages initialMessages={[]} participants={participants}/>)
         const div = getByLabelText('messages')
         expect(div).toBeInTheDocument();
     })
@@ -85,3 +97,35 @@ describe('Messages renders with correct content', () => {
         expect(span).toHaveClass(/text-white/i)
     })
 })
+
+describe('Messages listens to pusher events', ()=>{
+    const initialMessages = [
+        { id: '1', senderId: 'user1', text: 'Hello', timestamp: 1627417600000 },
+    ]
+    const sessionId = 'user1'
+    const chatId = 'user1--user2'
+    const sessionImg = '/session-img-url'
+    const chatPartner = { id: 'user2', image: '/partner-img-url', email: 'stub', name:'stub' }
+
+    test('Given the component has been initialized with one message: When the pusher client is triggered, ' +
+        'then the page should subscribe to thechannel "chat__user1--user2"', async () => {
+        const mockPusherClient = {
+            subscribe: jest.fn(),
+        };
+
+        (getPusherClient as jest.Mock).mockReturnValue(mockPusherClient);
+
+        const participants = {
+            partner: chatPartner,
+            user: {id: chatId, email:'stub', image: sessionImg, name: 'stub'},
+            sessionId
+        }
+
+        render(<Messages initialMessages={initialMessages} participants={participants}/>)
+
+        expect(mockPusherClient.subscribe).toHaveBeenCalledWith(
+            'chat__user1--user2'
+        )
+    })
+})
+

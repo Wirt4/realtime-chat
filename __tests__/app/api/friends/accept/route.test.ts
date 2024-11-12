@@ -311,7 +311,6 @@ function requestFromId(id: string | number): Request{
 
 function redisMock(isGreen: boolean = true){
     return async ( command: string, query:string, opts:string)=>{
-        console.log(query)
         if (command == 'sismember'){
             const arr = query.split(':');
             const query_name = arr[arr.length-1];
