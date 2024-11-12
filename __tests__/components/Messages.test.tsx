@@ -23,7 +23,7 @@ describe('Messages renders with correct content', () => {
             user: stubUser,
             sessionId:'stub'
         }
-        const {getByLabelText} = render(<Messages initialMessages={[]} participants={participants}/>)
+        const {getByLabelText} = render(<Messages initialMessages={[]} participants={participants} chatId='stub'/>)
         const div = getByLabelText('messages')
         expect(div).toBeInTheDocument();
     })
@@ -40,7 +40,7 @@ describe('Messages renders with correct content', () => {
             user: stubUser,
             sessionId:'stub'
         }
-        const {getByText} = render(<Messages initialMessages={[msg]} participants={participants} />)
+        const {getByText} = render(<Messages initialMessages={[msg]} participants={participants}chatId='stub' />)
         const div = getByText('Hello World')
         expect(div).toBeInTheDocument();
     })
@@ -57,7 +57,7 @@ describe('Messages renders with correct content', () => {
             user: stubUser,
             sessionId:'stub'
         }
-        const {getByText} = render(<Messages initialMessages={[msg]} participants={participants} />)
+        const {getByText} = render(<Messages initialMessages={[msg]} participants={participants} chatId='stub'/>)
         const div = getByText("My name's Gypsy. What's yours?")
         expect(div).toBeInTheDocument();
     })
@@ -76,7 +76,7 @@ describe('Messages renders with correct content', () => {
             user: stubUser,
             sessionId
         }
-        const {getByText} = render(<Messages initialMessages={[msg]} participants={participants} />)
+        const {getByText} = render(<Messages initialMessages={[msg]} participants={participants}chatId='stub' />)
         const span = getByText("My name's Gypsy. What's yours?")
         expect(span).toHaveClass(/bg-orange/i)
         expect(span).toHaveClass(/text-white/i)
@@ -96,7 +96,7 @@ describe('Messages renders with correct content', () => {
             user: stubUser,
             sessionId
         }
-        const {getByText} = render(<Messages initialMessages={[msg]} participants={participants} />)
+        const {getByText} = render(<Messages initialMessages={[msg]} participants={participants} chatId='stub'/>)
         const span = getByText("My name's Gypsy. What's yours?")
         expect(span).toHaveClass(/bg-blue/i)
         expect(span).toHaveClass(/text-white/i)
@@ -108,6 +108,7 @@ describe('Messages listens to pusher events', ()=>{
         { id: '1', senderId: 'user1', text: 'Hello', timestamp: 1627417600000 },
     ]
     let chatId = 'user1--user2'
+    let sessionId = 'user1'
     let chatPartner = { id: 'user2', image: '/partner-img-url', email: 'stub', name:'stub' }
     let chatUser = {id: 'user1', email:'stub', image: '/user-img-url', name: 'stub'}
     beforeEach(()=>{
@@ -124,10 +125,10 @@ describe('Messages listens to pusher events', ()=>{
         const participants = {
             partner: chatPartner,
             user: chatUser,
-            chatId
+            sessionId
         }
 
-        render(<Messages initialMessages={initialMessages} participants={participants}/>)
+        render(<Messages initialMessages={initialMessages} participants={participants} chatId={chatId} />)
 
         expect(mockPusherClient.subscribe).toHaveBeenCalledWith(
             'chat__user1--user2'
@@ -139,6 +140,7 @@ describe('Messages listens to pusher events', ()=>{
         const mockPusherClient = {
             subscribe: jest.fn(),
         };
+        sessionId = 'barbara'
         chatId = 'adam--barbara';
         chatPartner = {id: 'adam', email:'stub', image: '/user-img-url', name: 'stub'};
         chatUser = {id: 'barbara', email:'stub', image: '/user-img-url', name: 'stub'};
@@ -149,10 +151,10 @@ describe('Messages listens to pusher events', ()=>{
         const participants = {
             partner: chatPartner,
             user: chatUser,
-            sessionId: chatId
+            sessionId
         };
 
-        render(<Messages initialMessages={initialMessages} participants={participants}/>)
+        render(<Messages initialMessages={initialMessages} participants={participants} chatId={chatId}/>)
 
         expect(mockPusherClient.subscribe).toHaveBeenCalledWith(
             'chat__adam--barbara'

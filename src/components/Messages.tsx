@@ -9,6 +9,7 @@ import {getPusherClient} from "@/lib/pusher";
 interface MessagesProps {
     initialMessages: Message[],
     participants: ChatParticipants,
+    chatId: string
 }
 
 interface ChatParticipants{
@@ -17,12 +18,12 @@ interface ChatParticipants{
     sessionId: string
 }
 
-const Messages: FC<MessagesProps> = ({initialMessages, participants}) => {
+const Messages: FC<MessagesProps> = ({initialMessages, participants, chatId}) => {
     const [messages] = useState<Message[]>(initialMessages)
     const scrollDownRef = useRef<HTMLDivElement | null>(null)
 
     const pusherClient = getPusherClient()
-    pusherClient.subscribe("chat__user1--user2")
+    pusherClient.subscribe("chat__"+ chatId)
 
     return <div aria-label='messages' className='message-scroll'>
         <div ref={scrollDownRef}>
