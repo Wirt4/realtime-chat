@@ -342,4 +342,12 @@ describe('events sent to pusher',()=>{
 
         expect(triggerSpy).toHaveBeenCalledWith('chat__illia--napoleon', expect.anything(), expect.anything());
     })
+
+    test('Given an error free call: when the endpoint is called, then pusher.trigger is called with the event "incoming_messages"', async()=>{
+        const triggerSpy = jest.fn();
+        (getPusherServer as jest.Mock).mockReturnValue({trigger: triggerSpy});
+        await POST(request);
+
+        expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), 'incoming_message', expect.anything());
+    })
 })
