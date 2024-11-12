@@ -353,4 +353,10 @@ describe('events sent to pusher',()=>{
         await POST(request);
         expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.objectContaining({id: 'r2-d2'}));
     })
+
+    test("Given a nano id return of 'c-3po' and no errors: when the endpoint is called, then pusher.trigger is called with the of an object containting 'id: c-3po'", async()=>{
+        (nanoid as jest.Mock).mockReturnValue('c-3po');
+        await POST(request);
+        expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.objectContaining({id: 'c-3po'}));
+    })
 })
