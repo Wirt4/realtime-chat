@@ -21,7 +21,7 @@ export async function POST(request: Request) {
         const timestamp: number = Date.now()
         const msg: Message = {id: nanoid(), senderId, text, timestamp}
         const parsedMessage: string = JSON.stringify(messageSchema.parse(msg))
-        await triggerPusher(chatId)
+        await triggerPusher(chatId, msg)
         await db.zadd( QueryBuilder.messages(chatId), {score: timestamp, member: parsedMessage} )
         return new Response('OK')
 
@@ -36,9 +36,9 @@ export async function POST(request: Request) {
     }
 }
 
-const triggerPusher = async (chatId: string)=>{
+const triggerPusher = async (chatId: string, msg: Message)=>{
     const pusher = getPusherServer()
-    await pusher.trigger(`chat__${chatId}`, 'incoming_message', {id:'r2-d2'})
+    await pusher.trigger(`chat__${chatId}`, 'incoming_message',msg)
 }
 
 const fetchSenderId = async()=>{
