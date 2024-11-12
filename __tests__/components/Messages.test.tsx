@@ -122,17 +122,13 @@ describe('Messages listens to pusher events', ()=>{
         const mockPusherClient = {
             subscribe: jest.fn().mockReturnValue({bind:jest.fn()}),
         };
-
         (getPusherClient as jest.Mock).mockReturnValue(mockPusherClient);
-
         const participants = {
             partner: chatPartner,
             user: chatUser,
             sessionId
         }
-
         render(<Messages initialMessages={initialMessages} participants={participants} chatId={chatId} />)
-
         expect(mockPusherClient.subscribe).toHaveBeenCalledWith(
             'chat__user1--user2'
         )
@@ -147,18 +143,13 @@ describe('Messages listens to pusher events', ()=>{
         chatId = 'adam--barbara';
         chatPartner = {id: 'adam', email:'stub', image: '/user-img-url', name: 'stub'};
         chatUser = {id: 'barbara', email:'stub', image: '/user-img-url', name: 'stub'};
-
-
         (getPusherClient as jest.Mock).mockReturnValue(mockPusherClient);
-
         const participants = {
             partner: chatPartner,
             user: chatUser,
             sessionId
         };
-
         render(<Messages initialMessages={initialMessages} participants={participants} chatId={chatId}/>)
-
         expect(mockPusherClient.subscribe).toHaveBeenCalledWith(
             'chat__adam--barbara'
         )
@@ -181,6 +172,28 @@ describe('Messages listens to pusher events', ()=>{
         render(<Messages initialMessages={initialMessages} participants={participants} chatId={chatId}/>)
         expect(bindMock).toHaveBeenCalledWith('incoming_message', expect.anything())
 
+    })
+
+    test('Given the component is subscribed to the correct channel and bound to the correct event: ' +
+        'When the event is triggered with a new message, then that message will be added to the DOM', async()=>{
+        const bindMock = jest.fn();
+        const mockPusherClient = {
+            subscribe: jest.fn().mockReturnValue({bind:bindMock})
+        };
+        (getPusherClient as jest.Mock).mockReturnValue(mockPusherClient);
+
+        const participants = {
+            partner: chatPartner,
+            user: chatUser,
+            sessionId
+        };
+        render(<Messages initialMessages={initialMessages} participants={participants} chatId={chatId}/>)
+        const newMessage = { id: '2', senderId: 'user2', text: 'Hi', timestamp: 1627417700000 }
+        expect(screen.queryByText('Hi')).not.toBeInTheDocument()
+        act(() => {
+           bindMock.mock.calls[0][1](newMessage)
+        })
+        expect(screen.getByText('Hi')).toBeInTheDocument()
     })
 })
 
