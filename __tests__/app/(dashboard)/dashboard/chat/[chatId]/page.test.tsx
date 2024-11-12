@@ -7,13 +7,17 @@ import {db} from "@/lib/db"
 import { getServerSession } from 'next-auth';
 import {Utils} from "@/lib/utils";
 import fetchMock from "jest-fetch-mock";
-
+import {getPusherClient} from "@/lib/pusher";
 
 jest.mock('@/lib/db', () => ({
     db: {
         get: jest.fn(),
     },
 }));
+
+jest.mock('@/lib/pusher', () => ({
+    getPusherClient: jest.fn(),
+}))
 
 jest.mock("next/navigation", () => ({
     notFound: jest.fn(),
@@ -35,6 +39,10 @@ describe('ChatPage renders with expected content', () => {
             id: "userid2",
         });
         fetchMock.mockResponseOnce(JSON.stringify({ result: [] }));
+        (getPusherClient as jest.Mock).mockReturnValue({
+            subscribe: jest.fn().mockReturnValue({bind:jest.fn(), unbind: jest.fn()}),
+            unsubscribe: jest.fn()
+        });
     });
 
     test('page renders',async ()=>{
@@ -43,17 +51,13 @@ describe('ChatPage renders with expected content', () => {
 
     test("If the session is valid, then the page doesn't call notfound page", async ()=>{
         (getServerSession as jest.Mock).mockResolvedValue({user:{id:'stub'}});
-
         render(await Page({params:{chatId: 'stub--stub'}}));
-
         expect(notFound).not.toHaveBeenCalled();
     });
 
     test('If the session is null, the page call notfound page',async ()=>{
         (getServerSession as jest.Mock).mockResolvedValue(null);
-
         render(await Page({params:{chatId: 'userid1--userid2'}}));
-
         expect(notFound).toHaveBeenCalled();
     });
 
@@ -213,6 +217,10 @@ describe('Chat page makes expected calls', ()=>{
             id: "stub",
         });
         fetchMock.mockResponseOnce(JSON.stringify({ result: [] }));
+        (getPusherClient as jest.Mock).mockReturnValue({
+            subscribe: jest.fn().mockReturnValue({bind:jest.fn(), unbind: jest.fn()}),
+            unsubscribe: jest.fn()
+        });
     });
 
     test('Will get info for both users: ensure db is called with correct params',async ()=>{
