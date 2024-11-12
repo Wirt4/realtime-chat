@@ -16,6 +16,7 @@ jest.mock('@/lib/db', () => ({
 jest.mock("nanoid",() => ({
     nanoid: jest.fn(),
 }));
+
 jest.mock("@/lib/pusher",()=>({
     getPusherServer: jest.fn()
 }));
@@ -31,6 +32,7 @@ describe('api/message/send tests', () => {
         (fetchRedis as jest.Mock).mockResolvedValue(['bar']);
         (nanoid as jest.Mock).mockReturnValue('c-3po');
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'foo'}});
+        (getPusherServer as jest.Mock).mockReturnValue({trigger: jest.fn()});
 
     })
     test('If session is null, then return a 401 Unauthorized',async ()=>{
@@ -107,7 +109,6 @@ describe('determine arguments passed to fetchRedis', ()=>{
 
 describe('api/message/send tests, parameters passed to database when authorization is green', () => {
     let request: Request
-
     beforeAll(()=>{
         jest.useFakeTimers(); // Use modern fake timers
     })
@@ -122,7 +123,8 @@ describe('api/message/send tests, parameters passed to database when authorizati
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
         jest.setSystemTime(new Date('2023-01-01T12:00:00Z'));
         // @ts-expect-error coerce for testing
-        jest.spyOn(messageSchema, 'parse').mockImplementation(a=>a)
+        jest.spyOn(messageSchema, 'parse').mockImplementation(a=>a);
+        (getPusherServer as jest.Mock).mockReturnValue({trigger: jest.fn()});
     })
 
     afterAll(()=>{
@@ -309,12 +311,14 @@ describe('events sent to pusher',()=>{
     })
     test('Given a chat Id of "batman--robin" and no errors:' +
         ' when the endpoint is called, then pusher.trigger is called with the channel "chat__batman--robin"', async()=>{
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'batman'}});
+        (fetchRedis as jest.Mock).mockResolvedValue(['robin']);
         const triggerSpy = jest.fn();
         (getPusherServer as jest.Mock).mockReturnValue({trigger: triggerSpy});
 
         request = new Request("/message/send", {
             method: "POST",
-            body: "{\"chatId\": \"batman--robin\"\"text\":\"Gotham needs us\"}",
+            body: "{\"chatId\": \"batman--robin\",\"text\":\"Gotham needs us\"}"
         });
 
         await POST(request);

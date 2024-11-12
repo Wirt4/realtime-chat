@@ -5,6 +5,7 @@ import QueryBuilder from "@/lib/queryBuilder";
 import {db} from "@/lib/db";
 import {nanoid} from "nanoid";
 import {Message, messageSchema} from "@/lib/validations/messages";
+import {getPusherServer} from "@/lib/pusher";
 
 export async function POST(request: Request) {
     try {
@@ -20,6 +21,8 @@ export async function POST(request: Request) {
         const timestamp: number = Date.now()
         const msg: Message = {id: nanoid(), senderId, text, timestamp}
         const parsedMessage: string = JSON.stringify(messageSchema.parse(msg))
+        const pusher = getPusherServer()
+        await pusher.trigger('chat__batman--robin', 'stub', 'stub')
         await db.zadd( QueryBuilder.messages(chatId), {score: timestamp, member: parsedMessage} )
         return new Response('OK')
     }catch(error){
