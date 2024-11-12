@@ -4,6 +4,7 @@ import fetchRedis from "@/helpers/redis";
 import {db} from "@/lib/db"
 import {nanoid} from "nanoid";
 import {messageSchema} from "@/lib/validations/messages";
+import {getPusherServer} from "@/lib/pusher";
 
 jest.mock("@/helpers/redis", ()=>jest.fn());
 jest.mock("@/lib/myGetServerSession",()=> jest.fn());
@@ -12,10 +13,12 @@ jest.mock('@/lib/db', () => ({
         zadd: jest.fn(),
     },
 }));
-
 jest.mock("nanoid",() => ({
     nanoid: jest.fn(),
-}))
+}));
+jest.mock("@/lib/pusher",()=>({
+    getPusherServer: jest.fn()
+}));
 
 describe('api/message/send tests', () => {
     let request: Request
@@ -278,5 +281,44 @@ test('something throws an error with an instance of error',async ()=>{
         });
         const response = await POST(request)
         expect(response).toEqual(expect.objectContaining({status: 500, statusText: 'Internal Server Error'}));
+    })
+})
+
+describe('events sent to pusher',()=>{
+    let request: Request
+
+    beforeAll(()=>{
+        jest.useFakeTimers(); // Use modern fake timers
+    })
+
+    beforeEach(()=>{
+        jest.resetAllMocks()
+        request = new Request("/message/send", {
+            method: "POST",
+            body: "{\"chatId\": \"bar--foo\"}",
+        });
+        (fetchRedis as jest.Mock).mockResolvedValue(['bar']);
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
+        jest.setSystemTime(new Date('2023-01-01T12:00:00Z'));
+        // @ts-expect-error coerce for testing
+        jest.spyOn(messageSchema, 'parse').mockImplementation(a=>a)
+    })
+
+    afterAll(()=>{
+        jest.useRealTimers()
+    })
+    test('Given a chat Id of "batman--robin" and no errors:' +
+        ' when the endpoint is called, then pusher.trigger is called with the channel "chat__batman--robin"', async()=>{
+        const triggerSpy = jest.fn();
+        (getPusherServer as jest.Mock).mockReturnValue({trigger: triggerSpy});
+
+        request = new Request("/message/send", {
+            method: "POST",
+            body: "{\"chatId\": \"batman--robin\"\"text\":\"Gotham needs us\"}",
+        });
+
+        await POST(request);
+
+        expect(triggerSpy).toHaveBeenCalledWith('chat__batman--robin', expect.anything(), expect.anything());
     })
 })
