@@ -42,7 +42,7 @@ describe('ChatPage renders with expected content', () => {
         });
         fetchMock.mockResponseOnce(JSON.stringify({ result: [] }));
         (getPusherClient as jest.Mock).mockReturnValue({
-            subscribe: jest.fn(),
+            subscribe: jest.fn().mockReturnValue({bind:jest.fn()}),
         });
     });
 
@@ -223,7 +223,7 @@ describe('Chat page makes expected calls', ()=>{
         });
         fetchMock.mockResponseOnce(JSON.stringify({ result: [] }));
         (getPusherClient as jest.Mock).mockReturnValue({
-            subscribe: jest.fn(),
+            subscribe: jest.fn().mockReturnValue({bind:jest.fn()}),
         });
     });
 

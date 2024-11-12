@@ -23,7 +23,8 @@ const Messages: FC<MessagesProps> = ({initialMessages, participants, chatId}) =>
     const scrollDownRef = useRef<HTMLDivElement | null>(null)
 
     const pusherClient = getPusherClient()
-    pusherClient.subscribe("chat__"+ chatId)
+    const channel = pusherClient.subscribe("chat__"+ chatId)
+    channel.bind('incoming_message', ()=>{})
 
     return <div aria-label='messages' className='message-scroll'>
         <div ref={scrollDownRef}>
