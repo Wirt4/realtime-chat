@@ -325,4 +325,21 @@ describe('events sent to pusher',()=>{
 
         expect(triggerSpy).toHaveBeenCalledWith('chat__batman--robin', expect.anything(), expect.anything());
     })
+
+    test('Given a chat Id of "illia--napoleon" and no errors:' +
+        ' when the endpoint is called, then pusher.trigger is called with the channel "chat__illia--napoleon"', async()=>{
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'illia'}});
+        (fetchRedis as jest.Mock).mockResolvedValue(['napoleon']);
+        const triggerSpy = jest.fn();
+        (getPusherServer as jest.Mock).mockReturnValue({trigger: triggerSpy});
+
+        request = new Request("/message/send", {
+            method: "POST",
+            body: "{\"chatId\": \"illia--napoleon\",\"text\":\"Waverly's calling\"}"
+        });
+
+        await POST(request);
+
+        expect(triggerSpy).toHaveBeenCalledWith('chat__illia--napoleon', expect.anything(), expect.anything());
+    })
 })
