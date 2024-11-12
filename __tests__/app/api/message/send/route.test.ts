@@ -348,15 +348,47 @@ describe('events sent to pusher',()=>{
         expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), 'incoming_message', expect.anything());
     })
 
-    test("Given a nano id return of 'r2-d2' and no errors: when the endpoint is called, then pusher.trigger is called with the of an object containting 'id: r2-d2'", async()=>{
+    test("Given a nano id return of 'r2-d2' and no errors: when the endpoint is called, then pusher.trigger is called with  an object containing 'id: r2-d2'", async()=>{
         (nanoid as jest.Mock).mockReturnValue('r2-d2');
         await POST(request);
         expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.objectContaining({id: 'r2-d2'}));
     })
 
-    test("Given a nano id return of 'c-3po' and no errors: when the endpoint is called, then pusher.trigger is called with the of an object containting 'id: c-3po'", async()=>{
+    test("Given a nano id return of 'c-3po' and no errors: when the endpoint is called, then pusher.trigger is called with an object containing 'id: c-3po'", async()=>{
         (nanoid as jest.Mock).mockReturnValue('c-3po');
         await POST(request);
         expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.objectContaining({id: 'c-3po'}));
     })
+
+    test("Given a sender id return of 'obi-1' and no errors: when the endpoint is called, then pusher.trigger is called with t an object containing 'senderId: obi-1'", async()=>{
+        request = new Request("/message/send", {
+            method: "POST",
+            body: "{\"chatId\": \"lukeski--obi-1\"}",
+        });
+        (fetchRedis as jest.Mock).mockResolvedValue(['lukeski']);
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'obi-1'}});
+        await POST(request);
+        expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.objectContaining({senderId: 'obi-1'}));
+    })
+
+    test('Given a message content of "Waverly\'s calling" and no errors:' +
+        ' when the endpoint is called, then pusher.trigger is called with the data containing "text: Waverly\'s calling"', async()=>{
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'illia'}});
+        (fetchRedis as jest.Mock).mockResolvedValue(['napoleon']);
+
+        request = new Request("/message/send", {
+            method: "POST",
+            body: "{\"chatId\": \"illia--napoleon\",\"text\":\"Waverly's calling\"}"
+        });
+
+        await POST(request);
+        expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.objectContaining({text:"Waverly's calling"}));
+    })
+
+    test("given a current system time of 522497054, when the endpoint is called, then the data passed to trigger should contain timestamp: 522497054", async()=>{
+        jest.setSystemTime(new Date(522497054));
+        await POST(request);
+        expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.objectContaining({timestamp:522497054}));
+    })
+
 })
