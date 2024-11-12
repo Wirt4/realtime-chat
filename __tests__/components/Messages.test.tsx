@@ -13,7 +13,8 @@ jest.mock('@/lib/pusher', () => ({
 describe('Messages renders with correct content', () => {
     beforeEach(()=>{
         (getPusherClient as jest.Mock).mockReturnValue({
-            subscribe: jest.fn().mockReturnValue({bind: jest.fn()}),
+            subscribe: jest.fn().mockReturnValue({bind: jest.fn(), unbind: jest.fn()}),
+            unsubscribe: jest.fn()
         });
     })
     test('renders with a div labeled "messages"', () => {
@@ -111,18 +112,19 @@ describe('Messages listens to pusher events', ()=>{
     let sessionId = 'user1'
     let chatPartner = { id: 'user2', image: '/partner-img-url', email: 'stub', name:'stub' }
     let chatUser = {id: 'user1', email:'stub', image: '/user-img-url', name: 'stub'}
+    let mockPusherClient: { subscribe: jest.Mock, unsubscribe: jest.Mock }
+    let bindMock: jest.Mock
     beforeEach(()=>{
         jest.resetAllMocks();
-        (getPusherClient as jest.Mock).mockReturnValue({
-            subscribe: jest.fn().mockReturnValue({bind:jest.fn()}),
-        });
+        bindMock = jest.fn()
+        mockPusherClient = {
+            subscribe: jest.fn().mockReturnValue({bind:bindMock, unbind: jest.fn()}),
+            unsubscribe: jest.fn()
+        };
+        (getPusherClient as jest.Mock).mockReturnValue(mockPusherClient);
     })
     test('Given the component has been initialized with user1--user2: When the component is rendered, ' +
         'then the page should subscribe to the channel "chat__user1--user2"', async () => {
-        const mockPusherClient = {
-            subscribe: jest.fn().mockReturnValue({bind:jest.fn()}),
-        };
-        (getPusherClient as jest.Mock).mockReturnValue(mockPusherClient);
         const participants = {
             partner: chatPartner,
             user: chatUser,
@@ -136,9 +138,6 @@ describe('Messages listens to pusher events', ()=>{
 
     test('Given the component has been initialized with the chat id adam--barbara: When the component is rendered, ' +
         'then the page should subscribe to the channel "chat__adam--barbara"', async () => {
-        const mockPusherClient = {
-            subscribe: jest.fn().mockReturnValue({bind:jest.fn()}),
-        };
         sessionId = 'barbara'
         chatId = 'adam--barbara';
         chatPartner = {id: 'adam', email:'stub', image: '/user-img-url', name: 'stub'};
@@ -157,11 +156,6 @@ describe('Messages listens to pusher events', ()=>{
 
     test('Given the component has subscribed to the correct channel for chat: When the component is rendered, ' +
         'then the channel returned by subscribe should be bound to the event "incoming-message"', async ()=>{
-        const bindMock = jest.fn();
-        const mockPusherClient = {
-            subscribe: jest.fn().mockReturnValue({bind: bindMock}),
-        };
-
         (getPusherClient as jest.Mock).mockReturnValue(mockPusherClient);
         const participants = {
             partner: chatPartner,
@@ -176,12 +170,6 @@ describe('Messages listens to pusher events', ()=>{
 
     test('Given the component is subscribed to the correct channel and bound to the correct event: ' +
         'When the event is triggered with a new message, then that message will be added to the DOM', async()=>{
-        const bindMock = jest.fn();
-        const mockPusherClient = {
-            subscribe: jest.fn().mockReturnValue({bind:bindMock})
-        };
-        (getPusherClient as jest.Mock).mockReturnValue(mockPusherClient);
-
         const participants = {
             partner: chatPartner,
             user: chatUser,

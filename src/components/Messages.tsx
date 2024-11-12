@@ -34,6 +34,8 @@ const Messages: FC<MessagesProps> = ({initialMessages, participants, chatId}) =>
         channel.bind('incoming_message', messageHandler)
 
         return () => {
+            channel.bind('incoming_message', messageHandler)
+            pusherClient.unsubscribe("chat__"+ chatId)
         }
     }, [chatId])
 

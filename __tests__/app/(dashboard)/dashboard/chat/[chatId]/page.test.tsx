@@ -26,7 +26,7 @@ jest.mock("next/navigation", () => ({
 }));
 
 jest.mock('next-auth', () => ({
-    getServerSession: jest.fn(), // Create a mock for getServerSession
+    getServerSession: jest.fn(),
 }));
 
 describe('ChatPage renders with expected content', () => {
@@ -42,7 +42,8 @@ describe('ChatPage renders with expected content', () => {
         });
         fetchMock.mockResponseOnce(JSON.stringify({ result: [] }));
         (getPusherClient as jest.Mock).mockReturnValue({
-            subscribe: jest.fn().mockReturnValue({bind:jest.fn()}),
+            subscribe: jest.fn().mockReturnValue({bind:jest.fn(), unbind: jest.fn()}),
+            unsubscribe: jest.fn()
         });
     });
 
@@ -52,17 +53,13 @@ describe('ChatPage renders with expected content', () => {
 
     test("If the session is valid, then the page doesn't call notfound page", async ()=>{
         (getServerSession as jest.Mock).mockResolvedValue({user:{id:'stub'}});
-
         render(await Page({params:{chatId: 'stub--stub'}}));
-
         expect(notFound).not.toHaveBeenCalled();
     });
 
     test('If the session is null, the page call notfound page',async ()=>{
         (getServerSession as jest.Mock).mockResolvedValue(null);
-
         render(await Page({params:{chatId: 'userid1--userid2'}}));
-
         expect(notFound).toHaveBeenCalled();
     });
 
@@ -223,7 +220,8 @@ describe('Chat page makes expected calls', ()=>{
         });
         fetchMock.mockResponseOnce(JSON.stringify({ result: [] }));
         (getPusherClient as jest.Mock).mockReturnValue({
-            subscribe: jest.fn().mockReturnValue({bind:jest.fn()}),
+            subscribe: jest.fn().mockReturnValue({bind:jest.fn(), unbind: jest.fn()}),
+            unsubscribe: jest.fn()
         });
     });
 
