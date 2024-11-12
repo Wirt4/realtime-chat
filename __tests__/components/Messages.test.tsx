@@ -4,13 +4,20 @@ import Messages from "@/components/Messages";
 import {Message} from "@/lib/validations/messages"
 import React from "react";
 
-import {getPusherClient, pusherClient} from "@/lib/pusher";
+import {getPusherClient} from "@/lib/pusher";
 
 jest.mock('@/lib/pusher', () => ({
     getPusherClient: jest.fn(),
 }))
 
 describe('Messages renders with correct content', () => {
+    beforeEach(()=>{
+        const mockPusherClient = {
+            subscribe: jest.fn(),
+        };
+
+        (getPusherClient as jest.Mock).mockReturnValue(mockPusherClient);
+    })
     test('renders with a div labeled "messages"', () => {
         const stubUser = {id:'stub', email:'stub', image: '/stub', name:'stub'}
         const participants = {
@@ -108,7 +115,7 @@ describe('Messages listens to pusher events', ()=>{
     const chatPartner = { id: 'user2', image: '/partner-img-url', email: 'stub', name:'stub' }
 
     test('Given the component has been initialized with one message: When the pusher client is triggered, ' +
-        'then the page should subscribe to thechannel "chat__user1--user2"', async () => {
+        'then the page should subscribe to the channel "chat__user1--user2"', async () => {
         const mockPusherClient = {
             subscribe: jest.fn(),
         };

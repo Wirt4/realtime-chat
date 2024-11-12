@@ -4,6 +4,7 @@ import {FC, useRef, useState} from "react";
 import {Message} from "@/lib/validations/messages"
 import {MessageTimestamp} from "@/components/MessageTimestamp";
 import MessageThumbnail from "@/components/MessageThumbnail";
+import {getPusherClient} from "@/lib/pusher";
 
 interface MessagesProps {
     initialMessages: Message[],
@@ -19,6 +20,9 @@ interface ChatParticipants{
 const Messages: FC<MessagesProps> = ({initialMessages, participants}) => {
     const [messages] = useState<Message[]>(initialMessages)
     const scrollDownRef = useRef<HTMLDivElement | null>(null)
+
+    const pusherClient = getPusherClient()
+    pusherClient.subscribe("chat__user1--user2")
 
     return <div aria-label='messages' className='message-scroll'>
         <div ref={scrollDownRef}>

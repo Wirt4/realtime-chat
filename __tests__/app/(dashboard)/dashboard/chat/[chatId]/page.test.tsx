@@ -7,6 +7,7 @@ import {db} from "@/lib/db"
 import { getServerSession } from 'next-auth';
 import {Utils} from "@/lib/utils";
 import fetchMock from "jest-fetch-mock";
+import {getPusherClient} from "@/lib/pusher";
 
 
 jest.mock('@/lib/db', () => ({
@@ -14,6 +15,11 @@ jest.mock('@/lib/db', () => ({
         get: jest.fn(),
     },
 }));
+
+jest.mock('@/lib/pusher', () => ({
+    getPusherClient: jest.fn(),
+}))
+
 
 jest.mock("next/navigation", () => ({
     notFound: jest.fn(),
@@ -35,6 +41,11 @@ describe('ChatPage renders with expected content', () => {
             id: "userid2",
         });
         fetchMock.mockResponseOnce(JSON.stringify({ result: [] }));
+        const mockPusherClient = {
+            subscribe: jest.fn(),
+        };
+
+        (getPusherClient as jest.Mock).mockReturnValue(mockPusherClient);
     });
 
     test('page renders',async ()=>{
@@ -213,6 +224,11 @@ describe('Chat page makes expected calls', ()=>{
             id: "stub",
         });
         fetchMock.mockResponseOnce(JSON.stringify({ result: [] }));
+        const mockPusherClient = {
+            subscribe: jest.fn(),
+        };
+
+        (getPusherClient as jest.Mock).mockReturnValue(mockPusherClient);
     });
 
     test('Will get info for both users: ensure db is called with correct params',async ()=>{
