@@ -12,11 +12,9 @@ jest.mock('@/lib/pusher', () => ({
 
 describe('Messages renders with correct content', () => {
     beforeEach(()=>{
-        const mockPusherClient = {
+        (getPusherClient as jest.Mock).mockReturnValue({
             subscribe: jest.fn(),
-        };
-
-        (getPusherClient as jest.Mock).mockReturnValue(mockPusherClient);
+        });
     })
     test('renders with a div labeled "messages"', () => {
         const stubUser = {id:'stub', email:'stub', image: '/stub', name:'stub'}
@@ -109,12 +107,13 @@ describe('Messages listens to pusher events', ()=>{
     const initialMessages = [
         { id: '1', senderId: 'user1', text: 'Hello', timestamp: 1627417600000 },
     ]
-    const sessionId = 'user1'
-    const chatId = 'user1--user2'
-    const sessionImg = '/session-img-url'
-    const chatPartner = { id: 'user2', image: '/partner-img-url', email: 'stub', name:'stub' }
-
-    test('Given the component has been initialized with one message: When the pusher client is triggered, ' +
+    let chatId = 'user1--user2'
+    let chatPartner = { id: 'user2', image: '/partner-img-url', email: 'stub', name:'stub' }
+    let chatUser = {id: 'user1', email:'stub', image: '/user-img-url', name: 'stub'}
+    beforeEach(()=>{
+        jest.resetAllMocks()
+    })
+    test('Given the component has been initialized with user1--user2: When the pusher client is triggered, ' +
         'then the page should subscribe to the channel "chat__user1--user2"', async () => {
         const mockPusherClient = {
             subscribe: jest.fn(),
@@ -124,14 +123,39 @@ describe('Messages listens to pusher events', ()=>{
 
         const participants = {
             partner: chatPartner,
-            user: {id: chatId, email:'stub', image: sessionImg, name: 'stub'},
-            sessionId
+            user: chatUser,
+            chatId
         }
 
         render(<Messages initialMessages={initialMessages} participants={participants}/>)
 
         expect(mockPusherClient.subscribe).toHaveBeenCalledWith(
             'chat__user1--user2'
+        )
+    })
+
+    test('Given the component has been initialized with the chat id adam--barbara: When the pusher client is triggered, ' +
+        'then the page should subscribe to the channel "chat__adam--barbara"', async () => {
+        const mockPusherClient = {
+            subscribe: jest.fn(),
+        };
+        chatId = 'adam--barbara';
+        chatPartner = {id: 'adam', email:'stub', image: '/user-img-url', name: 'stub'};
+        chatUser = {id: 'barbara', email:'stub', image: '/user-img-url', name: 'stub'};
+
+
+        (getPusherClient as jest.Mock).mockReturnValue(mockPusherClient);
+
+        const participants = {
+            partner: chatPartner,
+            user: chatUser,
+            sessionId: chatId
+        };
+
+        render(<Messages initialMessages={initialMessages} participants={participants}/>)
+
+        expect(mockPusherClient.subscribe).toHaveBeenCalledWith(
+            'chat__adam--barbara'
         )
     })
 })
