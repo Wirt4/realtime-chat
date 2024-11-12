@@ -22,7 +22,7 @@ export async function POST(request: Request) {
         const msg: Message = {id: nanoid(), senderId, text, timestamp}
         const parsedMessage: string = JSON.stringify(messageSchema.parse(msg))
         const pusher = getPusherServer()
-        await pusher.trigger(`chat__${chatId}`, 'stub', 'stub')
+        await pusher.trigger(`chat__${chatId}`, 'incoming_message', 'stub')
         await db.zadd( QueryBuilder.messages(chatId), {score: timestamp, member: parsedMessage} )
         return new Response('OK')
     }catch(error){
