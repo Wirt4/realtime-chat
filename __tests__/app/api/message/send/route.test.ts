@@ -5,8 +5,6 @@ import {db} from "@/lib/db"
 import {nanoid} from "nanoid";
 import {messageSchema} from "@/lib/validations/messages";
 import {getPusherServer} from "@/lib/pusher";
-import exp from "node:constants";
-import {exec} from "node:child_process";
 
 jest.mock("@/helpers/redis", ()=>jest.fn());
 jest.mock("@/lib/myGetServerSession",()=> jest.fn());
@@ -18,13 +16,13 @@ jest.mock('@/lib/db', () => ({
 jest.mock("nanoid",() => ({
     nanoid: jest.fn(),
 }));
-
 jest.mock("@/lib/pusher",()=>({
     getPusherServer: jest.fn()
 }));
 
 describe('api/message/send tests', () => {
     let request: Request
+
     beforeEach(()=>{
         jest.resetAllMocks()
         request = new Request("/message/send", {
@@ -37,16 +35,19 @@ describe('api/message/send tests', () => {
         (getPusherServer as jest.Mock).mockReturnValue({trigger: jest.fn()});
 
     })
+
     test('If session is null, then return a 401 Unauthorized',async ()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue(null);
         const response = await POST(request)
         expect(response).toEqual(expect.objectContaining({status: 401, statusText: 'Unauthorized'}));
     })
+
     test('Is fine, do not 401 Unauthorized',async ()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
         const response = await POST(request)
         expect(response).not.toEqual(expect.objectContaining({status: 401, statusText: 'Unauthorized'}));
     })
+
     test('userid is not part of the chat, return 401 unauthorized',async ()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
         request= new Request("/message/send", {
@@ -56,6 +57,7 @@ describe('api/message/send tests', () => {
         const response = await POST(request)
         expect(response).toEqual(expect.objectContaining({status: 401, statusText: 'Unauthorized'}));
     })
+
     test('if the chat partner is not part of the users friends list, then should return unauthorized',async ()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
         (fetchRedis as jest.Mock).mockResolvedValue([]);
@@ -86,6 +88,7 @@ describe('determine arguments passed to fetchRedis', ()=>{
         (nanoid as jest.Mock).mockReturnValue('c-3po');
 
     })
+
     test('confirm fetchRedis is called with correct arguments',async ()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
         (fetchRedis as jest.Mock).mockResolvedValue([]);
@@ -112,7 +115,7 @@ describe('determine arguments passed to fetchRedis', ()=>{
 describe('api/message/send tests, parameters passed to database when authorization is green', () => {
     let request: Request
     beforeAll(()=>{
-        jest.useFakeTimers(); // Use modern fake timers
+        jest.useFakeTimers()
     })
 
     beforeEach(()=>{
@@ -189,8 +192,9 @@ describe('api/message/send tests, parameters passed to database when authorizati
         const expected = "{\"id\":\"c-3po\",\"senderId\":\"anthony\",\"text\":\"hello\",\"timestamp\":522497054}"
         await POST(request)
         expect(db.zadd as jest.Mock).toHaveBeenCalledWith(expect.anything(),
-            expect.objectContaining({member:expected}));
+            expect.objectContaining({member:expected}))
     })
+
     test('db.zadd is called with correct message stringified and passed to member, differnt nanoid',async ()=>{
         jest.setSystemTime(new Date(522497054));
         (nanoid as jest.Mock).mockReturnValue('r2-d2');
@@ -235,6 +239,7 @@ describe('api/message/send tests, parameters passed to database when authorizati
         expect(db.zadd as jest.Mock).toHaveBeenCalledWith(expect.anything(),
             expect.objectContaining({member:expected}));
     })
+
     test('db.zadd is called with correct message stringified and passed to member, different timestamp',async ()=>{
         jest.setSystemTime(new Date(1730156654));
         (nanoid as jest.Mock).mockReturnValue('r2-d2');
@@ -253,6 +258,7 @@ describe('api/message/send tests, parameters passed to database when authorizati
 
 describe('error cases',()=>{
     let request: Request
+
     beforeEach(()=>{
         jest.resetAllMocks()
         request = new Request("/message/send", {
@@ -264,13 +270,15 @@ describe('error cases',()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'foo'}});
 
     })
-test('something throws an error with an instance of error',async ()=>{
-    (myGetServerSession as jest.Mock).mockImplementationOnce(()=>{
+
+    test('something throws an error with an instance of error',async ()=>{
+        (myGetServerSession as jest.Mock).mockImplementationOnce(()=>{
         throw new Error('I am a teapot');
-    });
-    const response = await POST(request)
-    expect(response).toEqual(expect.objectContaining({status: 500, statusText: 'I am a teapot'}));
-})
+        });
+        const response = await POST(request)
+        expect(response).toEqual(expect.objectContaining({status: 500, statusText: 'I am a teapot'}));
+    })
+
     test('something throws an error with an instance of error, different data',async ()=>{
         (nanoid as jest.Mock).mockImplementationOnce(()=>{
             throw new Error('You typed it wrong');
@@ -293,7 +301,7 @@ describe('events sent to pusher',()=>{
     let triggerSpy: jest.Mock
 
     beforeAll(()=>{
-        jest.useFakeTimers(); // Use modern fake timers
+        jest.useFakeTimers()
     })
 
     beforeEach(()=>{
@@ -314,6 +322,7 @@ describe('events sent to pusher',()=>{
     afterAll(()=>{
         jest.useRealTimers()
     })
+
     test('Given a chat Id of "batman--robin" and no errors:' +
         ' when the endpoint is called, then pusher.trigger is called with the channel "chat__batman--robin"', async()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'batman'}});
@@ -360,7 +369,7 @@ describe('events sent to pusher',()=>{
         expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.objectContaining({id: 'c-3po'}));
     })
 
-    test("Given a sender id return of 'obi-1' and no errors: when the endpoint is called, then pusher.trigger is called with t an object containing 'senderId: obi-1'", async()=>{
+    test("Given a sender id return of 'obi-1' and no errors: when the endpoint is called, then pusher.trigger is called with an object containing 'senderId: obi-1'", async()=>{
         request = new Request("/message/send", {
             method: "POST",
             body: "{\"chatId\": \"lukeski--obi-1\"}",
@@ -369,6 +378,17 @@ describe('events sent to pusher',()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'obi-1'}});
         await POST(request);
         expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.objectContaining({senderId: 'obi-1'}));
+    })
+
+    test("Given a sender id return of 'lukeski' and no errors: when the endpoint is called, then pusher.trigger is called with an object containing 'senderId: lukeski'", async()=>{
+        request = new Request("/message/send", {
+            method: "POST",
+            body: "{\"chatId\": \"lukeski--obi-1\"}",
+        });
+        (fetchRedis as jest.Mock).mockResolvedValue(['obi-1']);
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'lukeski'}});
+        await POST(request);
+        expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.objectContaining({senderId: 'lukeski'}));
     })
 
     test('Given a message content of "Waverly\'s calling" and no errors:' +
@@ -385,10 +405,29 @@ describe('events sent to pusher',()=>{
         expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.objectContaining({text:"Waverly's calling"}));
     })
 
+    test('Given a message content of "United Network of Command and Law Enforcement"' +
+        ' when the endpoint is called, then pusher.trigger is called with the data containing text: "United Network of Command and Law Enforcement"', async()=>{
+        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'illia'}});
+        (fetchRedis as jest.Mock).mockResolvedValue(['napoleon']);
+
+        request = new Request("/message/send", {
+            method: "POST",
+            body: "{\"chatId\": \"illia--napoleon\",\"text\":\"United Network of Command and Law Enforcement\"}"
+        });
+
+        await POST(request);
+        expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.objectContaining({text:"United Network of Command and Law Enforcement"}));
+    })
+
     test("given a current system time of 522497054, when the endpoint is called, then the data passed to trigger should contain timestamp: 522497054", async()=>{
         jest.setSystemTime(new Date(522497054));
         await POST(request);
         expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.objectContaining({timestamp:522497054}));
     })
 
+    test("given a current system time of 1731294251, when the endpoint is called, then the data passed to trigger should contain timestamp: 1731294251", async()=>{
+        jest.setSystemTime(new Date(1731294251));
+        await POST(request);
+        expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.objectContaining({timestamp: 1731294251}));
+    })
 })

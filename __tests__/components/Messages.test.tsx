@@ -114,6 +114,7 @@ describe('Messages listens to pusher events', ()=>{
     let chatUser = {id: 'user1', email:'stub', image: '/user-img-url', name: 'stub'}
     let mockPusherClient: { subscribe: jest.Mock, unsubscribe: jest.Mock }
     let bindMock: jest.Mock
+
     beforeEach(()=>{
         jest.resetAllMocks();
         bindMock = jest.fn()
@@ -123,6 +124,7 @@ describe('Messages listens to pusher events', ()=>{
         };
         (getPusherClient as jest.Mock).mockReturnValue(mockPusherClient);
     })
+
     test('Given the component has been initialized with user1--user2: When the component is rendered, ' +
         'then the page should subscribe to the channel "chat__user1--user2"', async () => {
         const participants = {
@@ -184,4 +186,3 @@ describe('Messages listens to pusher events', ()=>{
         expect(screen.getByText('Hi')).toBeInTheDocument()
     })
 })
-

@@ -9,7 +9,6 @@ import {Utils} from "@/lib/utils";
 import fetchMock from "jest-fetch-mock";
 import {getPusherClient} from "@/lib/pusher";
 
-
 jest.mock('@/lib/db', () => ({
     db: {
         get: jest.fn(),
@@ -19,7 +18,6 @@ jest.mock('@/lib/db', () => ({
 jest.mock('@/lib/pusher', () => ({
     getPusherClient: jest.fn(),
 }))
-
 
 jest.mock("next/navigation", () => ({
     notFound: jest.fn(),

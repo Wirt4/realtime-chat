@@ -29,7 +29,7 @@ const Messages: FC<MessagesProps> = ({initialMessages, participants, chatId}) =>
         const channel = pusherClient.subscribe(channelName)
 
         const messageHandler = (message: Message) => {
-            setMessages((prev) => [message, ...prev])
+            setMessages((prev) => [...prev, message])
         }
 
         const event = 'incoming_message'
