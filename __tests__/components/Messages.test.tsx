@@ -114,7 +114,7 @@ describe('Messages listens to pusher events', ()=>{
     beforeEach(()=>{
         jest.resetAllMocks()
     })
-    test('Given the component has been initialized with user1--user2: When the pusher client is triggered, ' +
+    test('Given the component has been initialized with user1--user2: When the component is rendered, ' +
         'then the page should subscribe to the channel "chat__user1--user2"', async () => {
         const mockPusherClient = {
             subscribe: jest.fn(),
@@ -135,7 +135,7 @@ describe('Messages listens to pusher events', ()=>{
         )
     })
 
-    test('Given the component has been initialized with the chat id adam--barbara: When the pusher client is triggered, ' +
+    test('Given the component has been initialized with the chat id adam--barbara: When the component is rendered, ' +
         'then the page should subscribe to the channel "chat__adam--barbara"', async () => {
         const mockPusherClient = {
             subscribe: jest.fn(),
@@ -159,6 +159,25 @@ describe('Messages listens to pusher events', ()=>{
         expect(mockPusherClient.subscribe).toHaveBeenCalledWith(
             'chat__adam--barbara'
         )
+    })
+
+    test('Given the component has subscribed to the correct channel for chat: When the component is rendered, ' +
+        'then the channel returned by subscribe should be bound to the event "incoming-message"', async ()=>{
+        const bindMock = jest.fn();
+        const mockPusherClient = {
+            subscribe: jest.fn().mockReturnValue({bind: bindMock}),
+        };
+
+        (getPusherClient as jest.Mock).mockReturnValue(mockPusherClient);
+        const participants = {
+            partner: chatPartner,
+            user: chatUser,
+            sessionId
+        };
+
+        render(<Messages initialMessages={initialMessages} participants={participants} chatId={chatId}/>)
+        expect(bindMock).toHaveBeenCalledWith('incoming_message', expect.anything())
+
     })
 })
 
