@@ -1,6 +1,6 @@
 'use client'
 
-import {FC, useRef, useState} from "react";
+import {FC, useEffect, useRef, useState} from "react";
 import {Message} from "@/lib/validations/messages"
 import {MessageTimestamp} from "@/components/MessageTimestamp";
 import MessageThumbnail from "@/components/MessageThumbnail";
@@ -19,12 +19,23 @@ interface ChatParticipants{
 }
 
 const Messages: FC<MessagesProps> = ({initialMessages, participants, chatId}) => {
-    const [messages] = useState<Message[]>(initialMessages)
+    const [messages, setMessages] = useState<Message[]>(initialMessages)
     const scrollDownRef = useRef<HTMLDivElement | null>(null)
 
-    const pusherClient = getPusherClient()
-    const channel = pusherClient.subscribe("chat__"+ chatId)
-    channel.bind('incoming_message', ()=>{})
+
+    useEffect(() => {
+        const pusherClient = getPusherClient()
+        const channel = pusherClient.subscribe("chat__"+ chatId)
+
+        const messageHandler = (message: Message) => {
+            setMessages((prev) => [message, ...prev])
+        }
+
+        channel.bind('incoming_message', messageHandler)
+
+        return () => {
+        }
+    }, [chatId])
 
     return <div aria-label='messages' className='message-scroll'>
         <div ref={scrollDownRef}>
