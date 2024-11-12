@@ -24,6 +24,7 @@ export async function POST(request: Request) {
         await triggerPusher(chatId)
         await db.zadd( QueryBuilder.messages(chatId), {score: timestamp, member: parsedMessage} )
         return new Response('OK')
+
     }catch(error){
         let message = 'Internal Server Error'
 
