@@ -67,6 +67,12 @@ describe('ChatPage renders with expected content', () => {
         expect(notFound).toHaveBeenCalled();
     });
 
+    test('If the user is not a participant in the conversation, then the page calls notFound',async ()=>{
+        (getServerSession as jest.Mock).mockResolvedValue({user:{session:{id:'1701'}}});
+        render(await Page({params:{chatId: 'userid1--userid2'}}));
+        expect(notFound).toHaveBeenCalled();
+    });
+
     test('chat page should render with an image',async ()=>{
         const {getByRole} = render(await Page({params:{chatId: 'userid1--userid2'}}));
         const image = getByRole('img');
