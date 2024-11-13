@@ -11,6 +11,9 @@ interface MessagesHeaderProps {
 const MessagesHeader: FC<MessagesHeaderProps> = ({partner})=> {
     const {image, name, email} = partner
     const [hidden, setHidden]=  useState<boolean>(true)
+    const toggle= ()=>{
+        setHidden(prev=> !prev)
+    }
     return <div className='chat-b'>
         <div className='chat-c'>
             <div className='relative'>
@@ -20,14 +23,14 @@ const MessagesHeader: FC<MessagesHeaderProps> = ({partner})=> {
                            alt={name}
                            referrerPolicy='no-referrer'
                            className='chat-image'
-                           onClick={()=>{setHidden(prev=> !prev)}}
+                           onClick={toggle}
                     />
                 </div>
             </div>
             <div className='chat-e'>
                 <div className='chat-f'>
                         <span className='chat-g'
-                              onClick={()=>{setHidden(prev=> !prev)}}>
+                              onClick={toggle}>
                             {name}
                         </span>
                 </div>
