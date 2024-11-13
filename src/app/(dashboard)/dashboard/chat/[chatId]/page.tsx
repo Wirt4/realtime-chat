@@ -8,6 +8,7 @@ import {Helpers} from "@/app/(dashboard)/dashboard/chat/[chatId]/helpers";
 import {Message} from "@/lib/validations/messages";
 import ChatInput from "@/components/ChatInput/ChatInput";
 import Participants from "@/lib/chatParticipants";
+import {UserMinus, X} from "lucide-react";
 
 interface ChatProps{
     params: {
@@ -87,7 +88,21 @@ const Header: FC<HeaderProps> = ({partner})=> {
                 <span className='chat-h'>
                         {email}
                     </span>
-                <span>Remove Friend</span>
+                <div className='friend-requests'>
+
+                    <button>
+                        <p className='friend-requests-email'>
+                            Remove Friend
+                        </p>
+                    </button>
+                    <button
+                        className='friend-requests-x h-96'
+                    >
+                        <X aria-label='x'
+                           className='friend-requests-button'
+                        />
+                    </button>
+                </div>
             </div>
         </div>
     </div>
