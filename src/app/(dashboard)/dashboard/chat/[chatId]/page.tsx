@@ -87,6 +87,7 @@ const Header: FC<HeaderProps> = ({partner})=> {
                 <span className='chat-h'>
                         {email}
                     </span>
+                <span>Remove Friend</span>
             </div>
         </div>
     </div>
