@@ -26,7 +26,8 @@ const MessagesHeader: FC<MessagesHeaderProps> = ({partner})=> {
             </div>
             <div className='chat-e'>
                 <div className='chat-f'>
-                        <span className='chat-g'>
+                        <span className='chat-g'
+                              onClick={()=>{setHidden(prev=> !prev)}}>
                             {name}
                         </span>
                 </div>
