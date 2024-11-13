@@ -20,7 +20,7 @@ const MessagesHeader: FC<MessagesHeaderProps> = ({partner})=> {
                            alt={name}
                            referrerPolicy='no-referrer'
                            className='chat-image'
-                           onClick={()=>{setHidden(false)}}
+                           onClick={()=>{setHidden(prev=> !prev)}}
                     />
                 </div>
             </div>
