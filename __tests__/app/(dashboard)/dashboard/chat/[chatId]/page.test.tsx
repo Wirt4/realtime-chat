@@ -8,6 +8,7 @@ import { getServerSession } from 'next-auth';
 import {Utils} from "@/lib/utils";
 import fetchMock from "jest-fetch-mock";
 import {getPusherClient} from "@/lib/pusher";
+import {POST} from "@/app/api/friends/remove/route"
 
 jest.mock('@/lib/db', () => ({
     db: {
@@ -15,6 +16,7 @@ jest.mock('@/lib/db', () => ({
     },
 }));
 
+jest.mock("@/app/api/friends/remove/route");
 jest.mock('@/lib/pusher', () => ({
     getPusherClient: jest.fn(),
 }))
@@ -261,6 +263,23 @@ describe('ChatPage renders with expected content', () => {
         const name = getByText('spock');
         fireEvent.click(name);
         expect(queryByText('Remove Friend')).toBeInTheDocument();
+    })
+
+    test("Given the message contains a partner's name and is clicked on, When the 'Remove Friend' option is clicked, the api endpoint '/friends/remove' is called.", async ()=>{
+        (db.get as jest.Mock).mockResolvedValue({
+            name: "spock",
+            email: "pon@far.com",
+            image: "/stub",
+            id: "userid2",
+        });
+        const {getByText} = render(await Page({params:{chatId: 'userid1--userid2'}}));
+        const name = getByText('spock');
+        fireEvent.click(name);
+        const button = getByText('Remove Friend');
+
+        fireEvent.click(button);
+
+        expect(POST as jest.Mock).toHaveBeenCalled();
     })
 });
 
