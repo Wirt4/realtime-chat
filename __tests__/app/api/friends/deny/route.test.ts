@@ -15,7 +15,6 @@ jest.mock("@/lib/pusher",()=>({
     getPusherServer: jest.fn()
 }));
 
-
 describe('error cases', ()=>{
     beforeEach(()=>{
         jest.resetAllMocks();
