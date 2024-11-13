@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 
-import {render} from '@testing-library/react';
+import {fireEvent, render} from '@testing-library/react';
 import Page from '@/app/(dashboard)/dashboard/chat/[chatId]/page'
 import {notFound} from "next/navigation";
 import {db} from "@/lib/db"
@@ -208,6 +208,19 @@ describe('ChatPage renders with expected content', () => {
         const {getByLabelText} = render(await Page({params:{chatId: 'userid1--userid2'}}));
         const chatInput = getByLabelText('chat input')
         expect(chatInput).toBeInTheDocument();
+    });
+
+    test("Given the message contains a partner's image  when the image is clicked on, Then the page should contain a link with an X icon that reads 'Remove Friend'.", async ()=>{
+        (db.get as jest.Mock).mockResolvedValue({
+            name: "spock",
+            email: "pon@far.com",
+            image: "/stub",
+            id: "userid2",
+        });
+        const {queryByText, getByRole} = render(await Page({params:{chatId: 'userid1--userid2'}}));
+        const picture = getByRole('img');
+        fireEvent.click(picture);
+        expect(queryByText('Remove Friend')).toBeInTheDocument();
     })
 });
 
