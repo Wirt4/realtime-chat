@@ -5,6 +5,7 @@ import QueryBuilder from "@/lib/queryBuilder";
 import {db} from "@/lib/db";
 import {nanoid} from "nanoid";
 import {Message, messageSchema} from "@/lib/validations/messages";
+import {getPusherServer} from "@/lib/pusher";
 
 export async function POST(request: Request) {
     try {
@@ -20,8 +21,10 @@ export async function POST(request: Request) {
         const timestamp: number = Date.now()
         const msg: Message = {id: nanoid(), senderId, text, timestamp}
         const parsedMessage: string = JSON.stringify(messageSchema.parse(msg))
+        await triggerPusher(chatId, msg)
         await db.zadd( QueryBuilder.messages(chatId), {score: timestamp, member: parsedMessage} )
         return new Response('OK')
+
     }catch(error){
         let message = 'Internal Server Error'
 
@@ -31,6 +34,11 @@ export async function POST(request: Request) {
 
         return new Response(message, { status: 500, statusText: message })
     }
+}
+
+const triggerPusher = async (chatId: string, msg: Message)=>{
+    const pusher = getPusherServer()
+    await pusher.trigger(`chat__${chatId}`, 'incoming_message',msg)
 }
 
 const fetchSenderId = async()=>{
