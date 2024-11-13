@@ -48,6 +48,10 @@ export default class QueryBuilder {
         return 'new_friend'
     }
 
+    static get deny_friend(){
+        return 'deny_friend'
+    }
+
     static get incoming_friend_requests () {
         return 'incoming_friend_requests'
     }
