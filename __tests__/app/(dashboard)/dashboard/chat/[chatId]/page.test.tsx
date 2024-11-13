@@ -231,7 +231,6 @@ describe('ChatPage renders with expected content', () => {
             id: "userid2",
         });
         const {queryByText} = render(await Page({params:{chatId: 'userid1--userid2'}}));
-
         expect(queryByText('Remove Friend')).not.toBeInTheDocument();
     })
 });

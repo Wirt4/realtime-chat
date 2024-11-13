@@ -8,7 +8,8 @@ import {Helpers} from "@/app/(dashboard)/dashboard/chat/[chatId]/helpers";
 import {Message} from "@/lib/validations/messages";
 import ChatInput from "@/components/ChatInput/ChatInput";
 import Participants from "@/lib/chatParticipants";
-import {UserMinus, X} from "lucide-react";
+import {X} from "lucide-react";
+import MessagesHeader from "@/components/MessagesHeader";
 
 interface ChatProps{
     params: {
@@ -53,7 +54,7 @@ interface ChatParticipants{
 
 const Display: FC<DisplayProps> = ({chatInfo, participants}) =>{
     return<div className='chat-a'>
-        <Header partner = {participants.partner}/>
+        <MessagesHeader partner = {participants.partner}/>
         <Messages initialMessages={chatInfo.messages}
                   participants={participants}
                   chatId={chatInfo.chatId}
@@ -62,50 +63,5 @@ const Display: FC<DisplayProps> = ({chatInfo, participants}) =>{
     </div>
 }
 
-interface HeaderProps {
-    partner: User
-}
-
-const Header: FC<HeaderProps> = ({partner})=> {
-    const {image, name, email} = partner
-    return <div className='chat-b'>
-        <div className='chat-c'>
-            <div className='relative'>
-                <div className='chat-d'>
-                    <Image src={image}
-                           fill
-                           alt={name}
-                           referrerPolicy='no-referrer'
-                           className='chat-image'/>
-                </div>
-            </div>
-            <div className='chat-e'>
-                <div className='chat-f'>
-                        <span className='chat-g'>
-                            {name}
-                        </span>
-                </div>
-                <span className='chat-h'>
-                        {email}
-                    </span>
-                <div className='friend-requests'>
-
-                    <button>
-                        <p className='friend-requests-email'>
-                            Remove Friend
-                        </p>
-                    </button>
-                    <button
-                        className='friend-requests-x h-96'
-                    >
-                        <X aria-label='x'
-                           className='friend-requests-button'
-                        />
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-}
 
 export default Page;
