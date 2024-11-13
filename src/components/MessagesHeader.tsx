@@ -10,7 +10,7 @@ interface MessagesHeaderProps {
 
 const MessagesHeader: FC<MessagesHeaderProps> = ({partner})=> {
     const {image, name, email} = partner
-   const [hidden, setHidden]=  useState<boolean>(true)
+    const [hidden, setHidden]=  useState<boolean>(true)
     return <div className='chat-b'>
         <div className='chat-c'>
             <div className='relative'>

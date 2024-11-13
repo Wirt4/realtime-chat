@@ -233,6 +233,22 @@ describe('ChatPage renders with expected content', () => {
         const {queryByText} = render(await Page({params:{chatId: 'userid1--userid2'}}));
         expect(queryByText('Remove Friend')).not.toBeInTheDocument();
     })
+
+    test("Given the message contains a partner's image and  the image has been clicked: when that image is clicked again , Then the page should contain a link with an X icon that reads 'Remove Friend'.", async ()=>{
+        (db.get as jest.Mock).mockResolvedValue({
+            name: "spock",
+            email: "pon@far.com",
+            image: "/stub",
+            id: "userid2",
+        });
+        const {queryByText, getByRole} = render(await Page({params:{chatId: 'userid1--userid2'}}));
+        const picture = getByRole('img');
+        fireEvent.click(picture);
+        expect(queryByText('Remove Friend')).toBeInTheDocument();
+
+        fireEvent.click(picture);
+        expect(queryByText('Remove Friend')).not.toBeInTheDocument();
+    })
 });
 
 describe('Chat page makes expected calls', ()=>{
