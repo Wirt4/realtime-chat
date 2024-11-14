@@ -1,8 +1,17 @@
-import {getServerSession} from "next-auth";
 import {POST} from "@/app/api/message/remove/all/route";
+
+import {getServerSession} from "next-auth";
+import {db} from "@/lib/db";
 
 jest.mock('next-auth', () => ({
     getServerSession: jest.fn(),
+}));
+
+jest.mock("@/lib/db",()=>({
+    __esModule: true,
+    db: {
+        zrem: jest.fn()
+    }
 }));
 
 describe('Remove all messages', () => {
@@ -57,5 +66,18 @@ describe('Remove all messages', () => {
 
         const response = await POST(request)
         expect(response.status).toBe(422)
+    })
+
+    test('Given the checks are valid: when the endpoint is called with a chat id of "alpha--beta", then zrem is called with chat:alpha--beta:messages', async ()=>{
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'alpha'}})
+        const request = new Request("/api/message/remove/all",
+            {
+                method: "POST",
+                body: JSON.stringify({chatId: "alpha--beta"}),
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+       await POST(request)
+       expect(db.zrem as jest.Mock).toHaveBeenCalledWith("chat:alpha--beta:messages");
     })
 })
