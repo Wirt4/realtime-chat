@@ -8,7 +8,11 @@ import { getServerSession } from 'next-auth';
 import {Utils} from "@/lib/utils";
 import fetchMock from "jest-fetch-mock";
 import {getPusherClient} from "@/lib/pusher";
-import {POST} from "@/app/api/friends/remove/route"
+import axios from "axios";
+
+jest.mock("axios",()=>({
+    post: jest.fn()
+}));
 
 jest.mock('@/lib/db', () => ({
     db: {
@@ -279,7 +283,7 @@ describe('ChatPage renders with expected content', () => {
 
         fireEvent.click(button);
 
-        expect(POST as jest.Mock).toHaveBeenCalled();
+        expect(axios.post as jest.Mock).toHaveBeenCalledWith('/friends/remove');
     })
 });
 

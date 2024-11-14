@@ -3,6 +3,7 @@
 import {FC, useState} from "react";
 import Image from "next/image";
 import {X} from "lucide-react";
+import axios from "axios";
 
 interface MessagesHeaderProps {
     partner: User
@@ -40,7 +41,7 @@ const MessagesHeader: FC<MessagesHeaderProps> = ({partner})=> {
             </div>
             {hidden? null: (<div className='friend-requests'>
 
-                <button>
+                <button onClick={()=>axios.post('/friends/remove')}>
                     <p className='friend-requests-email'>
                         Remove Friend
                     </p>
