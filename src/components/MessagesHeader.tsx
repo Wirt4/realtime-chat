@@ -12,11 +12,21 @@ interface MessagesHeaderProps {
 const MessagesHeader: FC<MessagesHeaderProps> = ({partner})=> {
     const {image, name, email} = partner
     const [hidden, setHidden] = useState<boolean>(true)
+    const [loading, setLoading] = useState<boolean>(false)
     const toggle= ()=>{
         setHidden(prev=> !prev)
     }
-    const handler = ()=>{
-        axios.post('/friends/remove')
+    const handler = async ()=>{
+        if (!loading){
+            try{
+                setLoading(true)
+                await axios.post('/friends/remove')
+            }catch(error){
+                console.error({error})
+            }finally {
+                setLoading(false)
+            }
+        }
     }
     return <div className='chat-b'>
         <div className='chat-c'>
