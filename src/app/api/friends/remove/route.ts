@@ -24,12 +24,15 @@ export async function POST(request: Request) {
         await Promise.all(
             [remove(sessionId,targetId), remove(targetId, sessionId)]
         );
+    }else{
+        return respond('Not Friends', 400);
     }
 
     const ids = [sessionId, targetId];
     await axios.post('/message/remove/all', {chatId: ids.sort().join('--')})
 
-    return respond('Not Friends', 400);
+    return new Response('OK')
+
 }
 
 function respond(message: string, status: number) {
