@@ -285,6 +285,23 @@ describe('ChatPage renders with expected content', () => {
 
         expect(axios.post as jest.Mock).toHaveBeenCalledWith('/friends/remove');
     })
+
+    test("Given the message contains a partner's name and is clicked on, When the 'X' option is clicked, the api endpoint '/friends/remove' is called.", async ()=>{
+        (db.get as jest.Mock).mockResolvedValue({
+            name: "spock",
+            email: "pon@far.com",
+            image: "/stub",
+            id: "userid2",
+        });
+        const {getByLabelText, getByText} = render(await Page({params:{chatId: 'userid1--userid2'}}));
+        const name = getByText('spock');
+        fireEvent.click(name);
+        const button = getByLabelText('x');
+
+        fireEvent.click(button);
+
+        expect(axios.post as jest.Mock).toHaveBeenCalledWith('/friends/remove');
+    })
 });
 
 describe('Chat page makes expected calls', ()=>{
