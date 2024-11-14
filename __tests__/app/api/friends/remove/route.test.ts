@@ -62,4 +62,17 @@ describe('Functionality Tests', () => {
         const result = await POST(request)
         expect(result.status).toEqual(400)
     })
+
+    test('Given that the request and server session are correct : When the endpoint is called, it fetchRedis is called with the arg "sismember"', async ()=>{
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'1977'}});
+        const request = new Request("/api/friends/remove",
+            {
+                method: "POST",
+                body: JSON.stringify({ idToRemove: '1966' }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+        await POST(request)
+
+        expect(fetchRedis as jest.Mock).toHaveBeenCalledWith('sismember');
+    })
 })
