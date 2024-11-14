@@ -1,6 +1,7 @@
 import {z} from "zod";
 import {getServerSession} from "next-auth";
 import fetchRedis from "@/helpers/redis";
+import {db} from "@/lib/db";
 
 export async function POST(request: Request) {
     let targetId: string
@@ -17,6 +18,8 @@ export async function POST(request: Request) {
     }
 
     await fetchRedis('sismember', `user:${session.user.id}:friends`, targetId)
+    await db.srem("user:kirk:friends", "spock");
+    await db.srem("user:spock:friends", "kirk");
     return respond('Not Friends', 400);
 }
 
