@@ -18,7 +18,7 @@ export async function POST(request: Request) {
         return respond('Unauthorized', 401)
     }
 
-    await db.zrem("chat:"+chatId.id+":messages")
+    await db.zrem(chatId.query)
     return new Response('OK')
 }
 
@@ -45,7 +45,7 @@ function validIdFormat(chatId: string): boolean{
 }
 
 class ChatId{
-    private chatId: string;
+    private readonly chatId: string;
 
     constructor(chatId: string) {
         this.chatId = chatId;
@@ -57,5 +57,9 @@ class ChatId{
 
     get id():string{
         return this.chatId;
+    }
+
+    get query():string{
+        return `chat:${this.id}:messages`
     }
 }

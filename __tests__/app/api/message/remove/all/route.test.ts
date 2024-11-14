@@ -18,6 +18,7 @@ describe('Remove all messages', () => {
     beforeEach(()=>{
         jest.resetAllMocks();
     })
+
     test('Given the server session is invalid when the endpoint is called then it returns a 401',async ()=>{
         (getServerSession as jest.Mock).mockResolvedValue(null)
 
