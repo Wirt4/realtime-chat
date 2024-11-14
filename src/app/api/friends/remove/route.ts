@@ -6,5 +6,5 @@ export async function POST(request: Request) {
     }catch{
         return new Response('invalid input', {status: 422});
     }
-    return new Response('OK');
+    return new Response('bad authorization', {status: 401});
 }
