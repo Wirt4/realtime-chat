@@ -196,7 +196,7 @@ describe('/api/friends/accept', () => {
         expect(db.srem).toHaveBeenCalledWith('user:8569:incoming_friend_requests', '666');
     });
 
-    test("If POST is successfully called, then the idtoAdd is removed from the user's requests table, different data",
+    test("If POST is successfully called, then the iTtoAdd is removed from the user's requests table, different data",
         async()=>{
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'4567'}});
