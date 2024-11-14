@@ -17,9 +17,10 @@ export async function POST(request: Request) {
         return respond('Unauthorized', 401)
     }
 
+
     if (await fetchRedis('sismember', `user:${session.user.id}:friends`, targetId)){
         await Promise.all(
-            [remove("kirk", "spock"), remove("spock", "kirk")]
+            [remove(session.user.id,targetId), remove(targetId, session.user.id)]
         );
     }
     return respond('Not Friends', 400);
