@@ -11,9 +11,12 @@ interface MessagesHeaderProps {
 
 const MessagesHeader: FC<MessagesHeaderProps> = ({partner})=> {
     const {image, name, email} = partner
-    const [hidden, setHidden]=  useState<boolean>(true)
+    const [hidden, setHidden] = useState<boolean>(true)
     const toggle= ()=>{
         setHidden(prev=> !prev)
+    }
+    const handler = ()=>{
+        axios.post('/friends/remove')
     }
     return <div className='chat-b'>
         <div className='chat-c'>
@@ -41,13 +44,14 @@ const MessagesHeader: FC<MessagesHeaderProps> = ({partner})=> {
             </div>
             {hidden? null: (<div className='friend-requests'>
 
-                <button onClick={()=>axios.post('/friends/remove')}>
+                <button onClick={handler}>
                     <p className='friend-requests-email'>
                         Remove Friend
                     </p>
                 </button>
                 <button
                     className='friend-requests-x h-96'
+                    onClick={handler}
                 >
                     <X aria-label='x'
                        className='friend-requests-button'
