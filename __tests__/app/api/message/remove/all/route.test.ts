@@ -11,9 +11,16 @@ describe('Remove all messages', () => {
         const response = await POST()
         expect(response.status).toBe(401)
     })
+
     test('Given the chatId is missing from the payload, when the endpoint is called, then it returns a 422', async ()=>{
         (getServerSession as jest.Mock).mockResolvedValue({user:{id:'stub'}})
         const response = await POST()
         expect(response.status).toBe(422)
+    })
+
+    test('Given the chatId is "alpha--beta" and the session id is "kappa", when the endpoint is called, then it returns a 401', async ()=>{
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'kappa'}})
+        const response = await POST({chatId:'alpha--beta'})
+        expect(response.status).toBe(401)
     })
 })
