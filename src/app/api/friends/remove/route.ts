@@ -1,3 +1,3 @@
 export async function POST(req: Request) {
-    return new Response('OK')
+    return new Response('text', {status: 422});
 }

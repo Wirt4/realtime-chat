@@ -8,4 +8,13 @@ describe('Functionality Tests', () => {
         const result = await POST(request)
         expect(result.status).toEqual(422)
     })
+
+    test('Given that the endpoint accepts a parameter of {idToRemove: string}: When the endpoint is called with a correct request, then it does not return a 422 ', async ()=>{
+        const request = new Request("/api/friends/remove", {
+            method: "POST",
+            body: "{\"idToRemove\": \"validId\"}",
+        });
+        const result = await POST(request)
+        expect(result.status).not.toEqual(422)
+    })
 })
