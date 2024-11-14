@@ -5,8 +5,7 @@ import fetchRedis from "@/helpers/redis";
 export async function POST(request: Request) {
     let targetId: string
     try{
-       const {idToRemove} =  z.object({idToRemove: z.string()}).parse(await request.json());
-       targetId = idToRemove;
+        targetId = z.object({idToRemove: z.string()}).parse(await request.json()).idToRemove;
     }catch{
         return respond("Invalid Input", 422)
     }
