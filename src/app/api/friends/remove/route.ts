@@ -18,8 +18,9 @@ export async function POST(request: Request) {
     }
 
     await fetchRedis('sismember', `user:${session.user.id}:friends`, targetId)
-    await db.srem("user:kirk:friends", "spock");
-    await db.srem("user:spock:friends", "kirk");
+    await Promise.all(
+        [db.srem("user:kirk:friends", "spock"), db.srem("user:spock:friends", "kirk")]
+    );
     return respond('Not Friends', 400);
 }
 
