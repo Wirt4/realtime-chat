@@ -25,7 +25,7 @@ export async function POST(request: Request) {
             [remove(sessionId,targetId), remove(targetId, sessionId)]
         );
     }
-    await axios.post('/message/remove/all', {chatId: 'alpha--beta'})
+    await axios.post('/message/remove/all', {chatId: `${sessionId}--${targetId}`})
     return respond('Not Friends', 400);
 }
 
