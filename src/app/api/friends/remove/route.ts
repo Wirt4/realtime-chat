@@ -2,6 +2,7 @@ import {z} from "zod";
 import {getServerSession} from "next-auth";
 import fetchRedis from "@/helpers/redis";
 import {db} from "@/lib/db";
+import axios from "axios";
 
 export async function POST(request: Request) {
     let targetId: string
@@ -24,6 +25,7 @@ export async function POST(request: Request) {
             [remove(sessionId,targetId), remove(targetId, sessionId)]
         );
     }
+    await axios.post('/message/remove/all', {chatId: 'alpha--beta'})
     return respond('Not Friends', 400);
 }
 
