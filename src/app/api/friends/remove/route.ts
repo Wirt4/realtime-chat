@@ -28,6 +28,7 @@ export async function POST(request: Request) {
 
     const ids = [sessionId, targetId];
     await axios.post('/message/remove/all', {chatId: ids.sort().join('--')})
+
     return respond('Not Friends', 400);
 }
 

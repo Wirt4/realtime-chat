@@ -130,6 +130,19 @@ describe('Functionality Tests', () => {
         expect(db.srem as jest.Mock).toHaveBeenCalledWith("user:paul:friends", "john");
     })
 
+    test('Given that the server session is truthy, the input is valid and both ids are friends: when the endpoint is called, then it returns a 200', async ()=>{
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'john'}});
+        (fetchRedis as jest.Mock).mockResolvedValue(true);
+        const request = new Request("/api/friends/remove",
+            {
+                method: "POST",
+                body: JSON.stringify({ idToRemove: 'paul' }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+        const response = await POST(request)
+        expect(response.status).toEqual(200)
+    })
+
     test('Given that the ids are not friends: When the endpoint is called, then db.srem is not called', async ()=>{
         (getServerSession as jest.Mock).mockResolvedValue({user:{id:'kirk'}});
         (fetchRedis as jest.Mock).mockResolvedValue(false)
