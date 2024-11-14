@@ -18,7 +18,7 @@ export async function POST(request: Request) {
         return respond('Unauthorized', 401)
     }
 
-    db.zrem("chat:alpha--beta:messages")
+    await db.zrem("chat:alpha--beta:messages")
     return new Response('OK')
 }
 
