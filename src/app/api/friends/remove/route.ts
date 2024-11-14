@@ -15,7 +15,7 @@ export async function POST(request: Request) {
         return respond('Unauthorized', 401)
     }
 
-    await fetchRedis('sismember', "user:1977:friends")
+    await fetchRedis('sismember', "user:1977:friends", "1966")
     return respond('Not Friends', 400);
 }
 
