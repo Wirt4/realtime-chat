@@ -12,7 +12,7 @@ describe('Remove all messages', () => {
         const request = new Request("/api/message/remove/all",
             {
                 method: "POST",
-                body: JSON.stringify({ chatId: 'alpha-beta' }),
+                body: JSON.stringify({ chatId: 'alpha--beta' }),
                 headers: { 'Content-Type': 'application/json' }
             });
 
@@ -44,5 +44,18 @@ describe('Remove all messages', () => {
 
         const response = await POST(request)
         expect(response.status).toBe(401)
+    })
+
+    test('given the chatid is present but not formatted split by "--", when the endpoint is called, then it returns a 422', async ()=>{
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'kappa'}})
+        const request = new Request("/api/message/remove/all",
+            {
+                method: "POST",
+                body: JSON.stringify({chatId: "kappa"}),
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+        const response = await POST(request)
+        expect(response.status).toBe(422)
     })
 })
