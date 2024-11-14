@@ -8,7 +8,7 @@ export async function POST() {
         return respond('Unauthorized', 401)
     }
 
-    return respond('Unauthorized', 422)
+    return respond('Invalid Input', 422)
 }
 
 function respond(message: string, status: number) {
