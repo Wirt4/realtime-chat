@@ -2,7 +2,7 @@
 
 import {FC, useState} from "react";
 import Image from "next/image";
-import {X} from "lucide-react";
+import {Loader2, X} from "lucide-react";
 import axios from "axios";
 
 interface MessagesHeaderProps {
@@ -16,6 +16,7 @@ const MessagesHeader: FC<MessagesHeaderProps> = ({partner})=> {
     const toggle= ()=>{
         setHidden(prev=> !prev)
     }
+
     const handler = async ()=>{
         if (!loading){
             try{
@@ -28,6 +29,11 @@ const MessagesHeader: FC<MessagesHeaderProps> = ({partner})=> {
             }
         }
     }
+
+    if (loading){
+        return <Loader2 className='loading' aria-label="loading"/>
+    }
+
     return <div className='chat-b'>
         <div className='chat-c'>
             <div className='relative'>
