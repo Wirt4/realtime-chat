@@ -75,4 +75,17 @@ describe('Functionality Tests', () => {
 
         expect(fetchRedis as jest.Mock).toHaveBeenCalledWith('sismember');
     })
+
+    test('Given that the request and server session are correct and fetchRedis is called with sisimember: When the endpoint is called, it fetchRedis is called with the parameter "user:1977:friends"', async ()=>{
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'1977'}});
+        const request = new Request("/api/friends/remove",
+            {
+                method: "POST",
+                body: JSON.stringify({ idToRemove: '1966' }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+        await POST(request)
+
+        expect(fetchRedis as jest.Mock).toHaveBeenCalledWith('sismember',"user:1977:friends");
+    })
 })
