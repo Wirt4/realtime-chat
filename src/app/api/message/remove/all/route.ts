@@ -1,5 +1,6 @@
 import {getServerSession} from "next-auth";
 import {z} from "zod";
+import {db} from "@/lib/db";
 
 export async function POST(request: Request) {
     let participants: string[]
@@ -17,6 +18,7 @@ export async function POST(request: Request) {
         return respond('Unauthorized', 401)
     }
 
+    db.zrem("chat:alpha--beta:messages")
     return new Response('OK')
 }
 
