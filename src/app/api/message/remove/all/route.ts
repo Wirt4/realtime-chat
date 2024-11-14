@@ -3,22 +3,22 @@ import {z} from "zod";
 import {db} from "@/lib/db";
 
 export async function POST(request: Request) {
-    let participants: string[]
+    let chatId: ChatId
 
     try{
         const body = await request.json();
-        participants = validateChatId(body)
+        chatId = validateChatId(body)
     }catch{
         return respond('Invalid Input', 422)
     }
 
     const session = await getServerSession()
 
-    if (!(session && participants.includes(session.user.id))) {
+    if (!(session && chatId.participants.includes(session.user.id))) {
         return respond('Unauthorized', 401)
     }
 
-    await db.zrem("chat:alpha--beta:messages")
+    await db.zrem("chat:"+chatId.id+":messages")
     return new Response('OK')
 }
 
@@ -26,14 +26,14 @@ function respond(message: string, status: number) {
     return new Response(message, {status});
 }
 
-function validateChatId(body: object): string[]{
+function validateChatId(body: object): ChatId{
     const chatId = z.object({chatId: z.string()}).parse(body).chatId;
 
     if (!validIdFormat(chatId)) {
        throw new Error('ChatId not in format of *****--****')
     }
 
-    return chatId.split('--')
+    return new ChatId(chatId)
 }
 
 function validIdFormat(chatId: string): boolean{
@@ -42,4 +42,20 @@ function validIdFormat(chatId: string): boolean{
     stringSchema.safeParse(chatId);
     const parseResult = stringSchema.safeParse(chatId);
     return parseResult.success;
+}
+
+class ChatId{
+    private chatId: string;
+
+    constructor(chatId: string) {
+        this.chatId = chatId;
+    }
+
+    get participants(): string[] {
+        return this.chatId.split('--')
+    }
+
+    get id():string{
+        return this.chatId;
+    }
 }
