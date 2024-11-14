@@ -1,4 +1,5 @@
 import {z} from "zod";
+import {getServerSession} from "next-auth";
 
 export async function POST(request: Request) {
     try{
@@ -6,5 +7,9 @@ export async function POST(request: Request) {
     }catch{
         return new Response('invalid input', {status: 422});
     }
-    return new Response('bad authorization', {status: 401});
+    const session = await getServerSession()
+    if (!session) {
+        return new Response('bad authorization', {status: 401});
+    }
+    return new Response('not friends', {status: 400});
 }
