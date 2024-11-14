@@ -1,12 +1,20 @@
 import {POST} from "@/app/api/friends/remove/route";
 import fetchRedis from "@/helpers/redis";
 import {getServerSession} from "next-auth";
+import {db} from "@/lib/db";
 
 jest.mock('next-auth', () => ({
     getServerSession: jest.fn(),
 }));
 
 jest.mock("@/helpers/redis")
+
+jest.mock("@/lib/db",()=>({
+    __esModule: true,
+    db: {
+        srem: jest.fn()
+    }
+}));
 
 
 describe('Functionality Tests', () => {
@@ -87,5 +95,19 @@ describe('Functionality Tests', () => {
         await POST(request)
 
         expect(fetchRedis as jest.Mock).toHaveBeenCalledWith('sismember',"user:kirk:friends", "spock");
+    })
+
+    test('Given that the request and server session are correct and session id and parameter id are friends: When the endpoint is called with idToRemove: spock, then db.srem is called twice with the parameters "sismember", "user:1977:friends", "1966"', async ()=>{
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'kirk'}});
+        const request = new Request("/api/friends/remove",
+            {
+                method: "POST",
+                body: JSON.stringify({ idToRemove: 'spock' }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+        await POST(request)
+
+        expect(db.srem as jest.Mock).toHaveBeenCalledWith("user:kirk:friends", "spock");
+        expect(db.srem as jest.Mock).toHaveBeenCalledWith("user:spock:friends", "kirk");
     })
 })
