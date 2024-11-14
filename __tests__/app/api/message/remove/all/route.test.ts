@@ -83,4 +83,17 @@ describe('Remove all messages', () => {
        await POST(request)
        expect(db.zrem as jest.Mock).toHaveBeenCalledWith("chat:alpha--beta:messages");
     })
+
+    test('Given the checks are valid: when the endpoint is called with a chat id of "alfred--bruce", then zrem is called with chat:alfred--bruce:messages', async ()=>{
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'bruce'}})
+        const request = new Request("/api/message/remove/all",
+            {
+                method: "POST",
+                body: JSON.stringify({chatId: "alfred--bruce"}),
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+        await POST(request)
+        expect(db.zrem as jest.Mock).toHaveBeenCalledWith("chat:alfred--bruce:messages");
+    })
 })
