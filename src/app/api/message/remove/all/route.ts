@@ -8,7 +8,7 @@ export async function POST() {
         return respond('Unauthorized', 401)
     }
 
-    return new Response('OK')
+    return respond('Unauthorized', 422)
 }
 
 function respond(message: string, status: number) {
