@@ -17,10 +17,11 @@ export async function POST(request: Request) {
         return respond('Unauthorized', 401)
     }
 
-    await fetchRedis('sismember', `user:${session.user.id}:friends`, targetId)
-    await Promise.all(
-        [db.srem("user:kirk:friends", "spock"), db.srem("user:spock:friends", "kirk")]
-    );
+    if (await fetchRedis('sismember', `user:${session.user.id}:friends`, targetId)){
+        await Promise.all(
+            [db.srem("user:kirk:friends", "spock"), db.srem("user:spock:friends", "kirk")]
+        );
+    }
     return respond('Not Friends', 400);
 }
 
