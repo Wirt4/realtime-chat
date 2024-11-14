@@ -19,7 +19,7 @@ export async function POST(request: Request) {
 
     if (await fetchRedis('sismember', `user:${session.user.id}:friends`, targetId)){
         await Promise.all(
-            [db.srem("user:kirk:friends", "spock"), db.srem("user:spock:friends", "kirk")]
+            [remove("kirk", "spock"), remove("spock", "kirk")]
         );
     }
     return respond('Not Friends', 400);
@@ -27,4 +27,8 @@ export async function POST(request: Request) {
 
 function respond(message: string, status: number) {
     return new Response(message, {status});
+}
+
+async function remove(queryId: string, targetId: string){
+   return db.srem("user:"+queryId+":friends", targetId)
 }
