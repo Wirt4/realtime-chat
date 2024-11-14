@@ -143,13 +143,27 @@ describe('Functionality Tests', () => {
 
         expect(db.srem as jest.Mock).not.toHaveBeenCalled();
     })
-    test("given ids of alpha and beta, when the endpoint is called, then the endpoint of '/message/remove/all' is called with {chatId: 'alpha--beta'}", async()=>{
+
+    test("given a chat id of alpha, when the endpoint is called with an id of beta, then the endpoint of '/message/remove/all' is called with {chatId: 'alpha--beta'}", async()=>{
         (getServerSession as jest.Mock).mockResolvedValue({user:{id:'alpha'}});
         (fetchRedis as jest.Mock).mockResolvedValue(true);
         const request = new Request("/api/friends/remove",
             {
                 method: "POST",
                 body: JSON.stringify({ idToRemove: 'beta' }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+        await POST(request);
+        expect(mockedAxios.post).toHaveBeenCalledWith('/message/remove/all', {chatId: 'alpha--beta'});
+    })
+
+    test("given a chat id of beta, when the endpoint is called with an id of alpha, then the endpoint of '/message/remove/all' is called with {chatId: 'alpha--beta'}", async()=>{
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'beta'}});
+        (fetchRedis as jest.Mock).mockResolvedValue(true);
+        const request = new Request("/api/friends/remove",
+            {
+                method: "POST",
+                body: JSON.stringify({ idToRemove: 'alpha' }),
                 headers: { 'Content-Type': 'application/json' }
             });
         await POST(request);
