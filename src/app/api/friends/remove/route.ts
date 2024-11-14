@@ -1,5 +1,6 @@
 import {z} from "zod";
 import {getServerSession} from "next-auth";
+import fetchRedis from "@/helpers/redis";
 
 export async function POST(request: Request) {
     try{
@@ -13,6 +14,8 @@ export async function POST(request: Request) {
     if (!session) {
         return respond('Unauthorized', 401)
     }
+
+    await fetchRedis('sismember')
     return respond('Not Friends', 400);
 }
 
