@@ -5,11 +5,17 @@ export async function POST(request: Request) {
     try{
         z.object({idToRemove: z.string()}).parse(await request.json());
     }catch{
-        return new Response('invalid input', {status: 422});
+        return respond("Invalid Input", 422)
     }
+
     const session = await getServerSession()
+
     if (!session) {
-        return new Response('bad authorization', {status: 401});
+        return respond('Unauthorized', 401)
     }
-    return new Response('not friends', {status: 400});
+    return respond('Not Friends', 400);
+}
+
+function respond(message: string, status: number) {
+    return new Response(message, {status});
 }
