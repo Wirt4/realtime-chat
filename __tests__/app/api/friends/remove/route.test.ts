@@ -97,7 +97,7 @@ describe('Functionality Tests', () => {
         expect(fetchRedis as jest.Mock).toHaveBeenCalledWith('sismember',"user:kirk:friends", "spock");
     })
 
-    test('Given that the request and server session are correct and session id and parameter id are friends: When the endpoint is called with idToRemove: spock, then db.srem is called twice with the parameters "sismember", "user:1977:friends", "1966"', async ()=>{
+    test('Given that the request and server session are correct and session id and parameter id are friends: When the endpoint is called with idToRemove: spock, then db.srem is called twice to remove entries from each friends list', async ()=>{
         (getServerSession as jest.Mock).mockResolvedValue({user:{id:'kirk'}});
         const request = new Request("/api/friends/remove",
             {
@@ -109,5 +109,19 @@ describe('Functionality Tests', () => {
 
         expect(db.srem as jest.Mock).toHaveBeenCalledWith("user:kirk:friends", "spock");
         expect(db.srem as jest.Mock).toHaveBeenCalledWith("user:spock:friends", "kirk");
+    })
+
+    test('Given that the ids are not friends: When the endpoint is called , then db.srem is not called', async ()=>{
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'kirk'}});
+        (fetchRedis as jest.Mock).mockResolvedValue(false)
+        const request = new Request("/api/friends/remove",
+            {
+                method: "POST",
+                body: JSON.stringify({ idToRemove: 'spock' }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+        await POST(request)
+
+        expect(db.srem as jest.Mock).not.toHaveBeenCalled();
     })
 })
