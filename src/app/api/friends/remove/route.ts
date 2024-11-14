@@ -25,11 +25,9 @@ export async function POST(request: Request) {
             [remove(sessionId,targetId), remove(targetId, sessionId)]
         );
     }
-    if (sessionId.localeCompare(targetId) <0){
-        await axios.post('/message/remove/all', {chatId: `${sessionId}--${targetId}`})
-    }else{
-        await axios.post('/message/remove/all', {chatId: `${targetId}--${sessionId}`})
-    }
+
+    const ids = [sessionId, targetId];
+    await axios.post('/message/remove/all', {chatId: ids.sort().join('--')})
     return respond('Not Friends', 400);
 }
 
