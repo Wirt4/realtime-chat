@@ -6,6 +6,7 @@ import axios from "axios";
 
 export async function POST(request: Request) {
     let targetId: string
+    
     try{
         targetId = z.object({idToRemove: z.string()}).parse(await request.json()).idToRemove;
     }catch{
@@ -18,21 +19,20 @@ export async function POST(request: Request) {
         return respond('Unauthorized', 401)
     }
 
-    const sessionId =session.user.id
-
-    if (await fetchRedis('sismember', `user:${sessionId}:friends`, targetId)){
-        await Promise.all(
-            [remove(sessionId,targetId), remove(targetId, sessionId)]
-        );
-    }else{
+    const sessionId = session.user.id
+    const areFriends =  await fetchRedis('sismember', `user:${sessionId}:friends`, targetId)
+    if (!areFriends) {
         return respond('Not Friends', 400);
     }
 
     const ids = [sessionId, targetId];
-    await axios.post('/message/remove/all', {chatId: ids.sort().join('--')})
+        await Promise.all([
+                remove(sessionId,targetId),
+                remove(targetId, sessionId),
+                axios.post('/message/remove/all', {chatId: ids.sort().join('--')})
+            ]);
 
     return new Response('OK')
-
 }
 
 function respond(message: string, status: number) {
