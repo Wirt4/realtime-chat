@@ -2,6 +2,7 @@ import {POST} from "@/app/api/friends/remove/route";
 import fetchRedis from "@/helpers/redis";
 import {getServerSession} from "next-auth";
 import {db} from "@/lib/db";
+import axios from "axios";
 
 jest.mock('next-auth', () => ({
     getServerSession: jest.fn(),
@@ -16,12 +17,16 @@ jest.mock("@/lib/db",()=>({
     }
 }));
 
+jest.mock('axios');
+
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('Functionality Tests', () => {
     beforeEach(()=>{
         jest.resetAllMocks();
         (getServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
-        (fetchRedis as jest.Mock).mockResolvedValue(true)
+        (fetchRedis as jest.Mock).mockResolvedValue(true);
+        mockedAxios.post.mockImplementation(jest.fn());
     })
 
     test('Given that the endpoint accepts a parameter of {idToRemove: string}: When the endpoint is called with no body in the request, then it returns a 422 ', async ()=>{
@@ -125,7 +130,7 @@ describe('Functionality Tests', () => {
         expect(db.srem as jest.Mock).toHaveBeenCalledWith("user:paul:friends", "john");
     })
 
-    test('Given that the ids are not friends: When the endpoint is called , then db.srem is not called', async ()=>{
+    test('Given that the ids are not friends: When the endpoint is called, then db.srem is not called', async ()=>{
         (getServerSession as jest.Mock).mockResolvedValue({user:{id:'kirk'}});
         (fetchRedis as jest.Mock).mockResolvedValue(false)
         const request = new Request("/api/friends/remove",
@@ -137,5 +142,17 @@ describe('Functionality Tests', () => {
         await POST(request)
 
         expect(db.srem as jest.Mock).not.toHaveBeenCalled();
+    })
+    test("given ids of alpha and beta, when the endpoint is called, then the endpoint of '/message/remove/all' is called with {chatId: 'alpha--beta'}", async()=>{
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'alpha'}});
+        (fetchRedis as jest.Mock).mockResolvedValue(true);
+        const request = new Request("/api/friends/remove",
+            {
+                method: "POST",
+                body: JSON.stringify({ idToRemove: 'beta' }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+        await POST(request);
+        expect(mockedAxios.post).toHaveBeenCalledWith('/message/remove/all', {chatId: 'alpha--beta'});
     })
 })
