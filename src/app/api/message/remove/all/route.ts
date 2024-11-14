@@ -1,6 +1,5 @@
 import {getServerSession} from "next-auth";
 
-
 export async function POST() {
 
     const session = await getServerSession()
@@ -8,7 +7,6 @@ export async function POST() {
     if (!session?.user?.id) {
         return respond('Unauthorized', 401)
     }
-
 
     return new Response('OK')
 }
