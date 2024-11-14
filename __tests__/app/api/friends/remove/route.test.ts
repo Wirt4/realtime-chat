@@ -1,25 +1,19 @@
 import {POST} from "@/app/api/friends/remove/route";
-
+import fetchRedis from "@/helpers/redis";
 import {getServerSession} from "next-auth";
-import {db} from '@/lib/db'
 
 jest.mock('next-auth', () => ({
     getServerSession: jest.fn(),
 }));
 
-jest.mock("@/lib/db",()=>({
-    __esModule: true,
-    db: {
-        sismember: jest.fn()
-    }
-}));
+jest.mock("@/helpers/redis")
 
 
 describe('Functionality Tests', () => {
     beforeEach(()=>{
         jest.resetAllMocks();
         (getServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
-        (db.sismember as jest.Mock).mockResolvedValue(true)
+        (fetchRedis as jest.Mock).mockResolvedValue(true)
     })
 
     test('Given that the endpoint accepts a parameter of {idToRemove: string}: When the endpoint is called with no body in the request, then it returns a 422 ', async ()=>{
@@ -58,7 +52,7 @@ describe('Functionality Tests', () => {
 
     test('Given that the request is correct, server session resolves correctly and the session id and target id are not friends: When the endpoint is called, it returns a 400', async ()=>{
         (getServerSession as jest.Mock).mockResolvedValue({user:{id:'1977'}});
-        (db.sismember as jest.Mock).mockResolvedValue(false)
+        (fetchRedis as jest.Mock).mockResolvedValue(false)
         const request = new Request("/api/friends/remove",
             {
                 method: "POST",
