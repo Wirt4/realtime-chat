@@ -17,10 +17,11 @@ export async function POST(request: Request) {
         return respond('Unauthorized', 401)
     }
 
+    const sessionId =session.user.id
 
-    if (await fetchRedis('sismember', `user:${session.user.id}:friends`, targetId)){
+    if (await fetchRedis('sismember', `user:${sessionId}:friends`, targetId)){
         await Promise.all(
-            [remove(session.user.id,targetId), remove(targetId, session.user.id)]
+            [remove(sessionId,targetId), remove(targetId, sessionId)]
         );
     }
     return respond('Not Friends', 400);
@@ -31,5 +32,5 @@ function respond(message: string, status: number) {
 }
 
 async function remove(queryId: string, targetId: string){
-   return db.srem("user:"+queryId+":friends", targetId)
+   return db.srem(`user:${queryId}:friends`, targetId)
 }
