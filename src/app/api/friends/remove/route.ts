@@ -2,7 +2,7 @@ import {z} from "zod";
 import {getServerSession} from "next-auth";
 import fetchRedis from "@/helpers/redis";
 import {db} from "@/lib/db";
-import axios from "axios";
+import {authOptions} from "@/lib/auth";
 
 export async function POST(request: Request) {
     let targetId: string
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
         return respond("Invalid Input", 422)
     }
 
-    const session = await getServerSession()
+    const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {
         return respond('Unauthorized', 401)
@@ -25,11 +25,9 @@ export async function POST(request: Request) {
         return respond('Not Friends', 400);
     }
 
-    const ids = [sessionId, targetId];
         await Promise.all([
                 remove(sessionId,targetId),
                 remove(targetId, sessionId),
-                axios.post('/message/remove/all', {chatId: ids.sort().join('--')})
             ]);
 
     return new Response('OK')

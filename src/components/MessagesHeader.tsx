@@ -7,10 +7,11 @@ import axios from "axios";
 
 interface MessagesHeaderProps {
     partner: User
+    chatId: string
 }
 
-const MessagesHeader: FC<MessagesHeaderProps> = ({partner})=> {
-    const {image, name, email} = partner
+const MessagesHeader: FC<MessagesHeaderProps> = ({partner, chatId})=> {
+    const {image, name, email, id} = partner
     const [hidden, setHidden] = useState<boolean>(true)
     const [loading, setLoading] = useState<boolean>(false)
     const toggle= ()=>{
@@ -21,7 +22,8 @@ const MessagesHeader: FC<MessagesHeaderProps> = ({partner})=> {
         if (!loading){
             try{
                 setLoading(true)
-                await axios.post('/friends/remove')
+                await axios.post('/api/message/remove/all',{chatId})
+                await axios.post('/api/friends/remove', {idToRemove: id})
             }catch(error){
                 console.error({error})
             }finally {

@@ -1,6 +1,7 @@
 import {getServerSession} from "next-auth";
 import {z} from "zod";
 import {db} from "@/lib/db";
+import {authOptions} from "@/lib/auth";
 
 export async function POST(request: Request) {
     let chatId: ChatId
@@ -12,13 +13,13 @@ export async function POST(request: Request) {
         return respond('Invalid Input', 422)
     }
 
-    const session = await getServerSession()
+    const session = await getServerSession(authOptions)
 
     if (!(session && chatId.participants.includes(session.user.id))) {
         return respond('Unauthorized', 401)
     }
 
-    await db.zrem(chatId.query)
+    await db.del(chatId.query)
     return new Response('OK')
 }
 
