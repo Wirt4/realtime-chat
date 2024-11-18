@@ -6,7 +6,7 @@ import {authOptions} from "@/lib/auth";
 
 export async function POST(request: Request) {
     let targetId: string
-    
+
     try{
         targetId = z.object({idToRemove: z.string()}).parse(await request.json()).idToRemove;
     }catch{
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
             remove(targetId, sessionId),
         ]);
     }catch (error){
-        return respond('Problem with redis ' +  error.message, 500);
+        return respond('Problem with redis ' +  error?.message as string, 500);
     }
 
     return new Response('OK')
