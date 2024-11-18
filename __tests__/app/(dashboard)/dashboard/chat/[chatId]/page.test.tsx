@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 
-import {fireEvent, render} from '@testing-library/react';
+import {fireEvent, render, act} from '@testing-library/react';
 import Page from '@/app/(dashboard)/dashboard/chat/[chatId]/page'
 import {notFound} from "next/navigation";
 import {db} from "@/lib/db"
@@ -281,9 +281,11 @@ describe('ChatPage renders with expected content', () => {
         fireEvent.click(name);
         const button = getByText('Remove Friend');
 
-        fireEvent.click(button);
+        await act( ()=>{
+            fireEvent.click(button);
+        })
 
-        expect(axios.post as jest.Mock).toHaveBeenCalledWith('/friends/remove');
+        expect(axios.post as jest.Mock).toHaveBeenCalledWith('/api/friends/remove', expect.anything());
     })
 
     test("Given the message contains a partner's name and is clicked on, When the 'X' option is clicked, the api endpoint '/friends/remove' is called.", async ()=>{
@@ -298,9 +300,31 @@ describe('ChatPage renders with expected content', () => {
         fireEvent.click(name);
         const button = getByLabelText('x');
 
-        fireEvent.click(button);
+        await act(()=>{
+            fireEvent.click(button);
+        });
 
-        expect(axios.post as jest.Mock).toHaveBeenCalledWith('/friends/remove');
+        expect(axios.post as jest.Mock).toHaveBeenCalledWith('/api/friends/remove', expect.anything());
+    })
+
+    test("Given the message contains a partner's name and is clicked on, When the 'X' option is clicked, the api endpoint '/api/message/remove/all' is called with the chatId 'userid1--userid2'", async ()=>{
+        (db.get as jest.Mock).mockResolvedValue({
+            name: "spock",
+            email: "pon@far.com",
+            image: "/stub",
+            id: "userid2",
+        });
+
+        const {getByLabelText, getByText} = render(await Page({params:{chatId: 'userid1--userid2'}}));
+        const name = getByText('spock');
+        fireEvent.click(name);
+        const button = getByLabelText('x');
+
+        await act(()=>{
+            fireEvent.click(button);
+        });
+
+        expect(axios.post as jest.Mock).toHaveBeenCalledWith('/api/message/remove/all', {chatId: 'userid1--userid2'});
     })
 });
 

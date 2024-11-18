@@ -10,7 +10,7 @@ jest.mock('next-auth', () => ({
 jest.mock("@/lib/db",()=>({
     __esModule: true,
     db: {
-        zrem: jest.fn()
+        del: jest.fn()
     }
 }));
 
@@ -82,7 +82,7 @@ describe('Remove all messages', () => {
             });
 
        await POST(request)
-       expect(db.zrem as jest.Mock).toHaveBeenCalledWith("chat:alpha--beta:messages");
+       expect(db.del as jest.Mock).toHaveBeenCalledWith("chat:alpha--beta:messages");
     })
 
     test('Given the checks are valid: when the endpoint is called with a chat id of "alfred--bruce", then zrem is called with chat:alfred--bruce:messages', async ()=>{
@@ -95,6 +95,6 @@ describe('Remove all messages', () => {
             });
 
         await POST(request)
-        expect(db.zrem as jest.Mock).toHaveBeenCalledWith("chat:alfred--bruce:messages");
+        expect(db.del as jest.Mock).toHaveBeenCalledWith("chat:alfred--bruce:messages");
     })
 })
