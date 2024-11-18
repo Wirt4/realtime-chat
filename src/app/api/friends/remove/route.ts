@@ -25,10 +25,14 @@ export async function POST(request: Request) {
         return respond('Not Friends', 400);
     }
 
+    try {
         await Promise.all([
-                remove(sessionId,targetId),
-                remove(targetId, sessionId),
-            ]);
+            remove(sessionId,targetId),
+            remove(targetId, sessionId),
+        ]);
+    }catch (error){
+        return respond('Problem with redis ' +  error.message, 500);
+    }
 
     return new Response('OK')
 }

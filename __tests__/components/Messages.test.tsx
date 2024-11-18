@@ -125,8 +125,7 @@ describe('Messages listens to pusher events', ()=>{
         (getPusherClient as jest.Mock).mockReturnValue(mockPusherClient);
     })
 
-    test('Given the component has been initialized with user1--user2: When the component is rendered, ' +
-        'then the page should subscribe to the channel "chat__user1--user2"', async () => {
+    test('Given the component has been initialized with user1--user2: When the component is rendered, then the page should subscribe to the channel "chat__user1--user2"', async () => {
         const participants = {
             partner: chatPartner,
             user: chatUser,
