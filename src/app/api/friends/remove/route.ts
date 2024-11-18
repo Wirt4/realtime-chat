@@ -31,7 +31,7 @@ export async function POST(request: Request) {
             remove(targetId, sessionId),
         ]);
     }catch (error){
-        return respond('Problem with redis ' +  error.message, 500);
+        return respond('Problem with redis ' +  error?.message as string, 500);
     }
 
     return new Response('OK')
