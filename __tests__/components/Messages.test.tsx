@@ -125,8 +125,7 @@ describe('Messages listens to pusher events', ()=>{
         (getPusherClient as jest.Mock).mockReturnValue(mockPusherClient);
     })
 
-    test('Given the component has been initialized with user1--user2: When the component is rendered, ' +
-        'then the page should subscribe to the channel "chat__user1--user2"', async () => {
+    test('Given the component has been initialized with user1--user2: When the component is rendered, then the page should subscribe to the channel "chat__user1--user2"', async () => {
         const participants = {
             partner: chatPartner,
             user: chatUser,
@@ -138,8 +137,7 @@ describe('Messages listens to pusher events', ()=>{
         )
     })
 
-    test('Given the component has been initialized with the chat id adam--barbara: When the component is rendered, ' +
-        'then the page should subscribe to the channel "chat__adam--barbara"', async () => {
+    test('Given the component has been initialized with the chat id adam--barbara: When the component is rendered, then the page should subscribe to the channel "chat__adam--barbara"', async () => {
         sessionId = 'barbara'
         chatId = 'adam--barbara';
         chatPartner = {id: 'adam', email:'stub', image: '/user-img-url', name: 'stub'};
@@ -156,8 +154,7 @@ describe('Messages listens to pusher events', ()=>{
         )
     })
 
-    test('Given the component has subscribed to the correct channel for chat: When the component is rendered, ' +
-        'then the channel returned by subscribe should be bound to the event "incoming-message"', async ()=>{
+    test('Given the component has subscribed to the correct channel for chat: When the component is rendered, then the channel returned by subscribe should be bound to the event "incoming-message"', async ()=>{
         (getPusherClient as jest.Mock).mockReturnValue(mockPusherClient);
         const participants = {
             partner: chatPartner,
@@ -170,8 +167,7 @@ describe('Messages listens to pusher events', ()=>{
 
     })
 
-    test('Given the component is subscribed to the correct channel and bound to the correct event: ' +
-        'When the event is triggered with a new message, then that message will be added to the DOM', async()=>{
+    test('Given the component is subscribed to the correct channel and bound to the correct event: When the event is triggered with a new message, then that message will be added to the DOM', async()=>{
         const participants = {
             partner: chatPartner,
             user: chatUser,

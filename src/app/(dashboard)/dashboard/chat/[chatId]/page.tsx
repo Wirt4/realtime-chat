@@ -1,13 +1,13 @@
 import {FC} from "react";
 import {notFound} from "next/navigation";
 import myGetServerSession from "@/lib/myGetServerSession";
-import Image from "next/image";
 import {db} from "@/lib/db";
 import Messages from "@/components/Messages";
 import {Helpers} from "@/app/(dashboard)/dashboard/chat/[chatId]/helpers";
 import {Message} from "@/lib/validations/messages";
 import ChatInput from "@/components/ChatInput/ChatInput";
 import Participants from "@/lib/chatParticipants";
+import MessagesHeader from "@/components/MessagesHeader";
 
 interface ChatProps{
     params: {
@@ -51,45 +51,18 @@ interface ChatParticipants{
 }
 
 const Display: FC<DisplayProps> = ({chatInfo, participants}) =>{
+    const {partner} = participants
+    const {chatId} = chatInfo
+
     return<div className='chat-a'>
-        <Header partner = {participants.partner}/>
+        <MessagesHeader partner = {partner} chatId={chatId}/>
         <Messages initialMessages={chatInfo.messages}
                   participants={participants}
-                  chatId={chatInfo.chatId}
+                  chatId={chatId}
         />
-        <ChatInput chatPartner={participants.partner} chatId={chatInfo.chatId}/>
+        <ChatInput chatPartner={partner} chatId={chatId}/>
     </div>
 }
 
-interface HeaderProps {
-    partner: User
-}
-
-const Header: FC<HeaderProps> = ({partner})=> {
-    const {image, name, email} = partner
-    return <div className='chat-b'>
-        <div className='chat-c'>
-            <div className='relative'>
-                <div className='chat-d'>
-                    <Image src={image}
-                           fill
-                           alt={name}
-                           referrerPolicy='no-referrer'
-                           className='chat-image'/>
-                </div>
-            </div>
-            <div className='chat-e'>
-                <div className='chat-f'>
-                        <span className='chat-g'>
-                            {name}
-                        </span>
-                </div>
-                <span className='chat-h'>
-                        {email}
-                    </span>
-            </div>
-        </div>
-    </div>
-}
 
 export default Page;

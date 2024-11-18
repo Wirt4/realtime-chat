@@ -43,15 +43,13 @@ describe('FriendRequestSidebarOptions', () => {
         expect(label).toBeInTheDocument();
     });
 
-    test('Given the initialRequestCount is 2: ' +
-        'When the component is rendered, it should display 2',()=>{
+    test('Given the initialRequestCount is 2: When the component is rendered, it should display 2',()=>{
         const {queryByText}=render(<FriendRequestSidebarOptions sessionId='stub' initialRequestCount={2}/>);
         const label = queryByText("2");
         expect(label).toBeInTheDocument();
     });
 
-    test('Given the initialRequestCount is 7: ' +
-        'When the component is rendered, it should display 7',()=>{
+    test('Given the initialRequestCount is 7: When the component is rendered, it should display 7',()=>{
         const {queryByText}=render(<FriendRequestSidebarOptions sessionId='stub' initialRequestCount={7}/>);
         const label = queryByText("7");
         expect(label).toBeInTheDocument();

@@ -42,6 +42,6 @@ export async function POST(req: Request) {
     return respond()
 }
 
-function respond(message:string='OK', status: number = 200): Response {
+function respond(message:string='OK', status: number = 200) {
     return new Response(message, { status })
 }

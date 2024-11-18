@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 
-import {render} from '@testing-library/react';
+import {fireEvent, render, act} from '@testing-library/react';
 import Page from '@/app/(dashboard)/dashboard/chat/[chatId]/page'
 import {notFound} from "next/navigation";
 import {db} from "@/lib/db"
@@ -8,6 +8,11 @@ import { getServerSession } from 'next-auth';
 import {Utils} from "@/lib/utils";
 import fetchMock from "jest-fetch-mock";
 import {getPusherClient} from "@/lib/pusher";
+import axios from "axios";
+
+jest.mock("axios",()=>({
+    post: jest.fn()
+}));
 
 jest.mock('@/lib/db', () => ({
     db: {
@@ -15,6 +20,7 @@ jest.mock('@/lib/db', () => ({
     },
 }));
 
+jest.mock("@/app/api/friends/remove/route");
 jest.mock('@/lib/pusher', () => ({
     getPusherClient: jest.fn(),
 }))
@@ -208,6 +214,117 @@ describe('ChatPage renders with expected content', () => {
         const {getByLabelText} = render(await Page({params:{chatId: 'userid1--userid2'}}));
         const chatInput = getByLabelText('chat input')
         expect(chatInput).toBeInTheDocument();
+    });
+
+    test("Given the message contains a partner's image  when the image is clicked on, Then the page should contain a link with an X icon that reads 'Remove Friend'.", async ()=>{
+        (db.get as jest.Mock).mockResolvedValue({
+            name: "spock",
+            email: "pon@far.com",
+            image: "/stub",
+            id: "userid2",
+        });
+        const {queryByText, getByRole} = render(await Page({params:{chatId: 'userid1--userid2'}}));
+        const picture = getByRole('img');
+        fireEvent.click(picture);
+        expect(queryByText('Remove Friend')).toBeInTheDocument();
+    })
+
+    test("Given the message contains a partner's image  when the page is first rendered, Then the page should not contain a link with an X icon that reads 'Remove Friend'.", async ()=>{
+        (db.get as jest.Mock).mockResolvedValue({
+            name: "spock",
+            email: "pon@far.com",
+            image: "/stub",
+            id: "userid2",
+        });
+        const {queryByText} = render(await Page({params:{chatId: 'userid1--userid2'}}));
+        expect(queryByText('Remove Friend')).not.toBeInTheDocument();
+    })
+
+    test("Given the message contains a partner's image and  the image has been clicked: when that image is clicked again , Then the page should contain a link with an X icon that reads 'Remove Friend'.", async ()=>{
+        (db.get as jest.Mock).mockResolvedValue({
+            name: "spock",
+            email: "pon@far.com",
+            image: "/stub",
+            id: "userid2",
+        });
+        const {queryByText, getByRole} = render(await Page({params:{chatId: 'userid1--userid2'}}));
+        const picture = getByRole('img');
+        fireEvent.click(picture);
+        expect(queryByText('Remove Friend')).toBeInTheDocument();
+
+        fireEvent.click(picture);
+        expect(queryByText('Remove Friend')).not.toBeInTheDocument();
+    })
+
+    test("Given the message contains a partner's name  when the name is clicked on, Then the page should contain a link with an X icon that reads 'Remove Friend'.", async ()=>{
+        (db.get as jest.Mock).mockResolvedValue({
+            name: "spock",
+            email: "pon@far.com",
+            image: "/stub",
+            id: "userid2",
+        });
+        const {queryByText, getByText} = render(await Page({params:{chatId: 'userid1--userid2'}}));
+        const name = getByText('spock');
+        fireEvent.click(name);
+        expect(queryByText('Remove Friend')).toBeInTheDocument();
+    })
+
+    test("Given the message contains a partner's name and is clicked on, When the 'Remove Friend' option is clicked, the api endpoint '/friends/remove' is called.", async ()=>{
+        (db.get as jest.Mock).mockResolvedValue({
+            name: "spock",
+            email: "pon@far.com",
+            image: "/stub",
+            id: "userid2",
+        });
+        const {getByText} = render(await Page({params:{chatId: 'userid1--userid2'}}));
+        const name = getByText('spock');
+        fireEvent.click(name);
+        const button = getByText('Remove Friend');
+
+        await act( ()=>{
+            fireEvent.click(button);
+        })
+
+        expect(axios.post as jest.Mock).toHaveBeenCalledWith('/api/friends/remove', expect.anything());
+    })
+
+    test("Given the message contains a partner's name and is clicked on, When the 'X' option is clicked, the api endpoint '/friends/remove' is called.", async ()=>{
+        (db.get as jest.Mock).mockResolvedValue({
+            name: "spock",
+            email: "pon@far.com",
+            image: "/stub",
+            id: "userid2",
+        });
+        const {getByLabelText, getByText} = render(await Page({params:{chatId: 'userid1--userid2'}}));
+        const name = getByText('spock');
+        fireEvent.click(name);
+        const button = getByLabelText('x');
+
+        await act(()=>{
+            fireEvent.click(button);
+        });
+
+        expect(axios.post as jest.Mock).toHaveBeenCalledWith('/api/friends/remove', expect.anything());
+    })
+
+    test("Given the message contains a partner's name and is clicked on, When the 'X' option is clicked, the api endpoint '/api/message/remove/all' is called with the chatId 'userid1--userid2'", async ()=>{
+        (db.get as jest.Mock).mockResolvedValue({
+            name: "spock",
+            email: "pon@far.com",
+            image: "/stub",
+            id: "userid2",
+        });
+
+        const {getByLabelText, getByText} = render(await Page({params:{chatId: 'userid1--userid2'}}));
+        const name = getByText('spock');
+        fireEvent.click(name);
+        const button = getByLabelText('x');
+
+        await act(()=>{
+            fireEvent.click(button);
+        });
+
+        expect(axios.post as jest.Mock).toHaveBeenCalledWith('/api/message/remove/all', {chatId: 'userid1--userid2'});
     })
 });
 
