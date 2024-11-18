@@ -55,7 +55,7 @@ interface ChatParticipants{
 const Display: FC<DisplayProps> = ({chatInfo, participants}) =>{
     const {partner} = participants
     const {chatId} = chatInfo
-    
+
     return<div className='chat-a'>
         <MessagesHeader partner = {partner} chatId={chatId}/>
         <Messages initialMessages={chatInfo.messages}
