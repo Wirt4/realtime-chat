@@ -391,8 +391,7 @@ describe('events sent to pusher',()=>{
         expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.objectContaining({senderId: 'lukeski'}));
     })
 
-    test('Given a message content of "Waverly\'s calling" and no errors:' +
-        ' when the endpoint is called, then pusher.trigger is called with the data containing "text: Waverly\'s calling"', async()=>{
+    test('Given a message content of "Waverly\'s calling" and no errors: when the endpoint is called, then pusher.trigger is called with the data containing "text: Waverly\'s calling"', async()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'illia'}});
         (fetchRedis as jest.Mock).mockResolvedValue(['napoleon']);
 
@@ -405,8 +404,7 @@ describe('events sent to pusher',()=>{
         expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.objectContaining({text:"Waverly's calling"}));
     })
 
-    test('Given a message content of "United Network of Command and Law Enforcement"' +
-        ' when the endpoint is called, then pusher.trigger is called with the data containing text: "United Network of Command and Law Enforcement"', async()=>{
+    test('Given a message content of "United Network of Command and Law Enforcement" when the endpoint is called, then pusher.trigger is called with the data containing text: "United Network of Command and Law Enforcement"', async()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'illia'}});
         (fetchRedis as jest.Mock).mockResolvedValue(['napoleon']);
 
