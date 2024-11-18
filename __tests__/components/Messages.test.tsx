@@ -168,8 +168,7 @@ describe('Messages listens to pusher events', ()=>{
 
     })
 
-    test('Given the component is subscribed to the correct channel and bound to the correct event: ' +
-        'When the event is triggered with a new message, then that message will be added to the DOM', async()=>{
+    test('Given the component is subscribed to the correct channel and bound to the correct event: When the event is triggered with a new message, then that message will be added to the DOM', async()=>{
         const participants = {
             partner: chatPartner,
             user: chatUser,
