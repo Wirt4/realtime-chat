@@ -47,7 +47,7 @@ class Handler{
     }
 
     async triggerPusher(){
-        const pusherServer =new PusherServerWrapper()
+        const pusherServer = new PusherServerWrapper()
         await Promise.all([
             pusherServer.trigger(this.userId, this.idToAdd),
             pusherServer.trigger(this.idToAdd, this.userId)

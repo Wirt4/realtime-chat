@@ -185,7 +185,7 @@ describe('/api/friends/accept', () => {
         expect(db.sadd).toHaveBeenCalledWith('user:666:friends', '8569');
     });
 
-    test("If POST is successfully called, then the idtoAdd is removed from the user's requests table", async()=>{
+    test("If POST is successfully called, then the idToAdd is removed from the user's requests table", async()=>{
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'8569'}});
         (fetchRedis as jest.Mock).mockImplementation(redisMock());
@@ -196,7 +196,7 @@ describe('/api/friends/accept', () => {
         expect(db.srem).toHaveBeenCalledWith('user:8569:incoming_friend_requests', '666');
     });
 
-    test("If POST is successfully called, then the idtoAdd is removed from the user's requests table, different data",
+    test("If POST is successfully called, then the idToAdd is removed from the user's requests table, different data",
         async()=>{
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'4567'}});
@@ -311,7 +311,6 @@ function requestFromId(id: string | number): Request{
 
 function redisMock(isGreen: boolean = true){
     return async ( command: string, query:string, opts:string)=>{
-        console.log(query)
         if (command == 'sismember'){
             const arr = query.split(':');
             const query_name = arr[arr.length-1];
