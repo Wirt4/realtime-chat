@@ -323,8 +323,7 @@ describe('events sent to pusher',()=>{
         jest.useRealTimers()
     })
 
-    test('Given a chat Id of "batman--robin" and no errors:' +
-        ' when the endpoint is called, then pusher.trigger is called with the channel "chat__batman--robin"', async()=>{
+    test('Given a chat Id of "batman--robin" and no errors: when the endpoint is called, then pusher.trigger is called with the channel "chat__batman--robin"', async()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'batman'}});
         (fetchRedis as jest.Mock).mockResolvedValue(['robin']);
 
