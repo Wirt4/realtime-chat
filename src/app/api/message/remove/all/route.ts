@@ -30,16 +30,16 @@ function respond(message: string, status: number) {
 function validateChatId(body: object): ChatId{
     const chatId = z.object({chatId: z.string()}).parse(body).chatId;
 
-    if (!validIdFormat(chatId)) {
+    if (!validateIdFormat(chatId)) {
        throw new Error('ChatId not in format of *****--****')
     }
 
     return new ChatId(chatId)
 }
 
-function validIdFormat(chatId: string): boolean{
-    const regex = /^[\w-]+--[\w-]+$/;
-    const stringSchema = z.string().regex(regex, { message: 'Invalid format' });
+function validateIdFormat(chatId: string): boolean{
+    const chatIdRegex = /^[\w-]+--[\w-]+$/;
+    const stringSchema = z.string().regex(chatIdRegex, { message: 'Invalid format' });
     stringSchema.safeParse(chatId);
     const parseResult = stringSchema.safeParse(chatId);
     return parseResult.success;
