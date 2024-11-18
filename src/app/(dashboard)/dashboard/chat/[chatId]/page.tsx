@@ -1,14 +1,12 @@
 import {FC} from "react";
 import {notFound} from "next/navigation";
 import myGetServerSession from "@/lib/myGetServerSession";
-import Image from "next/image";
 import {db} from "@/lib/db";
 import Messages from "@/components/Messages";
 import {Helpers} from "@/app/(dashboard)/dashboard/chat/[chatId]/helpers";
 import {Message} from "@/lib/validations/messages";
 import ChatInput from "@/components/ChatInput/ChatInput";
 import Participants from "@/lib/chatParticipants";
-import {X} from "lucide-react";
 import MessagesHeader from "@/components/MessagesHeader";
 
 interface ChatProps{
