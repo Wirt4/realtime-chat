@@ -138,8 +138,7 @@ describe('Messages listens to pusher events', ()=>{
         )
     })
 
-    test('Given the component has been initialized with the chat id adam--barbara: When the component is rendered, ' +
-        'then the page should subscribe to the channel "chat__adam--barbara"', async () => {
+    test('Given the component has been initialized with the chat id adam--barbara: When the component is rendered, then the page should subscribe to the channel "chat__adam--barbara"', async () => {
         sessionId = 'barbara'
         chatId = 'adam--barbara';
         chatPartner = {id: 'adam', email:'stub', image: '/user-img-url', name: 'stub'};
