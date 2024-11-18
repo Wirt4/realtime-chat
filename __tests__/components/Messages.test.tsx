@@ -155,8 +155,7 @@ describe('Messages listens to pusher events', ()=>{
         )
     })
 
-    test('Given the component has subscribed to the correct channel for chat: When the component is rendered, ' +
-        'then the channel returned by subscribe should be bound to the event "incoming-message"', async ()=>{
+    test('Given the component has subscribed to the correct channel for chat: When the component is rendered, then the channel returned by subscribe should be bound to the event "incoming-message"', async ()=>{
         (getPusherClient as jest.Mock).mockReturnValue(mockPusherClient);
         const participants = {
             partner: chatPartner,
