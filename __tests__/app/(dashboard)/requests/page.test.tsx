@@ -46,7 +46,7 @@ describe('Request page', () => {
     test('should render a FriendRequests component',async ()=>{
         (getServerSession as jest.Mock).mockResolvedValue({user:{id:'valid'}})
         render(await Page({}));
-        expect((FriendRequests as Jest.Mock)).toHaveBeenCalled();
+        expect((FriendRequests as jest.Mock)).toHaveBeenCalled();
     });
 
     test('should display the words "Friend Requests',async ()=>{
@@ -55,4 +55,5 @@ describe('Request page', () => {
         const header = screen.getByText('Friend Requests');
         expect(header).toBeInTheDocument();
     });
+
 });
