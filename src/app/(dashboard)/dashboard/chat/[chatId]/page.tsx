@@ -54,14 +54,16 @@ const Display: FC<DisplayProps> = ({chatInfo, participants}) =>{
     const {partner} = participants
     const {chatId} = chatInfo
 
-    return<div className='chat-a'>
+    return<>
+        <title>Chat with Bob</title>
+        <div className='chat-a'>
         <MessagesHeader partner = {partner} chatId={chatId}/>
         <Messages initialMessages={chatInfo.messages}
                   participants={participants}
                   chatId={chatId}
         />
         <ChatInput chatPartner={partner} chatId={chatId}/>
-    </div>
+    </div></>
 }
 
 
