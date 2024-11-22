@@ -54,10 +54,29 @@ describe('ChatPage renders with expected content', () => {
     test('page renders',async ()=>{
         render(await Page({params:{chatId: 'userid1--userid2'}}));
     });
-    
+
     test('Given the page has a session user ID of "userid1" and that the partner has a name of "Bob": when the page renders, then the title should be "Chat with Bob"', async ()=>{
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'userid1'}});
+        (db.get as jest.Mock).mockResolvedValue({
+            name: "Bob",
+            email: "stub",
+            image: "/stub",
+            id: "userid2",
+        });
         render(await Page({params:{chatId: 'userid1--userid2'}}));
         expect(document.title).toEqual('Chat with Bob');
+    })
+
+    test('Given the page has a session user ID of "userid2" and that the partner has a name of "Mary": when the page renders, then the title should be "Chat with Bob"', async ()=>{
+        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'userid2'}});
+        (db.get as jest.Mock).mockResolvedValue({
+            name: "Mary",
+            email: "stub",
+            image: "/stub",
+            id: "userid1",
+        });
+        render(await Page({params:{chatId: 'userid1--userid2'}}));
+        expect(document.title).toEqual('Chat with Mary');
     })
 
     test("If the session is valid, then the page doesn't call notfound page", async ()=>{
