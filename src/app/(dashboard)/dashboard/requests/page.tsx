@@ -15,6 +15,9 @@ const Page: FC = async () =>{
     const sessionId = session.user.id
     const requests = await getFriendRequests(sessionId);
     return <>
+        <title>
+            Friend Requests
+        </title>
         <main className='pt-8'>
             <h1>
                 Friend Requests
