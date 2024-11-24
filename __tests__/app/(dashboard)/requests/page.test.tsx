@@ -52,7 +52,7 @@ describe('Request page', () => {
     test('should display the words "Friend Requests',async ()=>{
         (getServerSession as jest.Mock).mockResolvedValue({user:{id:'valid'}})
         render(await Page({}));
-        const header=  screen.getByRole('heading', {text: 'Friend Requests'});
+        const header =  screen.getByRole('heading', {text: 'Friend Requests'});
         expect(header).toBeInTheDocument();
     });
 
