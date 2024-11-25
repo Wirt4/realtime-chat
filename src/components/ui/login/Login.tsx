@@ -23,7 +23,7 @@ const Login:FC =()=>{
                 <ul className='pt-5'>
                     <li>Add friends and chat</li>
                     <li>Mobile-first design</li>
-                    <li><Link href='/login'>View source code at <strong><u>Github</u></strong></Link></li>
+                    <li><Link href='https://github.com/Wirt4/realtime-chat'>View source code at <strong><u>Github</u></strong></Link></li>
                 </ul>
                 </div>
             </div>
