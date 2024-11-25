@@ -1,21 +1,30 @@
-import { render, screen } from '@testing-library/react';
-import Login from '@/components/ui/login/Login';
 import '@testing-library/jest-dom'
-import {Utils} from "@/lib/utils";
+import { render } from '@testing-library/react';
+import Login from '@/components/ui/login/Login';
 
 describe('Login Component', () => {
     afterAll(()=>{
         jest.restoreAllMocks()
     })
     test('renders the login page', () => {
-        jest.spyOn(Utils, 'loginWithGoogle').mockImplementation(jest.fn())
-        render(<Login />);
+        const {getByText} = render(<Login />);
 
         // Check if the sign-in heading is rendered
-        expect(screen.getByText('Sign in with Google')).toBeInTheDocument();
-
-        // Check if the Google button is rendered
-        const googleButton = screen.getByText('Google');
-        expect(googleButton).toBeInTheDocument();
+        const title = getByText("Sign in with Google")
+        expect(title).toBeInTheDocument();
     })
+
+    test('Renders the google button',()=>{
+        const {getByText} = render(<Login />);
+        const button = getByText('Google')
+        expect(button).toBeInTheDocument();
+    })
+
+    test('uses correct src', async () => {
+        const { getByAltText } = await render(<Login />);
+
+        const image = getByAltText("Wirt Salthouse");
+
+        expect(image).toHaveAttribute('src', expect.stringContaining('assets/jpgs/wirt_salthouse.jpg'.replaceAll("/","%2F")))
+    });
 })

@@ -5,11 +5,13 @@ import Button from "@/components/ui/button/Button";
 import GoogleLogo from "@/assets/svgPaths/googleSVG";
 import {Utils} from "@/lib/utils";
 import {Icons} from "@/components/Icons";
+import Image from "next/image";
 
 const Login:FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const Logo = Icons.Logo
     return <div className= 'login-page'>
+        <Image alt="Wirt Salthouse" width="40" height="80" src="/src/assets/jpgs/wirt_salthouse.jpg"/>
             <div className='login-body'>
                 <div>
                     <Logo className='login-logo'/>
