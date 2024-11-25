@@ -20,12 +20,20 @@ describe('Login Component', () => {
         expect(button).toBeInTheDocument();
     })
 
-    test('uses correct src', async () => {
+    test('Contains a picture of the Dev', async () => {
         const { getByAltText } = await render(<Login />);
 
         const image = getByAltText("Wirt Salthouse");
 
         expect(image).toHaveAttribute('src', expect.stringContaining('wirt_salthouse.jpg'))
+    });
+
+    test('renders the heading', () => {
+        const {getByRole} = render(<Login />);
+
+        const heading = getByRole('heading', { name: "Wirt's Realtime Chat" });
+
+        expect(heading).toBeInTheDocument();
     });
 })
 
