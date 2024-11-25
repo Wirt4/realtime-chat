@@ -29,7 +29,6 @@ export async function POST(req: Request) {
             const client = getPusherServer()
             const channel = `user__${userId}__friends`
             await client.trigger(channel, QueryBuilder.deny_friend, senderId)
-            console.log('triggering with', channel)
         }catch{
             return respond('Pusher Error', 424)
         }

@@ -17,4 +17,9 @@ describe('Add Page tests',()=>{
         const {getByTestId} = render(<Page/>);
         expect(getByTestId('friend-button')).toBeInTheDocument()
     });
+
+    test('Given the page renders OK, When the page renders, then it should have the title "Add Friends"', ()=>{
+        render(<Page/>);
+        expect(document.title).toEqual("Add Friends");
+    })
 });

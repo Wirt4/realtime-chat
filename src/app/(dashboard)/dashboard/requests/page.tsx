@@ -14,14 +14,19 @@ const Page: FC = async () =>{
 
     const sessionId = session.user.id
     const requests = await getFriendRequests(sessionId);
-    return <main className='pt-8'>
-        <h1>
-            Friend Requests
-        </h1>
-        <div className='friend-requests-wrapper'>
-            <FriendRequests incomingFriendRequests={requests} sessionId={sessionId}/>
-        </div>
-    </main>
+    const title = 'Friend Requests'
+
+    return (
+        <>
+            <title>{title}</title>
+            <main className='pt-8'>
+            <h1>{title}</h1>
+            <div className='friend-requests-wrapper'>
+                <FriendRequests incomingFriendRequests={requests} sessionId={sessionId}/>
+            </div>
+            </main>
+        </>
+    )
 }
 
 export default Page;
