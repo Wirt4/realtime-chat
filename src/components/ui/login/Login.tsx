@@ -11,7 +11,7 @@ const Login:FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const Logo = Icons.Logo
     return <div className= 'login-page'>
-        <Image alt="Wirt Salthouse" width="40" height="80" src="/src/assets/jpgs/wirt_salthouse.jpg"/>
+        <Image alt="Wirt Salthouse" width="40" height="80" src="/wirt_salthouse.jpg"/>
             <div className='login-body'>
                 <div>
                     <Logo className='login-logo'/>

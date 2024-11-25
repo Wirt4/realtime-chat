@@ -25,6 +25,6 @@ describe('Login Component', () => {
 
         const image = getByAltText("Wirt Salthouse");
 
-        expect(image).toHaveAttribute('src', expect.stringContaining('assets/jpgs/wirt_salthouse.jpg'.replaceAll("/","%2F")))
+        expect(image).toHaveAttribute('src', expect.stringContaining('wirt_salthouse.jpg'))
     });
 })
