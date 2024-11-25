@@ -6,7 +6,7 @@ interface pageProps {}
 const Page: FC<pageProps> =  ({}) =>{
     return (
         <>
-            <title>Wirt Salthouse's Chat App</title>
+            <title>Wirt Salthouse&apos;s Chat App</title>
         </>
     )
 }
