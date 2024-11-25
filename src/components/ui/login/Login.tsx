@@ -10,7 +10,7 @@ import Link from "next/link";
 
 const Login:FC =()=>{
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    return <div className='p-5 justify-center'>
+    return <div className='p-5 justify-items-center'>
         <h1 className='flex'>Wirt's Realtime Chat<MessagesSquare/></h1>
         <div className='md:flex'>
             <Image alt="Wirt Salthouse" width={275} height={275} src="/wirt_salthouse.jpg" className='rounded-sm'/>

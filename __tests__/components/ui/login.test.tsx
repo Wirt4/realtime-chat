@@ -43,5 +43,13 @@ describe('Login Component', () => {
 
         expect(linkElement).toBeInTheDocument();
     });
+
+    test('Contains a link to the github page', () => {
+        const {getByRole} = render(<Login />);
+
+        const linkElement = getByRole('link', { name: /Github/i });
+
+        expect(linkElement).toHaveAttribute('href', expect.stringContaining('https://github.com/Wirt4/realtime-chat'))
+    });
 })
 
