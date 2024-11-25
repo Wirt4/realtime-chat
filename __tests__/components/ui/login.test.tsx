@@ -35,5 +35,13 @@ describe('Login Component', () => {
 
         expect(heading).toBeInTheDocument();
     });
+
+    test('Contains a link to the github page', () => {
+        const {getByRole} = render(<Login />);
+
+        const linkElement = getByRole('link', { name: /Github/i });
+
+        expect(linkElement).toBeInTheDocument();
+    });
 })
 
