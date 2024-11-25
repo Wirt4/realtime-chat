@@ -9,6 +9,10 @@
     h1 {
         @apply font-bold text-5xl mb-8;
     }
+
+    h2{
+        @apply text-2xl font-bold tracking-tight pt-10;
+    }
 }
 
 .icon {
@@ -63,12 +67,16 @@
     @apply -mx-2 mt-2 space-y-1;
 }
 
+.my-justify-end{
+    @apply flex items-end;
+}
+
 .loading {
     @apply mr-2 h-4 w-4 animate-spin;
 }
 
 .login-page{
-    @apply flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8;
+    @apply p-5 justify-items-center;
 }
 
 .login-instructions {
