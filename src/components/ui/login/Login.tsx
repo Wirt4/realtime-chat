@@ -4,7 +4,6 @@ import {FC, useState} from 'react'
 import Button from "@/components/ui/button/Button";
 import GoogleLogo from "@/assets/svgPaths/googleSVG";
 import {Utils} from "@/lib/utils";
-import {Icons} from "@/components/Icons";
 import {MessagesSquare} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
