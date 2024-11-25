@@ -28,3 +28,4 @@ describe('Login Component', () => {
         expect(image).toHaveAttribute('src', expect.stringContaining('wirt_salthouse.jpg'))
     });
 })
+

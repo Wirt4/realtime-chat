@@ -11,20 +11,20 @@ const Login:FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const Logo = Icons.Logo
     return <div className= 'login-page'>
-        <Image alt="Wirt Salthouse" width="40" height="80" src="/wirt_salthouse.jpg"/>
+        <div className='login-body'><Image alt="Wirt Salthouse" width={275} height={275} src="/wirt_salthouse.jpg"/></div>
             <div className='login-body'>
                 <div>
                     <Logo className='login-logo'/>
                     <h2 className='login-h2'>
                         Sign in with Google
                     </h2>
-                </div>
                     <Button isLoading={isLoading} type='button'
                         className='login-button'
                         onClick={Utils.loginWithGoogle(setIsLoading)}>
                             {isLoading? null: <GoogleLogo/>}
                             Google
                     </Button>
+                </div>
             </div>
         </div>
 }
