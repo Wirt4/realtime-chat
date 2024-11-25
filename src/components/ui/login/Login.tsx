@@ -10,7 +10,7 @@ import Link from "next/link";
 
 const Login:FC =()=>{
     return <div className='login-page'>
-        <h1 className='flex'>Wirt's Realtime Chat<MessagesSquare/></h1>
+        <h1 className='flex'>Wirt&apos;s Realtime Chat<MessagesSquare/></h1>
         <div className='md:flex'>
             <Pic/>
             <div className='my-justify-end'>
