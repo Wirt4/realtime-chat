@@ -6,6 +6,7 @@ import GoogleLogo from "@/assets/svgPaths/googleSVG";
 import {Utils} from "@/lib/utils";
 import {Icons} from "@/components/Icons";
 import Image from "next/image";
+import Link from "next/link";
 
 const Login:FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -27,6 +28,7 @@ const Login:FC = () => {
                     </Button>
                 </div>
             </div>
+        <Link href='/login'>Github</Link>
         </div>
 }
 
