@@ -80,7 +80,7 @@
 }
 
 .login-button {
-    @apply max-w-sm mx-auto w-full;
+    @apply max-w-sm mx-auto md:w-full;
 }
 
 .login-h2 {
