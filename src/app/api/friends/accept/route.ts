@@ -63,7 +63,7 @@ class Handler{
     }
 
     async fetchRedisTemplate(table: string): Promise<boolean>{
-        return  fetchRedis('sismember', table, this.idToAdd);
+        return fetchRedis('sismember', table, this.idToAdd);
     }
 
     async addToFriendsTables():Promise<void>{
@@ -109,7 +109,7 @@ class PusherServerWrapper {
 
 function respond(text: string, status: number): Response
 {
-    return  new Response(text, {status: status});
+    return  new Response(text, {status: status}) as Response
 }
 
 async function getUserId(): Promise<string | boolean>{
