@@ -36,6 +36,7 @@ export class PostFriendsRouteHandler {
     }
 
     async isValidRequest(email:{email:string}):Promise<boolean>{
+        //controller work
         try{
             email= this.validateEmail(email)
         }catch{

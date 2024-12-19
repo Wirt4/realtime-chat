@@ -1,10 +1,12 @@
-import {FriendsRepositoryInterface} from "@/repositories/friendsRepositoryInterface";
+import {AddInterface, RequestInterface} from "@/repositories/friendsRepositoryInterface";
 import fetchRedis from "@/helpers/redis";
 import QueryBuilder from "@/lib/queryBuilder";
 import {db} from "@/lib/db";
 import {Redis} from "@upstash/redis";
+import {User} from "next-auth";
+import {undefined} from "zod";
 
-export class FriendsRepository implements FriendsRepositoryInterface{
+export class FriendsRepository implements RequestInterface, AddInterface{
     private database: Redis;
     constructor(database = db) {
         this.database=database
@@ -50,5 +52,9 @@ export class FriendsRepository implements FriendsRepositoryInterface{
 
     async removeFriendRequest(userId: string, idToAdd: string): Promise<void> {
         await this.database.srem(this.incomingRequestsQuery(userId), idToAdd);
+    }
+    //TODO: Implement this method
+    addToFriendRequests(userId: string, idToAdd: string): Promise<void> {
+        return
     }
 }
