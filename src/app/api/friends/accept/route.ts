@@ -34,7 +34,7 @@ export async function POST(request: Request):Promise<Response> {
     await handler.triggerPusher()
     await handler.addToFriendsTables();
     await handler.removeRequestFromTable();
-    return new Response('OK');
+    return new Response('OK') as Response;
 }
 
 class Handler{

@@ -30,17 +30,17 @@ export class FriendsController{
         try{
             await this.handle(userId, idToAdd);
         }catch (error){
-            if (this.isKnownError(error)) {
-                return this.respond(error, 400)
+            if (this.isKnownError(error as string)) {
+                return this.respond(error as string, 400)
             }else{
-                return this.respond(error.toString(), 500)
+                return this.respond(error as string, 500)
             }
         }
         return this.respond('OK', 200);
     }
 
-    isKnownError(error: any): boolean {
-        return typeof error == 'string' && Object.values(FriendRequestStatus).includes(error)
+    isKnownError(error: string): boolean {
+        return  error === FriendRequestStatus.AlreadyFriends || error == FriendRequestStatus.NoExistingFriendRequest
     }
 
     async handle(userId: string|boolean, toAdd: string|boolean): Promise<void> {

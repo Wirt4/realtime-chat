@@ -36,4 +36,12 @@ describe('friendsRequestRepository tests', () => {
         expect(mockDB.sadd).toHaveBeenCalledWith( "user:id1:friends",  "id2")
         expect(mockDB.sadd).toHaveBeenCalledWith( "user:id2:friends",  "id1")
     })
+    it('getUser, returns result from fetchRedis',  () => {
+        (fetchRedis as jest.Mock).mockResolvedValue({name: 'John Doe'});
+        expect(repo.getUser('foo')).resolves.toEqual({name: 'John Doe'});
+    })
+    it('getUser, arguments to fetchRedis',  async () => {
+        await repo.getUser('foo');
+        expect(fetchRedis as jest.Mock).toHaveBeenCalledWith('get', 'user:foo')
+    })
 })

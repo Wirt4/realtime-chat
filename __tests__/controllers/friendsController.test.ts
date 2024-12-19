@@ -1,4 +1,4 @@
-import {FriendsController} from "@/controllers/friendController";
+import {FriendsController} from "@/controllers/friendsController";
 import {FriendRequestStatus, FriendsService} from "@/services/friendsService";
 import myGetServerSession from "@/lib/myGetServerSession";
 jest.mock("@/lib/myGetServerSession",()=> jest.fn());

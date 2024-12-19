@@ -1,3 +1,3 @@
 export interface PusherServiceInterface{
-    triggerPusher(idToAdd: string, user:any):void
+    triggerPusher(idToAdd: string, user:User):void
 }

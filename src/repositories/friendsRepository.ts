@@ -1,7 +1,6 @@
 import {FriendsRepositoryInterface} from "@/repositories/friendsRepositoryInterface";
 import fetchRedis from "@/helpers/redis";
 import QueryBuilder from "@/lib/queryBuilder";
-import {undefined} from "zod";
 import {db} from "@/lib/db";
 import {Redis} from "@upstash/redis";
 
@@ -25,7 +24,11 @@ export class FriendsRepository implements FriendsRepositoryInterface{
         ]);
     }
 
-    queryFriendsTable(userId: string, idToAdd): Promise<boolean> {
+    getUser(userId: string): Promise<User>{
+        return fetchRedis('get', QueryBuilder.user(userId))
+    }
+
+    queryFriendsTable(userId: string, idToAdd:string): Promise<boolean> {
         return this.queryTable(userId, idToAdd, this.friendsTable);
     }
 
@@ -33,16 +36,12 @@ export class FriendsRepository implements FriendsRepositoryInterface{
         return this.queryTable(userId, idToAdd, this.incomingRequestsQuery);
     }
 
-    queryTable(userId: string, idToAdd: string, queryFunction: Function): Promise<boolean> {
+    queryTable(userId: string, idToAdd: string, queryFunction: (id: string)=> string): Promise<boolean> {
         return fetchRedis('sismember', queryFunction(userId), idToAdd);
     }
 
     friendsTable(id: string): string {
         return QueryBuilder.join(id, 'friends');
-    }
-
-    getUser(userId: string): Promise<any> {
-        return Promise.resolve(undefined);
     }
 
     incomingRequestsQuery(id: string): string {

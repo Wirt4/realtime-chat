@@ -1,31 +1,12 @@
 services:
   app:
-    container_name: realtime-chat-container
-    image: node:lts-alpine
     build:
-      context: .  # Use the current directory as the build context
-      dockerfile: Dockerfile  # Specify the Dockerfile name (if it's named Dockerfile)
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "3000:3000"  # Map port 3000 of the container to port 3000 of the host
+      - "3000:3000"
+    env_file:
+      - .env.local
     volumes:
-          - ./:/app
-    working_dir: /app/
-    environment:
-      - HOST=0.0.0.0
-      - CHOKIDAR_USEPOLLING=true
-      - CHOKIDAR_INTER/vAL=100
-    tty: true
-    command: npm run dev  # Start the app
-  jest:
-      container_name: realtime-chat-jest
-      image: node:lts-alpine
-      volumes:
-        - ./:/app
-      working_dir: /app
-      depends_on:
-        - app
-      environment:
-        - NODE_ENV=test
-        - TZ=America/Los_Angeles
-      tty: true
-      command: npm run testWatch
+      - .:/app
+    command: npm run dev
