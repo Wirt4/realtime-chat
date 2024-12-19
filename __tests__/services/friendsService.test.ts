@@ -15,7 +15,8 @@ describe('handleFriendRequest tests',()=>{
             areFriends: jest.fn().mockResolvedValue(false),
              hasExistingFriendRequest: jest.fn().mockResolvedValue(true),
              addToFriends: jest.fn(),
-                getUser: jest.fn()
+             getUser: jest.fn(),
+             removeFriendRequest: jest.fn()
         }
         mockPusher = {
             triggerPusher: jest.fn()
@@ -42,5 +43,9 @@ describe('handleFriendRequest tests',()=>{
         await service.handleFriendRequest(Ids, mockRepository, mockPusher)
         expect(mockPusher.triggerPusher).toHaveBeenCalledWith(Ids.toAdd, {name: 'user'})
         expect(mockPusher.triggerPusher).toHaveBeenCalledWith(Ids.userId, {name: 'toAdd'})
+    })
+    it('should call repo.removeFriendRequest', async ()=>{
+        await service.handleFriendRequest(Ids, mockRepository, mockPusher)
+        expect(mockRepository.removeFriendRequest).toHaveBeenCalledWith(Ids.userId, Ids.toAdd)
     })
 })

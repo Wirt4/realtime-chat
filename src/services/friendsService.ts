@@ -24,6 +24,7 @@ export class FriendsService{
         await Promise.all([
             friendsRepository.addToFriends(ids.toAdd, ids.userId),
             friendsRepository.addToFriends(ids.userId, ids.toAdd),
+            friendsRepository.removeFriendRequest(ids.userId, ids.toAdd),
             pusherService.triggerPusher(ids.toAdd, user),
             pusherService.triggerPusher(ids.userId, toAdd),
         ])

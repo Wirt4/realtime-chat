@@ -44,4 +44,10 @@ describe('friendsRequestRepository tests', () => {
         await repo.getUser('foo');
         expect(fetchRedis as jest.Mock).toHaveBeenCalledWith('get', 'user:foo')
     })
+    it('removeFriendRequest', async () => {
+        const mockDB = {srem: jest.fn()};
+        repo = new FriendsRepository(mockDB as Redis)
+        await repo.removeFriendRequest('id1', 'id2');
+        expect(mockDB.srem).toHaveBeenCalledWith( "user:id1:incoming_friend_requests",  "id2")
+    })
 })

@@ -47,7 +47,8 @@ export class FriendsController{
         const ids = {userId: userId.toString(), toAdd: toAdd.toString()}
         const pusherServer = getPusherServer()
         const pusherService = new PusherService(pusherServer)
-        return  this.service.handleFriendRequest(ids, new FriendsRepository(), pusherService);
+        const repository = new FriendsRepository()
+        return  this.service.handleFriendRequest(ids, repository, pusherService);
     }
 
     respond(message: string, status: number): Response {
