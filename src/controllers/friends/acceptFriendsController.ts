@@ -1,7 +1,7 @@
 import {AbstractFriendsController} from "@/controllers/friends/abstractFriendsController";
 import {friendSchema} from "@/schemas/friendSchema";
-import {FriendRequestStatus} from "@/services/friends/FriendsService";
-import {AcceptFriendsServiceInterface} from "@/services/friends/interfaces/accept";
+import {FriendRequestStatus} from "@/services/friends/service";
+import {AcceptFriendsServiceInterface} from "@/services/friends/interfaces";
 
 export class AcceptFriendsController extends AbstractFriendsController{
     async acceptFriendRequest(request: Request, service: AcceptFriendsServiceInterface):Promise<Response> {

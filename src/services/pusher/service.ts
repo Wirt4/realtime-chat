@@ -1,4 +1,4 @@
-import {ServiceInterfacePusherFriendsAccept} from "@/services/pusher/ServiceInterfacePusherFriendsAccept";
+import {ServiceInterfacePusherFriendsAccept} from "@/services/pusher/interface";
 import PusherServer from "pusher";
 import QueryBuilder from "@/lib/queryBuilder";
 import {User} from "next-auth";

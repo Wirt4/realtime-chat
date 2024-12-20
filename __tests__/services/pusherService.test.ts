@@ -1,4 +1,4 @@
-import {ServicePusher} from "@/services/pusher/ServicePusher";
+import {ServicePusher} from "@/services/pusher/service";
 import PusherServer from "pusher";
 
 describe('pusher service addFriend', () => {

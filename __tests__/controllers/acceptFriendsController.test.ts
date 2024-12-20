@@ -1,7 +1,7 @@
 import myGetServerSession from "@/lib/myGetServerSession";
 import {AcceptFriendsController} from "@/controllers/friends/acceptFriendsController";
-import {FriendRequestStatus, FriendsService} from "@/services/friends/FriendsService";
-import {AcceptFriendsServiceInterface} from "@/services/friends/interfaces/accept";
+import {FriendRequestStatus, FriendsService} from "@/services/friends/service";
+import {AcceptFriendsServiceInterface} from "@/services/friends/interfaces";
 
 jest.mock("@/lib/myGetServerSession",()=> jest.fn());
 
@@ -18,7 +18,7 @@ describe('Accept Tests',()=>{
             json: async () => ({ id: idToAdd })
         } as unknown as Request;
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: userId}});
-        mockService = {handleFriendRequest: jest.fn().mockImplementation(()=>{})}
+        mockService = {} as FriendsService
         service = {handleFriendRequest: jest.fn().mockImplementation(()=>{})}
     })
     it("if there's no ID to add, then return a 422", async()=>{
