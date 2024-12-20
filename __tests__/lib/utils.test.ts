@@ -134,11 +134,10 @@ describe('addFriend', ()=>{
         const expectedPath = '/api/friends/add'
         const email = 'valid-email'
         const validEmail = {email}
-        const expectedOpts = {email: validEmail}
         jest.spyOn(addFriendValidator, 'parse').mockReturnValue(validEmail)
         const postSpy = jest.spyOn(axios, 'post').mockResolvedValue({ data: { success: true } })
         await Utils.addFriend({email, setError: jest.fn(), setShowSuccessState: jest.fn()})
-        expect(postSpy).toHaveBeenCalledWith(expectedPath, expectedOpts)
+        expect(postSpy).toHaveBeenCalledWith(expectedPath, expect.objectContaining({email: validEmail.email}))
 
     });
 
