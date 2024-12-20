@@ -1,5 +1,5 @@
-import {ServiceFriendsAbstract} from "@/services/friends/abstractFriendsService";
-import {Ids} from "@/services/friends/abstractFriendsService";
+import {ServiceFriendsAbstract} from "@/services/friends/FriendsService";
+import {Ids} from "@/services/friends/FriendsService";
 import {RequestInterface} from "@/repositories/friendsRepositoryInterface";
 import {ServiceInterfacePusherFriendsAccept} from "@/services/pusher/ServiceInterfacePusherFriendsAccept";
 import {FriendRequestStatus} from "@/services/friends/serviceFriendsAdd";

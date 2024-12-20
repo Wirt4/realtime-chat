@@ -1,20 +1,18 @@
-import {friendSchema} from "@/schemas/friendSchema";
-import {ServiceFriendsAdd} from "@/services/friends/serviceFriendsAdd";
 import myGetServerSession from "@/lib/myGetServerSession";
 import {FriendsRepository} from "@/repositories/friendsRepository";
 import {ServicePusher} from "@/services/pusher/ServicePusher";
 import {getPusherServer} from "@/lib/pusher";
-import {ServiceFriendsAbstract} from "@/services/friends/abstractFriendsService";
+import {FriendsService} from "@/services/friends/FriendsService";
 
 export class AbstractFriendsController {
-    protected service: ServiceFriendsAbstract;
     protected readonly repository: FriendsRepository;
     protected readonly pusherService: ServicePusher;
+    protected service: FriendsService;
 
-    constructor(service: ServiceFriendsAbstract){
-        this.service = service;
+    constructor(service: FriendsService){
         this.repository = new FriendsRepository();
         this.pusherService = new ServicePusher(getPusherServer());
+        this.service = service;
     }
 
     async getUserId(): Promise<string | boolean> {

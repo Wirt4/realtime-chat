@@ -1,10 +1,11 @@
 import {AbstractFriendsController} from "@/controllers/friends/abstractFriendsController";
 import {addFriendValidator} from "@/lib/validations/add-friend";
 import {ServiceFriendsAdd} from "@/services/friends/serviceFriendsAdd";
+import {FriendsService} from "@/services/friends/FriendsService";
 
 export class AddFriendsController extends AbstractFriendsController{
 
-    async addFriendRequest(request: Request, service:ServiceFriendsAdd):Promise<Response> {
+    async addFriendRequest(request: Request, service:FriendsService):Promise<Response> {
         const body = await request.json();
         let email: {email: string};
         try {

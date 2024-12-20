@@ -1,16 +1,17 @@
 import {FriendsAddInterface, RequestInterface} from "@/repositories/friendsRepositoryInterface";
 import {ServiceInterfacePusherFriendsAccept} from "@/services/pusher/ServiceInterfacePusherFriendsAccept";
 import {ServiceFriendsAccept} from "@/services/friends/ServiceFriendsAccept";
+import {FriendsService} from "@/services/friends/FriendsService";
 jest.mock("@/lib/myGetServerSession",()=> jest.fn());
 
 describe('handleFriendRequest tests',()=>{
-    let service: ServiceFriendsAccept;
+    let service: FriendsService;
     let mockRepository: RequestInterface;
     let mockPusher: ServiceInterfacePusherFriendsAccept;
     const Ids = {toAdd: 'idToAdd', userId: 'userId'}
     beforeEach(()=>{
         jest.resetAllMocks()
-         service = new ServiceFriendsAccept();
+         service = new FriendsService();
          mockRepository = {
             areFriends: jest.fn().mockResolvedValue(false),
              hasExistingFriendRequest: jest.fn().mockResolvedValue(true),
@@ -52,7 +53,7 @@ describe('handleFriendRequest tests',()=>{
 
 describe('UserExists tests',()=>{
     it('the repository confirms the user exists', async ()=>{
-        const service = new ServiceFriendsAccept();
+        const service = new FriendsService();
         const mockRepository: FriendsAddInterface = {
             userExists: jest.fn().mockResolvedValue(true),
             addToFriendRequests: jest.fn()

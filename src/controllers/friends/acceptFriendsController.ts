@@ -1,9 +1,9 @@
 import {AbstractFriendsController} from "@/controllers/friends/abstractFriendsController";
-import {FriendRequestStatus} from "@/services/friends/serviceFriendsAdd";
 import {friendSchema} from "@/schemas/friendSchema";
+import {FriendRequestStatus} from "@/services/friends/FriendsService";
 
 export class AcceptFriendsController extends AbstractFriendsController{
-    async acceptFriendRequest(request: Request):Promise<Response> {
+    async acceptFriendRequest(request: Request,):Promise<Response> {
         const idToAdd = await this.getIdToAdd(request);
 
         if (!idToAdd) {

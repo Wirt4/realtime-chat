@@ -1,6 +1,6 @@
 import {FriendsAbstractInterface, FriendsAddInterface} from "@/repositories/friendsRepositoryInterface";
 import {PusherAddFriendInterface} from "@/services/pusher/ServiceInterfacePusherFriendsAccept";
-import {Ids, ServiceFriendsAbstract} from "@/services/friends/abstractFriendsService";
+import {Ids, ServiceFriendsAbstract} from "@/services/friends/FriendsService";
 
 export class ServiceFriendsAdd extends ServiceFriendsAbstract{
     async handleFriendAdd(ids: Ids, senderEmail: string, friendsRepository: FriendsAddInterface, pusherService: PusherAddFriendInterface): Promise<void>{
@@ -15,9 +15,4 @@ export class ServiceFriendsAdd extends ServiceFriendsAbstract{
     isSameUser(ids:Ids): boolean{
         return ids.userId == ids.toAdd
     }
-}
-
-export enum FriendRequestStatus{
-    AlreadyFriends = 'Already Friends',
-    NoExistingFriendRequest = 'No Existing Friend Request'
 }
