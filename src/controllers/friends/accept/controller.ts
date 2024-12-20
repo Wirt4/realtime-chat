@@ -1,4 +1,4 @@
-import {AbstractFriendsController} from "@/controllers/friends/abstractFriendsController";
+import {AbstractFriendsController} from "@/controllers/friends/abstract";
 import {friendSchema} from "@/schemas/friendSchema";
 import {FriendRequestStatus} from "@/services/friends/service";
 import {AcceptFriendsServiceInterface} from "@/services/friends/interfaces";

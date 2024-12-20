@@ -1,8 +1,7 @@
 import {
     FriendsAbstractInterface,
     FriendsAddInterface,
-    RequestInterface
-} from "@/repositories/friendsRepositoryInterface";
+} from "@/repositories/friends/interfaces";
 import {
     PusherAddFriendInterface,
     ServiceInterfacePusherFriendsAccept
@@ -26,7 +25,7 @@ export class FriendsService
         return friendsRepository.hasExistingFriendRequest(ids.userId, ids.toAdd)
     }
 
-    async handleFriendRequest(ids: Ids, friendsRepository: RequestInterface, pusherService: ServiceInterfacePusherFriendsAccept): Promise<void>{
+    async handleFriendRequest(ids: Ids, friendsRepository: FriendsAddInterface, pusherService: ServiceInterfacePusherFriendsAccept): Promise<void>{
         if (await this.areAlreadyFriends(ids, friendsRepository)) {
             throw FriendRequestStatus.AlreadyFriends
         }

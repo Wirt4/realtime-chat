@@ -1,10 +1,8 @@
-import {FriendsAddInterface, RequestInterface} from "@/repositories/friendsRepositoryInterface";
+import {FriendsAddInterface, RequestInterface} from "@/repositories/friends/interfaces";
 import fetchRedis from "@/helpers/redis";
 import QueryBuilder from "@/lib/queryBuilder";
 import {db} from "@/lib/db";
 import {Redis} from "@upstash/redis";
-import {User} from "next-auth";
-import {undefined} from "zod";
 
 export class FriendsRepository implements RequestInterface, FriendsAddInterface{
     private database: Redis;

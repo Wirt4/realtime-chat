@@ -1,4 +1,4 @@
-import {FriendsRepository} from "@/repositories/friendsRepository";
+import {FriendsRepository} from "@/repositories/friends/repository";
 import fetchRedis from "@/helpers/redis";
 import {Redis} from "@upstash/redis";
 

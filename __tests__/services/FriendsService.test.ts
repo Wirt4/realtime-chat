@@ -1,5 +1,5 @@
 
-import {FriendsAbstractInterface, FriendsAddInterface, RequestInterface} from "@/repositories/friendsRepositoryInterface";
+import {FriendsAbstractInterface, FriendsAddInterface, RequestInterface} from "@/repositories/friends/interfaces";
 import {FriendsService} from "@/services/friends/service";
 import {ServiceInterfacePusherFriendsAccept} from "@/services/pusher/interface";
 jest.mock("@/lib/myGetServerSession",()=> jest.fn());

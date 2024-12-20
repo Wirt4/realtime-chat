@@ -1,5 +1,5 @@
 import myGetServerSession from "@/lib/myGetServerSession";
-import {AcceptFriendsController} from "@/controllers/friends/acceptFriendsController";
+import {AcceptFriendsController} from "@/controllers/friends/accept/controller";
 import {FriendRequestStatus, FriendsService} from "@/services/friends/service";
 import {AcceptFriendsServiceInterface} from "@/services/friends/interfaces";
 

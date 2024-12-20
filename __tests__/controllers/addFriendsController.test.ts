@@ -1,7 +1,6 @@
-
 import myGetServerSession from "@/lib/myGetServerSession";
-import {AddFriendsController} from "@/controllers/friends/addFriendsController";
-import {AddFriendsServiceInterface} from "@/services/friends/interfaces/add";
+import {AddFriendsController} from "@/controllers/friends/add/controller";
+import {AddFriendsServiceInterface} from "@/services/friends/interfaces";
 jest.mock("@/lib/myGetServerSession",()=> jest.fn());
 
 describe('Add Tests',()=>{
@@ -17,8 +16,8 @@ describe('Add Tests',()=>{
             getIdToAdd: jest.fn().mockResolvedValue(idToAdd),
             isSameUser: jest.fn().mockReturnValue(false),
             isAlreadyAddedToFriendRequests: jest.fn().mockResolvedValueOnce(false),
-            areAlreadyFriends: jest.fn().mockResolvedValue(false),
             userExists: jest.fn().mockResolvedValue(true),
+            areAlreadyFriends: jest.fn().mockResolvedValue(false)
         }
         controller = new AddFriendsController();
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: userId}})
