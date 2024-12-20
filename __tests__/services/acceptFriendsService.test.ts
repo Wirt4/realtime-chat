@@ -1,16 +1,16 @@
-import {FriendsService} from "@/services/friendsService";
-import {RequestInterface} from "@/repositories/friendsRepositoryInterface";
-import {PusherServiceInterface} from "@/services/pusherServiceInterface";
+import {FriendsAddInterface, RequestInterface} from "@/repositories/friendsRepositoryInterface";
+import {ServiceInterfacePusherFriendsAccept} from "@/services/pusher/ServiceInterfacePusherFriendsAccept";
+import {ServiceFriendsAccept} from "@/services/friends/ServiceFriendsAccept";
 jest.mock("@/lib/myGetServerSession",()=> jest.fn());
 
 describe('handleFriendRequest tests',()=>{
-    let service: FriendsService;
+    let service: ServiceFriendsAccept;
     let mockRepository: RequestInterface;
-    let mockPusher: PusherServiceInterface;
+    let mockPusher: ServiceInterfacePusherFriendsAccept;
     const Ids = {toAdd: 'idToAdd', userId: 'userId'}
     beforeEach(()=>{
         jest.resetAllMocks()
-         service = new FriendsService();
+         service = new ServiceFriendsAccept();
          mockRepository = {
             areFriends: jest.fn().mockResolvedValue(false),
              hasExistingFriendRequest: jest.fn().mockResolvedValue(true),
@@ -19,7 +19,7 @@ describe('handleFriendRequest tests',()=>{
              removeFriendRequest: jest.fn()
         }
         mockPusher = {
-            triggerPusher: jest.fn()
+            addFriend: jest.fn()
         }
     })
     it('the ids are already friends, throw an error',  () => {
@@ -41,8 +41,8 @@ describe('handleFriendRequest tests',()=>{
            return {name: 'toAdd'}
        })
         await service.handleFriendRequest(Ids, mockRepository, mockPusher)
-        expect(mockPusher.triggerPusher).toHaveBeenCalledWith(Ids.toAdd, {name: 'user'})
-        expect(mockPusher.triggerPusher).toHaveBeenCalledWith(Ids.userId, {name: 'toAdd'})
+        expect(mockPusher.addFriend).toHaveBeenCalledWith(Ids.toAdd, {name: 'user'})
+        expect(mockPusher.addFriend).toHaveBeenCalledWith(Ids.userId, {name: 'toAdd'})
     })
     it('should call repo.removeFriendRequest', async ()=>{
         await service.handleFriendRequest(Ids, mockRepository, mockPusher)
@@ -50,13 +50,13 @@ describe('handleFriendRequest tests',()=>{
     })
 })
 
-describe('handleFriendAdd tests',()=>{
-    it('the repository should add the friend request',async ()=>{
-        const service = new FriendsService();
-        const mockRepository = {
-            addToFriendRequests: jest.fn(),
+describe('UserExists tests',()=>{
+    it('the repository confirms the user exists', async ()=>{
+        const service = new ServiceFriendsAccept();
+        const mockRepository: FriendsAddInterface = {
+            userExists: jest.fn().mockResolvedValue(true),
+            addToFriendRequests: jest.fn()
         }
-        await service.handleFriendAdd('userId', 'idToAdd', mockRepository)
-        expect(mockRepository.addToFriendRequests).toHaveBeenCalledWith('userId', 'idToAdd')
+        expect(await service.userExists('userId', mockRepository)).toBe(true)
     })
 })

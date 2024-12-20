@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     const sessionId = session.user.id
     const areFriends =  await fetchRedis('sismember', `user:${sessionId}:friends`, targetId)
     if (!areFriends) {
-        return respond('Not Friends', 400);
+        return respond('Not friends', 400);
     }
 
     try {

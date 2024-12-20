@@ -51,3 +51,41 @@ describe('friendsRequestRepository tests', () => {
         expect(mockDB.srem).toHaveBeenCalledWith( "user:id1:incoming_friend_requests",  "id2")
     })
 })
+
+describe('addToFriendRequests', () => {
+    it('should call sadd with correct arguments', async () => {
+        const mockDB = {sadd: jest.fn()};
+       const  repo = new FriendsRepository(mockDB as Redis)
+        await repo.addToFriendRequests('id1', 'id2');
+        expect(mockDB.sadd).toHaveBeenCalledWith(  "user:id2:incoming_friend_requests",  'id1')
+    })
+})
+
+describe('userExists', () => {
+    beforeEach(()=>{
+        jest.resetAllMocks()
+    })
+    it('should return true if fetchRedis returns a value', async () => {
+        (fetchRedis as jest.Mock).mockResolvedValue('foo');
+        const repo = new FriendsRepository();
+        expect(repo.userExists('foo')).resolves.toBe(true)
+    })
+    it('should return false if fetchRedis returns null', async () => {
+        (fetchRedis as jest.Mock).mockResolvedValue(null);
+        const repo = new FriendsRepository();
+        expect(repo.userExists('foo')).resolves.toBe(false)
+    })
+    it('should call fetchRedis with correct arguments', async () => {
+        const repo = new FriendsRepository();
+        await repo.userExists('foo');
+        expect(fetchRedis as jest.Mock).toHaveBeenCalledWith('get', 'user:email:foo')
+    })
+})
+
+describe('getUserId', () => {
+    it('should return an empty string', async () => {
+        (fetchRedis as jest.Mock).mockResolvedValue('foo');
+        const repo = new FriendsRepository();
+        expect(repo.getUserId('email')).resolves.toBe('foo');
+    })
+})
