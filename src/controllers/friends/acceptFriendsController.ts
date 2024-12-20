@@ -1,9 +1,10 @@
 import {AbstractFriendsController} from "@/controllers/friends/abstractFriendsController";
 import {friendSchema} from "@/schemas/friendSchema";
 import {FriendRequestStatus} from "@/services/friends/FriendsService";
+import {AcceptFriendsServiceInterface} from "@/services/friends/interfaces/accept";
 
 export class AcceptFriendsController extends AbstractFriendsController{
-    async acceptFriendRequest(request: Request,):Promise<Response> {
+    async acceptFriendRequest(request: Request, service: AcceptFriendsServiceInterface):Promise<Response> {
         const idToAdd = await this.getIdToAdd(request);
 
         if (!idToAdd) {
@@ -17,7 +18,7 @@ export class AcceptFriendsController extends AbstractFriendsController{
         }
 
         try{
-            await this.handle(userId, idToAdd);
+            await this.handle(userId, idToAdd, service);
         }catch (error){
             if (this.isKnownError(error as string)) {
                 return this.respond(error as string, 400)
@@ -32,9 +33,9 @@ export class AcceptFriendsController extends AbstractFriendsController{
         return  error === FriendRequestStatus.AlreadyFriends || error == FriendRequestStatus.NoExistingFriendRequest
     }
 
-    async handle(userId: string|boolean, toAdd: string|boolean): Promise<void> {
+    async handle(userId: string|boolean, toAdd: string|boolean, service: AcceptFriendsServiceInterface): Promise<void> {
         const ids = {userId: userId.toString(), toAdd: toAdd.toString()}
-        return  this.service.handleFriendRequest(ids, this.repository, this.pusherService);
+        return  service.handleFriendRequest(ids, this.repository, this.pusherService);
     }
 
     async getIdToAdd(request: Request):Promise <string | boolean> {

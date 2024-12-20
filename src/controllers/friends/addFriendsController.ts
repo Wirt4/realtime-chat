@@ -1,6 +1,5 @@
 import {AbstractFriendsController} from "@/controllers/friends/abstractFriendsController";
 import {addFriendValidator} from "@/lib/validations/add-friend";
-import {ServiceFriendsAdd} from "@/services/friends/serviceFriendsAdd";
 import {FriendsService} from "@/services/friends/FriendsService";
 
 export class AddFriendsController extends AbstractFriendsController{

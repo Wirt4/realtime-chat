@@ -1,8 +1,20 @@
-import {FriendsAddInterface, RequestInterface} from "@/repositories/friendsRepositoryInterface";
-import {ServiceInterfacePusherFriendsAccept} from "@/services/pusher/ServiceInterfacePusherFriendsAccept";
-import {ServiceFriendsAccept} from "@/services/friends/ServiceFriendsAccept";
+
+import {FriendsAbstractInterface, FriendsAddInterface, RequestInterface} from "@/repositories/friendsRepositoryInterface";
 import {FriendsService} from "@/services/friends/FriendsService";
+import {ServiceInterfacePusherFriendsAccept} from "@/services/pusher/ServiceInterfacePusherFriendsAccept";
 jest.mock("@/lib/myGetServerSession",()=> jest.fn());
+
+describe('getIdToAdd tests',()=>{
+    it('should return the id from the repo', async ()=>{
+        const service = new FriendsService();
+        const mockRepository: FriendsAbstractInterface = {
+            getUserId: jest.fn().mockResolvedValue('id'),
+            areFriends: jest.fn(),
+            hasExistingFriendRequest: jest.fn()
+        }
+        expect(await service.getIdToAdd('email@test.com', mockRepository)).toBe('id')
+    })
+})
 
 describe('handleFriendRequest tests',()=>{
     let service: FriendsService;
@@ -11,13 +23,13 @@ describe('handleFriendRequest tests',()=>{
     const Ids = {toAdd: 'idToAdd', userId: 'userId'}
     beforeEach(()=>{
         jest.resetAllMocks()
-         service = new FriendsService();
-         mockRepository = {
+        service = new FriendsService();
+        mockRepository = {
             areFriends: jest.fn().mockResolvedValue(false),
-             hasExistingFriendRequest: jest.fn().mockResolvedValue(true),
-             addToFriends: jest.fn(),
-             getUser: jest.fn(),
-             removeFriendRequest: jest.fn()
+            hasExistingFriendRequest: jest.fn().mockResolvedValue(true),
+            addToFriends: jest.fn(),
+            getUser: jest.fn(),
+            removeFriendRequest: jest.fn()
         }
         mockPusher = {
             addFriend: jest.fn()
@@ -37,10 +49,10 @@ describe('handleFriendRequest tests',()=>{
         expect(mockRepository.addToFriends).toHaveBeenCalledWith(Ids.toAdd, Ids.userId)
     })
     it('if no errors, should trigger the messenger service for live updates',async()=>{
-       mockRepository.getUser = jest.fn().mockImplementation(async(id)=>{
-           if(id === Ids.userId) return {name: 'user'}
-           return {name: 'toAdd'}
-       })
+        mockRepository.getUser = jest.fn().mockImplementation(async(id)=>{
+            if(id === Ids.userId) return {name: 'user'}
+            return {name: 'toAdd'}
+        })
         await service.handleFriendRequest(Ids, mockRepository, mockPusher)
         expect(mockPusher.addFriend).toHaveBeenCalledWith(Ids.toAdd, {name: 'user'})
         expect(mockPusher.addFriend).toHaveBeenCalledWith(Ids.userId, {name: 'toAdd'})
