@@ -8,6 +8,7 @@ describe('Add Tests',()=>{
     let request: Request
     const userId = 'foo'
     const idToAdd = 'bar'
+    let email = 'test@test.com'
     let service: AddFriendsServiceInterface
     beforeEach(()=>{
         jest.clearAllMocks()
@@ -21,7 +22,7 @@ describe('Add Tests',()=>{
         }
         controller = new AddFriendsController();
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: userId}})
-        request = {json: async () => ({email: 'test@test.com'})} as unknown as Request
+        request = {json: async () => ({email: email})} as unknown as Request
     })
     it('should call service handleFriendAdd', async () => {
         await controller.addFriendRequest(request, service)
@@ -40,6 +41,10 @@ describe('Add Tests',()=>{
         service.userExists = jest.fn().mockResolvedValue(false)
         const response = await controller.addFriendRequest(request, service)
         expect(response.status).toEqual(400)
+    })
+    it('userExists should be called with the email in the request body', async () => {
+        await controller.addFriendRequest(request, service)
+        expect(service.userExists).toHaveBeenCalledWith(email, expect.anything())
     })
     it('return 401 if the session is bad', async () => {
         (myGetServerSession as jest.Mock).mockResolvedValue(null);

@@ -70,6 +70,15 @@ describe('UserExists tests',()=>{
             userExists: jest.fn().mockResolvedValue(true),
             addToFriendRequests: jest.fn()
         }
-        expect(await service.userExists('userId', mockRepository)).toBe(true)
+        expect(await service.userExists('userId@test.com', mockRepository)).toBe(true)
+    })
+    it('the repository confirms the user exists', async ()=>{
+        const service = new FriendsService();
+        const mockRepository: FriendsAddInterface = {
+            userExists: jest.fn().mockResolvedValue(true),
+            addToFriendRequests: jest.fn()
+        }
+        await service.userExists('userId@test.com', mockRepository)
+        expect(mockRepository.userExists).toHaveBeenCalledWith('userId@test.com')
     })
 })

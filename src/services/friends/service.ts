@@ -58,7 +58,6 @@ export class FriendsService
     isSameUser(ids:Ids): boolean{
         return ids.userId == ids.toAdd
     }
-
 }
 
 export enum FriendRequestStatus{

@@ -57,10 +57,11 @@ export class FriendsRepository implements RequestInterface, FriendsAddInterface{
     }
 
     async userExists(email: string): Promise<boolean> {
-        return !!(await fetchRedis('get', QueryBuilder.email(email)));
+        const idToAdd = await fetchRedis("get",QueryBuilder.email(email))
+        return Boolean(idToAdd)
     }
 
-    getUserId(email: string): Promise<string> {
+   async getUserId(email: string): Promise<string> {
         return fetchRedis('get', QueryBuilder.email(email))
     }
 }

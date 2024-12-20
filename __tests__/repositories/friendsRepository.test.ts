@@ -77,8 +77,8 @@ describe('userExists', () => {
     })
     it('should call fetchRedis with correct arguments', async () => {
         const repo = new FriendsRepository();
-        await repo.userExists('foo');
-        expect(fetchRedis as jest.Mock).toHaveBeenCalledWith('get', 'user:email:foo')
+        await repo.userExists('test@test.com');
+        expect(fetchRedis as jest.Mock).toHaveBeenCalledWith('get', 'user:email:test@test.com')
     })
 })
 
