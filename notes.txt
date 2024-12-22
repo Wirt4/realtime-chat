@@ -13,6 +13,4 @@ For each feature, update the use case in the README first, then implement it.
 
 removeAll message
 
-controller
-service
 repository

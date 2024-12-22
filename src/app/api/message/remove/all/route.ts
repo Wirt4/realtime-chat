@@ -1,8 +1,3 @@
-import {getServerSession} from "next-auth";
-import {z} from "zod";
-import {db} from "@/lib/db";
-import {authOptions} from "@/lib/auth";
-
 export async function POST(request: Request) {
     let chatId: ChatId
 

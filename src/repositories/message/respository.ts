@@ -1,10 +1,12 @@
-import {SendMessageRepositoryInterface} from "@/repositories/message/interface";
+import {RemoveAllMessagesRepositoryInterface, SendMessageRepositoryInterface} from "@/repositories/message/interface";
 import {Message, messageSchema} from "@/lib/validations/messages";
 import {Redis} from "@upstash/redis";
 import {db} from "@/lib/db";
 import QueryBuilder from "@/lib/queryBuilder";
 
-export class MessageRepository implements SendMessageRepositoryInterface{
+export class MessageRepository implements
+    SendMessageRepositoryInterface,
+    RemoveAllMessagesRepositoryInterface{
     private database: Redis
     constructor(database: Redis = db){
         this.database = database
@@ -17,5 +19,9 @@ export class MessageRepository implements SendMessageRepositoryInterface{
     private formatPayload(message: Message){
         const parsedMessage: string = JSON.stringify(messageSchema.parse(message))
         return {score: message.timestamp, member: parsedMessage}
+    }
+
+    async removeAllMessages(chatId: string): Promise<void>{
+        await this.database.del(QueryBuilder.messages(chatId) as any)
     }
 }
