@@ -25,46 +25,46 @@ describe('Accept Tests',()=>{
         request = {
             json: async () => ({})
         } as unknown as Request;
-         controller = new AcceptFriendsController(mockService)
+         controller = new AcceptFriendsController()
         result = await controller.acceptFriendRequest(request, service);
         expect(result.status).toEqual(422)
     })
     it("if there's a valid ID to add, then don't throw a 422", async()=>{
-        controller = new AcceptFriendsController(mockService)
+        controller = new AcceptFriendsController()
          result = await controller.acceptFriendRequest(request, service);
         expect(result.status).not.toEqual(422)
     })
     it("if the userID is unauthorized to add, throw a 401", async()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue(null);
-        controller = new AcceptFriendsController(mockService)
+        controller = new AcceptFriendsController()
         result = await controller.acceptFriendRequest(request, service);
         expect(result.status).toEqual(401)
     })
     it('should call friendsService with ids', async () => {
-        controller = new AcceptFriendsController(mockService)
+        controller = new AcceptFriendsController()
         result = await controller.acceptFriendRequest(request, service);
         expect(service.handleFriendRequest).toHaveBeenCalledWith({toAdd: idToAdd, userId}, expect.anything(), expect.anything())
     });
     it ('if no errors, return a 200', async()=>{
-        controller = new AcceptFriendsController(mockService as FriendsService)
+        controller = new AcceptFriendsController()
         result = await controller.acceptFriendRequest(request, service);
         expect(result.status).toEqual(200)
     })
     it('if handleFriendRequest throws an Already friends error, return a 400', async()=>{
         service.handleFriendRequest = jest.fn().mockRejectedValue(FriendRequestStatus.AlreadyFriends)
-        controller = new AcceptFriendsController(mockService as FriendsService)
+        controller = new AcceptFriendsController()
         result = await controller.acceptFriendRequest(request,service);
         expect(result.status).toEqual(400)
     })
     it('if handleFriendRequest throws a No Existing Friend Request error, return a 400', async()=>{
         service.handleFriendRequest = jest.fn().mockRejectedValue(FriendRequestStatus.NoExistingFriendRequest)
-        controller = new AcceptFriendsController(mockService as FriendsService)
+        controller = new AcceptFriendsController()
         result = await controller.acceptFriendRequest(request,service);
         expect(result.status).toEqual(400)
     })
     it('if handleFriendRequest throws an unknown error, return a 500', async()=>{
         service.handleFriendRequest = jest.fn().mockRejectedValue({message:'random error'})
-        controller = new AcceptFriendsController(mockService as FriendsService)
+        controller = new AcceptFriendsController()
         result = await controller.acceptFriendRequest(request,service);
         expect(result.status).toEqual(500)
     })
