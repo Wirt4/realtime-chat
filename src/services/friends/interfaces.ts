@@ -12,6 +12,10 @@ export interface DenyFriendsServiceInterface{
     removeEntry(ids: removeIds, repository:FriendsDenyInterface, pusher: PusherDenyFriendInterface): Promise<void>,
 }
 
+export interface RemoveFriendsServiceInterface{
+    areAlreadyFriends(ids: addIds, friendsRepository: FriendsAbstractInterface): Promise<boolean>
+}
+
 export interface AddFriendsServiceInterface {
     handleFriendAdd(ids: addIds, senderEmail: string, friendsRepository: FriendsAddInterface, pusherService: PusherAddFriendInterface): Promise<void>
     getIdToAdd(email: string, friendsRepository: FriendsAbstractInterface): Promise<string>,
