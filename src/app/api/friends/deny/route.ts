@@ -1,46 +1,10 @@
-import myGetServerSession from "@/lib/myGetServerSession";
-import {z} from "zod";
-import {removeDbEntry} from "@/lib/dbWrapper";
-import QueryBuilder from "@/lib/queryBuilder";
-import {getPusherServer} from "@/lib/pusher";
+import {DenyFriendsController} from "@/controllers/friends/deny/controller";
+import {FriendsService} from "@/services/friends/service";
+
 
 export async function POST(req: Request) {
-    try {
-        let body: object
-        let senderId: string
-
-        try {
-            body = await req.json()
-            const { id: idToDeny } = z.object({ id: z.string() }).parse(body)
-            senderId = idToDeny
-        }catch{
-            return respond('Invalid Request Payload', 422);
-        }
-
-        const session = await myGetServerSession()
-
-        if (!session) {
-            return respond('Unauthorized', 401)
-        }
-
-        const userId = session.user.id
-
-        try{
-            const client = getPusherServer()
-            const channel = `user__${userId}__friends`
-            await client.trigger(channel, QueryBuilder.deny_friend, senderId)
-        }catch{
-            return respond('Pusher Error', 424)
-        }
-
-        await removeDbEntry(QueryBuilder.incomingFriendRequests(userId), senderId)
-    } catch {
-        return respond('Redis Error', 424)
-    }
-
-    return respond()
+    const controller = new DenyFriendsController()
+    const service = new FriendsService()
+    return controller.deny(req, service)
 }
 
-function respond(message:string='OK', status: number = 200) {
-    return new Response(message, { status })
-}
