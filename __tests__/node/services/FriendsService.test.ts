@@ -26,7 +26,7 @@ describe('handleFriendRequest tests',()=>{
     let service: FriendsService;
     let mockRepository: FriendsAddInterface;
     let mockPusher: ServiceInterfacePusherFriendsAccept;
-    const Ids = {toAdd: 'idToAdd', userId: 'userId'}
+    const ids: Ids = {sessionId: 'idToAdd', requestId: 'userId'}
     beforeEach(()=>{
         jest.resetAllMocks()
         service = new FriendsService();
@@ -46,29 +46,29 @@ describe('handleFriendRequest tests',()=>{
     })
     it('the ids are already friends, throw an error',  () => {
         mockRepository.areFriends = jest.fn().mockResolvedValue(true)
-        expect(service.handleFriendRequest(Ids, mockRepository, mockPusher)).rejects.toEqual('Already Friends');
+        expect(service.handleFriendRequest(ids, mockRepository, mockPusher)).rejects.toEqual('Already Friends');
     });
     it('if there is no existing Friend Request, then throw an error',async ()=>{
         mockRepository.hasExistingFriendRequest = jest.fn().mockResolvedValue(false)
-        expect(service.handleFriendRequest(Ids, mockRepository, mockPusher)).rejects.toEqual('No Existing Friend Request');
+        expect(service.handleFriendRequest(ids, mockRepository, mockPusher)).rejects.toEqual('No Existing Friend Request');
     })
     it('if no errors, repository.addToFriends, should be called for each participant',async ()=>{
-        await service.handleFriendRequest(Ids, mockRepository, mockPusher)
-        expect(mockRepository.addToFriends).toHaveBeenCalledWith(Ids.userId, Ids.toAdd)
-        expect(mockRepository.addToFriends).toHaveBeenCalledWith(Ids.toAdd, Ids.userId)
+        await service.handleFriendRequest(ids, mockRepository, mockPusher)
+        expect(mockRepository.addToFriends).toHaveBeenCalledWith(ids.sessionId, ids.requestId)
+        expect(mockRepository.addToFriends).toHaveBeenCalledWith(ids.requestId, ids.sessionId)
     })
     it('if no errors, should trigger the messenger service for live updates',async()=>{
         mockRepository.getUser = jest.fn().mockImplementation(async(id)=>{
-            if(id === Ids.userId) return {name: 'user'}
+            if(id === ids.sessionId) return {name: 'user'}
             return {name: 'toAdd'}
         })
-        await service.handleFriendRequest(Ids, mockRepository, mockPusher)
-        expect(mockPusher.addFriend).toHaveBeenCalledWith(Ids.toAdd, {name: 'user'})
-        expect(mockPusher.addFriend).toHaveBeenCalledWith(Ids.userId, {name: 'toAdd'})
+        await service.handleFriendRequest(ids, mockRepository, mockPusher)
+        expect(mockPusher.addFriend).toHaveBeenCalledWith(ids.requestId, {name: 'user'})
+        expect(mockPusher.addFriend).toHaveBeenCalledWith(ids.sessionId, {name: 'toAdd'})
     })
     it('should call repo.removeFriendRequest', async ()=>{
-        await service.handleFriendRequest(Ids, mockRepository, mockPusher)
-        expect(mockRepository.removeFriendRequest).toHaveBeenCalledWith(Ids.userId, Ids.toAdd)
+        await service.handleFriendRequest(ids, mockRepository, mockPusher)
+        expect(mockRepository.removeFriendRequest).toHaveBeenCalledWith(ids.sessionId, ids.requestId)
     })
 })
 
@@ -101,7 +101,7 @@ describe('deny request tests',()=>{
     let service: FriendsService;
     let mockRepository: FriendsDenyInterface;
     let mockPusher: PusherDenyFriendInterface
-    const ids = {userId:'foo', toRemove:'bar'}
+    const ids: Ids = {sessionId:'foo', requestId:'bar'}
     beforeEach(()=>{
         jest.resetAllMocks()
         service = new FriendsService();
@@ -127,7 +127,7 @@ describe('deny request tests',()=>{
     it('should throw if the repository throws', async () => {
         mockPusher.denyFriendRequest = jest.fn().mockRejectedValue('error')
         try{
-            await service.removeEntry(ids,mockRepository, mockPusher)
+            await service.removeEntry(ids, mockRepository, mockPusher)
             expect(true).toEqual(false)
         }catch(error){
             expect(error).toEqual('Pusher Error')
