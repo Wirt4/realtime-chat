@@ -26,7 +26,7 @@ export class AddFriendsController extends AbstractFriendsController{
             return this.unauthorized()
         }
 
-        const ids = {userId: userId as string, toAdd: idToAdd as string}
+        const ids:Ids = {sessionId: userId as string, requestId: idToAdd as string}
 
         if (service.isSameUser(ids)) {
             return this.respond("Users can't add themselves as friends", 400)

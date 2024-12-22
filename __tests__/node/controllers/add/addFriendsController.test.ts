@@ -8,7 +8,7 @@ describe('Add Tests',()=>{
     let request: Request
     const userId = 'foo'
     const idToAdd = 'bar'
-    let email = 'test@test.com'
+    const email = 'test@test.com'
     let service: AddFriendsServiceInterface
     beforeEach(()=>{
         jest.clearAllMocks()
@@ -54,8 +54,9 @@ describe('Add Tests',()=>{
     it('return 400 if the user tries to add themselves', async () => {
         service.isSameUser = jest.fn().mockResolvedValue(true)
         const response = await controller.addFriendRequest(request, service)
+        const ids: Ids = {sessionId: userId, requestId: idToAdd}
         expect(response.status).toEqual(400)
-        expect(service.isSameUser).toHaveBeenCalledWith({userId: userId, toAdd: idToAdd})
+        expect(service.isSameUser).toHaveBeenCalledWith(ids)
     })
     it('return 400 if the target is already added',async ()=>{
         service.isAlreadyAddedToFriendRequests =  jest.fn().mockResolvedValueOnce(true)

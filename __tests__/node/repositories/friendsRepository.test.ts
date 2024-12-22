@@ -2,7 +2,6 @@ import {FriendsRepository} from "@/repositories/friends/repository";
 import fetchRedis from "@/helpers/redis";
 import {Redis} from "@upstash/redis";
 import {db} from "@/lib/db";
-import {awaitExpression} from "@babel/types";
 
 jest.mock("@/helpers/redis")
 
@@ -74,12 +73,12 @@ describe('userExists', () => {
     beforeEach(()=>{
         jest.resetAllMocks()
     })
-    it('should return true if fetchRedis returns a value', async () => {
+    it('should return true if fetchRedis returns a value',  () => {
         (fetchRedis as jest.Mock).mockResolvedValue('foo');
         const repo = new FriendsRepository();
         expect(repo.userExists('foo')).resolves.toBe(true)
     })
-    it('should return false if fetchRedis returns null', async () => {
+    it('should return false if fetchRedis returns null',  () => {
         (fetchRedis as jest.Mock).mockResolvedValue(null);
         const repo = new FriendsRepository();
         expect(repo.userExists('foo')).resolves.toBe(false)
@@ -108,7 +107,7 @@ describe('removeEntry tests', () => {
 })
 
 describe('removeFriend tests', ()=> {
-    it('should call db.srem', async () => {
+    it('should call db.srem with the correct parameters', async () => {
         const repo = new FriendsRepository();
         await repo.removeFriend('xavier', 'magnus');
         expect(db.srem as jest.Mock).toHaveBeenCalledWith('user:xavier:friends', 'magnus')

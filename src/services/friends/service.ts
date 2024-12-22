@@ -12,7 +12,6 @@ import {
     DenyFriendsServiceInterface,
     RemoveFriendsServiceInterface
 } from "@/services/friends/interfaces";
-import {undefined} from "zod";
 
 export class FriendsService
     implements
