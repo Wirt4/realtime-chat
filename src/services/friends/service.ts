@@ -81,9 +81,11 @@ export class FriendsService
         }
     }
 
-    //TODO: Implement
-    removeFriends(ids: Ids, friendsRepository: FriendsRemoveInterface): Promise<void> {
-        return Promise.resolve(undefined);
+    async removeFriends(ids: Ids, friendsRepository: FriendsRemoveInterface): Promise<void> {
+        await Promise.all([
+            friendsRepository.removeFriend(ids.sessionId, ids.requestId),
+            friendsRepository.removeFriend(ids.requestId, ids.sessionId),
+        ])
     }
 }
 

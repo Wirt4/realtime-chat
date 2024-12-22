@@ -1,13 +1,20 @@
-import {FriendsAddInterface, FriendsDenyInterface, RequestInterface} from "@/repositories/friends/interfaces";
+import {
+    FriendsAddInterface,
+    FriendsDenyInterface,
+    FriendsRemoveInterface,
+    RequestInterface
+} from "@/repositories/friends/interfaces";
 import fetchRedis from "@/helpers/redis";
 import QueryBuilder from "@/lib/queryBuilder";
 import {db} from "@/lib/db";
 import {Redis} from "@upstash/redis";
+import {aw} from "@upstash/redis/zmscore-Dc6Llqgr";
 
 export class FriendsRepository implements 
     RequestInterface, 
     FriendsAddInterface, 
-    FriendsDenyInterface
+    FriendsDenyInterface,
+    FriendsRemoveInterface
 {
     private database: Redis;
     
@@ -71,7 +78,11 @@ export class FriendsRepository implements
         return fetchRedis('get', QueryBuilder.email(email))
     }
 
-    async removeEntry(ids:removeIds): Promise<void> {
-        await db.srem(QueryBuilder.incomingFriendRequests(ids.userId), ids.toRemove)
+    async removeEntry(ids:Ids): Promise<void> {
+        await this.database.srem(QueryBuilder.incomingFriendRequests(ids.sessionId), ids.requestId)
+    }
+
+    async removeFriend(userId: string, idToRemove: string): Promise<void> {
+        await this.database.srem(`user:${userId}:friends`, idToRemove)
     }
 }

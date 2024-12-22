@@ -2,7 +2,7 @@
 import {
     FriendsAbstractInterface,
     FriendsAddInterface,
-    FriendsDenyInterface,
+    FriendsDenyInterface, FriendsRemoveInterface,
     RequestInterface
 } from "@/repositories/friends/interfaces";
 import {FriendsService} from "@/services/friends/service";
@@ -135,3 +135,25 @@ describe('deny request tests',()=>{
     })
 })
 
+describe('removeFriends tests',()=>{
+    let service: FriendsService;
+    let mockRepository: FriendsRemoveInterface;
+    let ids: Ids
+    beforeEach(()=>{
+        jest.resetAllMocks()
+        mockRepository = {
+            removeFriend: jest.fn()
+        }
+        ids = {sessionId: 'foo', requestId: 'bar'}
+        service = new FriendsService()
+    })
+    it('should make two calls to the repo removeFriend method', async ()=>{
+        await service.removeFriends(ids, mockRepository)
+        expect(mockRepository.removeFriend).toHaveBeenCalledTimes(2)
+    })
+    it('should call repo.remove friend with the sessionid and requestd, both forward and backware', async () => {
+        await service.removeFriends(ids, mockRepository)
+        expect(mockRepository.removeFriend).toHaveBeenCalledWith(ids.sessionId, ids.requestId)
+        expect(mockRepository.removeFriend).toHaveBeenCalledWith(ids.requestId, ids.sessionId)
+    });
+})

@@ -2,6 +2,7 @@ import {FriendsRepository} from "@/repositories/friends/repository";
 import fetchRedis from "@/helpers/redis";
 import {Redis} from "@upstash/redis";
 import {db} from "@/lib/db";
+import {awaitExpression} from "@babel/types";
 
 jest.mock("@/helpers/redis")
 
@@ -101,7 +102,15 @@ describe('getUserId', () => {
 describe('removeEntry tests', () => {
     it('should call db.srem', async () => {
         const repo = new FriendsRepository();
-        await repo.removeEntry({userId:'xavier', toRemove:'magnus'});
+        await repo.removeEntry({sessionId:'xavier', requestId:'magnus'});
         expect(db.srem as jest.Mock).toHaveBeenCalledWith('user:xavier:incoming_friend_requests', 'magnus')
     });
+})
+
+describe('removeFriend tests', ()=> {
+    it('should call db.srem', async () => {
+        const repo = new FriendsRepository();
+        await repo.removeFriend('xavier', 'magnus');
+        expect(db.srem as jest.Mock).toHaveBeenCalledWith('user:xavier:friends', 'magnus')
+    })
 })
