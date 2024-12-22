@@ -1,8 +1,16 @@
 import {FriendsRepository} from "@/repositories/friends/repository";
 import fetchRedis from "@/helpers/redis";
 import {Redis} from "@upstash/redis";
+import {db} from "@/lib/db";
 
 jest.mock("@/helpers/redis")
+
+jest.mock("@/lib/db",()=>({
+    __esModule: true,
+    db: {
+        srem: jest.fn()
+    }
+}));
 
 describe('friendsRequestRepository tests', () => {
     let repo: FriendsRepository;
@@ -31,7 +39,7 @@ describe('friendsRequestRepository tests', () => {
     })
     it('addToFriendsTables', async () => {
         const mockDB = {sadd: jest.fn()};
-        repo = new FriendsRepository(mockDB as Redis)
+        repo = new FriendsRepository(mockDB as any as Redis)
         await repo.addToFriends('id1', 'id2');
         expect(mockDB.sadd).toHaveBeenCalledWith( "user:id1:friends",  "id2")
         expect(mockDB.sadd).toHaveBeenCalledWith( "user:id2:friends",  "id1")
@@ -46,7 +54,7 @@ describe('friendsRequestRepository tests', () => {
     })
     it('removeFriendRequest', async () => {
         const mockDB = {srem: jest.fn()};
-        repo = new FriendsRepository(mockDB as Redis)
+        repo = new FriendsRepository(mockDB as any as  Redis)
         await repo.removeFriendRequest('id1', 'id2');
         expect(mockDB.srem).toHaveBeenCalledWith( "user:id1:incoming_friend_requests",  "id2")
     })
@@ -55,7 +63,7 @@ describe('friendsRequestRepository tests', () => {
 describe('addToFriendRequests', () => {
     it('should call sadd with correct arguments', async () => {
         const mockDB = {sadd: jest.fn()};
-       const  repo = new FriendsRepository(mockDB as Redis)
+       const  repo = new FriendsRepository(mockDB as any as Redis)
         await repo.addToFriendRequests('id1', 'id2');
         expect(mockDB.sadd).toHaveBeenCalledWith(  "user:id2:incoming_friend_requests",  'id1')
     })
@@ -88,4 +96,12 @@ describe('getUserId', () => {
         const repo = new FriendsRepository();
         expect(repo.getUserId('email')).resolves.toBe('foo');
     })
+})
+
+describe('removeEntry tests', () => {
+    it('should call db.srem', async () => {
+        const repo = new FriendsRepository();
+        await repo.removeEntry({userId:'xavier', toRemove:'magnus'});
+        expect(db.srem as jest.Mock).toHaveBeenCalledWith('user:xavier:incoming_friend_requests', 'magnus')
+    });
 })

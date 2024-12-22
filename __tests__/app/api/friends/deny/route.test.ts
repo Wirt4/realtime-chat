@@ -30,7 +30,7 @@ describe('error cases', ()=>{
             headers: { 'Content-Type': 'application/json' }
         });
         (getServerSession as jest.Mock).mockResolvedValue(false);
-        const response = await POST(request);
+        const response = await POST(request as unknown as Request);
         expect(response.status).toEqual(401);
         expect(response.body?.toString()).toEqual('Unauthorized');
     });
@@ -58,7 +58,7 @@ describe('error cases', ()=>{
         expect(typeof response).toEqual(typeof expectedType);
     });
 
-    test("given the session works but the  parameter isn't formatted correctly, when the api is called, it should return a 422", async()=>{
+    test("given the status should be 422 if  parameter isn't formatted correctly", async()=>{
         (getServerSession as jest.Mock).mockResolvedValue({user:{id:'stub'}});
         const request = new Request('/api/friends/deny', {
             method: 'POST',

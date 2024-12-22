@@ -1,7 +1,12 @@
 
-import {FriendsAbstractInterface, FriendsAddInterface, RequestInterface} from "@/repositories/friends/interfaces";
+import {
+    FriendsAbstractInterface,
+    FriendsAddInterface,
+    FriendsDenyInterface,
+    RequestInterface
+} from "@/repositories/friends/interfaces";
 import {FriendsService} from "@/services/friends/service";
-import {ServiceInterfacePusherFriendsAccept} from "@/services/pusher/interface";
+import {PusherDenyFriendInterface, ServiceInterfacePusherFriendsAccept} from "@/services/pusher/interface";
 jest.mock("@/lib/myGetServerSession",()=> jest.fn());
 
 describe('getIdToAdd tests',()=>{
@@ -10,7 +15,8 @@ describe('getIdToAdd tests',()=>{
         const mockRepository: FriendsAbstractInterface = {
             getUserId: jest.fn().mockResolvedValue('id'),
             areFriends: jest.fn(),
-            hasExistingFriendRequest: jest.fn()
+            hasExistingFriendRequest: jest.fn(),
+            userExists: jest.fn()
         }
         expect(await service.getIdToAdd('email@test.com', mockRepository)).toBe('id')
     })
@@ -18,7 +24,7 @@ describe('getIdToAdd tests',()=>{
 
 describe('handleFriendRequest tests',()=>{
     let service: FriendsService;
-    let mockRepository: RequestInterface;
+    let mockRepository: FriendsAddInterface;
     let mockPusher: ServiceInterfacePusherFriendsAccept;
     const Ids = {toAdd: 'idToAdd', userId: 'userId'}
     beforeEach(()=>{
@@ -29,7 +35,10 @@ describe('handleFriendRequest tests',()=>{
             hasExistingFriendRequest: jest.fn().mockResolvedValue(true),
             addToFriends: jest.fn(),
             getUser: jest.fn(),
-            removeFriendRequest: jest.fn()
+            removeFriendRequest: jest.fn(),
+            getUserId: jest.fn(),
+            userExists: jest.fn(),
+            addToFriendRequests: jest.fn()
         }
         mockPusher = {
             addFriend: jest.fn()
@@ -66,19 +75,63 @@ describe('handleFriendRequest tests',()=>{
 describe('UserExists tests',()=>{
     it('the repository confirms the user exists', async ()=>{
         const service = new FriendsService();
-        const mockRepository: FriendsAddInterface = {
+        const mockRepository: FriendsAbstractInterface = {
             userExists: jest.fn().mockResolvedValue(true),
-            addToFriendRequests: jest.fn()
+            areFriends:jest.fn(),
+            getUserId: jest.fn(),
+            hasExistingFriendRequest: jest.fn()
+
         }
         expect(await service.userExists('userId@test.com', mockRepository)).toBe(true)
     })
     it('the repository confirms the user exists', async ()=>{
         const service = new FriendsService();
-        const mockRepository: FriendsAddInterface = {
+        const mockRepository: FriendsAbstractInterface = {
             userExists: jest.fn().mockResolvedValue(true),
-            addToFriendRequests: jest.fn()
+            areFriends:jest.fn(),
+            getUserId: jest.fn(),
+            hasExistingFriendRequest: jest.fn()
         }
         await service.userExists('userId@test.com', mockRepository)
         expect(mockRepository.userExists).toHaveBeenCalledWith('userId@test.com')
     })
 })
+
+describe('deny request tests',()=>{
+    let service: FriendsService;
+    let mockRepository: FriendsDenyInterface;
+    let mockPusher: PusherDenyFriendInterface
+    const ids = {userId:'foo', toRemove:'bar'}
+    beforeEach(()=>{
+        jest.resetAllMocks()
+        service = new FriendsService();
+        mockRepository = {
+            removeEntry: jest.fn()
+        }
+        mockPusher = {
+            denyFriendRequest: jest.fn()
+        }
+    })
+    it('should call the repository deny method', async ()=>{
+        await service.removeEntry(ids,mockRepository, mockPusher)
+        expect(mockRepository.removeEntry).toHaveBeenCalledWith(ids)
+    })
+    it('should throw if the repository throws', async () => {
+        mockRepository.removeEntry = jest.fn().mockRejectedValue('error')
+        try{
+            await service.removeEntry(ids,mockRepository, mockPusher)
+        }catch(error){
+            expect(error).toEqual('Redis Error')
+        }
+    })
+    it('should throw if the repository throws', async () => {
+        mockPusher.denyFriendRequest = jest.fn().mockRejectedValue('error')
+        try{
+            await service.removeEntry(ids,mockRepository, mockPusher)
+            expect(true).toEqual(false)
+        }catch(error){
+            expect(error).toEqual('Pusher Error')
+        }
+    })
+})
+

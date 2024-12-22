@@ -1,31 +1,36 @@
 import {
     FriendsAbstractInterface,
-    FriendsAddInterface,
+    FriendsAddInterface, FriendsDenyInterface,
 } from "@/repositories/friends/interfaces";
 import {
-    PusherAddFriendInterface,
+    PusherAddFriendInterface, PusherDenyFriendInterface,
     ServiceInterfacePusherFriendsAccept
 } from "@/services/pusher/interface";
-import {AcceptFriendsServiceInterface, AddFriendsServiceInterface} from "@/services/friends/interfaces";
+import {
+    AcceptFriendsServiceInterface,
+    AddFriendsServiceInterface,
+    DenyFriendsServiceInterface
+} from "@/services/friends/interfaces";
 
 export class FriendsService
     implements
         AcceptFriendsServiceInterface,
-        AddFriendsServiceInterface{
+        AddFriendsServiceInterface,
+DenyFriendsServiceInterface{
 
     async userExists(email: string, friendsRepository: FriendsAbstractInterface): Promise<boolean>{
         return friendsRepository.userExists(email)
     }
 
-    async areAlreadyFriends(ids: Ids, friendsRepository: FriendsAbstractInterface): Promise<boolean>{
+    async areAlreadyFriends(ids: addIds, friendsRepository: FriendsAbstractInterface): Promise<boolean>{
         return friendsRepository.areFriends(ids.userId, ids.toAdd)
     }
 
-    async isAlreadyAddedToFriendRequests(ids: Ids, friendsRepository: FriendsAbstractInterface): Promise<boolean>{
+    async isAlreadyAddedToFriendRequests(ids: addIds, friendsRepository: FriendsAbstractInterface): Promise<boolean>{
         return friendsRepository.hasExistingFriendRequest(ids.userId, ids.toAdd)
     }
 
-    async handleFriendRequest(ids: Ids, friendsRepository: FriendsAddInterface, pusherService: ServiceInterfacePusherFriendsAccept): Promise<void>{
+    async handleFriendRequest(ids: addIds, friendsRepository: FriendsAddInterface, pusherService: ServiceInterfacePusherFriendsAccept): Promise<void>{
         if (await this.areAlreadyFriends(ids, friendsRepository)) {
             throw FriendRequestStatus.AlreadyFriends
         }
@@ -46,7 +51,7 @@ export class FriendsService
         ])
     }
 
-    async handleFriendAdd(ids: Ids, senderEmail: string, friendsRepository: FriendsAddInterface, pusherService: PusherAddFriendInterface): Promise<void>{
+    async handleFriendAdd(ids: addIds, senderEmail: string, friendsRepository: FriendsAddInterface, pusherService: PusherAddFriendInterface): Promise<void>{
         await pusherService.addFriendRequest(ids.userId, ids.toAdd, senderEmail)
         await friendsRepository.addToFriendRequests(ids.userId, ids.toAdd)
     }
@@ -55,9 +60,23 @@ export class FriendsService
         return friendsRepository.getUserId(email)
     }
 
-    isSameUser(ids:Ids): boolean{
+    isSameUser(ids:addIds): boolean{
         return ids.userId == ids.toAdd
     }
+
+    async removeEntry(ids:removeIds, repository:FriendsDenyInterface, pusher: PusherDenyFriendInterface ): Promise<void> {
+        try{
+           await repository.removeEntry(ids)
+        }catch{
+            throw 'Redis Error'
+        }
+        try{
+            await pusher.denyFriendRequest(ids.userId, ids.toRemove)
+        }catch {
+            throw 'Pusher Error'
+        }
+    }
+
 }
 
 export enum FriendRequestStatus{

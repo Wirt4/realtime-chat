@@ -1,14 +1,20 @@
-import {FriendsAddInterface, RequestInterface} from "@/repositories/friends/interfaces";
+import {FriendsAddInterface, FriendsDenyInterface, RequestInterface} from "@/repositories/friends/interfaces";
 import fetchRedis from "@/helpers/redis";
 import QueryBuilder from "@/lib/queryBuilder";
 import {db} from "@/lib/db";
 import {Redis} from "@upstash/redis";
 
-export class FriendsRepository implements RequestInterface, FriendsAddInterface{
+export class FriendsRepository implements 
+    RequestInterface, 
+    FriendsAddInterface, 
+    FriendsDenyInterface
+{
     private database: Redis;
+    
     constructor(database = db) {
         this.database=database
     }
+    
     async areFriends(userId:string, idToAdd: string): Promise<boolean>{
         return this.queryFriendsTable(userId, idToAdd);
     }
@@ -24,7 +30,7 @@ export class FriendsRepository implements RequestInterface, FriendsAddInterface{
         ]);
     }
 
-    getUser(userId: string): Promise<User>{
+    async getUser(userId: string): Promise<User>{
         return fetchRedis('get', QueryBuilder.user(userId))
     }
 
@@ -57,11 +63,15 @@ export class FriendsRepository implements RequestInterface, FriendsAddInterface{
     }
 
     async userExists(email: string): Promise<boolean> {
-        const idToAdd = await fetchRedis("get",QueryBuilder.email(email))
+        const idToAdd = await this.getUserId(email)
         return Boolean(idToAdd)
     }
 
    async getUserId(email: string): Promise<string> {
         return fetchRedis('get', QueryBuilder.email(email))
+    }
+
+    async removeEntry(ids:removeIds): Promise<void> {
+        await db.srem(QueryBuilder.incomingFriendRequests(ids.userId), ids.toRemove)
     }
 }

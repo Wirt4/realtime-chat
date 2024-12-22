@@ -12,6 +12,10 @@ export interface FriendsAddInterface extends FriendsAbstractInterface{
     removeFriendRequest(userId: string, idToAdd: string): Promise<void>;
 }
 
+export interface FriendsDenyInterface{
+    removeEntry(ids: removeIds): Promise<void>;
+}
+
 export interface FriendsAbstractInterface {
     hasExistingFriendRequest(userId:string, idToAdd: string): Promise<boolean>;
     userExists(email: string): Promise<boolean>;

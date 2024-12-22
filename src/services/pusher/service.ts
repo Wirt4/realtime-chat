@@ -1,11 +1,17 @@
-import {PusherAddFriendInterface, ServiceInterfacePusherFriendsAccept} from "@/services/pusher/interface";
+import {
+    PusherAddFriendInterface,
+    PusherDenyFriendInterface,
+    ServiceInterfacePusherFriendsAccept
+} from "@/services/pusher/interface";
 import PusherServer from "pusher";
 import QueryBuilder from "@/lib/queryBuilder";
-import {User} from "next-auth";
 
-export class ServicePusher implements ServiceInterfacePusherFriendsAccept, PusherAddFriendInterface{
-    constructor(private pusher: PusherServer) {
-    }
+export class ServicePusher implements
+    ServiceInterfacePusherFriendsAccept,
+    PusherAddFriendInterface,
+    PusherDenyFriendInterface
+{
+    constructor(private pusher: PusherServer) {}
 
     async addFriend (idToAdd: string, user: User): Promise<void> {
         const channel = QueryBuilder.friendsPusher(idToAdd)
@@ -17,5 +23,10 @@ export class ServicePusher implements ServiceInterfacePusherFriendsAccept, Pushe
         const channel = QueryBuilder.incomingFriendRequestsPusher(idToAdd);
         const event = QueryBuilder.incoming_friend_requests;
         await this.pusher.trigger(channel, event, data);
+    }
+
+    async denyFriendRequest(userId: string, idToDeny:string): Promise<void> {
+        const channel = `user__${userId}__friends`
+        await this.pusher.trigger(channel, QueryBuilder.deny_friend, idToDeny)
     }
 }
