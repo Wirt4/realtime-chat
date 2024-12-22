@@ -1,6 +1,6 @@
 import {
     FriendsAbstractInterface,
-    FriendsAddInterface, FriendsDenyInterface,
+    FriendsAddInterface, FriendsDenyInterface, FriendsRemoveInterface,
 } from "@/repositories/friends/interfaces";
 import {
     PusherAddFriendInterface, PusherDenyFriendInterface,
@@ -9,14 +9,18 @@ import {
 import {
     AcceptFriendsServiceInterface,
     AddFriendsServiceInterface,
-    DenyFriendsServiceInterface
+    DenyFriendsServiceInterface,
+    RemoveFriendsServiceInterface
 } from "@/services/friends/interfaces";
+import {undefined} from "zod";
 
 export class FriendsService
     implements
         AcceptFriendsServiceInterface,
         AddFriendsServiceInterface,
-DenyFriendsServiceInterface{
+        DenyFriendsServiceInterface,
+        RemoveFriendsServiceInterface
+{
 
     async userExists(email: string, friendsRepository: FriendsAbstractInterface): Promise<boolean>{
         return friendsRepository.userExists(email)
@@ -75,6 +79,11 @@ DenyFriendsServiceInterface{
         }catch {
             throw 'Pusher Error'
         }
+    }
+
+    //TODO: Implement
+    removeFriends(ids: Ids, friendsRepository: FriendsRemoveInterface): Promise<void> {
+        return Promise.resolve(undefined);
     }
 }
 

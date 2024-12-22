@@ -13,7 +13,7 @@ export interface FriendsAddInterface extends FriendsAbstractInterface{
 }
 
 export interface FriendsDenyInterface{
-    removeEntry(ids: removeIds): Promise<void>;
+    removeEntry(ids: Ids): Promise<void>;
 }
 export interface FriendsRemoveInterface{}
 

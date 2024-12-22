@@ -25,18 +25,11 @@ export class RemoveFriendsController extends AbstractFriendsController {
         }
 
         try{
-            await Promise.all([
-                service.removeFriends(ids, this.repository),
-                service.removeFriends(this.swapIds(ids), this.repository)
-            ])
+            await service.removeFriends(ids, this.repository)
         }catch(error){
             return this.respond(error.toString(), 500)
         }
 
         return this.ok()
-    }
-
-    private swapIds(ids:Ids):Ids{
-        return  {sessionId: ids.requestId, requestId: ids.sessionId}
     }
 }
