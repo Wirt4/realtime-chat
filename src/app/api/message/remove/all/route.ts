@@ -13,7 +13,7 @@ export async function POST(request: Request) {
         return respond('Invalid Input', 422)
     }
 
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession(authOptions);
 
     if (!(session && chatId.participants.includes(session.user.id))) {
         return respond('Unauthorized', 401)

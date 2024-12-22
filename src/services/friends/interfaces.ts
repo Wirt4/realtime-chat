@@ -1,7 +1,7 @@
 import {
     PusherAddFriendInterface, PusherDenyFriendInterface,
     ServiceInterfacePusherFriendsAccept
-} from "@/services/pusher/interface";
+} from "@/services/pusher/interfaces";
 import {
     FriendsAbstractInterface,
     FriendsAddInterface,

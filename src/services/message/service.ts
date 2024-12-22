@@ -1,9 +1,13 @@
-import {MessageSendInterface} from "@/services/message/interface";
+import {MessageRemoveAllInterface, MessageSendInterface} from "@/services/message/interface";
 import {FriendsAbstractInterface} from "@/repositories/friends/interfaces";
-import {SendMessageRepositoryInterface} from "@/repositories/message/interface";
+import {RemoveAllMessagesRepositoryInterface, SendMessageRepositoryInterface} from "@/repositories/message/interface";
 import {nanoid} from "nanoid";
+import {PusherSendMessageInterface} from "@/services/pusher/interfaces";
 
-export class MessageService implements MessageSendInterface{
+export class MessageService implements
+    MessageSendInterface,
+    MessageRemoveAllInterface
+{
     isChatMember(chatProfile:ChatProfile): boolean {
         const participants = new Participants(chatProfile.id)
         return participants.isParticipant(chatProfile.sender)
@@ -14,9 +18,16 @@ export class MessageService implements MessageSendInterface{
         return friendRepository.areFriends(chatProfile.sender, participants.getCorrespondent(chatProfile.sender))
     }
 
-    async sendMessage(chatProfile: ChatProfile, text: string, repository: SendMessageRepositoryInterface): Promise<void> {
+    async sendMessage(chatProfile: ChatProfile, text: string, repository: SendMessageRepositoryInterface, pusher: PusherSendMessageInterface): Promise<void> {
         const msg = {id: nanoid(), senderId: chatProfile.sender, text, timestamp: Date.now()}
-        await repository.sendMessage(chatProfile.id, msg)
+        await Promise.all([
+            repository.sendMessage(chatProfile.id, msg),
+            pusher.sendMessage(chatProfile.id, msg)
+        ])
+    }
+
+    async deleteChat(chatId: string, repository:RemoveAllMessagesRepositoryInterface ): Promise<void> {
+        await repository.removeAllMessages(chatId)
     }
 }
 

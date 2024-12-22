@@ -1,11 +1,11 @@
-import {Controller} from "@/controllers/message/send/controller";
+import { MessageSendController} from "@/controllers/message/send/controller";
 import myGetServerSession from "@/lib/myGetServerSession"
 import {MessageSendInterface} from "@/services/message/interface";
 jest.mock('@/lib/myGetServerSession')
 
 describe('messageSendController.send test',()=>{
     let request: Request
-    let controller: Controller
+    let controller: MessageSendController
     let service: MessageSendInterface
     beforeEach(()=>{
         jest.resetAllMocks();
@@ -14,7 +14,7 @@ describe('messageSendController.send test',()=>{
             method: "POST",
             body: "{\"chatId\": \"bar--foo\",\"text\":\"hello\"}",
         });
-        controller = new Controller()
+        controller = new MessageSendController()
         service = {
             isChatMember: jest.fn().mockReturnValue(true),
             areFriends: jest.fn().mockResolvedValue(true),
@@ -50,6 +50,6 @@ describe('messageSendController.send test',()=>{
     it('confirm params passed to send message', async ()=>{
         const expectedProfile: ChatProfile = {id: 'bar--foo', sender: 'foo'}
         await controller.send(request, service)
-        expect(service.sendMessage).toHaveBeenCalledWith(expectedProfile, 'hello', expect.anything())
+        expect(service.sendMessage).toHaveBeenCalledWith(expectedProfile, 'hello', expect.anything(), expect.anything())
     })
 })

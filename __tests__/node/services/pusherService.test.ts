@@ -7,8 +7,8 @@ describe('pusher service addFriend', () => {
             trigger: jest.fn()
         }
         const pusher = new ServicePusher(mockClient as unknown as PusherServer)
-        pusher.addFriend('bob', { userId: 'alice'})
-        expect(mockClient.trigger).toHaveBeenCalledWith('user__bob__friends', "new_friend", { userId: 'alice'})
+        pusher.addFriend('bob', { id: 'alice'})
+        expect(mockClient.trigger).toHaveBeenCalledWith('user__bob__friends', "new_friend", { id: 'alice'})
     })
 })
 
@@ -36,4 +36,16 @@ describe('pusher service denyFriend', () => {
         await pusher.denyFriendRequest("foo","bar")
         expect(mockClient.trigger).toHaveBeenCalledWith("user__foo__friends", "deny_friend", "bar")
     })
+})
+
+describe('pusher service sendMessage', () => {
+    it('should call with arguments correctly formatted',async () => {
+        const mockClient = {
+            trigger: jest.fn()
+        }
+        const pusher = new ServicePusher(mockClient as unknown as PusherServer)
+        const message = {id: "id", senderId: "senderId", text: "text", timestamp: 123}
+        await pusher.sendMessage("batman--robin", message)
+        expect(mockClient.trigger).toHaveBeenCalledWith("chat__batman--robin", 'incoming_message', message)
+    });
 })

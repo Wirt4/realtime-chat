@@ -1,3 +1,5 @@
+import {Message} from "@/lib/validations/messages";
+
 export interface ServiceInterfacePusherFriendsAccept {
     addFriend(idToAdd: string, user: User):Promise<void>
 }
@@ -8,4 +10,8 @@ export interface PusherAddFriendInterface {
 
 export interface PusherDenyFriendInterface {
     denyFriendRequest(userId: string, idToDeny:string): Promise<void>
+}
+
+export interface PusherSendMessageInterface {
+    sendMessage(chatId: string, message: Message): Promise<void>
 }

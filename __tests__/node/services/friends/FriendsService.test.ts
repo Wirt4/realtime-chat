@@ -6,7 +6,7 @@ import {
     RequestInterface
 } from "@/repositories/friends/interfaces";
 import {FriendsService} from "@/services/friends/service";
-import {PusherDenyFriendInterface, ServiceInterfacePusherFriendsAccept} from "@/services/pusher/interface";
+import {PusherDenyFriendInterface, ServiceInterfacePusherFriendsAccept} from "@/services/pusher/interfaces";
 jest.mock("@/lib/myGetServerSession",()=> jest.fn());
 
 describe('getIdToAdd tests',()=>{
