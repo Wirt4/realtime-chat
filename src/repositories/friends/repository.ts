@@ -8,7 +8,6 @@ import fetchRedis from "@/helpers/redis";
 import QueryBuilder from "@/lib/queryBuilder";
 import {db} from "@/lib/db";
 import {Redis} from "@upstash/redis";
-import {aw} from "@upstash/redis/zmscore-Dc6Llqgr";
 
 export class FriendsRepository implements 
     RequestInterface, 

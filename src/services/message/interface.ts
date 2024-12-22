@@ -1,4 +1,8 @@
+import {FriendsAbstractInterface} from "@/repositories/friends/interfaces";
+import {SendMessageRepositoryInterface} from "@/repositories/message/interface";
+
 export interface MessageSendInterface{
-    isChatMember(userId: string, chatId:string): boolean
-    areFriends(userId: string, chatId: string): Promise<boolean>
+    isChatMember(chatProfile: ChatProfile): boolean
+    areFriends(chatProfile: ChatProfile, repository: FriendsAbstractInterface): Promise<boolean>
+    sendMessage(chatProfile: ChatProfile, text: string, repository: SendMessageRepositoryInterface): Promise<void>
 }

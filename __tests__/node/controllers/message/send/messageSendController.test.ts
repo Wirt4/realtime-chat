@@ -18,6 +18,7 @@ describe('messageSendController.send test',()=>{
         service = {
             isChatMember: jest.fn().mockReturnValue(true),
             areFriends: jest.fn().mockResolvedValue(true),
+            sendMessage: jest.fn()
         }
     })
     it('if session is unauthorized then status is 401', async ()=>{
@@ -45,5 +46,10 @@ describe('messageSendController.send test',()=>{
         const response = await controller.send(request, service)
         expect(response.status).toBe(500)
         expect(response?.body.toString()).toEqual('Error: error text')
+    })
+    it('confirm params passed to send message', async ()=>{
+        const expectedProfile: ChatProfile = {id: 'bar--foo', sender: 'foo'}
+        await controller.send(request, service)
+        expect(service.sendMessage).toHaveBeenCalledWith(expectedProfile, 'hello', expect.anything())
     })
 })

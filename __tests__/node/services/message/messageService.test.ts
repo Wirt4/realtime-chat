@@ -1,16 +1,98 @@
 import {MessageService} from "@/services/message/service";
-
+import {FriendsAbstractInterface} from "@/repositories/friends/interfaces";
+import {SendMessageRepositoryInterface} from "@/repositories/message/interface";
+import {nanoid} from "nanoid";
+jest.mock("nanoid",() => ({
+    nanoid: jest.fn(),
+}));
 describe('isChatMember tests', ()=>{
+    let profile: ChatProfile
+    let service: MessageService
+    beforeEach(()=>{
+        profile = {
+            sender: "foo",
+            id: "bar--foo"
+        }
+        service = new MessageService()
+    })
     it('user is a part of the chat',()=>{
-        const chatId = "bar--foo"
-        const userId = "foo"
-        const service = new MessageService()
-        expect(service.isChatMember(userId, chatId)).toEqual(true)
+        expect(service.isChatMember(profile)).toEqual(true)
     })
     it('user is not a part of the chat',()=>{
-        const chatId = "bar--foo"
-        const userId = "batman"
-        const service = new MessageService()
-        expect(service.isChatMember(userId, chatId)).toEqual(false)
+        profile.sender = 'batman'
+        expect(service.isChatMember(profile)).toEqual(false)
+    })
+})
+
+describe('areFriends tests',()=>{
+    let friendsRepo: FriendsAbstractInterface
+    let service: MessageService
+    let profile: ChatProfile
+    beforeEach(()=>{
+        friendsRepo = {
+            areFriends: jest.fn().mockResolvedValue(true),
+            userExists: jest.fn().mockResolvedValue(true),
+            getUserId: jest.fn().mockResolvedValue('foo'),
+            hasExistingFriendRequest: jest.fn().mockResolvedValue(false)
+        }
+        service = new MessageService()
+        profile={
+            sender: 'foo',
+            id: 'bar--foo'
+        }
+    })
+    it('users are friends', async ()=>{
+        expect(await service.areFriends(profile, friendsRepo)).toEqual(true)
+    })
+    it('users are not friends', async ()=>{
+        friendsRepo.areFriends = jest.fn().mockResolvedValue(false)
+        expect(await service.areFriends(profile, friendsRepo)).toEqual(false)
+    })
+    it('confirm parameters passed to repository',async ()=>{
+        await service.areFriends(profile, friendsRepo)
+        expect(friendsRepo.areFriends).toHaveBeenCalledWith('foo', 'bar')
+    })
+})
+
+describe('sendMessage tests', ()=>{
+    beforeAll(()=>{
+        jest.useFakeTimers()
+    })
+let service: MessageService
+    let repo: SendMessageRepositoryInterface
+    let text: string
+    let profile: ChatProfile
+    beforeEach(()=>{
+        jest.resetAllMocks()
+        service = new MessageService()
+        repo = {
+            sendMessage: jest.fn()
+        }
+        text = 'hello'
+        profile = {
+            sender: 'foo',
+            id: 'bar--foo'
+        }
+    })
+    afterAll(()=>{
+        jest.useRealTimers()
+    })
+    it('confirm parameters passed to repository', async ()=>{
+        await service.sendMessage(profile, text, repo)
+        expect(repo.sendMessage).toHaveBeenCalledWith(profile.id, expect.anything())
+    })
+    it('the message passed to the repository should be stamped with nanoId', async()=>{
+        (nanoid as jest.Mock).mockReturnValue('c-3po');
+        await service.sendMessage(profile, text, repo)
+        expect(repo.sendMessage).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({id: 'c-3po'}))
+    })
+    it('the message passed to the repository should be stamped with the correct senderId from the profile', async()=>{
+        await service.sendMessage(profile, text, repo)
+        expect(repo.sendMessage).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({senderId: profile.sender}))
+    })
+    it('the message passed to the repository should be set with the text', async()=>{
+        jest.setSystemTime(new Date(1730156654))
+        await service.sendMessage(profile, text, repo)
+        expect(repo.sendMessage).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({timestamp: 1730156654}))
     })
 })
