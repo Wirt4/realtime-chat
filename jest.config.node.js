@@ -5,7 +5,7 @@ const createJestConfig = nextJest({
 
 const customJestConfig = {
     moduleDirectories: ['node_modules', '<rootDir>'],
-    testEnvironment: 'jest-environment-jsdom',
+    testEnvironment: 'node',
     setupFiles: ['dotenv/config'],
     setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
     transform: {
@@ -16,7 +16,8 @@ const customJestConfig = {
     ],
     moduleNameMapper: {
         "^uuid$": "uuid",
-        "^@/(.*)$": "<rootDir>/src/$1"
+        "^@/(.*)$": "<rootDir>/src/$1",
+        "^jose-node-cjs-runtime/(.*)$": "jose-node-cjs-runtime/dist/node/cjs/$1"
     },
 };
 

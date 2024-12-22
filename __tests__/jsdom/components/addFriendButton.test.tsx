@@ -4,7 +4,7 @@ import {render, screen, fireEvent} from '@testing-library/react'
 import AddFriendButton from "@/components/AddFriendButton"
 import {Utils} from "@/lib/utils";
 import { act } from 'react'
-jest.mock('../../src/lib/utils', () => ({
+jest.mock('@/lib/utils', () => ({
     Utils: {
         addFriend: jest.fn(),
         buttonClassNames: jest.fn().mockReturnValue('mocked-classes')

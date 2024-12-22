@@ -1,7 +1,7 @@
 import fetchRedis from "@/helpers/redis";
 import getFriendRequests from "@/app/(dashboard)/dashboard/requests/getFriendRequests";
-import {fetchRedisMock1, fetchRedisMock2} from "../../../../__mocks__/app/(dashboard)/requests/fetchRedismock";
-jest.mock("../../../../src/helpers/redis",()=> jest.fn());
+import {fetchRedisMock1, fetchRedisMock2} from "../../../../../__mocks__/app/(dashboard)/requests/fetchRedismock";
+jest.mock("@/helpers/redis",()=> jest.fn());
 describe('getFriendRequests', () => {
     beforeEach(()=>{
         (fetchRedis as jest.Mock).mockResolvedValue([]);

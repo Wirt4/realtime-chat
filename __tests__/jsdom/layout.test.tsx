@@ -3,7 +3,7 @@ import RootLayout from "@/app/layout"
 import '@testing-library/jest-dom'
 
 
-jest.mock('../src/components/ToastErrorHandler', () => ({
+jest.mock('@/components/ToastErrorHandler', () => ({
     __esModule: true,
     default: ({ children }) => <div data-testid="toast-handler">{children}</div>
 }))

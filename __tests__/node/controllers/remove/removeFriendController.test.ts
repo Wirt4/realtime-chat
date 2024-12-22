@@ -1,8 +1,8 @@
-import {FriendsRemoveController} from "@/controllers/friends/remove/controller";
+import {RemoveFriendsController} from "@/controllers/friends/remove/controller";
 
 describe('Functionality Tests', () => {
     let request: Request
-    let controller: FriendsRemoveController
+    let controller: RemoveFriendsController
     
     beforeEach(()=>{
         jest.clearAllMocks()
@@ -21,7 +21,7 @@ describe('Functionality Tests', () => {
                 body: "",
                 headers: { 'Content-Type': 'application/json' }
             }) as Request
-        controller =  new FriendsRemoveController()
+        controller =  new RemoveFriendsController()
         const response = await controller.remove(request)
         expect(response.status).toBe(422)
         expect(response.body?.toString()).toEqual('Invalid Format')
@@ -29,7 +29,7 @@ describe('Functionality Tests', () => {
 
 
     it("if the body isn't formatted correctly, return a 422", async () => {
-        controller =  new FriendsRemoveController()
+        controller =  new RemoveFriendsController()
         const response = await controller.remove(request)
         expect(response.status).not.toBe(422)
         expect(response.body?.toString()).not.toEqual('Invalid Format')

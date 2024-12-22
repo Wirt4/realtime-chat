@@ -7,7 +7,7 @@ import {notFound} from "next/navigation";
 import fetchRedis from "@/helpers/redis";
 import FriendRequests from "@/components/FriendRequests/FriendRequests";
 
-jest.mock("../../../../src/helpers/redis",()=> jest.fn());
+jest.mock("@/helpers/redis",()=> jest.fn());
 jest.mock("@/components/FriendRequests/FriendRequests",()=> jest.fn());
 jest.mock('next-auth', () => ({
     getServerSession: jest.fn(),

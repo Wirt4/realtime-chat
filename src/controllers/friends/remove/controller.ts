@@ -1,6 +1,7 @@
 import {z} from "zod";
+import {AbstractFriendsController} from "@/controllers/friends/abstract";
 
-export class FriendsRemoveController{
+export class RemoveFriendsController extends AbstractFriendsController {
     async remove(request: Request) {
         let targetId: string
 

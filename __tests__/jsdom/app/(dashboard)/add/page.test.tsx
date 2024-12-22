@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import Page from "@/app/(dashboard)/dashboard/add/page"
 import {render} from "@testing-library/react"
 
-jest.mock('../../../../src/components/AddFriendButton', () => ({
+jest.mock('@/components/AddFriendButton', () => ({
     __esModule: true,
     default: () => <div data-testid="friend-button"/>
 }));

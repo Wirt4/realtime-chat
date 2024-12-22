@@ -11,7 +11,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest",
+    "test:node": "jest --config jest.config.node.js --testPathPattern='__tests__/node'",
+    "test:jsdom": "jest --config jest.config.jsdom.js --testPathPattern='__tests__/jsdom'",
     "testWatch": "jest --watchAll"
   },
   "dependencies": {
