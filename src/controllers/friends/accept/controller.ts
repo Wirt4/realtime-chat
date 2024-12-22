@@ -17,8 +17,10 @@ export class AcceptFriendsController extends AbstractFriendsController{
             return this.unauthorized()
         }
 
+        const ids:Ids = {sessionId: userId as string, requestId: idToAdd as string}
+
         try{
-            await this.handle(userId, idToAdd, service);
+            await this.handle(ids, service);
         }catch (error){
             if (this.isKnownError(error as string)) {
                 return this.respond(error as string, 400)
@@ -33,8 +35,7 @@ export class AcceptFriendsController extends AbstractFriendsController{
         return  error === FriendRequestStatus.AlreadyFriends || error == FriendRequestStatus.NoExistingFriendRequest
     }
 
-    async handle(userId: string|boolean, toAdd: string|boolean, service: AcceptFriendsServiceInterface): Promise<void> {
-        const ids = {userId: userId.toString(), toAdd: toAdd.toString()}
+    async handle(ids: Ids, service: AcceptFriendsServiceInterface): Promise<void> {
         return  service.handleFriendRequest(ids, this.repository, this.pusherService);
     }
 

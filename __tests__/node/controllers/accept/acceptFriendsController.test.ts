@@ -41,7 +41,8 @@ describe('Accept Tests',()=>{
     it('should call friendsService with ids', async () => {
         controller = new AcceptFriendsController()
         result = await controller.acceptFriendRequest(request, service);
-        expect(service.handleFriendRequest).toHaveBeenCalledWith({toAdd: idToAdd, userId}, expect.anything(), expect.anything())
+        const ids: Ids = {sessionId: userId, requestId: idToAdd}
+        expect(service.handleFriendRequest).toHaveBeenCalledWith(ids, expect.anything(), expect.anything())
     });
     it ('if no errors, return a 200', async()=>{
         controller = new AcceptFriendsController()
@@ -51,7 +52,7 @@ describe('Accept Tests',()=>{
     it('if handleFriendRequest throws an Already friends error, return a 400', async()=>{
         service.handleFriendRequest = jest.fn().mockRejectedValue(FriendRequestStatus.AlreadyFriends)
         controller = new AcceptFriendsController()
-        result = await controller.acceptFriendRequest(request,service);
+        result = await controller.acceptFriendRequest(request, service);
         expect(result.status).toEqual(400)
     })
     it('if handleFriendRequest throws a No Existing Friend Request error, return a 400', async()=>{
