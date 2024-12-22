@@ -33,7 +33,6 @@ describe('api/message/send tests', () => {
         (nanoid as jest.Mock).mockReturnValue('c-3po');
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'foo'}});
         (getPusherServer as jest.Mock).mockReturnValue({trigger: jest.fn()});
-
     })
 
     test('If session is null, then return a 401 Unauthorized',async ()=>{
