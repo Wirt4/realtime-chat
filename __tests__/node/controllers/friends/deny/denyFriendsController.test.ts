@@ -54,7 +54,7 @@ describe('Deny Tests',()=>{
     })
     it('the removal service is called with the correct arguments',async ()=>{
         await controller.deny(request, service)
-        expect(service.removeEntry).toHaveBeenCalledWith({userId:'userId', toRemove: 'validID'}, expect.anything(), expect.anything())
+        expect(service.removeEntry).toHaveBeenCalledWith({sessionId:'userId', requestId: 'validID'}, expect.anything(), expect.anything())
     })
     it('if the pusher trigger fails, the response is  424',async ()=>{
         service.removeEntry = jest.fn().mockRejectedValue("Pusher Error")
