@@ -23,11 +23,10 @@ export class MessageRemoveAllController extends AbstractMessageController {
         if (!service.isChatMember(chatProfile)){
             return this.unauthorized()
         }
-        let status: number
         try{
-            status = await  service.deleteChat(chatId, this.messageRepository)
+            await  service.deleteChat(chatId, this.messageRepository)
         }catch(error){
-            return this.respond(error.toString(), status)
+            return this.respond(error.toString(), 500)
         }
 
         return this.ok()
