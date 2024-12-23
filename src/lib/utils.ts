@@ -64,7 +64,7 @@ export class Utils {
     static async addFriend(props: addFriendInterface){
         try{
             const validEmail = addFriendValidator.parse({email: props.email})
-            await axios.post('/api/friends/add', {email: validEmail})
+            await axios.post('/api/friends/add',{email: validEmail.email})
             props.setShowSuccessState(true)
         }catch(e){
             let message = "Something went wrong, check logs"
@@ -72,6 +72,7 @@ export class Utils {
             if (e instanceof ZodError){
                 message = e.message
             }else if (e instanceof AxiosError){
+                console.log({e})
                 message = e.response?.data
             }
 
