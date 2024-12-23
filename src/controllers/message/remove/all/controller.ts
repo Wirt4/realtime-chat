@@ -26,7 +26,7 @@ export class MessageRemoveAllController extends AbstractMessageController {
         try{
             await  service.deleteChat(chatId, this.messageRepository)
         }catch(error){
-            return this.respond(error.toString(), 500)
+            return this.respond(error as string, 500)
         }
 
         return this.ok()

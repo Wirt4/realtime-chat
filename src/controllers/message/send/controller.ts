@@ -37,7 +37,7 @@ export class MessageSendController extends AbstractMessageController{
         try{
             await service.sendMessage(chatProfile, body.text, this.messageRepository, this.pusher)
         }catch(error){
-            return this.respond(error.toString(), 500)
+            return this.respond(error as string, 500)
         }
 
         return this.ok()

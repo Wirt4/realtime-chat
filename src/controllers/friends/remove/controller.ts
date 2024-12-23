@@ -27,7 +27,7 @@ export class RemoveFriendsController extends AbstractFriendsController {
         try{
             await service.removeFriends(ids, this.repository)
         }catch(error){
-            return this.respond(error.toString(), 500)
+            return this.respond(error as string, 500)
         }
 
         return this.ok()
