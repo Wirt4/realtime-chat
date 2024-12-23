@@ -5,5 +5,5 @@ export interface SendMessageRepositoryInterface {
 }
 
 export interface RemoveAllMessagesRepositoryInterface {
-    removeAllMessages(chatId: string): Promise<void>
+    removeAllMessages(chatId: string): Promise<number>
 }

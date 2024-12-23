@@ -1,20 +1,17 @@
 import {MessageSendInterface} from "@/services/message/interface";
 import {FriendsRepository} from "@/repositories/friends/repository";
-import {MessageRepository} from "@/repositories/message/respository";
 import {ServicePusher} from "@/services/pusher/service";
 import {getPusherServer} from "@/lib/pusher";
-import {AbstractController} from "@/controllers/abstractController";
+import {AbstractMessageController} from "@/controllers/message/abstractController";
 
 
-export class MessageSendController extends AbstractController{
+export class MessageSendController extends AbstractMessageController{
     private readonly friendsRepository: FriendsRepository
-    private readonly messageRepository: MessageRepository
     private readonly pusher: ServicePusher
 
     constructor() {
         super();
         this.friendsRepository = new FriendsRepository();
-        this.messageRepository = new MessageRepository();
         const pusherServer = getPusherServer()
         this.pusher = new ServicePusher(pusherServer)
     }

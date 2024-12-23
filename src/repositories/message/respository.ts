@@ -13,7 +13,7 @@ export class MessageRepository implements
     }
 
     async sendMessage(chatId: string, message: Message): Promise<void>{
-        await this.database.zadd(QueryBuilder.messages(chatId) as any, this.formatPayload(message) as any)
+        await this.database.zadd(QueryBuilder.messages(chatId) as never, this.formatPayload(message) as never)
     }
 
     private formatPayload(message: Message){
@@ -21,7 +21,7 @@ export class MessageRepository implements
         return {score: message.timestamp, member: parsedMessage}
     }
 
-    async removeAllMessages(chatId: string): Promise<void>{
-        await this.database.del(QueryBuilder.messages(chatId) as any)
+    async removeAllMessages(chatId: string): Promise<number>{
+        return this.database.del( `chat:${chatId}:messages` as never)
     }
 }

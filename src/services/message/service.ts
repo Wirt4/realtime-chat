@@ -26,8 +26,8 @@ export class MessageService implements
         ])
     }
 
-    async deleteChat(chatId: string, repository:RemoveAllMessagesRepositoryInterface ): Promise<void> {
-        await repository.removeAllMessages(chatId)
+    async deleteChat(chatId: string, repository:RemoveAllMessagesRepositoryInterface ): Promise<number> {
+        return  repository.removeAllMessages(chatId)
     }
 }
 

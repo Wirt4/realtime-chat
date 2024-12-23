@@ -8,7 +8,7 @@ export interface MessageSendInterface extends MessageServiceInterface{
 }
 
 export interface MessageRemoveAllInterface extends MessageServiceInterface{
-    deleteChat(chatId: string, repository: RemoveAllMessagesRepositoryInterface): Promise<void>
+    deleteChat(chatId: string, repository: RemoveAllMessagesRepositoryInterface): Promise<number>
 }
 
 interface MessageServiceInterface{

@@ -1,8 +1,8 @@
-import {AbstractController} from "@/controllers/abstractController";
 import {MessageRemoveAllInterface} from "@/services/message/interface";
 import {z} from "zod";
+import {AbstractMessageController} from "@/controllers/message/abstractController";
 
-export class MessageRemoveAllController extends AbstractController {
+export class MessageRemoveAllController extends AbstractMessageController {
     async removeAll(request: Request, service: MessageRemoveAllInterface): Promise<Response> {
         const sessionId =  await this.getUserId()
         if (!sessionId){
@@ -18,15 +18,16 @@ export class MessageRemoveAllController extends AbstractController {
             return this.respond('Invalid Input', 422)
         }
 
-        const chatProfile: ChatProfile = {id: chatId, sender: sessionId}
+        const chatProfile: ChatProfile = {id: chatId.toString(), sender: sessionId.toString()}
 
         if (!service.isChatMember(chatProfile)){
             return this.unauthorized()
         }
+        let status: number
         try{
-            await service.deleteChat(chatId)
+            status = await  service.deleteChat(chatId, this.messageRepository)
         }catch(error){
-            return this.respond(error.toString(), 500)
+            return this.respond(error.toString(), status)
         }
 
         return this.ok()
