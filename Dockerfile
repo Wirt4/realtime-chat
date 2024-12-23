@@ -1,5 +1,8 @@
 # Use the official Node.js image as the base
-FROM node:lts-alpine
+FROM node:18.17.0-alpine
+
+# Install necessary packages
+RUN apk add --no-cache libc6-compat
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -9,6 +12,9 @@ COPY package*.json ./
 
 # Install dependencies
 RUN npm install
+
+# Install SWC binaries for linux/arm64
+RUN npm install @next/swc-linux-arm64-gnu @next/swc-linux-arm64-musl
 
 # Copy the app source code to the container
 COPY . .
