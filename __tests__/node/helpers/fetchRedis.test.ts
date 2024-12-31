@@ -2,7 +2,7 @@ import fetchRedis from "@/helpers/redis";
 
 
 describe('fetchRedis', () => {
-    const positiveResolution = {ok: true, json: async()=>{return {result:""}}}
+    const positiveResolution = {ok: true, json: async()=>{return {result:""}}} as unknown as Response
     let originalFetch: any
     let originalToken: any
     let originalUrl: any
@@ -25,29 +25,29 @@ describe('fetchRedis', () => {
     })
 
     test('should fetch redis', async () => {
-        const fetchSpy = jest.spyOn(global, 'fetch').mockReturnValue(positiveResolution);
+        const fetchSpy = jest.spyOn(global, 'fetch').mockResolvedValue(positiveResolution);
         const command ='sismember'
         const args = ['somestuff','12345']
         process.env.REDIS_URL ='www.sampleurl.com'
-        await fetchRedis(command, args)
+        await fetchRedis(command, args as unknown as string|number)
         expect(fetchSpy).toHaveBeenCalledWith('www.sampleurl.com/sismember/somestuff/12345', expect.anything())
     })
 
     test('should fetch redis', async () => {
-        const fetchSpy = jest.spyOn(global, 'fetch').mockReturnValue(positiveResolution);
+        const fetchSpy = jest.spyOn(global, 'fetch').mockResolvedValue(positiveResolution);
         const args = ['dostuff','54321','63457']
         const command ='zrange'
         process.env.REDIS_URL ='www.otherurl.com'
-        await fetchRedis(command, args)
+        await fetchRedis(command, args as unknown as string|number)
         expect(fetchSpy).toHaveBeenCalledWith('www.otherurl.com/zrange/dostuff/54321/63457', expect.anything())
     })
 
     test('should fetch redis, example fot type coercion', async () => {
-        const fetchSpy = jest.spyOn(global, 'fetch').mockReturnValue(positiveResolution);
+        const fetchSpy = jest.spyOn(global, 'fetch').mockResolvedValue(positiveResolution);
         const args = ['dostuff','54321', 63457]
         const command ='zrange'
         process.env.REDIS_URL ='www.otherurl.com'
-        await fetchRedis(command, args)
+        await fetchRedis(command, args as unknown as string|number)
         expect(fetchSpy).toHaveBeenCalledWith('www.otherurl.com/zrange/dostuff/54321/63457', expect.anything())
     })
 
@@ -56,7 +56,7 @@ describe('fetchRedis', () => {
         const args = ['dostuff','54321', 63457]
         const command ='zrange'
         process.env.REDIS_TOKEN ='fooeyMartindale'
-        await fetchRedis(command, args)
+        await fetchRedis(command, args as unknown as string|number)
         const opts= {
             headers: {
                 Authorization: `Bearer fooeyMartindale`,
@@ -71,7 +71,7 @@ describe('fetchRedis', () => {
         const args = ['dostuff','54321', 63457]
         const command ='zrange'
         process.env.REDIS_TOKEN ='goliath'
-        await fetchRedis(command, args)
+        await fetchRedis(command, args as unknown as string|number)
         const opts= {
             headers: {
                 Authorization: `Bearer goliath`,
@@ -83,14 +83,15 @@ describe('fetchRedis', () => {
 
     test('options test, if the status is not okay, then the method should throw', async () => {
         const status = "The Monkeys have escaped"
+        const mockResponse = {ok: false, statusText: status} as unknown as Response
         jest.spyOn(global, 'fetch')
-            .mockResolvedValue({ok: false, statusText: status});
+            .mockResolvedValue(mockResponse);
 
         const args = ['dostuff','54321', 63457]
         const command ='zrange'
         process.env.REDIS_TOKEN ='goliath'
         try{
-            await fetchRedis(command, args)
+            await fetchRedis(command,  args as unknown as string|number)
             expect(true).toBe(false)
         }catch(e){
             expect(e).toEqual(new Error(`error executing Redis command: ${status}`))
@@ -99,16 +100,17 @@ describe('fetchRedis', () => {
 
     test('options test, if the status is not okay, then the method should throw', async () => {
         const status = "Jim, I think you better get down here"
-        jest.spyOn(global, 'fetch')
-            .mockResolvedValue({ok: false, statusText: status, json: jest.fn(async()=>{
+        const mockResponse = {ok: false, statusText: status, json: jest.fn(async()=>{
                 return {result: 'foo'}
-                })});
+            })} as unknown as Response
+        jest.spyOn(global, 'fetch')
+            .mockResolvedValue(mockResponse);
 
         const args = ['dostuff','54321', 63457]
         const command ='zrange'
         process.env.REDIS_TOKEN ='goliath'
         try{
-            await fetchRedis(command, args)
+            await fetchRedis(command, args as unknown as string|number)
             expect(true).toBe(false)
         }catch(e){
             expect(e).toEqual(new Error(`error executing Redis command: ${status}`))
@@ -116,14 +118,15 @@ describe('fetchRedis', () => {
     })
 
     test('options test, if the status is  okay, then the method should parse and return the appropriate payload', async () => {
+       const mockResponse = {ok: true, json: async()=>{return {result: expected, json: async()=>{return {result:''}}}}} as unknown as Response
         const expected= {foo: 'bar'}
         jest.spyOn(global, 'fetch')
-            .mockResolvedValue({ok: true, json: async()=>{return {result: expected, json: async()=>{return {result:''}}}}});
+            .mockResolvedValue(mockResponse);
 
         const args = ['dostuff','54321', 63457]
         const command ='zrange'
         process.env.REDIS_TOKEN ='goliath'
-        const result = await fetchRedis(command, args)
+        const result = await fetchRedis(command, args as unknown as string|number)
        expect(result).toEqual(expected);
     })
 })
