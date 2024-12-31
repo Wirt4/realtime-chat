@@ -45,7 +45,7 @@ describe('messageSendController.send test',()=>{
         service.sendMessage = jest.fn().mockRejectedValue(new Error('error text'))
         const response = await controller.send(request, service)
         expect(response.status).toBe(500)
-        expect(response?.body.toString()).toEqual('Error: error text')
+        expect(response?.body?.toString()).toEqual('Error: error text')
     })
     it('confirm params passed to send message', async ()=>{
         const expectedProfile: ChatProfile = {id: 'bar--foo', sender: 'foo'}
