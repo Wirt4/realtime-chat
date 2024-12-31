@@ -34,13 +34,13 @@ describe('Request page', () => {
 
     test('if the session is falsy, call "notFound"', async ()=>{
         render(await Page({}));
-        expect(notFound as jest.Mock).toHaveBeenCalled()
+        expect(notFound as unknown as jest.Mock).toHaveBeenCalled()
     });
 
     test('if the session is valid, do not call "notFound"', async ()=>{
         (getServerSession as jest.Mock).mockResolvedValue({user:{id:'valid'}})
         render(await Page({}));
-        expect(notFound as jest.Mock).not.toHaveBeenCalled()
+        expect(notFound as unknown as jest.Mock).not.toHaveBeenCalled()
     });
 
     test('should render a FriendRequests component',async ()=>{
@@ -52,7 +52,7 @@ describe('Request page', () => {
     test('should display the words "Friend Requests',async ()=>{
         (getServerSession as jest.Mock).mockResolvedValue({user:{id:'valid'}})
         render(await Page({}));
-        const header =  screen.getByRole('heading', {text: 'Friend Requests'});
+        const header =  screen.getByRole('heading', {name: 'Friend Requests'});
         expect(header).toBeInTheDocument();
     });
 
