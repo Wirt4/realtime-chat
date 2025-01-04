@@ -1,10 +1,14 @@
 import {authOptions} from "@/lib/auth";
+import {AdapterUser} from "next-auth/adapters";
 
 describe('authOptions callbacks - session', () => {
-    const sessionCallback = authOptions.callbacks.session
+    const sessionCallback = authOptions.callbacks?.session
 
     test('sets session user details from token', async () => {
-        const session = { user: {} }
+        if (!sessionCallback){
+            throw new Error('sessionCallback is not defined')
+        }
+        const session = { user: {id:''}, expires: '' }
         const token = {
             id: '123',
             name: 'John Doe',
@@ -12,11 +16,12 @@ describe('authOptions callbacks - session', () => {
             picture: 'profile-pic.jpg',
         }
 
-        const result = await sessionCallback({ session, token })
+        const result = await sessionCallback({ session, token, user: {id:'', email:'', emailVerified: new Date()}, newSession: null, trigger: 'update' })
+        const user = result?.user as { id: string; name?: string | null; email?: string | null; image?: string | null };
 
-        expect(result.user.id).toBe('123')
-        expect(result.user.name).toBe('John Doe')
-        expect(result.user.email).toBe('john@example.com')
-        expect(result.user.image).toBe('profile-pic.jpg')
+        expect(user.id).toBe('123')
+        expect(user.name).toBe('John Doe')
+        expect(user.email).toBe('john@example.com')
+        expect(user.image).toBe('profile-pic.jpg')
     })
 })

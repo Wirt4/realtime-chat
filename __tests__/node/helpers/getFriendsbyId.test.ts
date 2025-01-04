@@ -93,7 +93,7 @@ describe("getFriendsByUserId", () => {
                 return ["1701"]
             }
 
-            const ids: {[key: string]: User }= {
+            const ids: {[key: string]: string }= {
                 "user:9177": "{\"name\": \"alice\", \"email\": \"emailr@gmail.com\", \"image\": \"stub\", \"id\": \"9177\"}",
                 "user:1701": "{\"name\": \"bob\", \"email\": \"test.user@gmail.com\", \"image\": \"stub\", \"id\": \"1701\"}",
             }

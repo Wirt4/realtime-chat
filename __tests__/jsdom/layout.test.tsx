@@ -1,11 +1,12 @@
 import {render} from "@testing-library/react"
 import RootLayout from "@/app/layout"
 import '@testing-library/jest-dom'
+import {ReactNode} from "react";
 
 
 jest.mock('@/components/ToastErrorHandler', () => ({
     __esModule: true,
-    default: ({ children }) => <div data-testid="toast-handler">{children}</div>
+    default: ({ children }:  { children: ReactNode }) => <div data-testid="toast-handler">{children}</div>
 }))
 
 describe('Providers', () => {

@@ -44,7 +44,7 @@ class Participants{
         return userId === this.user1 || userId === this.user2
     }
 
-    getCorrespondent(userId): string{
+    getCorrespondent(userId:string): string{
         return userId === this.user1 ? this.user2 : this.user1
     }
 }

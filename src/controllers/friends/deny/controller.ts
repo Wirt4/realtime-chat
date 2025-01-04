@@ -17,7 +17,7 @@ export class DenyFriendsController extends AbstractFriendsController {
         }catch{
             return this.respond('Invalid Request Payload', 422)
         }
-        const ids = {userId: session.user.id, toRemove:senderId}
+        const ids: Ids = {sessionId: session.user.id, requestId:senderId}
         try {
             await service.removeEntry(ids, this.repository, this.pusherService)
         }catch(error){

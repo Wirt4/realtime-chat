@@ -2,7 +2,7 @@ import React from "react";
 import axios, {AxiosError} from "axios";
 import {toast} from "react-hot-toast";
 
-interface StateSetters {
+export interface StateSetters {
     setIsLoading : React.Dispatch<React.SetStateAction<boolean>>
     setInput : React.Dispatch<React.SetStateAction<string>>
     reference:  React.MutableRefObject<HTMLTextAreaElement | null>
