@@ -1,16 +1,17 @@
-import {FriendsAbstractInterface} from "@/repositories/friends/interfaces";
-import {RemoveAllMessagesRepositoryInterface, SendMessageRepositoryInterface} from "@/repositories/message/interface";
-import {PusherSendMessageInterface} from "@/services/pusher/interfaces";
 
-export interface MessageSendInterface extends MessageServiceInterface{
-    areFriends(chatProfile: ChatProfile, repository: FriendsAbstractInterface): Promise<boolean>
+import {PusherSendMessageInterface} from "@/services/pusher/interfaces";
+import {RemoveAllMessagesRepositoryInterface, SendMessageRepositoryInterface} from "@/repositories/message/interface";
+import {ISendMessageRepository} from "@/repositories/friends/interfaces";
+
+export interface MessageSendInterface extends IAbstractMessageService{
+    areFriends(chatProfile: ChatProfile, repository: ISendMessageRepository): Promise<boolean>
     sendMessage(chatProfile: ChatProfile, text: string, repository: SendMessageRepositoryInterface, pusher:PusherSendMessageInterface): Promise<void>
 }
 
-export interface MessageRemoveAllInterface extends MessageServiceInterface{
+export interface MessageRemoveAllInterface extends IAbstractMessageService{
     deleteChat(chatId: string, repository: RemoveAllMessagesRepositoryInterface): Promise<number>
 }
 
-interface MessageServiceInterface{
+interface IAbstractMessageService{
     isChatMember(chatProfile: ChatProfile): boolean
 }

@@ -1,7 +1,7 @@
 import {
     PusherAddFriendInterface,
     PusherDenyFriendInterface, PusherSendMessageInterface,
-    ServiceInterfacePusherFriendsAccept
+    IAcceptFriendPusher
 } from "@/services/pusher/interfaces";
 import PusherServer from "pusher";
 import QueryBuilder from "@/lib/queryBuilder";
@@ -9,7 +9,7 @@ import {User} from "next-auth";
 import {Message} from "@/lib/validations/messages";
 
 export class ServicePusher implements
-    ServiceInterfacePusherFriendsAccept,
+    IAcceptFriendPusher,
     PusherAddFriendInterface,
     PusherDenyFriendInterface,
     PusherSendMessageInterface

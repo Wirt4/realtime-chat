@@ -1,6 +1,6 @@
 import {Message} from "@/lib/validations/messages";
 
-export interface ServiceInterfacePusherFriendsAccept {
+export interface IAcceptFriendPusher {
     addFriend(idToAdd: string, user: User):Promise<void>
 }
 

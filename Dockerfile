@@ -1,5 +1,5 @@
 # Use the official Node.js image as the base
-FROM node:18.17.0-alpine
+FROM node:18.18.0-alpine
 
 # Install necessary packages
 RUN apk add --no-cache libc6-compat

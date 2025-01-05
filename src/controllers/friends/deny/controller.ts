@@ -1,10 +1,10 @@
 import {AbstractFriendsController} from "@/controllers/friends/abstract";
 import myGetServerSession from "@/lib/myGetServerSession";
 import {z} from "zod";
-import {DenyFriendsServiceInterface} from "@/services/friends/interfaces";
+import {IDenyFriendsService} from "@/services/friends/deny/interface";
 
 export class DenyFriendsController extends AbstractFriendsController {
-    async deny(request: Request, service: DenyFriendsServiceInterface): Promise<Response> {
+    async deny(request: Request, service: IDenyFriendsService): Promise<Response> {
         const session = await myGetServerSession()
         let senderId: string
         if (!session) {
@@ -17,9 +17,9 @@ export class DenyFriendsController extends AbstractFriendsController {
         }catch{
             return this.respond('Invalid Request Payload', 422)
         }
-        const ids = {userId: session.user.id, toRemove:senderId}
+        const ids: Ids = {sessionId: session.user.id, requestId:senderId}
         try {
-            await service.removeEntry(ids, this.repository, this.pusherService)
+            await service.removeEntry(ids)
         }catch(error){
             return this.respond(error as string, 424)
         }

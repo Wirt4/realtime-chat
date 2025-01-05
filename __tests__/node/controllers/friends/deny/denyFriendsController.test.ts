@@ -1,11 +1,11 @@
 import {DenyFriendsController} from "@/controllers/friends/deny/controller";
 import myGetServerSession from "@/lib/myGetServerSession";
-import {DenyFriendsServiceInterface} from "@/services/friends/interfaces";
+import {IDenyFriendsService} from "@/services/friends/deny/interface";
 jest.mock("@/lib/myGetServerSession",()=> jest.fn());
 
 describe('Deny Tests',()=>{
     let controller: DenyFriendsController
-    let service: DenyFriendsServiceInterface
+    let service: IDenyFriendsService
     let request: Request
     beforeEach(()=>{
         (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'userId'}});
@@ -17,7 +17,7 @@ describe('Deny Tests',()=>{
             method: 'POST',
             body: JSON.stringify({ id: 'validID' }),
             headers: { 'Content-Type': 'application/json' }
-        });
+        }) as Request
     })
     it('should return a 401 if the server session is falsy', async () => {
         (myGetServerSession as jest.Mock).mockResolvedValue(null);
@@ -25,7 +25,7 @@ describe('Deny Tests',()=>{
         expect(result.status).toEqual(401)
     });
     it('should not return a 401 if the server session is truthy', async () => {
-        const result = await controller.deny(request, service)
+        const result = await controller.deny(request)
         expect(result.status).not.toEqual(401)
     });
     it('should return a 422 if the request session is truthy', async () => {
@@ -33,7 +33,7 @@ describe('Deny Tests',()=>{
             method: 'POST',
             body: 'non-formatted string',
             headers: { 'Content-Type': 'application/json' }
-        });
+        }) as Request;
         const result = await controller.deny(request, service)
         expect(result.status).toEqual(422)
         expect(result.body?.toString()).toEqual('Invalid Request Payload');
@@ -54,7 +54,7 @@ describe('Deny Tests',()=>{
     })
     it('the removal service is called with the correct arguments',async ()=>{
         await controller.deny(request, service)
-        expect(service.removeEntry).toHaveBeenCalledWith({userId:'userId', toRemove: 'validID'}, expect.anything(), expect.anything())
+        expect(service.removeEntry).toHaveBeenCalledWith({sessionId:'userId', requestId: 'validID'})
     })
     it('if the pusher trigger fails, the response is  424',async ()=>{
         service.removeEntry = jest.fn().mockRejectedValue("Pusher Error")

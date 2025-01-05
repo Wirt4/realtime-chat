@@ -9,16 +9,12 @@ import ChatInput from "@/components/ChatInput/ChatInput";
 import Participants from "@/lib/chatParticipants";
 import MessagesHeader from "@/components/MessagesHeader";
 
-interface ChatProps{
-    params: {
-        chatId:string;
-    }
-}
+type ChatProps = Promise<{ chatId:string; }>
 
-const Page: FC<ChatProps> = async ({params}) => {
+const Page: FC<{ params: ChatProps }> = async ({params}) => {
     const session = await myGetServerSession();
     const userId = session?.user?.id as string
-    const {chatId} = params
+    const chatId = (await params).chatId
     const participants = new Participants(chatId, userId as string)
     const helpers = new Helpers()
     const initialMessages = await helpers.getChatMessages(chatId)

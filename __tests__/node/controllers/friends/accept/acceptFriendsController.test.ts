@@ -1,7 +1,7 @@
 import myGetServerSession from "@/lib/myGetServerSession";
 import {AcceptFriendsController} from "@/controllers/friends/accept/controller";
-import {FriendRequestStatus} from "@/services/friends/service";
-import {AcceptFriendsServiceInterface} from "@/services/friends/interfaces";
+import {IAcceptFriendsService} from "@/services/friends/acceptFriends/interface";
+import {FriendRequestStatus} from "@/enums";
 
 jest.mock("@/lib/myGetServerSession",()=> jest.fn());
 
@@ -9,7 +9,7 @@ describe('Accept Tests',()=>{
     let request: Request;
     let controller: AcceptFriendsController
     let result: Response
-    let service: AcceptFriendsServiceInterface
+    let service: IAcceptFriendsService
     const idToAdd = 'idToAdd'
     const userId = 'userId'
     beforeEach(()=>{
@@ -42,7 +42,7 @@ describe('Accept Tests',()=>{
         controller = new AcceptFriendsController()
         result = await controller.acceptFriendRequest(request, service);
         const ids: Ids = {sessionId: userId, requestId: idToAdd}
-        expect(service.handleFriendRequest).toHaveBeenCalledWith(ids, expect.anything(), expect.anything())
+        expect(service.handleFriendRequest).toHaveBeenCalledWith(ids)
     });
     it ('if no errors, return a 200', async()=>{
         controller = new AcceptFriendsController()

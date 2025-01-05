@@ -1,12 +1,12 @@
 import {RemoveFriendsController} from "@/controllers/friends/remove/controller";
 import myGetServerSession from "@/lib/myGetServerSession";
-import {RemoveFriendsServiceInterface} from "@/services/friends/interfaces";
+import {IRemoveFriendsService} from "@/services/friends/remove/interface";
 jest.mock('@/lib/myGetServerSession')
 
 describe('Functionality Tests', () => {
     let request: Request
     let controller: RemoveFriendsController
-    let service: RemoveFriendsServiceInterface
+    let service: IRemoveFriendsService
     
     beforeEach(()=>{
         jest.clearAllMocks()
@@ -62,11 +62,11 @@ describe('Functionality Tests', () => {
     })
     it('service areAlreadyFriends should be called with the correct parameters', async () => {
         await controller.remove(request,service)
-        expect(service.areAlreadyFriends).toHaveBeenCalledWith({sessionId: 'foo', requestId: '1966'},expect.anything())
+        expect(service.areAlreadyFriends).toHaveBeenCalledWith({sessionId: 'foo', requestId: '1966'})
     })
     it('service.removeFriends should be called for both parties', async () => {
         await controller.remove(request,service)
-        expect(service.removeFriends).toHaveBeenCalledWith({sessionId: 'foo', requestId: '1966'},expect.anything())
+        expect(service.removeFriends).toHaveBeenCalledWith({sessionId: 'foo', requestId: '1966'})
         expect(service.removeFriends).toHaveBeenCalledTimes(1)
     })
     it('if service.removeFriends throws an error, return a 500', async () => {

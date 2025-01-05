@@ -1,8 +1,8 @@
 import {MessageRemoveAllInterface, MessageSendInterface} from "@/services/message/interface";
-import {FriendsAbstractInterface} from "@/repositories/friends/interfaces";
 import {RemoveAllMessagesRepositoryInterface, SendMessageRepositoryInterface} from "@/repositories/message/interface";
 import {nanoid} from "nanoid";
 import {PusherSendMessageInterface} from "@/services/pusher/interfaces";
+import {ISendMessageRepository} from "@/repositories/friends/interfaces";
 
 export class MessageService implements
     MessageSendInterface,
@@ -13,7 +13,7 @@ export class MessageService implements
         return participants.isParticipant(chatProfile.sender)
     }
 
-    async areFriends(chatProfile: ChatProfile, friendRepository: FriendsAbstractInterface ): Promise<boolean> {
+    async areFriends(chatProfile: ChatProfile, friendRepository: ISendMessageRepository ): Promise<boolean> {
         const participants = new Participants(chatProfile.id)
         return friendRepository.areFriends(chatProfile.sender, participants.getCorrespondent(chatProfile.sender))
     }
@@ -44,7 +44,7 @@ class Participants{
         return userId === this.user1 || userId === this.user2
     }
 
-    getCorrespondent(userId): string{
+    getCorrespondent(userId:string): string{
         return userId === this.user1 ? this.user2 : this.user1
     }
 }

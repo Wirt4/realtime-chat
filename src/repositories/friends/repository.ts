@@ -1,19 +1,15 @@
 import {
-    FriendsAddInterface,
-    FriendsDenyInterface,
-    FriendsRemoveInterface,
-    RequestInterface
+    IAcceptFriendsRepository,
+    IAddFriendsRepository,
 } from "@/repositories/friends/interfaces";
 import fetchRedis from "@/helpers/redis";
 import QueryBuilder from "@/lib/queryBuilder";
 import {db} from "@/lib/db";
 import {Redis} from "@upstash/redis";
 
-export class FriendsRepository implements 
-    RequestInterface, 
-    FriendsAddInterface, 
-    FriendsDenyInterface,
-    FriendsRemoveInterface
+export class FriendsRepository implements
+    IAddFriendsRepository,
+    IAcceptFriendsRepository
 {
     private database: Redis;
     

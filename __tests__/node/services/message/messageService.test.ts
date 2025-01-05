@@ -1,5 +1,5 @@
 import {MessageService} from "@/services/message/service";
-import {FriendsAbstractInterface} from "@/repositories/friends/interfaces";
+import {ISendMessage} from "@/repositories/friends/interfaces";
 import {RemoveAllMessagesRepositoryInterface, SendMessageRepositoryInterface} from "@/repositories/message/interface";
 import {nanoid} from "nanoid";
 import {PusherSendMessageInterface} from "@/services/pusher/interfaces";
@@ -28,7 +28,7 @@ describe('isChatMember tests', ()=>{
 })
 
 describe('areFriends tests',()=>{
-    let friendsRepo: FriendsAbstractInterface
+    let friendsRepo: ISendMessage
     let service: MessageService
     let profile: ChatProfile
     beforeEach(()=>{

@@ -7,7 +7,7 @@ describe('repository.sendMessage tests',()=>{
     beforeEach(()=>{
         mockDb = {
             zadd: jest.fn()
-        } as Redis
+        } as unknown as Redis
         repository = new MessageRepository(mockDb )
     })
     it('zadd should be called on database',async ()=>{
@@ -24,7 +24,7 @@ describe('repository.removeAllMessages tests',()=>{
     it('check arguments passed to database.del',()=>{
         const mockDb: Redis = {
             del: jest.fn()
-        } as Redis
+        } as unknown as Redis
         const repository = new MessageRepository(mockDb)
         repository.removeAllMessages('foo--bar')
         expect(mockDb.del).toHaveBeenCalledWith('chat:foo--bar:messages')
