@@ -30,12 +30,12 @@ describe('ChatInput Component displays', () => {
     });
 
     test('renders the TextareaAutosize component', () => {
-        const {getByLabelText} = render(<ChatInput chatPartner={partner} />);
+        const {getByLabelText} = render(<ChatInput chatPartner={partner}  chatId='stub' />);
         expect(getByLabelText('autosize field')).toBeInTheDocument();
     });
 
     test('TextareaAutosize component has the correct aria-label', () => {
-        const {getByLabelText} = render(<ChatInput chatPartner={partner} />);
+        const {getByLabelText} = render(<ChatInput chatPartner={partner} chatId='stub'  />);
         const textArea = getByLabelText('autosize field');
         expect(textArea).toBeInTheDocument();
         expect(textArea).toHaveAttribute('aria-label', 'autosize field');
@@ -51,7 +51,7 @@ describe('ChatInput Component displays', () => {
             return [false, jest.fn()];
         });
 
-        const {getByLabelText} = render(<ChatInput chatPartner={partner} />);
+        const {getByLabelText} = render(<ChatInput chatPartner={partner}  chatId='stub' />);
         const textArea = getByLabelText('autosize field');
         expect(textArea).toHaveValue('Hello Batman');
     });
@@ -66,13 +66,13 @@ describe('ChatInput Component displays', () => {
             return [false, jest.fn()];
         });
 
-        const {getByLabelText} = render(<ChatInput chatPartner={partner} />);
+        const {getByLabelText} = render(<ChatInput chatPartner={partner} chatId='stub'  />);
         const textArea = getByLabelText('autosize field');
         expect(textArea).toHaveValue('Hello Alfred');
     });
 
     test('TextareaAutosize component generates with the correct number of rows', () => {
-        const {getByLabelText} = render(<ChatInput chatPartner={partner} />);
+        const {getByLabelText} = render(<ChatInput chatPartner={partner}  chatId='stub' />);
         const textArea = getByLabelText('autosize field');
         expect(textArea).toHaveAttribute('rows', '1');
     });
@@ -85,7 +85,7 @@ describe('ChatInput Component displays', () => {
             id: 'stub'
         }
 
-        const {getByLabelText} = render(<ChatInput chatPartner={partner}/>);
+        const {getByLabelText} = render(<ChatInput chatPartner={partner}  chatId='stub' />);
         const textArea = getByLabelText('autosize field');
 
         expect(textArea).toHaveAttribute('placeholder', 'Send Alvin a message');
@@ -99,14 +99,14 @@ describe('ChatInput Component displays', () => {
             id: 'stub'
         }
 
-        const {getByLabelText} = render(<ChatInput chatPartner={partner} />);
+        const {getByLabelText} = render(<ChatInput chatPartner={partner}  chatId='stub' />);
         const textArea = getByLabelText('autosize field');
 
         expect(textArea).toHaveAttribute('placeholder', 'Send Simon a message');
     });
 
     test('Component should display a Button', ()=>{
-        const {getByRole} = render(<ChatInput chatPartner={partner} />);
+        const {getByRole} = render(<ChatInput chatPartner={partner} chatId='stub'  />);
         const buttonElement = getByRole('button', { name: /Send/i });
         expect(buttonElement).toBeInTheDocument();
     })
@@ -129,7 +129,7 @@ describe('ChatInput inner logic', ()=>{
         const setInputMock = jest.fn();
         (useState as jest.Mock).mockImplementation(()=>{ return ['', setInputMock]});
 
-        const {getByLabelText} = render(<ChatInput chatPartner={partner} />);
+        const {getByLabelText} = render(<ChatInput chatPartner={partner} chatId='stub' />);
         const textArea = getByLabelText('autosize field');
         fireEvent.change(textArea, { target: { value: 'Bonjour' } });
 
@@ -140,7 +140,7 @@ describe('ChatInput inner logic', ()=>{
         const setInputMock = jest.fn();
         (useState as jest.Mock).mockImplementation(()=>{ return ['', setInputMock]});
 
-        const {getByLabelText} = render(<ChatInput chatPartner={partner} />);
+        const {getByLabelText} = render(<ChatInput chatPartner={partner}  chatId='stub'  />);
         const textArea = getByLabelText('autosize field');
         fireEvent.change(textArea, { target: { value: 'Hello Clarice' } });
 
@@ -151,14 +151,14 @@ describe('ChatInput inner logic', ()=>{
         const setInputMock = jest.fn();
         (useState as jest.Mock).mockImplementation(()=>{ return ['', setInputMock]});
 
-        render(<ChatInput chatPartner={partner} />);
+        render(<ChatInput chatPartner={partner} chatId='stub'  />);
 
         expect(setInputMock).not.toHaveBeenCalled();
     });
 
     test('If button is clicked, call helpers.SendMessage', () => {
         const SendMessageSpy = jest.spyOn(Helpers.prototype, 'SendMessage')
-        const {getByRole} = render(<ChatInput chatPartner={partner} />);
+        const {getByRole} = render(<ChatInput chatPartner={partner}  chatId='stub'  />);
         const buttonElement = getByRole('button', { name: /Send/i });
         fireEvent.click(buttonElement);
         expect(SendMessageSpy).toHaveBeenCalled();
@@ -166,7 +166,7 @@ describe('ChatInput inner logic', ()=>{
 
     test('If button is  not clicked,  do not call helpers.SendMessage', () => {
         const SendMessageSpy = jest.spyOn(Helpers.prototype, 'SendMessage')
-        render(<ChatInput chatPartner={partner} />);
+        render(<ChatInput chatPartner={partner}  chatId='stub'  />);
 
         expect(SendMessageSpy).not.toHaveBeenCalled();
     })

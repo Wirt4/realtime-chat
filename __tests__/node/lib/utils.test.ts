@@ -35,18 +35,18 @@ describe('classNames test', ()=>{
 describe('buttonClassNames test', ()=>{
     test('should return the results of classNames', ()=>{
         jest.spyOn(Utils, 'classNames').mockReturnValueOnce('ta-daa')
-        expect(Utils.buttonClassNames({})).toEqual('ta-daa')
+        expect(Utils.buttonClassNames({size: 'lg', variant: 'default', className: 'stub'})).toEqual('ta-daa')
     });
 
     test('should return the results of classNames, different data', ()=>{
         jest.spyOn(Utils, 'classNames').mockReturnValueOnce("Here's looking at you kid")
-        expect(Utils.buttonClassNames({})).toEqual("Here's looking at you kid")
+        expect(Utils.buttonClassNames({size: 'lg', variant: 'default', className: 'stub'})).toEqual("Here's looking at you kid")
     });
 
     test('expect classNames to be called with the output of _buttonVariants', ()=>{
         jest.spyOn(Utils, '_buttonVariants').mockReturnValueOnce("Here's looking at you kid")
         const spy = jest.spyOn(Utils, 'classNames').mockReturnValueOnce('stub')
-        Utils.buttonClassNames({})
+        Utils.buttonClassNames({size: 'lg', variant: 'default', className: 'stub'})
         expect(spy).toHaveBeenCalledWith("Here's looking at you kid")
     });
 })
