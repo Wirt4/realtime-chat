@@ -1,9 +1,17 @@
 import {config, middleware} from "@/middleware";
-import {getToken} from "next-auth/jwt";
 import {NextRequest, NextResponse} from "next/server";
+import {getToken} from "next-auth/jwt";
+import {NextResponseWrapper} from "@/lib/nextResponseWrapper";
 
 jest.mock("next-auth/jwt", () => ({
     getToken: jest.fn(),
+}));
+
+jest.mock("@/lib/nextResponseWrapper", () => ({
+    NextResponseWrapper: {
+        next: jest.fn(),
+        redirect: jest.fn(),
+    }
 }));
 
 describe('Middleware, config tests', () => {
@@ -22,19 +30,7 @@ describe('Middleware, config tests', () => {
 });
 
 describe('Middleware, functionality tests', () => {
-    let nextSpy: jest.SpyInstance;
-    let redirectSpy: jest.SpyInstance;
-
     beforeEach(()=>{
-        jest.spyOn(global, 'URL').mockImplementation((url, base) => {
-            return new URL(url, base)
-        });
-
-        nextSpy = jest.spyOn(NextResponse, 'next');
-
-        redirectSpy = jest.spyOn(NextResponse, 'redirect');
-    })
-    afterEach(()=>{
         jest.resetAllMocks();
     });
     
@@ -45,7 +41,7 @@ describe('Middleware, functionality tests', () => {
 
             await middleware(MockRequest as NextRequest);
 
-            expect(nextSpy).toHaveBeenCalled();
+            expect(NextResponseWrapper.next).toHaveBeenCalled();
     });
 
     test("if user is trying to access login page and is authenticated, then middleware doesn't call next",
@@ -55,7 +51,7 @@ describe('Middleware, functionality tests', () => {
 
             await middleware(MockRequest as NextRequest);
 
-            expect(nextSpy).not.toHaveBeenCalled();
+            expect(NextResponseWrapper.next).not.toHaveBeenCalled();
         });
 
     test('if is login page and user is authenticated, then redirect to dashboard',async()=>{
@@ -64,7 +60,7 @@ describe('Middleware, functionality tests', () => {
 
         await middleware(MockRequest as NextRequest);
 
-        expect(redirectSpy).toHaveBeenCalledWith({url: '/dashboard', baseUrl: "http://localhost:8000"});
+        expect(NextResponseWrapper.redirect).toHaveBeenCalledWith(new URL("http://localhost:8000/dashboard"));
     });
 
     test('if is login page and user is authenticated, then redirect to dashboard, different data',async()=>{
@@ -73,7 +69,7 @@ describe('Middleware, functionality tests', () => {
 
         await middleware(MockRequest as NextRequest);
 
-        expect(redirectSpy).toHaveBeenCalledWith({url: '/dashboard', baseUrl: "http://liveendpoint.com"});
+        expect(NextResponseWrapper.redirect).toHaveBeenCalledWith(new URL("http://liveendpoint.com/dashboard"));
     });
 
     test('if request is not authenticated and accessing a pathname that starts with "/dashboard", then redirect to login',
@@ -83,16 +79,14 @@ describe('Middleware, functionality tests', () => {
 
             await middleware(MockRequest as NextRequest);
 
-            expect(redirectSpy).toHaveBeenCalledWith({url: '/login', baseUrl: "http://liveendpoint.com"});
+            expect(NextResponseWrapper.redirect).toHaveBeenCalledWith(new URL("http://liveendpoint.com/login"));
         });
 
     test('if request is for the home page, then redirect to dashboard',
         async()=>{
             const MockRequest = {nextUrl:{pathname:'/'}, url: 'http://liveendpoint.com'};
             (getToken as jest.Mock).mockResolvedValue(null);
-
             await middleware(MockRequest as NextRequest);
-
-            expect(redirectSpy).toHaveBeenCalledWith({url: '/dashboard', baseUrl: "http://liveendpoint.com"});
+            expect(NextResponseWrapper.redirect).toHaveBeenCalledWith(new URL("http://liveendpoint.com/dashboard"));
         });
 });

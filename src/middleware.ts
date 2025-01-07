@@ -1,6 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import {getToken, JWT} from "next-auth/jwt";
 import {withAuth} from "next-auth/middleware";
+import {NextResponseWrapper} from "@/lib/nextResponseWrapper";
 
 export const config = {
     matchers:  ['login', '/', '/dashboard/:path*']
@@ -46,7 +47,7 @@ class Handler {
     }
 
     next(){
-        return NextResponse.next()
+        return NextResponseWrapper.next()
     }
 
     redirectToDashboard(){
@@ -58,7 +59,7 @@ class Handler {
     }
 
     redirect(endpoint: string){
-        return NextResponse.redirect(new URL(endpoint, this._url));
+        return NextResponseWrapper.redirect(new URL(endpoint, this._url));
     }
 
     isAccessingSensitiveRoute(){
