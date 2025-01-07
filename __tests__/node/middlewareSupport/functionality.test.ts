@@ -1,85 +1,91 @@
-import {Middleware} from "@/middlewareSupport/functionality"
-import {NextRequest} from "next/server";
-import {getToken} from "next-auth/jwt";
-import {NextResponseWrapper} from "@/lib/nextResponseWrapper";
+import { Middleware } from "@/middlewareSupport/functionality"
+import { NextRequest } from "next/server";
+import { IHandler } from "@/middlewareSupport/handler/interface";
+import { handlerFactory } from "@/middlewareSupport/handler/factory";
 
-jest.mock("next-auth/jwt", () => ({
-    getToken: jest.fn(),
-}));
-
-jest.mock("@/lib/nextResponseWrapper", () => ({
-    NextResponseWrapper: {
-        next: jest.fn(),
-        redirect: jest.fn(),
-    }
-}));
+jest.mock("@/middlewareSupport/handler/factory")
 
 const createMockRequest = (pathname: string, url: string) => ({
     nextUrl: { pathname },
     url,
 });
 
-const mockToken = (value: any) => {
-    (getToken as jest.Mock).mockResolvedValue(value);
-};
+
 describe('Middleware, functionality tests', () => {
     let middleware: Middleware
+    let mockHandler: IHandler
+
     beforeEach(() => {
         jest.resetAllMocks();
+        mockHandler = {
+            isAccessingSensitiveRoute: jest.fn(),
+            isAuthenticated: jest.fn(),
+            redirectToLogin: jest.fn(),
+            redirectToDashboard: jest.fn(),
+            isLogin: jest.fn(),
+            next: jest.fn(),
+            isPointingToHome: jest.fn(),
+            setRequest: jest.fn(),
+            setJWT: jest.fn()
+        }
+        middleware = new Middleware(mockHandler);
+    });
+
+    test('if user is trying to access login page and is not authenticated, then middleware directs them through', async () => {
+        const MockRequest = createMockRequest('/login', 'http://localhost:8000');
+        mockHandler.isAuthenticated = jest.fn().mockReturnValueOnce(false)
+        mockHandler.isLogin = jest.fn().mockReturnValueOnce(true);
+        (handlerFactory as jest.Mock).mockReturnValue(mockHandler);
         middleware = new Middleware();
-    });
-
-    test('if user is trying to access login page and is not authenticated, then middleware directs them to /login', async () => {
-        mockToken(null);
-        const MockRequest = createMockRequest('/login', 'http://localhost:8000');
-
         await middleware.processRequest(MockRequest as NextRequest);
 
-        expect(NextResponseWrapper.next).toHaveBeenCalled();
+        expect(mockHandler.next).toHaveBeenCalled();
     });
 
-    test("if user is trying to access login page and is authenticated, then middleware doesn't call next", async () => {
-        mockToken(true);
+    test("if user is trying to access login page and is  authenticated, then middleware doesn't call next", async () => {
         const MockRequest = createMockRequest('/login', 'http://localhost:8000');
-
+        mockHandler.isAuthenticated = jest.fn().mockReturnValueOnce(true)
+        mockHandler.isLogin = jest.fn().mockReturnValueOnce(true);
+        (handlerFactory as jest.Mock).mockReturnValue(mockHandler);
+        middleware = new Middleware();
         await middleware.processRequest(MockRequest as NextRequest);
 
-        expect(NextResponseWrapper.next).not.toHaveBeenCalled();
-    });
-
-    test('if is login page and user is authenticated, then redirect to dashboard', async () => {
-        mockToken(true);
-        const MockRequest = createMockRequest('/login', 'http://localhost:8000');
-
-        await middleware.processRequest(MockRequest as NextRequest);
-
-        expect(NextResponseWrapper.redirect).toHaveBeenCalledWith(new URL("http://localhost:8000/dashboard"));
+        expect(mockHandler.next).not.toHaveBeenCalled();
     });
 
     test('if is login page and user is authenticated, then redirect to dashboard, different data', async () => {
-        mockToken(true);
         const MockRequest = createMockRequest('/login', 'http://liveendpoint.com');
+
+        mockHandler.isAuthenticated = jest.fn().mockReturnValueOnce(true);
+        mockHandler.isLogin = jest.fn().mockReturnValueOnce(true);
+        (handlerFactory as jest.Mock).mockReturnValue(mockHandler);
+        middleware = new Middleware();
 
         await middleware.processRequest(MockRequest as NextRequest);
 
-        expect(NextResponseWrapper.redirect).toHaveBeenCalledWith(new URL("http://liveendpoint.com/dashboard"));
+        expect(mockHandler.redirectToDashboard).toHaveBeenCalled()
     });
 
     test('if request is not authenticated and accessing a pathname that starts with "/dashboard", then redirect to login', async () => {
-        mockToken(null);
         const MockRequest = createMockRequest('/dashboard-extra-path-values', 'http://liveendpoint.com');
-
+        mockHandler.isAuthenticated = jest.fn().mockReturnValueOnce(false)
+        mockHandler.isAccessingSensitiveRoute = jest.fn().mockReturnValueOnce(true);
+        (handlerFactory as jest.Mock).mockReturnValue(mockHandler);
+        middleware = new Middleware();
         await middleware.processRequest(MockRequest as NextRequest);
-
-        expect(NextResponseWrapper.redirect).toHaveBeenCalledWith(new URL("http://liveendpoint.com/login"));
+        expect(mockHandler.redirectToLogin).toHaveBeenCalled()
     });
 
     test('if request is for the home page, then redirect to dashboard', async () => {
-        mockToken(null);
+        mockHandler.isAuthenticated = jest.fn().mockReturnValueOnce(true);
+        mockHandler.isPointingToHome = jest.fn().mockReturnValue(true);
+        (handlerFactory as jest.Mock).mockReturnValue(mockHandler);
+
+        middleware = new Middleware();
         const MockRequest = createMockRequest('/', 'http://liveendpoint.com');
 
         await middleware.processRequest(MockRequest as NextRequest);
 
-        expect(NextResponseWrapper.redirect).toHaveBeenCalledWith(new URL("http://liveendpoint.com/dashboard"));
+        expect(mockHandler.redirectToDashboard).toHaveBeenCalled()
     });
 });

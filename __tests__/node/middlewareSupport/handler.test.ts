@@ -1,7 +1,7 @@
-import {Handler} from "@/middlewareSupport/handler";
-import {NextRequest} from "next/server";
-import {NextResponseWrapper} from "@/lib/nextResponseWrapper";
-import {JWT} from "next-auth/jwt";
+import { Handler } from "@/middlewareSupport/handler/handler";
+import { NextRequest } from "next/server";
+import { NextResponseWrapper } from "@/lib/nextResponseWrapper";
+import { JWT } from "next-auth/jwt";
 
 jest.mock("@/lib/nextResponseWrapper", () => ({
     NextResponseWrapper: {
@@ -27,7 +27,9 @@ describe('Handler', () => {
     test('isAuthenticated returns true when JWT is present', () => {
         mockJWT = { sub: '123' } as JWT;
         mockRequest = createMockRequest('/some-path', 'http://localhost:8000');
-        handler = new Handler(mockRequest, mockJWT);
+        handler = new Handler();
+        handler.setJWT(mockJWT)
+        handler.setRequest(mockRequest)
 
         expect(handler.isAuthenticated()).toBe(true);
     });
@@ -35,31 +37,35 @@ describe('Handler', () => {
     test('isAuthenticated returns false when JWT is null', () => {
         mockJWT = null;
         mockRequest = createMockRequest('/some-path', 'http://localhost:8000');
-        handler = new Handler(mockRequest, mockJWT);
+        handler = new Handler();
+        handler.setJWT(mockJWT)
+        handler.setRequest(mockRequest)
 
         expect(handler.isAuthenticated()).toBe(false);
     });
 
     test('isLogin returns true when path starts with /login', () => {
-        mockJWT = null;
         mockRequest = createMockRequest('/login', 'http://localhost:8000');
-        handler = new Handler(mockRequest, mockJWT);
+        handler = new Handler();
+        handler.setJWT(mockJWT)
+        handler.setRequest(mockRequest)
 
         expect(handler.isLogin()).toBe(true);
     });
 
     test('isLogin returns false when path does not start with /login', () => {
-        mockJWT = null;
         mockRequest = createMockRequest('/some-path', 'http://localhost:8000');
-        handler = new Handler(mockRequest, mockJWT);
+        handler = new Handler();
+        handler.setJWT(mockJWT)
+        handler.setRequest(mockRequest)
 
         expect(handler.isLogin()).toBe(false);
     });
 
     test('next calls NextResponseWrapper.next', () => {
-        mockJWT = null;
-        mockRequest = createMockRequest('/some-path', 'http://localhost:8000');
-        handler = new Handler(mockRequest, mockJWT);
+        handler = new Handler();
+        handler.setJWT(mockJWT)
+        handler.setRequest(mockRequest)
 
         handler.next();
 
@@ -69,7 +75,9 @@ describe('Handler', () => {
     test('redirectToDashboard calls redirect with /dashboard', () => {
         mockJWT = null;
         mockRequest = createMockRequest('/some-path', 'http://localhost:8000');
-        handler = new Handler(mockRequest, mockJWT);
+        handler = new Handler();
+        handler.setRequest(mockRequest)
+        handler.setJWT(mockJWT)
 
         handler.redirectToDashboard();
 
@@ -79,7 +87,9 @@ describe('Handler', () => {
     test('redirectToLogin calls redirect with /login', () => {
         mockJWT = null;
         mockRequest = createMockRequest('/some-path', 'http://localhost:8000');
-        handler = new Handler(mockRequest, mockJWT);
+        handler = new Handler();
+        handler.setJWT(mockJWT)
+        handler.setRequest(mockRequest)
 
         handler.redirectToLogin();
 
@@ -89,7 +99,9 @@ describe('Handler', () => {
     test('isAccessingSensitiveRoute returns true when path starts with /dashboard', () => {
         mockJWT = null;
         mockRequest = createMockRequest('/dashboard/some-path', 'http://localhost:8000');
-        handler = new Handler(mockRequest, mockJWT);
+        handler = new Handler();
+        handler.setJWT(mockJWT)
+        handler.setRequest(mockRequest)
 
         expect(handler.isAccessingSensitiveRoute()).toBe(true);
     });
@@ -97,7 +109,9 @@ describe('Handler', () => {
     test('isAccessingSensitiveRoute returns false when path does not start with /dashboard', () => {
         mockJWT = null;
         mockRequest = createMockRequest('/some-path', 'http://localhost:8000');
-        handler = new Handler(mockRequest, mockJWT);
+        handler = new Handler();
+        handler.setJWT(mockJWT)
+        handler.setRequest(mockRequest)
 
         expect(handler.isAccessingSensitiveRoute()).toBe(false);
     });
@@ -105,7 +119,9 @@ describe('Handler', () => {
     test('isPointingToHome returns true when path is /', () => {
         mockJWT = null;
         mockRequest = createMockRequest('/', 'http://localhost:8000');
-        handler = new Handler(mockRequest, mockJWT);
+        handler = new Handler();
+        handler.setJWT(mockJWT)
+        handler.setRequest(mockRequest)
 
         expect(handler.isPointingToHome()).toBe(true);
     });
@@ -113,7 +129,9 @@ describe('Handler', () => {
     test('isPointingToHome returns false when path is not /', () => {
         mockJWT = null;
         mockRequest = createMockRequest('/some-path', 'http://localhost:8000');
-        handler = new Handler(mockRequest, mockJWT);
+        handler = new Handler();
+        handler.setJWT(mockJWT)
+        handler.setRequest(mockRequest)
 
         expect(handler.isPointingToHome()).toBe(false);
     });
