@@ -22,12 +22,15 @@ export class Middleware {
         if (handler.isPointingTo(login)) {
             if (authenticator.isValid()) {
                 return handler.redirectTo(dashboard)
+            } else {
+                return handler.next();
             }
-            return handler.next();
         }
 
         if (handler.isPointingTo(home)) {
             return handler.redirectTo(dashboard)
         }
+
+        return handler.next();
     }
 }
