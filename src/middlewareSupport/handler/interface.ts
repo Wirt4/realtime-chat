@@ -1,14 +1,8 @@
-import { NextResponse, NextRequest } from "next/server";
-import { JWT } from "next-auth/jwt"
+import { NextResponse } from "next/server";
 
-export interface IHandler {
-    isAccessingSensitiveRoute(): boolean
-    isAuthenticated(): boolean
-    redirectToLogin(): NextResponse<unknown>
-    redirectToDashboard(): NextResponse<unknown>
-    isLogin(): boolean
+export interface IRouteHandler {
+    isAccessingProtectedroute(): boolean
+    redirectTo(endpoint: string): NextResponse<unknown>
+    isPointingTo(endpoint: string): boolean
     next(): NextResponse<unknown>
-    isPointingToHome(): boolean
-    setRequest(request: NextRequest): void
-    setJWT(jwt: JWT | null): void
 }

@@ -1,5 +1,5 @@
 import { withAuth } from "next-auth/middleware";
-import { Middleware } from "@/middlewareSupport/functionality";
+import { Middleware } from "@/middlewareSupport/functionality/implementation";
 
 const middleware = new Middleware()
 
