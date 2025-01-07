@@ -1,5 +1,5 @@
 import {config, middleware} from "@/middleware";
-import {NextRequest, NextResponse} from "next/server";
+import {NextRequest} from "next/server";
 import {getToken} from "next-auth/jwt";
 import {NextResponseWrapper} from "@/lib/nextResponseWrapper";
 
@@ -14,79 +14,87 @@ jest.mock("@/lib/nextResponseWrapper", () => ({
     }
 }));
 
+const createMockRequest = (pathname: string, url: string) => ({
+    nextUrl: { pathname },
+    url,
+});
+
+const mockToken = (value: any) => {
+    (getToken as jest.Mock).mockResolvedValue(value);
+};
+
 describe('Middleware, config tests', () => {
     test('config has a "matchers" key', () => {
         expect(config).toEqual(
-            expect.objectContaining({matchers: expect.anything()}))
+            expect.objectContaining({ matchers: expect.anything() })
+        );
     });
 
     test('"matchers" includes /login, root, and all dashboard pages', () => {
-        const expected  = ['login', '/', '/dashboard/:path*'];
+        const expected = ['login', '/', '/dashboard/:path*'];
 
         expect(config).toEqual(
-            expect.objectContaining({matchers:
-                    expect.arrayContaining(expected)}));
+            expect.objectContaining({ matchers: expect.arrayContaining(expected) })
+        );
     });
 });
 
 describe('Middleware, functionality tests', () => {
-    beforeEach(()=>{
+    beforeEach(() => {
         jest.resetAllMocks();
     });
-    
-    test('if user is trying to access login page and is not authenticated, then middleware  directs them to /login',
-       async () => {
-            (getToken as jest.Mock).mockResolvedValue(null);
-            const MockRequest = {nextUrl:{pathname:'/login'}, url: 'http://localhost:8000'};
 
-            await middleware(MockRequest as NextRequest);
+    test('if user is trying to access login page and is not authenticated, then middleware directs them to /login', async () => {
+        mockToken(null);
+        const MockRequest = createMockRequest('/login', 'http://localhost:8000');
 
-            expect(NextResponseWrapper.next).toHaveBeenCalled();
+        await middleware(MockRequest as NextRequest);
+
+        expect(NextResponseWrapper.next).toHaveBeenCalled();
     });
 
-    test("if user is trying to access login page and is authenticated, then middleware doesn't call next",
-        async () => {
-            (getToken as jest.Mock).mockResolvedValue(true);
-            const MockRequest = {nextUrl:{pathname:'/login'}, url: 'http://localhost:8000'};
+    test("if user is trying to access login page and is authenticated, then middleware doesn't call next", async () => {
+        mockToken(true);
+        const MockRequest = createMockRequest('/login', 'http://localhost:8000');
 
-            await middleware(MockRequest as NextRequest);
+        await middleware(MockRequest as NextRequest);
 
-            expect(NextResponseWrapper.next).not.toHaveBeenCalled();
-        });
+        expect(NextResponseWrapper.next).not.toHaveBeenCalled();
+    });
 
-    test('if is login page and user is authenticated, then redirect to dashboard',async()=>{
-        const MockRequest = {nextUrl:{pathname:'/login'}, url: 'http://localhost:8000'};
-        (getToken as jest.Mock).mockResolvedValue(true);
+    test('if is login page and user is authenticated, then redirect to dashboard', async () => {
+        mockToken(true);
+        const MockRequest = createMockRequest('/login', 'http://localhost:8000');
 
         await middleware(MockRequest as NextRequest);
 
         expect(NextResponseWrapper.redirect).toHaveBeenCalledWith(new URL("http://localhost:8000/dashboard"));
     });
 
-    test('if is login page and user is authenticated, then redirect to dashboard, different data',async()=>{
-        const MockRequest = {nextUrl:{pathname:'/login'}, url: 'http://liveendpoint.com'};
-        (getToken as jest.Mock).mockResolvedValue(true);
+    test('if is login page and user is authenticated, then redirect to dashboard, different data', async () => {
+        mockToken(true);
+        const MockRequest = createMockRequest('/login', 'http://liveendpoint.com');
 
         await middleware(MockRequest as NextRequest);
 
         expect(NextResponseWrapper.redirect).toHaveBeenCalledWith(new URL("http://liveendpoint.com/dashboard"));
     });
 
-    test('if request is not authenticated and accessing a pathname that starts with "/dashboard", then redirect to login',
-        async()=>{
-            const MockRequest = {nextUrl:{pathname:'/dashboard-extra-path-values'}, url: 'http://liveendpoint.com'};
-            (getToken as jest.Mock).mockResolvedValue(null);
+    test('if request is not authenticated and accessing a pathname that starts with "/dashboard", then redirect to login', async () => {
+        mockToken(null);
+        const MockRequest = createMockRequest('/dashboard-extra-path-values', 'http://liveendpoint.com');
 
-            await middleware(MockRequest as NextRequest);
+        await middleware(MockRequest as NextRequest);
 
-            expect(NextResponseWrapper.redirect).toHaveBeenCalledWith(new URL("http://liveendpoint.com/login"));
-        });
+        expect(NextResponseWrapper.redirect).toHaveBeenCalledWith(new URL("http://liveendpoint.com/login"));
+    });
 
-    test('if request is for the home page, then redirect to dashboard',
-        async()=>{
-            const MockRequest = {nextUrl:{pathname:'/'}, url: 'http://liveendpoint.com'};
-            (getToken as jest.Mock).mockResolvedValue(null);
-            await middleware(MockRequest as NextRequest);
-            expect(NextResponseWrapper.redirect).toHaveBeenCalledWith(new URL("http://liveendpoint.com/dashboard"));
-        });
+    test('if request is for the home page, then redirect to dashboard', async () => {
+        mockToken(null);
+        const MockRequest = createMockRequest('/', 'http://liveendpoint.com');
+
+        await middleware(MockRequest as NextRequest);
+
+        expect(NextResponseWrapper.redirect).toHaveBeenCalledWith(new URL("http://liveendpoint.com/dashboard"));
+    });
 });
