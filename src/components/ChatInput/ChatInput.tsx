@@ -2,7 +2,7 @@
 
 import React, {FC, useRef, useState} from "react";
 import TextareaAutosize from 'react-textarea-autosize';
-import Helpers from "@/components/ChatInput/helpers";
+import Helpers from "@/components/ChatInput/helpers/class/helpers";
 import Button from "@/components/ui/button/Button";
 
 interface ChatInputProps {
