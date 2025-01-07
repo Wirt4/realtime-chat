@@ -40,7 +40,6 @@ describe('Middleware, functionality tests', () => {
         mockHandler.isPointingTo = jest.fn().mockReturnValue(true);
         (handlerFactory as jest.Mock).mockReturnValue(mockHandler);
 
-
         await middleware.processRequest(MockRequest as NextRequest);
 
         expect(mockHandler.next).toHaveBeenCalled();
@@ -60,7 +59,6 @@ describe('Middleware, functionality tests', () => {
 
     test('if is login page and user is authenticated, then redirect to dashboard, different data', async () => {
         const MockRequest = createMockRequest('/login', 'http://liveendpoint.com');
-
         mockAuthenticator.isValid = jest.fn().mockReturnValueOnce(true);
         (authenticatorFactory as jest.Mock).mockReturnValueOnce(mockAuthenticator);
         mockHandler.isPointingTo = jest.fn().mockReturnValueOnce(true);
@@ -81,7 +79,8 @@ describe('Middleware, functionality tests', () => {
         (handlerFactory as jest.Mock).mockReturnValue(mockHandler);
 
         await middleware.processRequest(MockRequest as NextRequest);
-        expect(mockHandler.redirectTo).toHaveBeenCalledWith('/login')
+
+        expect(mockHandler.redirectTo).toHaveBeenCalledWith('/login');
     });
 
     test('if request is for the home page, then redirect to dashboard', async () => {
@@ -89,7 +88,6 @@ describe('Middleware, functionality tests', () => {
         (authenticatorFactory as jest.Mock).mockReturnValueOnce(mockAuthenticator);
         mockHandler.isPointingTo = jest.fn().mockReturnValue(true);
         (handlerFactory as jest.Mock).mockReturnValue(mockHandler);
-
         const MockRequest = createMockRequest('/', 'http://liveendpoint.com');
 
         await middleware.processRequest(MockRequest as NextRequest);
@@ -101,7 +99,9 @@ describe('Middleware, functionality tests', () => {
         (handlerFactory as jest.Mock).mockReturnValue(mockHandler);
         const MockRequest = createMockRequest('/', 'http://liveendpoint.com');
         (authenticatorFactory as jest.Mock).mockReturnValue(mockAuthenticator);
+
         await middleware.processRequest(MockRequest as NextRequest);
+
         expect(mockAuthenticator.fetchJWT).toHaveBeenCalled()
     })
 });

@@ -16,5 +16,4 @@ export class Authenticator implements IAuthenticator {
         }
         return true;
     };
-
 }
