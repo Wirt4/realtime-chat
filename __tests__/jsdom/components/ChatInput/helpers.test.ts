@@ -1,4 +1,4 @@
-import Helpers, {StateSetters} from "@/components/ChatInput/helpers/class/helpers";
+import Helpers, {StateSetters} from "@/components/ChatInput/helpers";
 import React from "react";
 import axios from "axios";
 

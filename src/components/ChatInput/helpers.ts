@@ -1,7 +1,6 @@
 import React from "react";
 import axios, {AxiosError} from "axios";
 import {toast} from "react-hot-toast";
-import {IHelpers} from "@/components/ChatInput/helpers/class/interface";
 
 export interface StateSetters {
     setIsLoading : React.Dispatch<React.SetStateAction<boolean>>
@@ -9,7 +8,7 @@ export interface StateSetters {
     reference:  React.MutableRefObject<HTMLTextAreaElement | null>
 }
 
-export default class Helpers implements IHelpers{
+export default class Helpers{
     setters : StateSetters
     chatId: string
     endpoint: string = '/api/message/send'
@@ -26,7 +25,7 @@ export default class Helpers implements IHelpers{
     HandleKeystroke  (event: React.KeyboardEvent<HTMLTextAreaElement>, input:string) {
         if (this.isUnShiftedEnter(event)) {
             event.preventDefault();
-            return this.SendMessage(input);
+            this.SendMessage(input);
         }
     }
 
