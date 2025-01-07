@@ -1,9 +1,8 @@
-import {NextRequest} from "next/server";
 import {getToken} from "next-auth/jwt";
 import {Handler} from "@/middlewareSupport/handler";
 
 export class Middleware {
-    async processRequest(req: NextRequest) {
+    async processRequest(req: Request) {
         const JWT = await getToken({req});
         const handler = new Handler(req, JWT);
 

@@ -1,4 +1,4 @@
-import {Middleware} from "@/middlewareSupport/function"
+import {Middleware} from "@/middlewareSupport/functionality"
 import {NextRequest} from "next/server";
 import {getToken} from "next-auth/jwt";
 import {NextResponseWrapper} from "@/lib/nextResponseWrapper";
