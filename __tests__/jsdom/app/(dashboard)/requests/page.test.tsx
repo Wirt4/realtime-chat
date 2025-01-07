@@ -17,9 +17,17 @@ jest.mock('next/navigation', () => ({
     notFound: jest.fn(),
 }));
 
+const mockValidSession = () => {
+    (getServerSession as jest.Mock).mockResolvedValue({user:{id:'valid'}});
+};
+
+const mockInvalidSession = () => {
+    (getServerSession as jest.Mock).mockResolvedValue(null);
+};
+
 describe('Request page', () => {
     beforeEach(()=>{
-        (getServerSession as jest.Mock).mockResolvedValue(null);
+        mockInvalidSession();
         (fetchRedis as jest.Mock).mockResolvedValue([]);
     });
 
@@ -27,37 +35,37 @@ describe('Request page', () => {
         jest.resetAllMocks()
     });
 
-    test('getServerSession should be called with the parameter AuthOptions',async ()=>{
+    test('getServerSession should be called with the parameter AuthOptions', async () => {
         render(await Page({}));
         expect(getServerSession as jest.Mock).toHaveBeenCalledWith(authOptions);
     });
 
-    test('if the session is falsy, call "notFound"', async ()=>{
+    test('if the session is falsy, call "notFound"', async () => {
         render(await Page({}));
-        expect(notFound as unknown as jest.Mock).toHaveBeenCalled()
+        expect(notFound as unknown as jest.Mock).toHaveBeenCalled();
     });
 
-    test('if the session is valid, do not call "notFound"', async ()=>{
-        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'valid'}})
+    test('if the session is valid, do not call "notFound"', async () => {
+        mockValidSession();
         render(await Page({}));
-        expect(notFound as unknown as jest.Mock).not.toHaveBeenCalled()
+        expect(notFound as unknown as jest.Mock).not.toHaveBeenCalled();
     });
 
-    test('should render a FriendRequests component',async ()=>{
-        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'valid'}})
+    test('should render a FriendRequests component', async () => {
+        mockValidSession();
         render(await Page({}));
         expect((FriendRequests as jest.Mock)).toHaveBeenCalled();
     });
 
-    test('should display the words "Friend Requests',async ()=>{
-        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'valid'}})
+    test('should display the words "Friend Requests"', async () => {
+        mockValidSession();
         render(await Page({}));
-        const header =  screen.getByRole('heading', {name: 'Friend Requests'});
+        const header = screen.getByRole('heading', {name: 'Friend Requests'});
         expect(header).toBeInTheDocument();
     });
 
-    test('Given that the page renders: when it renders, the document title should be "Friend Requests" ',async ()=>{
-        (getServerSession as jest.Mock).mockResolvedValue({user:{id:'valid'}})
+    test('Given that the page renders: when it renders, the document title should be "Friend Requests"', async () => {
+        mockValidSession();
         render(await Page({}));
         expect(document.title).toBe('Friend Requests');
     });
