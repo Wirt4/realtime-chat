@@ -1,12 +1,14 @@
 import {withAuth} from "next-auth/middleware";
-import {middleware} from "@/middlewareSupport/function";
+import {Middleware} from "@/middlewareSupport/function";
+
+const middleware = new Middleware()
 
 export const config = {
     matchers:  ['login', '/', '/dashboard/:path*']
 }
 
 export default withAuth(
-    middleware,
+    middleware.processRequest,
     {
     callbacks:{
         async authorized(){

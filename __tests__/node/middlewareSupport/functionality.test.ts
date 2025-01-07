@@ -1,4 +1,4 @@
-import {middleware} from "@/middlewareSupport/function"
+import {Middleware} from "@/middlewareSupport/function"
 import {NextRequest} from "next/server";
 import {getToken} from "next-auth/jwt";
 import {NextResponseWrapper} from "@/lib/nextResponseWrapper";
@@ -23,15 +23,17 @@ const mockToken = (value: any) => {
     (getToken as jest.Mock).mockResolvedValue(value);
 };
 describe('Middleware, functionality tests', () => {
+    let middleware: Middleware
     beforeEach(() => {
         jest.resetAllMocks();
+        middleware = new Middleware();
     });
 
     test('if user is trying to access login page and is not authenticated, then middleware directs them to /login', async () => {
         mockToken(null);
         const MockRequest = createMockRequest('/login', 'http://localhost:8000');
 
-        await middleware(MockRequest as NextRequest);
+        await middleware.processRequest(MockRequest as NextRequest);
 
         expect(NextResponseWrapper.next).toHaveBeenCalled();
     });
@@ -40,7 +42,7 @@ describe('Middleware, functionality tests', () => {
         mockToken(true);
         const MockRequest = createMockRequest('/login', 'http://localhost:8000');
 
-        await middleware(MockRequest as NextRequest);
+        await middleware.processRequest(MockRequest as NextRequest);
 
         expect(NextResponseWrapper.next).not.toHaveBeenCalled();
     });
@@ -49,7 +51,7 @@ describe('Middleware, functionality tests', () => {
         mockToken(true);
         const MockRequest = createMockRequest('/login', 'http://localhost:8000');
 
-        await middleware(MockRequest as NextRequest);
+        await middleware.processRequest(MockRequest as NextRequest);
 
         expect(NextResponseWrapper.redirect).toHaveBeenCalledWith(new URL("http://localhost:8000/dashboard"));
     });
@@ -58,7 +60,7 @@ describe('Middleware, functionality tests', () => {
         mockToken(true);
         const MockRequest = createMockRequest('/login', 'http://liveendpoint.com');
 
-        await middleware(MockRequest as NextRequest);
+        await middleware.processRequest(MockRequest as NextRequest);
 
         expect(NextResponseWrapper.redirect).toHaveBeenCalledWith(new URL("http://liveendpoint.com/dashboard"));
     });
@@ -67,7 +69,7 @@ describe('Middleware, functionality tests', () => {
         mockToken(null);
         const MockRequest = createMockRequest('/dashboard-extra-path-values', 'http://liveendpoint.com');
 
-        await middleware(MockRequest as NextRequest);
+        await middleware.processRequest(MockRequest as NextRequest);
 
         expect(NextResponseWrapper.redirect).toHaveBeenCalledWith(new URL("http://liveendpoint.com/login"));
     });
@@ -76,7 +78,7 @@ describe('Middleware, functionality tests', () => {
         mockToken(null);
         const MockRequest = createMockRequest('/', 'http://liveendpoint.com');
 
-        await middleware(MockRequest as NextRequest);
+        await middleware.processRequest(MockRequest as NextRequest);
 
         expect(NextResponseWrapper.redirect).toHaveBeenCalledWith(new URL("http://liveendpoint.com/dashboard"));
     });
