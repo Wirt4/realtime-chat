@@ -1,46 +1,54 @@
 import {
+    DashboardDataInterface,
     FriendsAddInterface,
     FriendsDenyInterface,
     FriendsRemoveInterface,
-    RequestInterface
+    RequestInterface,
 } from "@/repositories/friends/interfaces";
 import fetchRedis from "@/helpers/redis";
 import QueryBuilder from "@/lib/queryBuilder";
-import {db} from "@/lib/db";
-import {Redis} from "@upstash/redis";
+import { db } from "@/lib/db";
+import { Redis } from "@upstash/redis";
 
-export class FriendsRepository implements 
-    RequestInterface, 
-    FriendsAddInterface, 
+export class FriendsRepository implements
+    RequestInterface,
+    FriendsAddInterface,
     FriendsDenyInterface,
-    FriendsRemoveInterface
-{
+    FriendsRemoveInterface,
+    DashboardDataInterface {
     private database: Redis;
-    
+
     constructor(database = db) {
-        this.database=database
+        this.database = database
     }
-    
-    async areFriends(userId:string, idToAdd: string): Promise<boolean>{
+    getIncomingFriendRequests(userId: string): Promise<string[]> {
+        throw new Error("Method not implemented.");
+    }
+    //TODO: test then implement
+    getFriends(userId: string): Promise<User[]> {
+        throw new Error("Method not implemented.");
+    }
+
+    async areFriends(userId: string, idToAdd: string): Promise<boolean> {
         return this.queryFriendsTable(userId, idToAdd);
     }
 
-    async hasExistingFriendRequest(userId:string, idToAdd: string): Promise<boolean>{
+    async hasExistingFriendRequest(userId: string, idToAdd: string): Promise<boolean> {
         return this.queryFriendRequestsTable(userId, idToAdd);
     }
 
-    async addToFriends(userId:string, idToAdd: string): Promise<void>{
+    async addToFriends(userId: string, idToAdd: string): Promise<void> {
         await Promise.all([
             this.database.sadd(this.friendsTable(userId), idToAdd),
             this.database.sadd(this.friendsTable(idToAdd), userId)
         ]);
     }
 
-    async getUser(userId: string): Promise<User>{
+    async getUser(userId: string): Promise<User> {
         return fetchRedis('get', QueryBuilder.user(userId))
     }
 
-    queryFriendsTable(userId: string, idToAdd:string): Promise<boolean> {
+    queryFriendsTable(userId: string, idToAdd: string): Promise<boolean> {
         return this.queryTable(userId, idToAdd, this.friendsTable);
     }
 
@@ -48,7 +56,7 @@ export class FriendsRepository implements
         return this.queryTable(userId, idToAdd, this.incomingRequestsQuery);
     }
 
-    queryTable(userId: string, idToAdd: string, queryFunction: (id: string)=> string): Promise<boolean> {
+    queryTable(userId: string, idToAdd: string, queryFunction: (id: string) => string): Promise<boolean> {
         return fetchRedis('sismember', queryFunction(userId), idToAdd);
     }
 
@@ -73,11 +81,11 @@ export class FriendsRepository implements
         return Boolean(idToAdd)
     }
 
-   async getUserId(email: string): Promise<string> {
+    async getUserId(email: string): Promise<string> {
         return fetchRedis('get', QueryBuilder.email(email))
     }
 
-    async removeEntry(ids:Ids): Promise<void> {
+    async removeEntry(ids: Ids): Promise<void> {
         await this.database.srem(QueryBuilder.incomingFriendRequests(ids.sessionId), ids.requestId)
     }
 
