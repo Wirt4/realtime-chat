@@ -24,7 +24,7 @@ const Layout = async ({ children }: LayoutProps = { children: null }) => {
     const userId = session?.user?.id
     const friendRequests = await dashboardData.getIncomingFriendRequests(userId);
     const friendRequestProps = {
-        initialRequestCount: friendRequests.length,
+        initialRequestCount: friendRequests?.length || 0,
         sessionId: userId
     }
     //should be a service
@@ -35,7 +35,7 @@ const Layout = async ({ children }: LayoutProps = { children: null }) => {
             <Link href="/dashboard" className='dashboard-link'>
                 <Icons.Logo className='dashboard-logo' />
             </Link>
-            {friends.length > 0 ? <div className='dashboard-subheader'>
+            {friends?.length && friends.length > 0 ? <div className='dashboard-subheader'>
                 Your Chats
             </div> : null}
             <nav className='dashboard-nav-cols'>

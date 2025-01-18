@@ -11,7 +11,6 @@ import { Session } from 'next-auth';
 jest.mock("@/components/SidebarChatList");
 jest.mock("@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions");
 jest.mock("@/services/dashboard/factory");
-
 jest.mock("next/navigation", () => ({
     __esModule: true,
     notFound: jest.fn()
@@ -19,16 +18,21 @@ jest.mock("next/navigation", () => ({
 
 describe('Layout tests', () => {
     let dashBoardData: iDashboardData;
+    let session: Session;
+
     beforeEach(() => {
         dashBoardData = {
             getSession: jest.fn(),
-            getIncomingFriendRequests: jest.fn().mockResolvedValue(['foo']),
-            getFriendsById: jest.fn().mockResolvedValue([{
-                name: 'bob',
-                email: 'test.user@gmail.com',
-                image: 'stub',
-                id: '1701',
-            }])
+            getIncomingFriendRequests: jest.fn(),
+            getFriendsById: jest.fn()
+        };
+        session = {
+            user: {
+                id: 'user-id',
+                name: 'User',
+                email: 'user@example.com',
+            },
+            expires: '2023-01-01T00:00:00.000Z',
         };
         (dashboardDataFactory as jest.Mock).mockReturnValue(dashBoardData);
         (SidebarChatList as jest.Mock).mockImplementation(() => {
@@ -72,6 +76,7 @@ describe('Layout tests', () => {
     })
 
     test('Sidebar needs a div called "Your Chats"', async () => {
+        jest.spyOn(dashBoardData, 'getFriendsById').mockResolvedValue([{ name: 'alice', email: 'alice@example.com', image: 'stub', id: '9177' }]);
         render(await Layout());
         const text = screen.getByText('Your Chats');
         expect(text).toBeInTheDocument();
@@ -154,6 +159,7 @@ describe('Layout tests', () => {
     });
 
     test('Output of getFriendsById is passed to SidebarChatList', async () => {
+
         jest.spyOn(dashBoardData, 'getFriendsById').mockResolvedValue([{
             name: 'alice',
             email: 'emailr@gmail.com',
