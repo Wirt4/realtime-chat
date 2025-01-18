@@ -58,7 +58,7 @@ describe('Layout tests', () => {
     });
 
     test("if it a bad session, then the layout should be notFound", async () => {
-        jest.spyOn(dashBoardData, 'getSession').mockResolvedValue(null);
+        jest.spyOn(dashBoardData, 'getSession').mockRejectedValueOnce(new Error('no session'));
         render(await Layout());
         expect(notFound).toHaveBeenCalledTimes(1);
     });
