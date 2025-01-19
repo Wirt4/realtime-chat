@@ -123,4 +123,13 @@ describe('getIncomingFriendRequests tests', () => {
         await repo.getIncomingFriendRequests('xavier');
         expect(mockDB.smembers).toHaveBeenCalledWith('user:xavier:incoming_friend_requests')
     })
-});   
+});
+
+describe('GetFriends tests', () => {
+    it('should call fetchRedis with the correct arguments', async () => {
+        const mockDB = { smembers: jest.fn() };
+        const repo = new FriendsRepository(mockDB as any as Redis);
+        await repo.getFriends('xavier');
+        expect(mockDB.smembers as jest.Mock).toHaveBeenCalledWith('user:xavier:friends')
+    })
+})

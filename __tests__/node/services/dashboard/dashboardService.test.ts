@@ -36,7 +36,7 @@ describe('DashboardService', () => {
     it('getFriends should pass each id from the output of repo.getFriends to repo.getUser', async () => {
         const spy = jest.spyOn(friendRequestsRepository, 'getUser');
         jest.spyOn(friendRequestsRepository, 'getFriends').mockResolvedValue(['friend1', 'friend2']);
-        const result = await dashboardData.getFriendsById('userId');
+        await dashboardData.getFriendsById('userId');
         expect(spy).toHaveBeenCalledWith('friend1');
         expect(spy).toHaveBeenCalledWith('friend2');
     });
