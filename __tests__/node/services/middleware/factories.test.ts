@@ -1,10 +1,10 @@
-import { handlerFactory } from "@/middlewareSupport/handler/factory"
+import { handlerFactory } from "@/services/middleware/handler/factory"
 import { NextRequest } from "next/server"
-import { RouteHandler } from "@/middlewareSupport/handler/implementation"
-import { IRouteHandler } from "@/middlewareSupport/handler/interface"
+import { RouteHandler } from "@/services/middleware/handler/implementation"
+import { IRouteHandler } from "@/services/middleware/handler/interface"
 
-jest.mock("@/middlewareSupport/authenticator/implementation")
-jest.mock("@/middlewareSupport/handler/implementation")
+jest.mock("@/services/middleware/authenticator/implementation")
+jest.mock("@/services/middleware/handler/implementation")
 
 describe('factories tests', () => {
     it('parameter passed to authenticator factory should be passed to the constructor', () => {

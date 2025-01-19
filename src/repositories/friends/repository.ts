@@ -21,12 +21,9 @@ export class FriendsRepository implements
     constructor(database = db) {
         this.database = database
     }
+
     getIncomingFriendRequests(userId: string): Promise<string[]> {
-        throw new Error("Method not implemented.");
-    }
-    //TODO: test then implement
-    getFriends(userId: string): Promise<User[]> {
-        throw new Error("Method not implemented.");
+        return this.database.smembers('user:xavier:incoming_friend_requests');
     }
 
     async areFriends(userId: string, idToAdd: string): Promise<boolean> {

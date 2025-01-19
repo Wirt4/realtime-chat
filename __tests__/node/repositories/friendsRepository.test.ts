@@ -8,7 +8,8 @@ jest.mock("@/helpers/redis")
 jest.mock("@/lib/db", () => ({
     __esModule: true,
     db: {
-        srem: jest.fn()
+        srem: jest.fn(),
+        smembers: jest.fn(),
     }
 }));
 
@@ -114,3 +115,12 @@ describe('removeFriend tests', () => {
         expect(db.srem as jest.Mock).toHaveBeenCalledWith('user:xavier:friends', 'magnus')
     })
 })
+
+describe('getIncomingFriendRequests tests', () => {
+    it('should call fetchRedis with the correct arguments', async () => {
+        const mockDB = { smembers: jest.fn() };
+        const repo = new FriendsRepository(mockDB as any as Redis);
+        await repo.getIncomingFriendRequests('xavier');
+        expect(mockDB.smembers).toHaveBeenCalledWith('user:xavier:incoming_friend_requests')
+    })
+});   

@@ -11,7 +11,7 @@ describe('DashboardService', () => {
         jest.resetAllMocks();
         friendRequestsRepository = {
             getIncomingFriendRequests: jest.fn(),
-            getFriends: jest.fn()
+            getUser: jest.fn()
         }
         dashboardData = new DashboardData(friendRequestsRepository);
     });
@@ -25,7 +25,7 @@ describe('DashboardService', () => {
     });
 
     it('getFriends should return the results of the get function of the Friends repository', async () => {
-        jest.spyOn(friendRequestsRepository, 'getFriends').mockResolvedValue([{ id: 'friend1', name: 'frodo', email: 'ringbearer@shire.org', image: 'stub' }]);
+        jest.spyOn(friendRequestsRepository, 'getUser').mockResolvedValue({ id: 'friend1', name: 'frodo', email: 'ringbearer@shire.org', image: 'stub' });
 
         const result = await dashboardData.getFriendsById('userId');
 
