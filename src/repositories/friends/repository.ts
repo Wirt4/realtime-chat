@@ -45,7 +45,8 @@ export class FriendsRepository implements
     }
 
     async getUser(userId: string): Promise<User> {
-        return fetchRedis('get', QueryBuilder.user(userId))
+        const user: string = await fetchRedis('get', QueryBuilder.user(userId));
+        return user ? JSON.parse(user) : {} as User;
     }
 
     queryFriendsTable(userId: string, idToAdd: string): Promise<boolean> {
