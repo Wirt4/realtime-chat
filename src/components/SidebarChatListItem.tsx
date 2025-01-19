@@ -5,11 +5,10 @@ import { FC } from "react";
 interface SidebarChatListItemProps {
     friend: User,
     unseenMessages: number
-    sessionId: string
     chatId: string
 }
 
-const SidebarChatListItem: FC<SidebarChatListItemProps> = ({ friend, unseenMessages, sessionId, chatId }) => {
+const SidebarChatListItem: FC<SidebarChatListItemProps> = ({ friend, unseenMessages, chatId }) => {
     return <li key={friend.id} className="group">
         <a href={`/dashboard/chat/${chatId}`} className='sidebar-chat-list-item'>
             {friend.name}

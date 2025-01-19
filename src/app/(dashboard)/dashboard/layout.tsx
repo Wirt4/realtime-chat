@@ -49,7 +49,6 @@ const Layout = async ({ children }: LayoutProps = { children: null }) => {
             {children}
         </div>;
     } catch {
-        console.error('somehow palpatine has returned')
         notFound();
     }
 }

@@ -187,26 +187,6 @@ describe('SidebarChatList', () => {
         expect(listItemSpy).toHaveBeenCalledWith(
             expect.objectContaining({ unseenMessages: 2, friend: expect.objectContaining({ name: "Sherlock" }) }));
     });
-
-    test('component should call SidebarChatListItem with correct number of unseen messages, different data', () => {
-        oneChatNoUnread()
-        const listItemSpy = jest.fn();
-        mockSpy(listItemSpy)
-
-        render(<SidebarChatList friends={[]} sessionId="1701" chatId='bar' />);
-
-        expect(listItemSpy).toHaveBeenCalledWith(expect.objectContaining({ sessionId: "1701" }));
-    });
-
-    test('component should call SidebarChatListItem with correct number of unseen messages, different data', () => {
-        oneChatNoUnread()
-        const listItemSpy = jest.fn();
-        mockSpy(listItemSpy)
-
-        render(<SidebarChatList friends={[]} sessionId="batman" chatId='bar' />);
-
-        expect(listItemSpy).toHaveBeenCalledWith(expect.objectContaining({ sessionId: "batman" }));
-    });
 });
 
 const oneChatNoUnread = () => {

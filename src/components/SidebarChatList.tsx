@@ -25,7 +25,6 @@ const SidebarChatList: FC<SidebarChatListProps> = ({ friends, sessionId, chatId 
                 key={friend.id}
                 friend={friend}
                 unseenMessages={numberOfUnseenMessages}
-                sessionId={sessionId}
                 chatId={chatId} />
         })}
     </ul>)
