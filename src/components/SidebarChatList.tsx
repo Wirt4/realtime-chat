@@ -1,13 +1,14 @@
 "use client";
 
-import React, {FC, useEffect, useState} from "react";
+import React, { FC, useEffect, useState } from "react";
 import SidebarChatListItem from "@/components/SidebarChatListItem";
 interface SidebarChatListProps {
     friends: User[],
     sessionId: string,
+    chatId: string
 }
 
-const SidebarChatList:FC<SidebarChatListProps> = ({friends, sessionId})=>{
+const SidebarChatList: FC<SidebarChatListProps> = ({ friends, sessionId, chatId }) => {
     const [activeChats, setActiveChats] = useState<User[]>(friends);
     const [unseenMessages] = useState<Message[]>([]);
 
@@ -15,16 +16,17 @@ const SidebarChatList:FC<SidebarChatListProps> = ({friends, sessionId})=>{
         setActiveChats(friends);
     }, [friends]);
 
-    return (<ul key={sessionId} aria-label='chat list'  className='sidebar-chat-list'>
-        {activeChats.sort((chatA: User, chatB: User)=>{
+    return (<ul key={sessionId} aria-label='chat list' className='sidebar-chat-list'>
+        {activeChats.sort((chatA: User, chatB: User) => {
             return chatA.name < chatB.name ? -1 : 1
-        }).map((friend: User)=>{
-            const numberOfUnseenMessages = unseenMessages.filter(msg=> msg?.senderId === friend.id).length
+        }).map((friend: User) => {
+            const numberOfUnseenMessages = unseenMessages.filter(msg => msg?.senderId === friend.id).length
             return <SidebarChatListItem
                 key={friend.id}
-                friend = {friend}
+                friend={friend}
                 unseenMessages={numberOfUnseenMessages}
-                sessionId={sessionId}/>
+                sessionId={sessionId}
+                chatId={chatId} />
         })}
     </ul>)
 }

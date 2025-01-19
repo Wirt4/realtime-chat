@@ -13,6 +13,10 @@ export class DashboardData implements iDashboardData {
         this.friendRequestsRepository = friendRequestsRepository
     }
 
+    async getChatId(participantIds: string[]): Promise<string> {
+        return participantIds.sort().join('--');
+    }
+
     async getSession(): Promise<Session> {
         return this.sessionData.getSession()
     }

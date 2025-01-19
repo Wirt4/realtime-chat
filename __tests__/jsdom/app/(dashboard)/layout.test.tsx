@@ -23,9 +23,10 @@ describe('Layout tests', () => {
 
     beforeEach(() => {
         dashBoardData = {
-            getSession: jest.fn(),
-            getIncomingFriendRequests: jest.fn(),
-            getFriendsById: jest.fn()
+            getSession: jest.fn().mockResolvedValue(session),
+            getIncomingFriendRequests: jest.fn().mockResolvedValue([]),
+            getFriendsById: jest.fn().mockResolvedValue([]),
+            getChatId: jest.fn().mockResolvedValue('chat-id'),
         };
         session = {
             user: {

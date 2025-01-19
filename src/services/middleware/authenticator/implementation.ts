@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { IAuthenticator } from "@/middlewareSupport/authenticator/interface";
+import { IAuthenticator } from "@/services/middleware/authenticator/interface";
 import { getToken, JWT } from "next-auth/jwt";
 
 export class Authenticator implements IAuthenticator {

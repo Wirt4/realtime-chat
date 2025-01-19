@@ -21,6 +21,7 @@ const Layout = async ({ children }: LayoutProps = { children: null }) => {
         const friendRequests = await dashboardData.getIncomingFriendRequests(userId);
         const friendRequestProps = requestProps(friendRequests, userId);
         const friends = await dashboardData.getFriendsById(userId);
+        const chatId = await dashboardData.getChatId([userId, ...friends.map(friend => friend.id)]);
 
         return <div className='dashboard-window'>
             <div className='dashboard'>
@@ -32,7 +33,7 @@ const Layout = async ({ children }: LayoutProps = { children: null }) => {
                 </div> : null}
                 <nav className='dashboard-nav-cols'>
                     <ul role='list' className='dashboard-ul'>
-                        <SidebarChatList friends={friends} aria-label='chat list' sessionId={userId} />
+                        <SidebarChatList friends={friends} aria-label='chat list' sessionId={userId} chatId={chatId} />
                         <div className='dashboard-subheader'>Overview</div>
                         <ul role='list' className='dashboard-sub-ul'>
                             <AddFriendListItem />
@@ -48,6 +49,7 @@ const Layout = async ({ children }: LayoutProps = { children: null }) => {
             {children}
         </div>;
     } catch {
+        console.error('somehow palpatine has returned')
         notFound();
     }
 }

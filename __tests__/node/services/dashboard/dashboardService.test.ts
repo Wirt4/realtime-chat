@@ -1,6 +1,7 @@
 import { iDashboardData } from '@/services/dashboard/interface';
 import { DashboardData } from '@/services/dashboard/implementation';
 import { DashboardDataInterface } from '@/repositories/friends/interfaces';
+import { AwardIcon } from 'lucide-react';
 
 jest.mock('next-auth')
 
@@ -40,4 +41,9 @@ describe('DashboardService', () => {
         expect(spy).toHaveBeenCalledWith('friend1');
         expect(spy).toHaveBeenCalledWith('friend2');
     });
+
+    it('replicate previous functionality: getChatId should return the concatenation of all chat participants', async () => {
+        const result = await dashboardData.getChatId(['bruce', 'alfred']);
+        expect(result).toEqual('alfred--bruce');
+    })
 });
