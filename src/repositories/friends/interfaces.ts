@@ -6,6 +6,7 @@ export interface RequestInterface extends FriendsAbstractInterface {
 export interface DashboardDataInterface {
     getIncomingFriendRequests(userId: string): Promise<string[]>;
     getUser(userId: string): Promise<User>;
+    getFriends(userId: string): Promise<string[]>;
 }
 
 export interface FriendsAddInterface extends FriendsAbstractInterface {

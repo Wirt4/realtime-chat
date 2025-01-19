@@ -22,7 +22,10 @@ export class DashboardData implements iDashboardData {
     }
 
     async getFriendsById(userId: string): Promise<User[]> {
-        const user = await this.friendRequestsRepository.getUser(userId)
-        return [user]
+        const friendIds = await this.friendRequestsRepository.getFriends(userId);
+        const friends = await Promise.all(friendIds.map(async (id: string) => {
+            return this.friendRequestsRepository.getUser(id);
+        }));
+        return friends;
     }
 }

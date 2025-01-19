@@ -2,7 +2,8 @@ import { Authenticator } from "@/services/middleware/authenticator/implementatio
 import { IAuthenticator } from "@/services/middleware/authenticator/interface";
 import { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
-jest.mock("next-auth/jwt")
+
+jest.mock("next-auth/jwt");
 
 const createMockRequest = (pathname: string, url: string) => ({
     nextUrl: { pathname },
