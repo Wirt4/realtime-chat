@@ -1,14 +1,14 @@
-import { FriendsRepository } from "@/repositories/friends/repository";
+import { FriendsRepository } from "@/repositories/friends/implementation";
 import { DashboardData } from "./implementation";
-import { DashboardDataInterface } from "@/repositories/friends/interfaces";
 import { aDashboardData } from "./abstract";
 import { UserRepository } from "@/repositories/user/implementation";
 import { FriendRequestsRepository } from "@/repositories/friendRequests/implementation";
 import { db } from "@/lib/db";
+import { aFriendsRepository } from "@/repositories/friends/abstract";
 
 export function dashboardDataFactory(): aDashboardData {
-    const friendsRepo: DashboardDataInterface = new FriendsRepository();
     const userRepository = new UserRepository(db);
     const friendRequestsRepo = new FriendRequestsRepository(db);
-    return new DashboardData(friendsRepo, userRepository, friendRequestsRepo);
+    const friendsRepository: aFriendsRepository = new FriendsRepository(db);
+    return new DashboardData(userRepository, friendRequestsRepo, friendsRepository);
 }

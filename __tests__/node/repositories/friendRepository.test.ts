@@ -50,3 +50,12 @@ describe('FriendRepository.add', () => {
         expect(mockDB.sadd).toHaveBeenCalledWith('user:foo:friends', 'bar');
     });
 });
+
+describe('FriendRepository.exists', () => {
+    it('should return true', async () => {
+        const mockDB = { sismember: jest.fn().mockReturnValueOnce(1) } as unknown as Redis;
+        const repo = new FriendsRepository(mockDB);
+        const actual = await repo.exists('foo', 'bar');
+        expect(actual).toBe(true);
+    });
+});

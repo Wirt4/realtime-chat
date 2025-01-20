@@ -17,6 +17,11 @@ export class FriendsRepository extends aFriendsRepository {
         return this.database.smembers(this.template(userId));
     }
 
+    async exists(userId: string, friendId: string): Promise<boolean> {
+        const result = await this.database.sismember(this.template(userId), friendId);
+        return result == 1;
+    }
+
     private template(userId: string): string {
         return `user:${userId}:friends`;
     }
