@@ -5,17 +5,20 @@ import { aDashboardData } from "./abstract";
 import { SidebarProps } from "@/components/Sidebar/interface";
 import { aSessionData } from "../session/abstract";
 import { aUserRepository } from "@/repositories/user/abstract";
+import { aFriendRequestsRepository } from "@/repositories/friendRequests/abstract";
 
 export class DashboardData extends aDashboardData {
     private sessionData: aSessionData
-    private friendRequestsRepository: DashboardDataInterface
+    private dashBoardDataRepository: DashboardDataInterface
     private userRepository: aUserRepository
+    private friendRequestsRepository: aFriendRequestsRepository
 
-    constructor(friendRequestsRepository: DashboardDataInterface, userRepository: aUserRepository) {
+    constructor(dashboardDataRepository: DashboardDataInterface, userRepository: aUserRepository, friendRequestsRepository: aFriendRequestsRepository) {
         super()
         this.sessionData = sessionDataFactory();
-        this.friendRequestsRepository = friendRequestsRepository;
+        this.dashBoardDataRepository = dashboardDataRepository;
         this.userRepository = userRepository;
+        this.friendRequestsRepository = friendRequestsRepository;
     }
 
     async getSession(): Promise<Session> {
@@ -25,7 +28,7 @@ export class DashboardData extends aDashboardData {
     async getSidebarProps(session: Session): Promise<SidebarProps> {
         const sessionId = session.user.id;
         const friends = await this.getFriendsById(sessionId);
-        const friendRequests = await this.getIncomingFriendRequests(sessionId);
+        const friendRequests = await this.friendRequestsRepository.get(sessionId);
         const userId = session.user.id;
         const chatId = await this.getChatId([userId, ...friends.map(friend => friend.id)]);
         const friendRequestSidebarOptions = this.requestProps(friendRequests, userId);
@@ -37,10 +40,6 @@ export class DashboardData extends aDashboardData {
         return participantIds.sort().join('--');
     }
 
-    private async getIncomingFriendRequests(userId: string): Promise<string[]> {
-        return this.friendRequestsRepository.getIncomingFriendRequests(userId)
-    }
-
     private requestProps(friendRequests: string[], userId: string) {
         return {
             initialRequestCount: friendRequests?.length || 0,
@@ -49,7 +48,7 @@ export class DashboardData extends aDashboardData {
     }
 
     private async getFriendsById(userId: string): Promise<User[]> {
-        const friendIds = await this.friendRequestsRepository.getFriends(userId);
+        const friendIds = await this.dashBoardDataRepository.getFriends(userId);
         const friends = await Promise.all(friendIds.map(async (id: string) => {
             return this.userRepository.get(id);
         }));

@@ -15,25 +15,25 @@ import {
 
 export class FriendsService
     implements
-        AcceptFriendsServiceInterface,
-        AddFriendsServiceInterface,
-        DenyFriendsServiceInterface,
-        RemoveFriendsServiceInterface
-{
+    AcceptFriendsServiceInterface,
+    AddFriendsServiceInterface,
+    DenyFriendsServiceInterface,
+    RemoveFriendsServiceInterface {
 
-    async userExists(email: string, friendsRepository: FriendsAbstractInterface): Promise<boolean>{
+    async userExists(email: string, friendsRepository: FriendsAbstractInterface): Promise<boolean> {
         return friendsRepository.userExists(email)
     }
 
-    async areAlreadyFriends(ids: Ids, friendsRepository: FriendsAbstractInterface): Promise<boolean>{
+    async areAlreadyFriends(ids: Ids, friendsRepository: FriendsAbstractInterface): Promise<boolean> {
         return friendsRepository.areFriends(ids.sessionId, ids.requestId)
     }
 
-    async isAlreadyAddedToFriendRequests(ids: Ids, friendsRepository: FriendsAbstractInterface): Promise<boolean>{
+    async isAlreadyAddedToFriendRequests(ids: Ids, friendsRepository: FriendsAbstractInterface): Promise<boolean> {
+        //replace
         return friendsRepository.hasExistingFriendRequest(ids.sessionId, ids.requestId)
     }
 
-    async handleFriendRequest(ids: Ids, friendsRepository: FriendsAddInterface, pusherService: ServiceInterfacePusherFriendsAccept): Promise<void>{
+    async handleFriendRequest(ids: Ids, friendsRepository: FriendsAddInterface, pusherService: ServiceInterfacePusherFriendsAccept): Promise<void> {
         if (await this.areAlreadyFriends(ids, friendsRepository)) {
             throw FriendRequestStatus.AlreadyFriends
         }
@@ -42,40 +42,43 @@ export class FriendsService
             throw FriendRequestStatus.NoExistingFriendRequest
         }
 
+        //replace
         const toAdd = await friendsRepository.getUser(ids.requestId)
         const user = await friendsRepository.getUser(ids.sessionId)
 
         await Promise.all([
             friendsRepository.addToFriends(ids.requestId, ids.sessionId),
             friendsRepository.addToFriends(ids.sessionId, ids.requestId),
+            //replace
             friendsRepository.removeFriendRequest(ids.sessionId, ids.requestId),
             pusherService.addFriend(ids.requestId, user),
             pusherService.addFriend(ids.sessionId, toAdd),
         ])
     }
 
-    async handleFriendAdd(ids: Ids, senderEmail: string, friendsRepository: FriendsAddInterface, pusherService: PusherAddFriendInterface): Promise<void>{
+    async handleFriendAdd(ids: Ids, senderEmail: string, friendsRepository: FriendsAddInterface, pusherService: PusherAddFriendInterface): Promise<void> {
         await pusherService.addFriendRequest(ids.sessionId, ids.requestId, senderEmail)
+        //replace
         await friendsRepository.addToFriendRequests(ids.sessionId, ids.requestId)
     }
 
-    async getIdToAdd(email: string, friendsRepository: FriendsAbstractInterface): Promise<string>{
+    async getIdToAdd(email: string, friendsRepository: FriendsAbstractInterface): Promise<string> {
         return friendsRepository.getUserId(email)
     }
 
-    isSameUser(ids:Ids): boolean{
+    isSameUser(ids: Ids): boolean {
         return ids.sessionId == ids.requestId
     }
 
-    async removeEntry(ids:Ids, repository:FriendsDenyInterface, pusher: PusherDenyFriendInterface ): Promise<void> {
-        try{
-           await repository.removeEntry(ids)
-        }catch{
+    async removeEntry(ids: Ids, repository: FriendsDenyInterface, pusher: PusherDenyFriendInterface): Promise<void> {
+        try {
+            await repository.removeEntry(ids)
+        } catch {
             throw 'Redis Error'
         }
-        try{
+        try {
             await pusher.denyFriendRequest(ids.sessionId, ids.requestId)
-        }catch {
+        } catch {
             throw 'Pusher Error'
         }
     }
@@ -88,7 +91,7 @@ export class FriendsService
     }
 }
 
-export enum FriendRequestStatus{
+export enum FriendRequestStatus {
     AlreadyFriends = 'Already Friends',
     NoExistingFriendRequest = 'No Existing Friend Request'
 }

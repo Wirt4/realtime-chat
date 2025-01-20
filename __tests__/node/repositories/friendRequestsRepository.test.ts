@@ -28,4 +28,32 @@ describe('FriendRequestsRepository.exists', () => {
         await friendRequestsRepository.exists('userId', 'idToAdd');
         expect(mockDb.sismember).toHaveBeenCalledWith('user:userId:incoming_friend_requests', 'idToAdd');
     });
-})
+});
+
+describe('FriendRequestsRepository.add', () => {
+    it('should call sadd with correct arguments', async () => {
+        const mockDb = { sadd: jest.fn() } as unknown as Redis;
+        const friendRequestsRepository = new FriendRequestsRepository(mockDb);
+        await friendRequestsRepository.add('userId', 'friendId');
+        expect(mockDb.sadd).toHaveBeenCalledWith('user:userId:incoming_friend_requests', 'friendId');
+    });
+});
+
+describe('FriendRequestsRepository.add', () => {
+    it('should call srem with correct arguments', async () => {
+        const mockDb = { srem: jest.fn() } as unknown as Redis;
+        const friendRequestsRepository = new FriendRequestsRepository(mockDb);
+        await friendRequestsRepository.remove('userId', 'friendId');
+        expect(mockDb.srem).toHaveBeenCalledWith('user:userId:incoming_friend_requests', 'friendId');
+    });
+});
+
+describe('FriendRequestsRepository.get', () => {
+    it('should return results from database smembers', async () => {
+        const expected = ['requestId', 'anotherRequestId']
+        const mockDb = { smembers: jest.fn().mockResolvedValue(expected) } as unknown as Redis;
+        const friendRequestsRepository = new FriendRequestsRepository(mockDb);
+        const result = await friendRequestsRepository.get('userId');
+        expect(result).toEqual(expected);
+    });
+});

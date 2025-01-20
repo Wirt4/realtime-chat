@@ -38,6 +38,7 @@ export class FriendsRepository implements
         return this.queryFriendRequestsTable(userId, idToAdd);
     }
 
+    //will need to move this logic to the service that calls it
     async addToFriends(userId: string, idToAdd: string): Promise<void> {
         await Promise.all([
             this.database.sadd(this.friendsTable(userId), idToAdd),
