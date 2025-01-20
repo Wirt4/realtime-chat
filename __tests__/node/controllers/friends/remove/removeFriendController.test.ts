@@ -62,7 +62,7 @@ describe('Functionality Tests', () => {
     })
     it('service areAlreadyFriends should be called with the correct parameters', async () => {
         await controller.remove(request, service)
-        expect(service.areAlreadyFriends).toHaveBeenCalledWith({ sessionId: 'foo', requestId: '1966' }, expect.anything())
+        expect(service.areAlreadyFriends).toHaveBeenCalledWith({ sessionId: 'foo', requestId: '1966' })
     })
     it('service.removeFriends should be called for both parties', async () => {
         await controller.remove(request, service)

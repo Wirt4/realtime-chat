@@ -1,7 +1,4 @@
 import {
-    FriendsAbstractInterface,
-} from "@/repositories/friends/interfaces";
-import {
     PusherAddFriendInterface, PusherDenyFriendInterface,
     ServiceInterfacePusherFriendsAccept
 } from "@/services/pusher/interfaces";
@@ -55,9 +52,9 @@ export class FriendsService
         // return this.friendsRepository.exists(ids.sessionId, ids.requestId)
     }
 
-    async isAlreadyAddedToFriendRequests(ids: Ids, friendsRepository: FriendsAbstractInterface): Promise<boolean> {
+    async isAlreadyAddedToFriendRequests(ids: Ids): Promise<boolean> {
         //replace
-        return friendsRepository.hasExistingFriendRequest(ids.sessionId, ids.requestId)
+        return this.friendsRequestRepository.exists(ids.sessionId, ids.requestId)
     }
 
     async handleFriendRequest(ids: Ids,): Promise<void> {
