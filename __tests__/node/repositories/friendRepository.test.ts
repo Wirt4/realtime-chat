@@ -59,3 +59,12 @@ describe('FriendRepository.exists', () => {
         expect(actual).toBe(true);
     });
 });
+
+describe('FriendRepository.remove', () => {
+    it('should remove a friend', async () => {
+        const mockDB = { srem: jest.fn() } as unknown as Redis;
+        const repo = new FriendsRepository(mockDB);
+        await repo.remove('foo', 'bar');
+        expect(mockDB.srem).toHaveBeenCalledWith('user:foo:friends', 'bar');
+    });
+});

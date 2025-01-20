@@ -104,17 +104,17 @@ export class FriendsService
         } catch {
             throw 'Redis Error'
         }
-        /* try {
-           //  await pusher.denyFriendRequest(ids.sessionId, ids.requestId)
-         } catch {
-             throw 'Pusher Error'
-         }*/
+        try {
+            await this.denyPusher.denyFriendRequest(ids.sessionId, ids.requestId)
+        } catch {
+            throw 'Pusher Error'
+        }
     }
 
-    async removeFriends(ids: Ids, friendsRepository: FriendsRemoveInterface): Promise<void> {
+    async removeFriends(ids: Ids): Promise<void> {
         await Promise.all([
-            friendsRepository.removeFriend(ids.sessionId, ids.requestId),
-            friendsRepository.removeFriend(ids.requestId, ids.sessionId),
+            this.friendsRepository.remove(ids.sessionId, ids.requestId),
+            this.friendsRepository.remove(ids.requestId, ids.sessionId),
         ])
     }
 }

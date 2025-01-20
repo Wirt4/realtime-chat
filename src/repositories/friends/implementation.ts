@@ -22,6 +22,10 @@ export class FriendsRepository extends aFriendsRepository {
         return result == 1;
     }
 
+    async remove(userId: string, friendId: string): Promise<void> {
+        await this.database.srem(this.template(userId), friendId);
+    }
+
     private template(userId: string): string {
         return `user:${userId}:friends`;
     }

@@ -187,48 +187,76 @@ describe('deny request tests', () => {
         await service.removeEntry(ids)
         expect(mockFriendRequestsRepository.remove).toHaveBeenCalledWith(ids.requestId, ids.sessionId)
     });
-    /** 
+
     it('should throw if the repository throws', async () => {
-        mockRepository.removeEntry = jest.fn().mockRejectedValue('error')
+        mockFriendRequestsRepository.remove = jest.fn().mockRejectedValue('error');
+        service = new FriendsService(mockUserRepository, mockFriendsRepository, mockFriendRequestsRepository, mockAcceptPusher, mockDenyPusher);
         try {
-            await service.removeEntry(ids, mockRepository, mockPusher)
+            await service.removeEntry(ids)
         } catch (error) {
             expect(error).toEqual('Redis Error')
         }
     });
-    it('should throw if the repository throws', async () => {
-        mockPusher.denyFriendRequest = jest.fn().mockRejectedValue('error')
+
+    it('should throw if the pusherService throws', async () => {
+        mockDenyPusher.denyFriendRequest = jest.fn().mockRejectedValue('error')
+        service = new FriendsService(mockUserRepository, mockFriendsRepository, mockFriendRequestsRepository, mockAcceptPusher, mockDenyPusher);
         try {
-            await service.removeEntry(ids, mockRepository, mockPusher)
+            await service.removeEntry(ids);
             expect(true).toEqual(false)
         } catch (error) {
             expect(error).toEqual('Pusher Error')
         }
     });
-    */
+
 })
-/*
+
 describe('removeFriends tests', () => {
     let service: FriendsService;
-    let mockRepository: FriendsRemoveInterface;
-    let ids: Ids
+    let mockUserRepository: aUserRepository;
+    let mockFriendsRepository: aFriendsRepository;
+    let mockAcceptPusher: ServiceInterfacePusherFriendsAccept;
+    let mockFriendRequestsRepository: aFriendRequestsRepository;
+    let mockDenyPusher: PusherDenyFriendInterface;
+    const ids: Ids = { sessionId: 'idToAdd', requestId: 'userId' }
+
     beforeEach(() => {
         jest.resetAllMocks()
-        mockRepository = {
-            removeFriend: jest.fn()
+        mockUserRepository = {
+            get: jest.fn().mockResolvedValue({ id: 'id' }),
+            exists: jest.fn().mockResolvedValue(true)
         }
-        ids = { sessionId: 'foo', requestId: 'bar' }
-        service = new FriendsService()
+        mockFriendsRepository = {
+            exists: jest.fn().mockResolvedValue(false),
+            add: jest.fn(),
+            get: jest.fn(),
+            remove: jest.fn()
+        }
+        mockFriendRequestsRepository = {
+            add: jest.fn(),
+            remove: jest.fn(),
+            exists: jest.fn().mockResolvedValue(true),
+            get: jest.fn()
+        }
+
+        mockAcceptPusher = {
+            addFriend: jest.fn()
+        }
+
+        mockDenyPusher = {
+            denyFriendRequest: jest.fn()
+        }
+        service = new FriendsService(mockUserRepository, mockFriendsRepository, mockFriendRequestsRepository, mockAcceptPusher, mockDenyPusher);
     })
     it('should make two calls to the repo removeFriend method', async () => {
-        await service.removeFriends(ids, mockRepository)
-        expect(mockRepository.removeFriend).toHaveBeenCalledTimes(2)
+        await service.removeFriends(ids)
+        expect(mockFriendsRepository.remove).toHaveBeenCalledTimes(2)
     })
     it('should call repo.remove friend with the sessionid and requestd, both forward and backware', async () => {
-        await service.removeFriends(ids, mockRepository)
-        expect(mockRepository.removeFriend).toHaveBeenCalledWith(ids.sessionId, ids.requestId)
-        expect(mockRepository.removeFriend).toHaveBeenCalledWith(ids.requestId, ids.sessionId)
+        await service.removeFriends(ids,)
+        expect(mockFriendsRepository.remove).toHaveBeenCalledWith(ids.sessionId, ids.requestId)
+        expect(mockFriendsRepository.remove).toHaveBeenCalledWith(ids.requestId, ids.sessionId)
     });
 
 })
-    */
+
