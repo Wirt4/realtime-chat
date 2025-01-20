@@ -1,6 +1,5 @@
 import {
     FriendsAbstractInterface,
-    FriendsDenyInterface, FriendsRemoveInterface,
 } from "@/repositories/friends/interfaces";
 import {
     PusherAddFriendInterface, PusherDenyFriendInterface,
@@ -29,24 +28,26 @@ export class FriendsService
     private friendsRequestRepository: aFriendRequestsRepository;
     private acceptPusher: ServiceInterfacePusherFriendsAccept;
     private denyPusher: PusherDenyFriendInterface;
+    private addPusher: PusherAddFriendInterface;
 
     constructor(
         userRepository: aUserRepository,
         friendsRepository: aFriendsRepository,
         friendsRequestRepository: aFriendRequestsRepository,
         acceptPusher: ServiceInterfacePusherFriendsAccept,
-        denyPusher: PusherDenyFriendInterface
+        denyPusher: PusherDenyFriendInterface,
+        addPusher: PusherAddFriendInterface
     ) {
         this.userRepository = userRepository;
         this.friendsRepository = friendsRepository;
         this.friendsRequestRepository = friendsRequestRepository;
         this.acceptPusher = acceptPusher;
         this.denyPusher = denyPusher;
+        this.addPusher = addPusher;
     }
 
     async userExists(email: string): Promise<boolean> {
         return this.userRepository.exists(email)
-        //return friendsRepository.userExists(email)
     }
 
     async areAlreadyFriends(ids: Ids): Promise<boolean> {
@@ -70,8 +71,8 @@ export class FriendsService
             throw FriendRequestStatus.NoExistingFriendRequest
         }
 
-        const toAdd = await this.userRepository.get(ids.requestId)
-        const user = await this.userRepository.get(ids.sessionId)
+        const toAdd = await this.userRepository.getUser(ids.requestId)
+        const user = await this.userRepository.getUser(ids.sessionId)
 
         await Promise.all([
             this.friendsRepository.add(ids.requestId, ids.sessionId),
@@ -83,15 +84,17 @@ export class FriendsService
 
     }
 
-    async handleFriendAdd(ids: Ids, senderEmail: string, friendRequestRepository: aFriendRequestsRepository, pusherService: PusherAddFriendInterface): Promise<void> {
-        await pusherService.addFriendRequest(ids.sessionId, ids.requestId, senderEmail)
+    async handleFriendAdd(ids: Ids): Promise<void> {
+        const user = await this.userRepository.getUser(ids.sessionId)
+        const senderEmail = user.email;
+        await this.addPusher.addFriendRequest(ids.sessionId, ids.requestId, senderEmail)
         //replace
-        await friendRequestRepository.add(ids.sessionId, ids.requestId)
+        await this.friendsRequestRepository.add(ids.requestId, ids.sessionId);
     }
 
     async getIdToAdd(email: string): Promise<string> {
-        const user = await this.userRepository.get(email)
-        return user.id //possibly unnecessary work here
+        const id = await this.userRepository.getId(email);
+        return id || ""
     }
 
     isSameUser(ids: Ids): boolean {

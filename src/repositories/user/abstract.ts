@@ -1,4 +1,5 @@
 export abstract class aUserRepository {
     abstract exists(email: string): Promise<boolean>;
-    abstract get(userId: string): Promise<User>;
+    abstract getId(email: string): Promise<string | null>;
+    abstract getUser(userId: string): Promise<User>;
 }

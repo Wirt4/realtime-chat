@@ -52,7 +52,7 @@ describe('UserRepository.get', () => {
     it('should return a user', async () => {
         const userRepository = new UserRepository(mockDb);
 
-        const result = await userRepository.get('userId');
+        const result = await userRepository.getUser('userId');
 
         expect(result).toEqual(expected);
     });
@@ -60,7 +60,7 @@ describe('UserRepository.get', () => {
     it('should call "database.get" with the correct query', async () => {
         const userRepository = new UserRepository(mockDb);
 
-        await userRepository.get('userId');
+        await userRepository.getUser('userId');
 
         expect(mockDb.get).toHaveBeenCalledWith('user:userId');
     });

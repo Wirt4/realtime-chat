@@ -50,7 +50,7 @@ export class DashboardData extends aDashboardData {
     private async getFriendsById(userId: string): Promise<User[]> {
         const friendIds = await this.friendsRepository.get(userId);
         const friends = await Promise.all(friendIds.map(async (id: string) => {
-            return this.userRepository.get(id);
+            return this.userRepository.getUser(id);
         }));
         return friends;
     }

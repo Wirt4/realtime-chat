@@ -1,9 +1,10 @@
 
 import '@testing-library/jest-dom'
-import {render, screen, fireEvent} from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import AddFriendButton from "@/components/AddFriendButton"
-import {Utils} from "@/lib/utils";
-import { act } from 'react'
+import { Utils } from "@/lib/utils";
+import { act } from 'react';
+
 jest.mock('@/lib/utils', () => ({
     Utils: {
         addFriend: jest.fn(),
@@ -12,26 +13,26 @@ jest.mock('@/lib/utils', () => ({
 }))
 
 describe('addFriendButton', () => {
-    beforeEach(()=>{
+    beforeEach(() => {
         render(<AddFriendButton />)
     })
 
-   test('expect label to be rendered correctly',()=>{
-       expect(screen.getByText('Add a Friend by Email:')).toBeInTheDocument();
-   })
-    test('expect button to be in the form',()=>{
+    test('expect label to be rendered correctly', () => {
+        expect(screen.getByText('Add a Friend by Email:')).toBeInTheDocument();
+    })
+    test('expect button to be in the form', () => {
         const buttonElement = screen.getByRole('button', { name: /add/i });
         expect(buttonElement).toBeInTheDocument();
     })
 })
 
-describe('addFriendButton events',()=>{
-    afterEach(()=>{
+describe('addFriendButton events', () => {
+    afterEach(() => {
         jest.resetAllMocks()
     })
-    test('when the button is clicked, the addFriend method is called', async ()=>{
+    test('when the button is clicked, the addFriend method is called', async () => {
         const spy = jest.spyOn(Utils, 'addFriend').mockImplementation(jest.fn())
-        render(<AddFriendButton/>)
+        render(<AddFriendButton />)
         const emailInput = screen.getByPlaceholderText('you@example.com');
         const buttonElement = screen.getByRole('button', { name: /add/i });
 

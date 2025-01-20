@@ -10,10 +10,14 @@ export class UserRepository extends aUserRepository {
     }
 
     async exists(email: string): Promise<boolean> {
-        return Boolean(await this.database.get(`user:email:${email}`));
+        return Boolean(await this.getId(email));
     }
 
-    async get(userId: string): Promise<User> {
+    async getId(email: string): Promise<string | null> {
+        return this.database.get(`user:email:${email}`);
+    }
+
+    async getUser(userId: string): Promise<User> {
         const user = this.database.get(`user:${userId}`);
         if (!user) {
             throw new Error('User not found');
