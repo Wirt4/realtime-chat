@@ -2,15 +2,15 @@ import '@testing-library/jest-dom'
 import Layout from "@/app/(dashboard)/dashboard/layout"
 import { notFound } from "next/navigation"
 import { render, screen, waitFor } from "@testing-library/react";
-import FriendRequestSidebarOptions from "@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions";
-import SidebarChatList from "@/components/SidebarChatList";
+import FriendRequestSidebarOptions from "@/components/Sidebar/SidebarOptions/friendRequestSidebarOptions/FriendRequestSidebarOptions";
+import SidebarChatList from "@/components/Sidebar/ChatList/SidebarChatList";
 import { dashboardDataFactory } from '@/services/dashboard/factory';
 import { aDashboardData } from '@/services/dashboard/abstract';
 import { Session } from 'next-auth';
 
 jest.mock('@/services/dashboard/implementation', jest.fn())
-jest.mock("@/components/SidebarChatList");
-jest.mock("@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions");
+jest.mock("@/components/Sidebar/ChatList/SidebarChatList");
+jest.mock("@/components/Sidebar/SidebarOptions/friendRequestSidebarOptions/FriendRequestSidebarOptions");
 jest.mock("@/services/dashboard/factory");
 jest.mock("next/navigation", () => ({
     __esModule: true,
@@ -20,14 +20,29 @@ jest.mock("next/navigation", () => ({
 describe('Layout tests', () => {
     let dashBoardData: aDashboardData;
     let session: Session;
+    let friends: User[]
+    let sessionId: string
+    let friendRequests: string[]
+    let userId: string
+    let initialRequestCount: number
+    let chatId: string
+
+    const mockDashBoardData = () => {
+        return {
+            getSession: jest.fn().mockResolvedValue(session),
+            getSidebarProps: jest.fn().mockResolvedValue({ friends, sessionId, friendRequests, chatId, friendRequestSidebarOptions: { initialRequestCount, sessionId } }),
+        };
+    }
+
 
     beforeEach(() => {
-        dashBoardData = {
-            getSession: jest.fn().mockResolvedValue(session),
-            getIncomingFriendRequests: jest.fn().mockResolvedValue([]),
-            getFriendsById: jest.fn().mockResolvedValue([]),
-            getChatId: jest.fn().mockResolvedValue('chat-id'),
-        };
+        friends = [];
+        sessionId = 'user-id';
+        userId = 'user-id';
+        friendRequests = [];
+        initialRequestCount = 0;
+        chatId = 'chat-id';
+        dashBoardData = mockDashBoardData();
         session = {
             user: {
                 id: 'user-id',
@@ -78,14 +93,16 @@ describe('Layout tests', () => {
     })
 
     test('Sidebar needs a div called "Your Chats"', async () => {
-        jest.spyOn(dashBoardData, 'getFriendsById').mockResolvedValue([{ name: 'alice', email: 'alice@example.com', image: 'stub', id: '9177' }]);
+        friends = [{ name: 'alice', email: 'alice@example.com', image: 'stub', id: '9177' }];
+        (dashboardDataFactory as jest.Mock).mockReturnValue(mockDashBoardData());
         render(await Layout());
         const text = screen.getByText('Your Chats');
         expect(text).toBeInTheDocument();
     });
 
     test('If getFriendsById resolves empty,  then don\'t display "Your Chats"', async () => {
-        jest.spyOn(dashBoardData, 'getFriendsById').mockResolvedValue([]);
+        friends = [];
+        (dashboardDataFactory as jest.Mock).mockReturnValue(mockDashBoardData());
         render(await Layout());
         const text = screen.queryByText('Your Chats');
         expect(text).not.toBeInTheDocument();
@@ -98,7 +115,8 @@ describe('Layout tests', () => {
     });
 
     test('Output of getIncomingFriendRequests is passed to  FriendRequestSidebarOptions', async () => {
-        jest.spyOn(dashBoardData, 'getIncomingFriendRequests').mockResolvedValue(['first entry', 'second entry', 'third entry', 'fourth entry', 'fifth entry']);
+        initialRequestCount = 5;
+        (dashboardDataFactory as jest.Mock).mockReturnValue(mockDashBoardData());
         const friendRequestSpy = jest.fn();
         mockSideBarOptions(friendRequestSpy);
         render(await Layout());
@@ -106,7 +124,8 @@ describe('Layout tests', () => {
     });
 
     test('Output of getIncomingFriendRequests is passed to  FriendRequestSidebarOptions, different data', async () => {
-        jest.spyOn(dashBoardData, 'getIncomingFriendRequests').mockResolvedValue(['first entry', 'second entry']);
+        initialRequestCount = 2;
+        (dashboardDataFactory as jest.Mock).mockReturnValue(mockDashBoardData());
         const friendRequestSpy = jest.fn();
         mockSideBarOptions(friendRequestSpy);
 
@@ -115,17 +134,19 @@ describe('Layout tests', () => {
     });
 
     test('confirm input passed to getIncomingFriendRequests', async () => {
-        const spy = jest.spyOn(dashBoardData, 'getIncomingFriendRequests')
-        jest.spyOn(dashBoardData, 'getSession').mockResolvedValue({ user: { id: '1701' } } as Session);
+        const spy = jest.spyOn(dashBoardData, 'getSidebarProps');
+        const session = { user: { id: '1701' } } as Session;
+        jest.spyOn(dashBoardData, 'getSession').mockResolvedValue(session);
         render(await Layout());
-        expect(spy).toHaveBeenCalledWith('1701');
+        expect(spy).toHaveBeenCalledWith(session);
     });
 
     test('confirm input passed to getIncomingFriendRequests', async () => {
-        jest.spyOn(dashBoardData, 'getSession').mockResolvedValue({ user: { id: '45654' } } as Session);
-        const spy = jest.spyOn(dashBoardData, 'getIncomingFriendRequests');
+        const session = { user: { id: '45654' } } as Session;
+        jest.spyOn(dashBoardData, 'getSession').mockResolvedValue(session);
+        const spy = jest.spyOn(dashBoardData, 'getSidebarProps');
         render(await Layout());
-        expect(spy).toHaveBeenCalledWith('45654');
+        expect(spy).toHaveBeenCalledWith(session);
     });
 
     test('Should contain a SignOut Button', async () => {
@@ -135,14 +156,6 @@ describe('Layout tests', () => {
         expect(logoutButton).toBeInTheDocument();
     });
 
-    test('getFriendRequest should be called with the userid from the session', async () => {
-        const spy = jest.spyOn(dashBoardData, 'getFriendsById');
-        jest.spyOn(dashBoardData, 'getSession').mockResolvedValue({ user: { id: '1234' } } as Session);
-
-        render(await Layout());
-
-        expect(spy).toHaveBeenCalledWith('1234');
-    });
 
     test('should contain a SidebarChatList component', async () => {
         const { queryByLabelText } = render(await Layout());
@@ -152,7 +165,8 @@ describe('Layout tests', () => {
     });
 
     test('Output of getFriendsById is passed to  SidebarChatList', async () => {
-        jest.spyOn(dashBoardData, 'getFriendsById').mockResolvedValue([]);
+        friends = [];
+        (dashboardDataFactory as jest.Mock).mockReturnValue(mockDashBoardData());
         const chatListSpy = jest.fn();
         mockSideBarChatList(chatListSpy)
 
@@ -161,46 +175,44 @@ describe('Layout tests', () => {
     });
 
     test('Output of getFriendsById is passed to SidebarChatList', async () => {
-
-        jest.spyOn(dashBoardData, 'getFriendsById').mockResolvedValue([{
+        const expected = [{
             name: 'alice',
             email: 'emailr@gmail.com',
             image: 'stub',
             id: '9177',
-        }]);
+        }]
+        friends = expected;
+        (dashboardDataFactory as jest.Mock).mockReturnValue(mockDashBoardData());
         const childComponentSpy = jest.fn();
         (SidebarChatList as jest.Mock).mockImplementation(({ friends }) => {
             childComponentSpy(friends);
             return <div data-testid="child-component">Mocked Child</div>;
         });
         render(await Layout());
-        await waitFor(() => expect(childComponentSpy).toHaveBeenCalledWith([{
-            name: 'alice',
-            email: 'emailr@gmail.com',
-            image: 'stub',
-            id: '9177',
-        }]));
+        await waitFor(() => expect(childComponentSpy).toHaveBeenCalledWith(expected));
     });
 
     test('Output of myGetServerSession is passed to SideBarChatList', async () => {
-        jest.spyOn(dashBoardData, 'getSession').mockResolvedValue({ user: { id: 'thx-1138' } } as Session);
+        sessionId = 'thx-1138';
+        (dashboardDataFactory as jest.Mock).mockReturnValue(mockDashBoardData());
         const chatListSpy = jest.fn();
         mockSideBarChatList(chatListSpy)
 
         render(await Layout());
 
         expect(chatListSpy).toHaveBeenCalledWith(expect.objectContaining({ sessionId: 'thx-1138' }));
-    })
+    });
 
     test('Output of myGetServerSession is passed to SideBarChatList, different data', async () => {
-        jest.spyOn(dashBoardData, 'getSession').mockResolvedValue({ user: { id: 'r2-d2' } } as Session);
+        sessionId = 'r2-d2';
+        (dashboardDataFactory as jest.Mock).mockReturnValue(mockDashBoardData());
         const chatListSpy = jest.fn();
         mockSideBarChatList(chatListSpy)
 
         render(await Layout());
 
         expect(chatListSpy).toHaveBeenCalledWith(expect.objectContaining({ sessionId: 'r2-d2' }));
-    })
+    });
 });
 
 const mockSideBarChatList = (spy: jest.Mock) => {

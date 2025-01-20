@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import { render } from "@testing-library/react";
-import SidebarChatList from '@/components/SidebarChatList';
+import SidebarChatList from '@/components/Sidebar/ChatList/SidebarChatList';
 import SidebarChatListItem from '@/components/SidebarChatListItem';
 import { useState } from 'react'
 
