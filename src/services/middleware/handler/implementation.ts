@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { NextResponseWrapper } from "@/lib/nextResponseWrapper";
-import { IRouteHandler } from "@/middlewareSupport/handler/interface"
+import { IRouteHandler } from "@/services/middleware/handler/interface"
 
 export class RouteHandler implements IRouteHandler {
     private _targetPath: string;

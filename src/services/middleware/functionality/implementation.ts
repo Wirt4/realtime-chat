@@ -1,8 +1,8 @@
 import { NextRequest } from "next/server";
-import { IRouteHandler } from "@/middlewareSupport/handler/interface"
-import { IAuthenticator } from "@/middlewareSupport/authenticator/interface";
-import { handlerFactory } from "@/middlewareSupport/handler/factory"
-import { authenticatorFactory } from "@/middlewareSupport/authenticator/factory";
+import { IRouteHandler } from "@/services/middleware/handler/interface"
+import { IAuthenticator } from "@/services/middleware/authenticator/interface";
+import { handlerFactory } from "@/services/middleware/handler/factory"
+import { authenticatorFactory } from "@/services/middleware/authenticator/factory";
 
 export class Middleware {
 

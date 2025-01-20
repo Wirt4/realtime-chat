@@ -1,26 +1,26 @@
 "use client";
 
-import {FC} from "react";
-import {Utils} from "@/lib/utils";
+import { FC } from "react";
 
 interface SidebarChatListItemProps {
     friend: User,
     unseenMessages: number
-    sessionId: string
+    chatId: string
 }
 
-const SidebarChatListItem:FC<SidebarChatListItemProps> = ({friend, unseenMessages, sessionId})=>{
-    const chatId = Utils.chatHrefConstructor(friend.id, sessionId);
-    return <li key = {friend.id} className="group">
-        <a href = {`/dashboard/chat/${chatId}`} className='sidebar-chat-list-item'>
-            {friend.name}
-          <UnseenMessages messages={unseenMessages}/>
+const SidebarChatListItem: FC<SidebarChatListItemProps> = (props) => {
+    const { friend, unseenMessages, chatId } = props;
+    const { id, name } = friend
+    return <li key={id} className="group">
+        <a href={`/dashboard/chat/${chatId}`} className='sidebar-chat-list-item'>
+            {name}
+            <UnseenMessages messages={unseenMessages} />
         </a>
     </li>
 }
 
-const UnseenMessages:FC<{messages: number}> = ({messages})=>{
-    if(messages > 0){
+const UnseenMessages: FC<{ messages: number }> = ({ messages }) => {
+    if (messages > 0) {
         return <div className='unread-messages-count'>
             {messages}
         </div>

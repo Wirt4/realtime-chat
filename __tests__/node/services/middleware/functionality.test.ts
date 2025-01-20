@@ -1,12 +1,12 @@
-import { Middleware } from "@/middlewareSupport/functionality/implementation"
+import { Middleware } from "@/services/middleware/functionality/implementation"
 import { NextRequest } from "next/server";
-import { IRouteHandler } from "@/middlewareSupport/handler/interface";
-import { handlerFactory } from "@/middlewareSupport/handler/factory";
-import { IAuthenticator } from "@/middlewareSupport/authenticator/interface";
-import { authenticatorFactory } from "@/middlewareSupport/authenticator/factory";
+import { IRouteHandler } from "@/services/middleware/handler/interface";
+import { handlerFactory } from "@/services/middleware/handler/factory";
+import { IAuthenticator } from "@/services/middleware/authenticator/interface";
+import { authenticatorFactory } from "@/services/middleware/authenticator/factory";
 
-jest.mock("@/middlewareSupport/handler/factory")
-jest.mock("@/middlewareSupport/authenticator/factory")
+jest.mock("@/services/middleware/handler/factory")
+jest.mock("@/services/middleware/authenticator/factory")
 
 const createMockRequest = (pathname: string, url: string) => ({
     nextUrl: { pathname },

@@ -1,4 +1,4 @@
-import { RouteHandler } from "@/middlewareSupport/handler/implementation";
+import { RouteHandler } from "@/services/middleware/handler/implementation";
 import { NextRequest } from "next/server";
 import { NextResponseWrapper } from "@/lib/nextResponseWrapper";
 
