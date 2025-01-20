@@ -27,13 +27,21 @@ export class FriendsService
     private userRepository: aUserRepository;
     private friendsRepository: aFriendsRepository;
     private friendsRequestRepository: aFriendRequestsRepository;
-    private pusherService: ServiceInterfacePusherFriendsAccept;
+    private acceptPusher: ServiceInterfacePusherFriendsAccept;
+    private denyPusher: PusherDenyFriendInterface;
 
-    constructor(userRepository: aUserRepository, friendsRepository: aFriendsRepository, friendsRequestRepository: aFriendRequestsRepository, pusher: ServiceInterfacePusherFriendsAccept) {
+    constructor(
+        userRepository: aUserRepository,
+        friendsRepository: aFriendsRepository,
+        friendsRequestRepository: aFriendRequestsRepository,
+        acceptPusher: ServiceInterfacePusherFriendsAccept,
+        denyPusher: PusherDenyFriendInterface
+    ) {
         this.userRepository = userRepository;
         this.friendsRepository = friendsRepository;
         this.friendsRequestRepository = friendsRequestRepository;
-        this.pusherService = pusher;
+        this.acceptPusher = acceptPusher;
+        this.denyPusher = denyPusher;
     }
 
     async userExists(email: string): Promise<boolean> {
@@ -69,8 +77,8 @@ export class FriendsService
             this.friendsRepository.add(ids.requestId, ids.sessionId),
             this.friendsRepository.add(ids.sessionId, ids.requestId),
             this.friendsRequestRepository.remove(ids.sessionId, ids.requestId),
-            this.pusherService.addFriend(ids.requestId, user),
-            this.pusherService.addFriend(ids.sessionId, toAdd),
+            this.acceptPusher.addFriend(ids.requestId, user),
+            this.acceptPusher.addFriend(ids.sessionId, toAdd),
         ])
 
     }
@@ -90,17 +98,17 @@ export class FriendsService
         return ids.sessionId == ids.requestId
     }
 
-    async removeEntry(ids: Ids, repository: FriendsDenyInterface, pusher: PusherDenyFriendInterface): Promise<void> {
+    async removeEntry(ids: Ids): Promise<void> {
         try {
-            await repository.removeEntry(ids)
+            await this.friendsRequestRepository.remove(ids.requestId, ids.sessionId);
         } catch {
             throw 'Redis Error'
         }
-        try {
-            await pusher.denyFriendRequest(ids.sessionId, ids.requestId)
-        } catch {
-            throw 'Pusher Error'
-        }
+        /* try {
+           //  await pusher.denyFriendRequest(ids.sessionId, ids.requestId)
+         } catch {
+             throw 'Pusher Error'
+         }*/
     }
 
     async removeFriends(ids: Ids, friendsRepository: FriendsRemoveInterface): Promise<void> {
