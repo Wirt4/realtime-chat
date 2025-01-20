@@ -1,13 +1,12 @@
 import { Session } from "next-auth"
-import { iSessionData } from "../session/interface";
 import { sessionDataFactory } from "../session/factory";
 import { DashboardDataInterface } from "@/repositories/friends/interfaces";
 import { aDashboardData } from "./abstract";
 import { SidebarProps } from "@/components/Sidebar/interface";
-import SidebarChatList from "@/components/Sidebar/ChatList/SidebarChatList";
+import { aSessionData } from "../session/abstract";
 
 export class DashboardData extends aDashboardData {
-    private sessionData: iSessionData
+    private sessionData: aSessionData
     private friendRequestsRepository: DashboardDataInterface
 
     constructor(friendRequestsRepository: DashboardDataInterface) {

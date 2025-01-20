@@ -1,11 +1,11 @@
 import { SessionData } from "@/services/session/implementation";
-import { iSessionData } from "@/services/session/interface";
+import { aSessionData } from "@/services/session/abstract";
 import { getServerSession } from 'next-auth';
 
 jest.mock('next-auth');
 
 describe('DashboardService', () => {
-    let sessionData: iSessionData;
+    let sessionData: aSessionData;
     beforeEach(() => {
         jest.resetAllMocks();
         sessionData = new SessionData();

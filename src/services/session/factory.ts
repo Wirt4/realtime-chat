@@ -1,5 +1,6 @@
-import { iSessionData } from "./interface"
-import { SessionData } from "./implementation"
-export function sessionDataFactory(): iSessionData {
+import { aSessionData } from "./abstract";
+import { SessionData } from "./implementation";
+
+export function sessionDataFactory(): aSessionData {
     return new SessionData();
 }
