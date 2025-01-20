@@ -1,14 +1,15 @@
-import { iDashboardData } from "./interface";
 import { Session } from "next-auth"
 import { iSessionData } from "../session/interface";
 import { sessionDataFactory } from "../session/factory";
 import { DashboardDataInterface } from "@/repositories/friends/interfaces";
+import { aDashboardData } from "./abstract";
 
-export class DashboardData implements iDashboardData {
+export class DashboardData extends aDashboardData {
     private sessionData: iSessionData
     private friendRequestsRepository: DashboardDataInterface
 
     constructor(friendRequestsRepository: DashboardDataInterface) {
+        super()
         this.sessionData = sessionDataFactory()
         this.friendRequestsRepository = friendRequestsRepository
     }

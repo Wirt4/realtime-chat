@@ -6,15 +6,16 @@ import AddFriendListItem from "@/app/(dashboard)/dashboard/addFriendListItem";
 import FriendRequestSidebarOptions from "@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions";
 import SignOutButton from "@/components/signOutButton";
 import SidebarChatList from "@/components/SidebarChatList";
-import { iDashboardData } from "@/services/dashboard/interface";
 import { dashboardDataFactory } from "@/services/dashboard/factory";
+import { aDashboardData } from "@/services/dashboard/abstract";
+
 
 interface LayoutProps {
     children: ReactNode
 }
 
 const Layout = async ({ children }: LayoutProps = { children: null }) => {
-    const dashboardData: iDashboardData = dashboardDataFactory();
+    const dashboardData: aDashboardData = dashboardDataFactory();
     try {
         const session = await dashboardData.getSession();
         const userId = session?.user?.id

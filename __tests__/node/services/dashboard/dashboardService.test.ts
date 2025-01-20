@@ -1,12 +1,11 @@
-import { iDashboardData } from '@/services/dashboard/interface';
+import { aDashboardData } from '@/services/dashboard/abstract';
 import { DashboardData } from '@/services/dashboard/implementation';
 import { DashboardDataInterface } from '@/repositories/friends/interfaces';
-import { AwardIcon } from 'lucide-react';
 
 jest.mock('next-auth')
 
 describe('DashboardService', () => {
-    let dashboardData: iDashboardData;
+    let dashboardData: aDashboardData;
     let friendRequestsRepository: DashboardDataInterface;
     beforeEach(() => {
         jest.resetAllMocks();

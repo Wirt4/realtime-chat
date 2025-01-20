@@ -5,7 +5,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import FriendRequestSidebarOptions from "@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions";
 import SidebarChatList from "@/components/SidebarChatList";
 import { dashboardDataFactory } from '@/services/dashboard/factory';
-import { iDashboardData } from '@/services/dashboard/interface';
+import { aDashboardData } from '@/services/dashboard/abstract';
 import { Session } from 'next-auth';
 
 jest.mock('@/services/dashboard/implementation', jest.fn())
@@ -18,7 +18,7 @@ jest.mock("next/navigation", () => ({
 }));
 
 describe('Layout tests', () => {
-    let dashBoardData: iDashboardData;
+    let dashBoardData: aDashboardData;
     let session: Session;
 
     beforeEach(() => {
