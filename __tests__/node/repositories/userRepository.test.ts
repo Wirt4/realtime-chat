@@ -42,14 +42,14 @@ describe('UserRepository.exists', () => {
 });
 
 describe('UserRepository.get', () => {
+    const expected: User = {
+        id: 'userId',
+        email: 'user@user.com',
+        name: 'user',
+        image: 'user.jpg',
+    };
+    const mockDb = { get: jest.fn().mockResolvedValue(expected) } as unknown as Redis;
     it('should return a user', async () => {
-        const expected: User = {
-            id: 'userId',
-            email: 'user@user.com',
-            name: 'user',
-            image: 'user.jpg',
-        };
-        const mockDb = { get: jest.fn().mockResolvedValue(JSON.stringify(expected)) } as unknown as Redis;
         const userRepository = new UserRepository(mockDb);
 
         const result = await userRepository.get('userId');
@@ -58,7 +58,6 @@ describe('UserRepository.get', () => {
     });
 
     it('should call "database.get" with the correct query', async () => {
-        const mockDb = { get: jest.fn() } as unknown as Redis;
         const userRepository = new UserRepository(mockDb);
 
         await userRepository.get('userId');
