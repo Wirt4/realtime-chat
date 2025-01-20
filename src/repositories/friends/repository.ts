@@ -1,15 +1,10 @@
-import {
-    FriendsDenyInterface,
-    FriendsRemoveInterface,
-} from "@/repositories/friends/interfaces";
+
 import fetchRedis from "@/helpers/redis";
 import QueryBuilder from "@/lib/queryBuilder";
 import { db } from "@/lib/db";
 import { Redis } from "@upstash/redis";
 
-export class FriendsRepository implements
-    FriendsDenyInterface,
-    FriendsRemoveInterface {
+export class FriendsRepository {
     private database: Redis;
 
     constructor(database = db) {

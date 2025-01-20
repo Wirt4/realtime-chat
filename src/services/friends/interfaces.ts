@@ -1,11 +1,9 @@
 import {
-    PusherAddFriendInterface, PusherDenyFriendInterface,
+    PusherAddFriendInterface,
     ServiceInterfacePusherFriendsAccept
 } from "@/services/pusher/interfaces";
 import {
     FriendsAbstractInterface,
-    FriendsDenyInterface,
-    FriendsRemoveInterface
 } from "@/repositories/friends/interfaces";
 import { aFriendsRepository } from "@/repositories/friends/abstract";
 
@@ -14,12 +12,12 @@ export interface AcceptFriendsServiceInterface {
 }
 
 export interface DenyFriendsServiceInterface {
-    removeEntry(ids: Ids, repository: FriendsDenyInterface, pusher: PusherDenyFriendInterface): Promise<void>,
+    removeEntry(ids: Ids,): Promise<void>,
 }
 
 export interface RemoveFriendsServiceInterface {
     areAlreadyFriends(ids: Ids, friendsRepository: FriendsAbstractInterface): Promise<boolean>
-    removeFriends(ids: Ids, friendsRepository: FriendsRemoveInterface): Promise<void>
+    removeFriends(ids: Ids): Promise<void>
 }
 
 export interface AddFriendsServiceInterface {
