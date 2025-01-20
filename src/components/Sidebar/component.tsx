@@ -10,16 +10,17 @@ import SignOutButton from "../signOutButton";
 
 const Sidebar: FC<SidebarProps> = (props) => {
 
+    const { friends } = props;
     return (<div className='dashboard'>
         <Link href="/dashboard" className='dashboard-link'>
             <Icons.Logo className='dashboard-logo' />
         </Link>
-        {props.friends?.length && props.friends.length > 0 ? <div className='dashboard-subheader'>
+        {friends?.length && friends.length > 0 ? <div className='dashboard-subheader'>
             Your Chats
         </div> : null}
         <nav className='dashboard-nav-cols'>
             <ul role='list' className='dashboard-ul'>
-                <SidebarChatList friends={props.friends} sessionId={props.sessionId} chatId={props.chatId} aria-label='chat list' />
+                <SidebarChatList {...props.sidebarChatlist} aria-label='chat list' />
                 <div className='dashboard-subheader'>Overview</div>
                 <ul role='list' className='dashboard-sub-ul'>
                     <AddFriendListItem />

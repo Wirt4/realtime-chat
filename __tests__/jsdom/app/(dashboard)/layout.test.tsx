@@ -23,14 +23,13 @@ describe('Layout tests', () => {
     let friends: User[]
     let sessionId: string
     let friendRequests: string[]
-    let userId: string
     let initialRequestCount: number
     let chatId: string
 
     const mockDashBoardData = () => {
         return {
             getSession: jest.fn().mockResolvedValue(session),
-            getSidebarProps: jest.fn().mockResolvedValue({ friends, sessionId, friendRequests, chatId, friendRequestSidebarOptions: { initialRequestCount, sessionId } }),
+            getSidebarProps: jest.fn().mockResolvedValue({ friends, friendRequestSidebarOptions: { initialRequestCount, sessionId }, sidebarChatlist: { friends, sessionId, chatId } }),
         };
     }
 
@@ -38,7 +37,6 @@ describe('Layout tests', () => {
     beforeEach(() => {
         friends = [];
         sessionId = 'user-id';
-        userId = 'user-id';
         friendRequests = [];
         initialRequestCount = 0;
         chatId = 'chat-id';

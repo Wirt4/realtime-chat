@@ -2,13 +2,11 @@
 
 import React, { FC, useEffect, useState } from "react";
 import SidebarChatListItem from "@/components/SidebarChatListItem";
-interface SidebarChatListProps {
-    friends: User[],
-    sessionId: string,
-    chatId: string
-}
+import { SidebarChatListProps } from "./interface";
 
-const SidebarChatList: FC<SidebarChatListProps> = ({ friends, sessionId, chatId }) => {
+
+const SidebarChatList: FC<SidebarChatListProps> = (props) => {
+    const { friends, sessionId, chatId } = props;
     const [activeChats, setActiveChats] = useState<User[]>(friends);
     const [unseenMessages] = useState<Message[]>([]);
 

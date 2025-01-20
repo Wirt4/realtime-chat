@@ -1,0 +1,5 @@
+{
+    "files.trimFinalNewlines": false,
+    "files.insertFinalNewline": true,
+    "notebook.insertFinalNewline": true
+}

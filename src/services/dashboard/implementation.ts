@@ -4,6 +4,7 @@ import { sessionDataFactory } from "../session/factory";
 import { DashboardDataInterface } from "@/repositories/friends/interfaces";
 import { aDashboardData } from "./abstract";
 import { SidebarProps } from "@/components/Sidebar/interface";
+import SidebarChatList from "@/components/Sidebar/ChatList/SidebarChatList";
 
 export class DashboardData extends aDashboardData {
     private sessionData: iSessionData
@@ -27,7 +28,8 @@ export class DashboardData extends aDashboardData {
         const userId = session.user.id;
         const chatId = await this.getChatId([userId, ...friends.map(friend => friend.id)]);
         const friendRequestSidebarOptions = this.requestProps(friendRequests, userId);
-        return { friends, sessionId, friendRequests, userId, chatId, friendRequestSidebarOptions };
+        const sidebarChatlist = { chatId, sessionId, friends }
+        return { friends, friendRequestSidebarOptions, sidebarChatlist };
     }
 
     private async getChatId(participantIds: string[]): Promise<string> {

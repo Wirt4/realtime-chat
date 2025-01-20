@@ -8,10 +8,12 @@ interface SidebarChatListItemProps {
     chatId: string
 }
 
-const SidebarChatListItem: FC<SidebarChatListItemProps> = ({ friend, unseenMessages, chatId }) => {
-    return <li key={friend.id} className="group">
+const SidebarChatListItem: FC<SidebarChatListItemProps> = (props) => {
+    const { friend, unseenMessages, chatId } = props;
+    const { id, name } = friend
+    return <li key={id} className="group">
         <a href={`/dashboard/chat/${chatId}`} className='sidebar-chat-list-item'>
-            {friend.name}
+            {name}
             <UnseenMessages messages={unseenMessages} />
         </a>
     </li>
