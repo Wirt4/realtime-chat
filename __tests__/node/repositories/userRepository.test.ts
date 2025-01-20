@@ -41,7 +41,27 @@ describe('UserRepository.exists', () => {
     });
 });
 
-describe('UserRepository.get', () => {
+describe('UserRepository.getUser', () => {
+    const expected = 'userId';
+    const mockDb = { get: jest.fn().mockResolvedValue(expected) } as unknown as Redis;
+    it('should return an id', async () => {
+        const userRepository = new UserRepository(mockDb);
+
+        const result = await userRepository.getId('user@user.com');
+
+        expect(result).toEqual(expected);
+    });
+
+    it('should call "database.get" with the correct query', async () => {
+        const userRepository = new UserRepository(mockDb);
+
+        await userRepository.getUser('user@user.com');
+
+        expect(mockDb.get).toHaveBeenCalledWith('user:email:user@user.com');
+    });
+});
+
+describe('UserRepository.getId', () => {
     const expected: User = {
         id: 'userId',
         email: 'user@user.com',

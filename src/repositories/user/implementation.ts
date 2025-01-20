@@ -1,5 +1,6 @@
 import { Redis } from "@upstash/redis";
 import { aUserRepository } from "./abstract";
+import QueryBuilder from "@/lib/queryBuilder";
 
 export class UserRepository extends aUserRepository {
     private database: Redis;
@@ -14,11 +15,11 @@ export class UserRepository extends aUserRepository {
     }
 
     async getId(email: string): Promise<string | null> {
-        return this.database.get(`user:email:${email}`);
+        return this.database.get(QueryBuilder.email(email) as never);
     }
 
     async getUser(userId: string): Promise<User> {
-        const user = this.database.get(`user:${userId}`);
+        const user = this.database.get(QueryBuilder.user(userId) as never);
         if (!user) {
             throw new Error('User not found');
         }

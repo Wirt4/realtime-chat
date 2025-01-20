@@ -2,7 +2,6 @@ import { aUserRepository } from "@/repositories/user/abstract";
 import { FriendsService } from "@/services/friends/service";
 import { ServiceInterfacePusherFriendsAccept } from "@/services/pusher/interfaces";
 import { aFriendsRepository } from "@/repositories/friends/abstract";
-import { aFriendRequestsRepository } from "@/repositories/friendRequests/abstract";
 import { PusherDenyFriendInterface } from "@/services/pusher/interfaces";
 import { PusherAddFriendInterface } from "@/services/pusher/interfaces";
 
@@ -14,7 +13,7 @@ describe('getIdToAdd tests', () => {
             getId: jest.fn().mockResolvedValue('id')
         }
         const mockFriendsRepository = {} as aFriendsRepository;
-        const mockFriendRequestsRepository = {} as aFriendRequestsRepository;
+        const mockFriendRequestsRepository = {} as aFriendsRepository;
         const mockPusher = {} as ServiceInterfacePusherFriendsAccept;
         const mockDenyPusher = {} as PusherDenyFriendInterface;
         const mockAddPusher = {} as PusherAddFriendInterface;
@@ -33,7 +32,7 @@ describe('handleFriendRequest tests', () => {
     let mockFriendsRepository: aFriendsRepository;
     let mockPusher: ServiceInterfacePusherFriendsAccept;
     let mockDenyPusher: PusherDenyFriendInterface;
-    let mockFriendRequestsRepository: aFriendRequestsRepository;
+    let mockFriendRequestsRepository: aFriendsRepository;
     const ids: Ids = { sessionId: 'idToAdd', requestId: 'userId' }
     const mockAddPusher = {} as PusherAddFriendInterface;
 
@@ -114,7 +113,7 @@ describe('UserExists tests', () => {
     let mockUserRepository: aUserRepository;
     let mockFriendsRepository: aFriendsRepository;
     let mockPusher: ServiceInterfacePusherFriendsAccept;
-    let mockFriendRequestsRepository: aFriendRequestsRepository;
+    let mockFriendRequestsRepository: aFriendsRepository;
     let mockDenyPusher: PusherDenyFriendInterface;
     const ids: Ids = { sessionId: 'idToAdd', requestId: 'userId' }
     const mockAddPusher = {} as PusherAddFriendInterface;
@@ -159,7 +158,7 @@ describe('deny request tests', () => {
     let mockUserRepository: aUserRepository;
     let mockFriendsRepository: aFriendsRepository;
     let mockAcceptPusher: ServiceInterfacePusherFriendsAccept;
-    let mockFriendRequestsRepository: aFriendRequestsRepository;
+    let mockFriendRequestsRepository: aFriendsRepository;
     let mockDenyPusher: PusherDenyFriendInterface;
     const ids: Ids = { sessionId: 'idToAdd', requestId: 'userId' }
     const mockAddPusher = {} as PusherAddFriendInterface;
@@ -227,7 +226,7 @@ describe('removeFriends tests', () => {
     let mockUserRepository: aUserRepository;
     let mockFriendsRepository: aFriendsRepository;
     let mockAcceptPusher: ServiceInterfacePusherFriendsAccept;
-    let mockFriendRequestsRepository: aFriendRequestsRepository;
+    let mockFriendRequestsRepository: aFriendsRepository;
     let mockDenyPusher: PusherDenyFriendInterface;
     const ids: Ids = { sessionId: 'idToAdd', requestId: 'userId' }
     const mockAddPusher = {} as PusherAddFriendInterface;

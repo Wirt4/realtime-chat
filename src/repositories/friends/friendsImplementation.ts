@@ -1,32 +1,28 @@
 import { aFriendsRepository } from '@/repositories/friends/abstract';
+import { FriendsTemplateRepository } from '@/repositories/friends/template';
 import { Redis } from '@upstash/redis';
 
 export class FriendsRepository extends aFriendsRepository {
-    private readonly database: Redis;
+    private readonly template: FriendsTemplateRepository;
 
     constructor(db: Redis) {
         super();
-        this.database = db;
+        this.template = new FriendsTemplateRepository(db, 'friends');
     }
 
     async add(userId: string, friendId: string): Promise<void> {
-        await this.database.sadd(this.template(userId), friendId);
+        await this.template.add(userId, friendId);
     }
 
     async get(userId: string): Promise<string[]> {
-        return this.database.smembers(this.template(userId));
+        return this.template.get(userId);
     }
 
     async exists(userId: string, friendId: string): Promise<boolean> {
-        const result = await this.database.sismember(this.template(userId), friendId);
-        return result == 1;
+        return this.template.exists(userId, friendId);
     }
 
     async remove(userId: string, friendId: string): Promise<void> {
-        await this.database.srem(this.template(userId), friendId);
-    }
-
-    private template(userId: string): string {
-        return `user:${userId}:friends`;
+        await this.template.remove(userId, friendId);
     }
 }

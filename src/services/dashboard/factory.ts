@@ -1,8 +1,8 @@
-import { FriendsRepository } from "@/repositories/friends/implementation";
+import { FriendsRepository } from "@/repositories/friends/friendsImplementation";
 import { DashboardData } from "./implementation";
 import { aDashboardData } from "./abstract";
 import { UserRepository } from "@/repositories/user/implementation";
-import { FriendRequestsRepository } from "@/repositories/friendRequests/implementation";
+import { FriendRequestsRepository } from "@/repositories/friends/requestsImplementation";
 import { db } from "@/lib/db";
 import { aFriendsRepository } from "@/repositories/friends/abstract";
 

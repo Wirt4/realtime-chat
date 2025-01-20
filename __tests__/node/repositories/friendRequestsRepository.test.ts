@@ -1,4 +1,4 @@
-import { FriendRequestsRepository } from '@/repositories/friendRequests/implementation';
+import { FriendRequestsRepository } from '@/repositories/friends/requestsImplementation';
 import { Redis } from '@upstash/redis';
 
 describe('FriendRequestsRepository.exists', () => {

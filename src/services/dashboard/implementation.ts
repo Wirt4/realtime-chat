@@ -3,17 +3,16 @@ import { aDashboardData } from "./abstract";
 import { SidebarProps } from "@/components/Sidebar/interface";
 import { aSessionData } from "../session/abstract";
 import { aUserRepository } from "@/repositories/user/abstract";
-import { aFriendRequestsRepository } from "@/repositories/friendRequests/abstract";
 import { sessionDataFactory } from "../session/factory";
 import { aFriendsRepository } from "@/repositories/friends/abstract";
 
 export class DashboardData extends aDashboardData {
     private sessionData: aSessionData
     private userRepository: aUserRepository
-    private friendRequestsRepository: aFriendRequestsRepository
+    private friendRequestsRepository: aFriendsRepository
     private friendsRepository: aFriendsRepository
 
-    constructor(userRepository: aUserRepository, friendRequestsRepository: aFriendRequestsRepository, friendsRepository: aFriendsRepository) {
+    constructor(userRepository: aUserRepository, friendRequestsRepository: aFriendsRepository, friendsRepository: aFriendsRepository) {
         super()
         this.sessionData = sessionDataFactory();
         this.userRepository = userRepository;

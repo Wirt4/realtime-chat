@@ -1,8 +1,9 @@
 import { MessageService } from "@/services/message/service";
-import { RemoveAllMessagesRepositoryInterface, SendMessageRepositoryInterface } from "@/repositories/message/interface";
 import { nanoid } from "nanoid";
 import { PusherSendMessageInterface } from "@/services/pusher/interfaces";
 import { aFriendsRepository } from "@/repositories/friends/abstract";
+import { aMessageRepository } from "@/repositories/message/removeAll/abstract";
+import { aSendMessageRepository } from "@/repositories/message/send/abstract";
 
 jest.mock("nanoid", () => ({
     nanoid: jest.fn(),
@@ -62,7 +63,7 @@ describe('sendMessage tests', () => {
         jest.useFakeTimers()
     })
     let service: MessageService
-    let repo: SendMessageRepositoryInterface
+    let repo: aSendMessageRepository
     let text: string
     let profile: ChatProfile
     let pusher: PusherSendMessageInterface
@@ -115,11 +116,11 @@ describe('sendMessage tests', () => {
 
 describe('deleteChat tests', () => {
     let service: MessageService
-    let repo: RemoveAllMessagesRepositoryInterface
+    let repo: aMessageRepository
     let chatId: string
     beforeEach(() => {
         repo = {
-            removeAllMessages: jest.fn()
+            removeAllMessages: jest.fn(),
         }
         service = new MessageService()
         chatId = 'foo--bar'

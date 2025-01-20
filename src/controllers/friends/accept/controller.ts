@@ -2,7 +2,7 @@ import { AbstractFriendsController } from "@/controllers/friends/abstract";
 import { friendSchema } from "@/schemas/friendSchema";
 import { FriendRequestStatus } from "@/services/friends/service";
 import { AcceptFriendsServiceInterface } from "@/services/friends/interfaces";
-import { FriendsRepository } from "@/repositories/friends/implementation";
+import { FriendsRepository } from "@/repositories/friends/friendsImplementation";
 import { db } from "@/lib/db";
 
 export class AcceptFriendsController extends AbstractFriendsController {

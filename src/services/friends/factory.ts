@@ -1,7 +1,7 @@
 import { UserRepository } from "@/repositories/user/implementation";
 import { db } from "@/lib/db";
-import { FriendsRepository } from "@/repositories/friends/implementation";
-import { FriendRequestsRepository } from "@/repositories/friendRequests/implementation";
+import { FriendsRepository } from "@/repositories/friends/friendsImplementation";
+import { FriendRequestsRepository } from "@/repositories/friends/requestsImplementation";
 import { ServicePusher } from "../pusher/service";
 import { getPusherServer } from "@/lib/pusher";
 import { FriendsService } from "./service";

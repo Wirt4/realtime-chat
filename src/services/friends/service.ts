@@ -9,7 +9,6 @@ import {
     RemoveFriendsServiceInterface
 } from "@/services/friends/interfaces";
 import { aFriendsRepository } from "@/repositories/friends/abstract";
-import { aFriendRequestsRepository } from "@/repositories/friendRequests/abstract";
 import { aUserRepository } from "@/repositories/user/abstract";
 
 export class FriendsService
@@ -22,7 +21,7 @@ export class FriendsService
 
     private userRepository: aUserRepository;
     private friendsRepository: aFriendsRepository;
-    private friendsRequestRepository: aFriendRequestsRepository;
+    private friendsRequestRepository: aFriendsRepository;
     private acceptPusher: ServiceInterfacePusherFriendsAccept;
     private denyPusher: PusherDenyFriendInterface;
     private addPusher: PusherAddFriendInterface;
@@ -30,7 +29,7 @@ export class FriendsService
     constructor(
         userRepository: aUserRepository,
         friendsRepository: aFriendsRepository,
-        friendsRequestRepository: aFriendRequestsRepository,
+        friendsRequestRepository: aFriendsRepository,
         acceptPusher: ServiceInterfacePusherFriendsAccept,
         denyPusher: PusherDenyFriendInterface,
         addPusher: PusherAddFriendInterface
