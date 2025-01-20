@@ -4,17 +4,19 @@ import { DashboardDataInterface } from "@/repositories/friends/interfaces";
 import { aDashboardData } from "./abstract";
 import { SidebarProps } from "@/components/Sidebar/interface";
 import { aSessionData } from "../session/abstract";
+import { aUserRepository } from "@/repositories/user/abstract";
 
 export class DashboardData extends aDashboardData {
     private sessionData: aSessionData
     private friendRequestsRepository: DashboardDataInterface
+    private userRepository: aUserRepository
 
-    constructor(friendRequestsRepository: DashboardDataInterface) {
+    constructor(friendRequestsRepository: DashboardDataInterface, userRepository: aUserRepository) {
         super()
-        this.sessionData = sessionDataFactory()
-        this.friendRequestsRepository = friendRequestsRepository
+        this.sessionData = sessionDataFactory();
+        this.friendRequestsRepository = friendRequestsRepository;
+        this.userRepository = userRepository;
     }
-
 
     async getSession(): Promise<Session> {
         return this.sessionData.getSession()
@@ -49,7 +51,7 @@ export class DashboardData extends aDashboardData {
     private async getFriendsById(userId: string): Promise<User[]> {
         const friendIds = await this.friendRequestsRepository.getFriends(userId);
         const friends = await Promise.all(friendIds.map(async (id: string) => {
-            return this.friendRequestsRepository.getUser(id);
+            return this.userRepository.get(id);
         }));
         return friends;
     }

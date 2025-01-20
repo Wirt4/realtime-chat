@@ -62,14 +62,6 @@ export class FriendsRepository implements
         return fetchRedis('sismember', queryFunction(userId), idToAdd);
     }
 
-    friendsTable(id: string): string {
-        return QueryBuilder.join(id, 'friends');
-    }
-
-    incomingRequestsQuery(id: string): string {
-        return QueryBuilder.join(id, 'incoming_friend_requests');
-    }
-
     async removeFriendRequest(userId: string, idToAdd: string): Promise<void> {
         await this.database.srem(this.incomingRequestsQuery(userId), idToAdd);
     }
@@ -93,5 +85,13 @@ export class FriendsRepository implements
 
     async removeFriend(userId: string, idToRemove: string): Promise<void> {
         await this.database.srem(`user:${userId}:friends`, idToRemove)
+    }
+
+    friendsTable(id: string): string {
+        return QueryBuilder.join(id, 'friends');
+    }
+
+    incomingRequestsQuery(id: string): string {
+        return QueryBuilder.join(id, 'incoming_friend_requests');
     }
 }
