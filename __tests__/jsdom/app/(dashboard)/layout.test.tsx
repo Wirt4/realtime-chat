@@ -3,13 +3,13 @@ import Layout from "@/app/(dashboard)/dashboard/layout"
 import { notFound } from "next/navigation"
 import { render, screen, waitFor } from "@testing-library/react";
 import FriendRequestSidebarOptions from "@/components/Sidebar/SidebarOptions/friendRequestSidebarOptions/FriendRequestSidebarOptions";
-import SidebarChatList from "@/components/Sidebar/ChatList/SidebarChatList";
+import SidebarChatList from "@/components/Sidebar/ChatList/component";
 import { dashboardDataFactory } from '@/services/dashboard/factory';
 import { aDashboardData } from '@/services/dashboard/abstract';
 import { Session } from 'next-auth';
 
 jest.mock('@/services/dashboard/dashboardData', jest.fn())
-jest.mock("@/components/Sidebar/ChatList/SidebarChatList");
+jest.mock("@/components/Sidebar/ChatList/component");
 jest.mock("@/components/Sidebar/SidebarOptions/friendRequestSidebarOptions/FriendRequestSidebarOptions");
 jest.mock("@/services/dashboard/factory");
 jest.mock("next/navigation", () => ({

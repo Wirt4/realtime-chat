@@ -2,7 +2,7 @@ import { SidebarProps } from "./interface";
 import { FC } from "react";
 import Link from "next/link";
 import { Icons } from "@/components/Icons";
-import SidebarChatList from "@/components/Sidebar/ChatList/SidebarChatList";
+import SidebarChatList from "@/components/Sidebar/ChatList/component";
 import AddFriendListItem from "@/components/Sidebar/AddFriendListItem/addFriendListItem";
 import FriendRequestSidebarOptions from "./SidebarOptions/friendRequestSidebarOptions/FriendRequestSidebarOptions";
 import SignOutButton from "../signOutButton";
