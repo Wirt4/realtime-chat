@@ -5,7 +5,6 @@ import { SidebarChatListItemProps } from "./interface";
 import Image from "next/image";
 
 const SidebarChatListItem: FC<SidebarChatListItemProps> = (props) => {
-    const imgaeSize = 32;
     const { participants, unseenMessages, chatId, sessionId } = props;
     return <li key={chatId} className="group">
         <a href={`/dashboard/chat/${chatId}`} className='sidebar-chat-list-item'>
