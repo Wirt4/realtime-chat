@@ -4,7 +4,6 @@ import { FC } from "react";
 import { SidebarChatListItemProps } from "./interface";
 import Image from "next/image";
 
-
 const SidebarChatListItem: FC<SidebarChatListItemProps> = (props) => {
     const imgaeSize = 32;
     const { participants, unseenMessages, chatId, sessionId } = props;

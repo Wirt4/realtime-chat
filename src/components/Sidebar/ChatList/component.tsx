@@ -1,7 +1,7 @@
 "use client";
 
 import React, { FC, useEffect, useState } from "react";
-import SidebarChatListItem from "@/components/Sidebar/ChatListItem/SidebarChatListItem";
+import SidebarChatListItem from "@/components/Sidebar/ChatListItem/component";
 import { SidebarChatListProps } from "./interface";
 import { SidebarChatListItemProps } from "../ChatListItem/interface";
 

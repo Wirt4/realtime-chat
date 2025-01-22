@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import SidebarChatListItem from "@/components/Sidebar/ChatListItem/SidebarChatListItem";
+import SidebarChatListItem from "@/components/Sidebar/ChatListItem/component";
 import { render } from "@testing-library/react";
 
 describe('SidebarChatListItem', () => {

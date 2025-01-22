@@ -1,11 +1,11 @@
 import '@testing-library/jest-dom';
 import { render } from "@testing-library/react";
 import SidebarChatList from '@/components/Sidebar/ChatList/component';
-import SidebarChatListItem from '@/components/Sidebar/ChatListItem/SidebarChatListItem';
+import SidebarChatListItem from '@/components/Sidebar/ChatListItem/component';
 import { useState } from 'react'
 import { SidebarChatListItemProps } from '@/components/Sidebar/ChatListItem/interface';
 
-jest.mock('@/components/Sidebar/ChatListItem/SidebarChatListItem');
+jest.mock('@/components/Sidebar/ChatListItem/component');
 jest.mock('react', () => ({
     ...jest.requireActual('react'),
     useState: jest.fn()
