@@ -5,7 +5,6 @@ import SidebarChatListItem from "@/components/Sidebar/ChatListItem/SidebarChatLi
 import { SidebarChatListProps } from "./interface";
 import { SidebarChatListItemProps } from "../ChatListItem/interface";
 
-
 const SidebarChatList: FC<SidebarChatListProps> = (props) => {
     const { sessionId, chats } = props;
     const [activeChats, setActiveChats] = useState<SidebarChatListItemProps[]>(chats);
