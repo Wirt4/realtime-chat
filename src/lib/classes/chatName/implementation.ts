@@ -1,34 +1,34 @@
 import { aChatName } from './abstract';
 
 export class ChatName extends aChatName {
-    private participants: User[];
-    private sessionId: string;
+    private names: string[];
+
     constructor(partcipants: User[], sessionId: string) {
         super();
-        this.participants = partcipants;
-        this.sessionId = sessionId;
+        this.names = [];
+        for (let i = 0; i < partcipants.length; i++) {
+            if (partcipants[i].id !== sessionId) {
+                this.names.push(partcipants[i].name);
+            }
+        }
+        this.names.sort();
     }
 
     getChatName(): string {
-        let names: string[] = [];
+        return "Chat with " + this.suffix();
+    }
 
-        for (let i = 0; i < this.participants.length; i++) {
-            if (this.participants[i].id !== this.sessionId) {
-                names.push(this.participants[i].name);
-            }
-        }
-        names.sort();
-
-        if (names.length === 1) {
-            return "Chat with" + names[0];
+    private suffix(): string {
+        if (this.names.length === 1) {
+            return this.names[0];
         }
 
-        if (names.length === 2) {
-            return "Chat with" + names.join(' and ');
+        if (this.names.length === 2) {
+            return this.names.join(' and ');
         }
 
-        const lastIndex = names.length - 1;
-        names[lastIndex] = `and ${names[lastIndex]}`;
-        return "Chat with " + names.join(', ');
+        const lastIndex = this.names.length - 1;
+        this.names[lastIndex] = `and ${this.names[lastIndex]}`;
+        return this.names.join(', ')
     }
 }
