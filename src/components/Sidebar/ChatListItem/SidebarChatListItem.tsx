@@ -13,7 +13,23 @@ const SidebarChatListItem: FC<SidebarChatListItemProps> = (props) => {
     </li>
 }
 
-function participantName(participants: User[], sessionId: string): string {
+const participantName = (participants: User[], sessionId: string) => {
+    const names = friendNames(participants, sessionId);
+
+    if (names.length === 1) {
+        return names[0];
+    }
+
+    if (names.length === 2) {
+        return names.join(' and ');
+    }
+
+    const lastIndex = names.length - 1;
+    names[lastIndex] = `and ${names[lastIndex]}`;
+    return names.join(', ');
+}
+
+const friendNames = (participants: User[], sessionId: string) => {
     let names: string[] = [];
 
     for (let i = 0; i < participants.length; i++) {
@@ -21,15 +37,9 @@ function participantName(participants: User[], sessionId: string): string {
             names.push(participants[i].name);
         }
     }
-    if (names.length === 1) {
-        return names[0];
-    }
-    if (names.length === 2) {
-        return names.join(' and ');
-    }
-    names[names.length - 1] = `and ${names[names.length - 1]}`;
-    return names.join(', ');
-}
+
+    return names;
+};
 
 const UnseenMessages: FC<{ messages: number }> = ({ messages }) => {
     if (messages > 0) {
