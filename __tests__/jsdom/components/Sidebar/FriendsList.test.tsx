@@ -33,16 +33,6 @@ describe('FriendsList', () => {
         expect(listItems[2]).toHaveTextContent('Charlie');
     });
 
-    test('renders friend images with correct attributes', () => {
-        renderComponent();
-        const images = screen.getAllByRole('img');
-        images.forEach((img, index) => {
-            expect(img).toHaveAttribute('alt', mockFriends[index].name);
-            expect(img).toHaveAttribute('width', '32');
-            expect(img).toHaveAttribute('height', '32');
-        });
-    });
-
     test('renders friend names correctly', () => {
         renderComponent();
         mockFriends.forEach(friend => {

@@ -4,7 +4,6 @@ import SidebarChatList from '@/components/Sidebar/ChatList/component';
 import SidebarChatListItem from '@/components/Sidebar/ChatListItem/SidebarChatListItem';
 import { useState } from 'react'
 import { SidebarChatListItemProps } from '@/components/Sidebar/ChatListItem/interface';
-import exp from 'constants';
 
 jest.mock('@/components/Sidebar/ChatListItem/SidebarChatListItem');
 jest.mock('react', () => ({

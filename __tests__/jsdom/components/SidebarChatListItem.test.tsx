@@ -8,10 +8,10 @@ describe('SidebarChatListItem', () => {
     })
     test("list item should display the friend's names", () => {
         const participants: User[] = [
-            { name: "Alfred", id: "foo", email: "bar", image: "spam" },
-            { name: "theUser", id: "bar", email: "bar", image: "spam" },
-            { name: "Betty", id: "foo", email: "bar", image: "spam" },
-            { name: "Charlie", id: "foo", email: "bar", image: "spam" },
+            { name: "Alfred", id: "foo", email: "bar", image: "/spam" },
+            { name: "theUser", id: "bar", email: "bar", image: "/spam" },
+            { name: "Betty", id: "foo", email: "bar", image: "/spam" },
+            { name: "Charlie", id: "foo", email: "bar", image: "/spam" },
         ]
         const { getByText } = render(<SidebarChatListItem sessionId="bar" unseenMessages={0} participants={participants} chatId='stub' />);
         const text = getByText("Chat with Alfred, Betty, and Charlie");
@@ -20,8 +20,8 @@ describe('SidebarChatListItem', () => {
 
     test("list item should display the friend's name, different data", () => {
         const participants: User[] = [
-            { name: "Lucy", id: "foo", email: "bar", image: "spam" },
-            { name: "theUser", id: "bar", email: "bar", image: "spam" }
+            { name: "Lucy", id: "foo", email: "bar", image: "/spam" },
+            { name: "theUser", id: "bar", email: "bar", image: "/spam" }
         ]
         const { getByText } = render(<SidebarChatListItem sessionId="bar" unseenMessages={0} participants={participants} chatId='stub' />);
         const text = getByText("Chat with Lucy");
@@ -74,5 +74,5 @@ describe('SidebarChatListItem', () => {
 });
 
 const friendFromName = (name: string) => {
-    return { id: "foo", email: "bar", name, image: "spam" }
+    return { id: "foo", email: "bar", name, image: "/spam" }
 }

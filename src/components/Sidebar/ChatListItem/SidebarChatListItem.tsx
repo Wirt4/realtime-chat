@@ -2,15 +2,39 @@
 
 import { FC } from "react";
 import { SidebarChatListItemProps } from "./interface";
+import Image from "next/image";
+
 
 const SidebarChatListItem: FC<SidebarChatListItemProps> = (props) => {
+    const imgaeSize = 32;
     const { participants, unseenMessages, chatId, sessionId } = props;
     return <li key={chatId} className="group">
         <a href={`/dashboard/chat/${chatId}`} className='sidebar-chat-list-item'>
+            <ChatImage {...props} />
             {`Chat with ${participantName(participants, sessionId)}`}
             <UnseenMessages messages={unseenMessages} />
         </a>
     </li>
+}
+
+const ChatImage: FC<SidebarChatListItemProps> = (props) => {
+    const { participants, chatId, sessionId } = props;
+    const imgaeSize = 32;
+    let src: string;
+
+    if (participants[0].id === sessionId) {
+        src = participants[1].image
+    } else {
+        src = participants[0].image
+    }
+
+    return (<Image src={src}
+        alt={chatId}
+        referrerPolicy='no-referrer'
+        width={imgaeSize}
+        height={imgaeSize}
+        className='rounded-full'
+    />)
 }
 
 const participantName = (participants: User[], sessionId: string) => {
