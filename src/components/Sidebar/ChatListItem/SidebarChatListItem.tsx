@@ -21,7 +21,14 @@ function participantName(participants: User[], sessionId: string): string {
             names.push(participants[i].name);
         }
     }
-    return names.join(' ');
+    if (names.length === 1) {
+        return names[0];
+    }
+    if (names.length === 2) {
+        return names.join(' and ');
+    }
+    names[names.length - 1] = `and ${names[names.length - 1]}`;
+    return names.join(', ');
 }
 
 const UnseenMessages: FC<{ messages: number }> = ({ messages }) => {

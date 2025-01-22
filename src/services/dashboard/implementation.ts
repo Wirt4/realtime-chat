@@ -47,7 +47,8 @@ export class DashboardData extends aDashboardData {
             profiles.push({
                 participants: [user, friend],
                 unseenMessages: 0,
-                chatId: await this.getChatId([user.id, friend.id])
+                chatId: await this.getChatId([user.id, friend.id]),
+                sessionId: userId
             });
         }
         return profiles
