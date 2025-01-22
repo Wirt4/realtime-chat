@@ -1,4 +1,3 @@
-// filepath: /Users/wirtsalthouse/WebstormProjects/realtime-chat/src/components/Sidebar/FriendsList/component.test.tsx
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import FriendsList from '@/components/Sidebar/FriendsList/component';
