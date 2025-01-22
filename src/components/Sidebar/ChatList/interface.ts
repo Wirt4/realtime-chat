@@ -1,5 +1,5 @@
+import { SidebarChatListItemProps } from "../ChatListItem/interface"
 export interface SidebarChatListProps {
-    friends: User[],
     sessionId: string,
-    chatId: string
+    chats: SidebarChatListItemProps[]
 }

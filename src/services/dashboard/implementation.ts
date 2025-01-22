@@ -5,6 +5,8 @@ import { aSessionData } from "../session/abstract";
 import { aUserRepository } from "@/repositories/user/abstract";
 import { sessionDataFactory } from "../session/factory";
 import { aFriendsRepository } from "@/repositories/friends/abstract";
+import { SidebarChatListItemProps } from "@/components/Sidebar/ChatListItem/interface";
+import Participants from "@/lib/chatParticipants";
 
 export class DashboardData extends aDashboardData {
     private sessionData: aSessionData
@@ -31,9 +33,24 @@ export class DashboardData extends aDashboardData {
         const userId = session.user.id;
         const chatId = await this.getChatId([userId, ...friends.map(friend => friend.id)]);
         const friendRequestSidebarOptions = this.requestProps(friendRequests, userId);
-        const sidebarChatlist = { chatId, sessionId, friends }
+        const chats = await this.getChatProfiles(userId, friends.map(friend => friend.id));
+        const sidebarChatlist = { chatId, sessionId, chats }
         const friendsListProps = { friends }
         return { friends, friendRequestSidebarOptions, sidebarChatlist, friendsListProps };
+    }
+
+    private async getChatProfiles(userId: string, friends: string[]): Promise<SidebarChatListItemProps[]> {
+        let profiles: SidebarChatListItemProps[] = [];
+        const user = await this.userRepository.getUser(userId);
+        for (const friendId of friends) {
+            const friend = await this.userRepository.getUser(friendId);
+            profiles.push({
+                participants: [user, friend],
+                unseenMessages: 0,
+                chatId: await this.getChatId([user.id, friend.id])
+            });
+        }
+        return profiles
     }
 
     private async getChatId(participantIds: string[]): Promise<string> {
