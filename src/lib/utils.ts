@@ -87,4 +87,8 @@ export class Utils {
     static encodeUrl(url: string): string {
         return url.replaceAll(':', '%3A').replaceAll('/', '%2F').replaceAll(',', '%2C');
     }
+
+    static userSort(userA: User, userB: User): number {
+        return userA.name < userB.name ? -1 : 1
+    }
 }
