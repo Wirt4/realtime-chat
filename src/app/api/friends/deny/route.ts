@@ -1,10 +1,9 @@
-import {DenyFriendsController} from "@/controllers/friends/deny/controller";
-import {FriendsService} from "@/services/friends/service";
-
+import { DenyFriendsController } from "@/controllers/friends/deny/controller";
+import { friendsServiceFactory } from "@/services/friends/factory";
 
 export async function POST(req: Request) {
     const controller = new DenyFriendsController()
-    const service = new FriendsService()
+    const service = friendsServiceFactory();
     return controller.deny(req, service)
 }
 

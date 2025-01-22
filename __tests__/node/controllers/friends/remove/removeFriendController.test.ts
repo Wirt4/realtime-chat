@@ -1,14 +1,14 @@
-import {RemoveFriendsController} from "@/controllers/friends/remove/controller";
+import { RemoveFriendsController } from "@/controllers/friends/remove/controller";
 import myGetServerSession from "@/lib/myGetServerSession";
-import {RemoveFriendsServiceInterface} from "@/services/friends/interfaces";
+import { RemoveFriendsServiceInterface } from "@/services/friends/interfaces";
 jest.mock('@/lib/myGetServerSession')
 
 describe('Functionality Tests', () => {
     let request: Request
     let controller: RemoveFriendsController
     let service: RemoveFriendsServiceInterface
-    
-    beforeEach(()=>{
+
+    beforeEach(() => {
         jest.clearAllMocks()
         request = new Request("/api/friends/remove",
             {
@@ -16,13 +16,13 @@ describe('Functionality Tests', () => {
                 body: JSON.stringify({ idToRemove: '1966' }),
                 headers: { 'Content-Type': 'application/json' }
             }) as Request
-        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id: 'foo'}});
+        (myGetServerSession as jest.Mock).mockResolvedValue({ user: { id: 'foo' } });
         service = {
             areAlreadyFriends: jest.fn().mockResolvedValue(true),
             removeFriends: jest.fn()
         }
     })
-    
+
     it("if the body isn't formatted correctly, return a 422", async () => {
         request = new Request("/api/friends/remove",
             {
@@ -30,7 +30,7 @@ describe('Functionality Tests', () => {
                 body: "",
                 headers: { 'Content-Type': 'application/json' }
             }) as Request
-        controller =  new RemoveFriendsController()
+        controller = new RemoveFriendsController()
         const response = await controller.remove(request, service)
         expect(response.status).toBe(422)
         expect(response.body?.toString()).toEqual('Invalid Format')
@@ -38,7 +38,7 @@ describe('Functionality Tests', () => {
 
 
     it("if the body isn't formatted correctly, return a 422", async () => {
-        controller =  new RemoveFriendsController()
+        controller = new RemoveFriendsController()
         const response = await controller.remove(request, service)
         expect(response.status).not.toBe(422)
         expect(response.body?.toString()).not.toEqual('Invalid Format')
@@ -56,22 +56,22 @@ describe('Functionality Tests', () => {
         expect(response.body?.toString()).toEqual('Not Friends')
     })
     it('service areAlreadyFriends returns false, so controller should return 400', async () => {
-        const response = await controller.remove(request,service)
+        const response = await controller.remove(request, service)
         expect(response.status).not.toBe(400)
         expect(response.body?.toString()).not.toEqual('Not Friends')
     })
     it('service areAlreadyFriends should be called with the correct parameters', async () => {
-        await controller.remove(request,service)
-        expect(service.areAlreadyFriends).toHaveBeenCalledWith({sessionId: 'foo', requestId: '1966'},expect.anything())
+        await controller.remove(request, service)
+        expect(service.areAlreadyFriends).toHaveBeenCalledWith({ sessionId: 'foo', requestId: '1966' })
     })
     it('service.removeFriends should be called for both parties', async () => {
-        await controller.remove(request,service)
-        expect(service.removeFriends).toHaveBeenCalledWith({sessionId: 'foo', requestId: '1966'},expect.anything())
+        await controller.remove(request, service)
+        expect(service.removeFriends).toHaveBeenCalledWith({ sessionId: 'foo', requestId: '1966' })
         expect(service.removeFriends).toHaveBeenCalledTimes(1)
     })
     it('if service.removeFriends throws an error, return a 500', async () => {
         service.removeFriends = jest.fn().mockRejectedValue(new Error('test'))
-        const response = await controller.remove(request,service)
+        const response = await controller.remove(request, service)
         expect(response.status).toBe(500)
     })
 })
