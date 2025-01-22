@@ -32,7 +32,8 @@ export class DashboardData extends aDashboardData {
         const chatId = await this.getChatId([userId, ...friends.map(friend => friend.id)]);
         const friendRequestSidebarOptions = this.requestProps(friendRequests, userId);
         const sidebarChatlist = { chatId, sessionId, friends }
-        return { friends, friendRequestSidebarOptions, sidebarChatlist };
+        const friendsListProps = { friends }
+        return { friends, friendRequestSidebarOptions, sidebarChatlist, friendsListProps };
     }
 
     private async getChatId(participantIds: string[]): Promise<string> {
