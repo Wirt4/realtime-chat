@@ -5,6 +5,7 @@ import { Utils } from "@/lib/utils";
 
 const FriendsList: FC<FriendsListProps> = (props) => {
     const { friends } = props;
+    const imgaeSize = 32
     return (
         <ul className='sidebar-chat-list'>
             {friends.sort(Utils.userSort).map((friend: User) => {
@@ -13,8 +14,8 @@ const FriendsList: FC<FriendsListProps> = (props) => {
                         <Image src={friend.image}
                             alt={friend.name}
                             referrerPolicy='no-referrer'
-                            width={32}
-                            height={32}
+                            width={imgaeSize}
+                            height={imgaeSize}
                             className='rounded-full'
                         />
                     </span>
