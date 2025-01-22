@@ -3,8 +3,9 @@ import { FriendRequestSidebarOptionsProps } from "./SidebarOptions/friendRequest
 import { FriendsListProps } from "./FriendsList/interface";
 
 export interface SidebarProps {
-    friends: User[];
-    friendRequestSidebarOptions: FriendRequestSidebarOptionsProps;
-    sidebarChatlist: SidebarChatListProps
+    friendRequestSidebarOptionsProps: FriendRequestSidebarOptionsProps;
+    sidebarChatlistProps: SidebarChatListProps
     friendsListProps: FriendsListProps
+    hasFriends: boolean
+    hasActiveChats: boolean
 }

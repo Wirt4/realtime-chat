@@ -6,7 +6,8 @@ import { aUserRepository } from "@/repositories/user/abstract";
 import { sessionDataFactory } from "../session/factory";
 import { aFriendsRepository } from "@/repositories/friends/abstract";
 import { SidebarChatListItemProps } from "@/components/Sidebar/ChatListItem/interface";
-import Participants from "@/lib/chatParticipants";
+import { FriendRequestSidebarOptionsProps } from "@/components/Sidebar/SidebarOptions/friendRequestSidebarOptions/interface";
+import { SidebarChatListProps } from "@/components/Sidebar/ChatList/interface";
 
 export class DashboardData extends aDashboardData {
     private sessionData: aSessionData
@@ -28,48 +29,56 @@ export class DashboardData extends aDashboardData {
 
     async getSidebarProps(session: Session): Promise<SidebarProps> {
         const sessionId = session.user.id;
-        const friends = await this.getFriendsById(sessionId);
-        const friendRequests = await this.friendRequestsRepository.get(sessionId);
-        const userId = session.user.id;
-        const chatId = await this.getChatId([userId, ...friends.map(friend => friend.id)]);
-        const friendRequestSidebarOptions = this.requestProps(friendRequests, userId);
-        const chats = await this.getChatProfiles(userId, friends.map(friend => friend.id));
-        const sidebarChatlist = { chatId, sessionId, chats }
-        const friendsListProps = { friends }
-        return { friends, friendRequestSidebarOptions, sidebarChatlist, friendsListProps };
-    }
+        const asyncData = await this.getAsyncData(sessionId);
 
-    private async getChatProfiles(userId: string, friends: string[]): Promise<SidebarChatListItemProps[]> {
-        let profiles: SidebarChatListItemProps[] = [];
-        const user = await this.userRepository.getUser(userId);
-        for (const friendId of friends) {
-            const friend = await this.userRepository.getUser(friendId);
-            profiles.push({
-                participants: [user, friend],
-                unseenMessages: 0,
-                chatId: await this.getChatId([user.id, friend.id]),
-                sessionId: userId
-            });
-        }
-        return profiles
-    }
+        const friendsListProps = { friends: asyncData.friends };
+        const hasFriends = asyncData.friends.length > 0;
+        const hasActiveChats = asyncData.friends.length > 0;
+        const friendRequestSidebarOptionsProps = this.getFriendRequestSidebarOptionsProps(sessionId, asyncData.friendRequests);
+        const sidebarChatlistProps = this.sidebarChatlistProps(sessionId, asyncData.sessionUser, asyncData.friends);
 
-    private async getChatId(participantIds: string[]): Promise<string> {
-        return participantIds.sort().join('--');
-    }
-
-    private requestProps(friendRequests: string[], userId: string) {
         return {
-            initialRequestCount: friendRequests?.length || 0,
-            sessionId: userId
-        }
+            hasFriends,
+            hasActiveChats,
+            friendRequestSidebarOptionsProps,
+            sidebarChatlistProps,
+            friendsListProps,
+        };
     }
 
-    private async getFriendsById(userId: string): Promise<User[]> {
-        const friendIds = await this.friendsRepository.get(userId);
+    private async getAsyncData(sessionId: string) {
+        const friendRequests = await this.friendRequestsRepository.get(sessionId);
+        const friendIds = await this.friendsRepository.get(sessionId);
         const friends = await Promise.all(friendIds.map(async (id: string) => {
             return this.userRepository.getUser(id);
         }));
-        return friends;
+        const sessionUser = await this.userRepository.getUser(sessionId);
+        return { friendRequests, friends, friendIds, sessionUser }
+    }
+
+
+    private getFriendRequestSidebarOptionsProps(sessionId: string, friendRequests: string[]): FriendRequestSidebarOptionsProps {
+        return {
+            initialRequestCount: friendRequests?.length || 0,
+            sessionId
+        }
+    }
+
+    private sidebarChatlistProps(sessionId: string, sessionUser: User, friends: User[]): SidebarChatListProps {
+        let chats: SidebarChatListItemProps[] = [];
+
+        for (const friend of friends) {
+            chats.push({
+                participants: [sessionUser, friend],
+                unseenMessages: 0,
+                chatId: this.getChatId([sessionUser.id, friend.id]),
+                sessionId
+            });
+        }
+        return { chats, sessionId }
+    }
+
+    private getChatId(participantIds: string[]): string {
+        return participantIds.sort().join('--');
     }
 }

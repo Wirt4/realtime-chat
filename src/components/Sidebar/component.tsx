@@ -10,7 +10,7 @@ import FriendsList from "./FriendsList/component";
 
 const Sidebar: FC<SidebarProps> = (props) => {
 
-    const { friends } = props;
+    const { hasActiveChats, hasFriends } = props;
     return (
         <div className='dashboard'>
             <Link href="/dashboard" className='dashboard-link'>
@@ -18,11 +18,11 @@ const Sidebar: FC<SidebarProps> = (props) => {
             </Link>
             <nav className='dashboard-nav-cols'>
                 <ul role='list' className='dashboard-ul'>
-                    {friends?.length && friends.length > 0 ? <div className='dashboard-subheader'>
+                    {hasActiveChats ? <div className='dashboard-subheader'>
                         Your Chats
                     </div> : null}
                     <SidebarChatList {...props.sidebarChatlist} aria-label='chat list' />
-                    {friends?.length && friends.length > 0 ? <div className='dashboard-subheader'>
+                    {hasFriends ? <div className='dashboard-subheader'>
                         Your Friends
                     </div> : null}
                     <FriendsList {...props.friendsListProps} aria-label='friend list' />

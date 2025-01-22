@@ -25,11 +25,23 @@ describe('Layout tests', () => {
     let friendRequests: string[]
     let initialRequestCount: number
     let chatId: string
+    let hasFriends: boolean
+    let hasActiveChats: boolean
 
     const mockDashBoardData = () => {
         return {
             getSession: jest.fn().mockResolvedValue(session),
-            getSidebarProps: jest.fn().mockResolvedValue({ friends, friendRequestSidebarOptions: { initialRequestCount, sessionId }, sidebarChatlist: { friends, sessionId, chatId } }),
+            getSidebarProps: jest.fn().mockResolvedValue({
+                hasFriends,
+                hasActiveChats,
+                friends, friendRequestSidebarOptions: {
+                    initialRequestCount,
+                    sessionId
+                },
+                sidebarChatlist: {
+                    friends, sessionId, chatId
+                }
+            }),
         };
     }
 
@@ -41,6 +53,8 @@ describe('Layout tests', () => {
         initialRequestCount = 0;
         chatId = 'chat-id';
         dashBoardData = mockDashBoardData();
+        hasFriends = true;
+        hasActiveChats = true;
         session = {
             user: {
                 id: 'user-id',
@@ -100,6 +114,7 @@ describe('Layout tests', () => {
 
     test('If getFriendsById resolves empty,  then don\'t display "Your Chats"', async () => {
         friends = [];
+        hasActiveChats = false;
         (dashboardDataFactory as jest.Mock).mockReturnValue(mockDashBoardData());
         render(await Layout());
         const text = screen.queryByText('Your Chats');
