@@ -8,7 +8,7 @@ import { dashboardDataFactory } from '@/services/dashboard/factory';
 import { aDashboardData } from '@/services/dashboard/abstract';
 import { Session } from 'next-auth';
 
-jest.mock('@/services/dashboard/implementation', jest.fn())
+jest.mock('@/services/dashboard/dashboardData', jest.fn())
 jest.mock("@/components/Sidebar/ChatList/SidebarChatList");
 jest.mock("@/components/Sidebar/SidebarOptions/friendRequestSidebarOptions/FriendRequestSidebarOptions");
 jest.mock("@/services/dashboard/factory");

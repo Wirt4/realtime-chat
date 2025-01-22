@@ -1,5 +1,5 @@
 import { FriendsRepository } from "@/repositories/friends/friendsImplementation";
-import { DashboardData } from "./implementation";
+import { DashboardData } from "./dashBoardData";
 import { aDashboardData } from "./abstract";
 import { UserRepository } from "@/repositories/user/implementation";
 import { FriendRequestsRepository } from "@/repositories/friends/requestsImplementation";
