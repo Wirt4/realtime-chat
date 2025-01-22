@@ -22,7 +22,6 @@ describe('Layout tests', () => {
     let session: Session;
     let friends: User[]
     let sessionId: string
-    let friendRequests: string[]
     let initialRequestCount: number
     let chatId: string
     let hasFriends: boolean
@@ -34,11 +33,11 @@ describe('Layout tests', () => {
             getSidebarProps: jest.fn().mockResolvedValue({
                 hasFriends,
                 hasActiveChats,
-                friends, friendRequestSidebarOptions: {
+                friends, friendRequestSidebarOptionsProps: {
                     initialRequestCount,
                     sessionId
                 },
-                sidebarChatlist: {
+                sidebarChatlistProps: {
                     friends, sessionId, chatId
                 }
             }),

@@ -21,7 +21,7 @@ const Sidebar: FC<SidebarProps> = (props) => {
                     {hasActiveChats ? <div className='dashboard-subheader'>
                         Your Chats
                     </div> : null}
-                    <SidebarChatList {...props.sidebarChatlist} aria-label='chat list' />
+                    <SidebarChatList {...props.sidebarChatlistProps} aria-label='chat list' />
                     {hasFriends ? <div className='dashboard-subheader'>
                         Your Friends
                     </div> : null}
@@ -29,7 +29,7 @@ const Sidebar: FC<SidebarProps> = (props) => {
                     <div className='dashboard-subheader'>Overview</div>
                     <ul role='list' className='dashboard-sub-ul'>
                         <AddFriendListItem />
-                        <FriendRequestSidebarOptions {...props.friendRequestSidebarOptions} />
+                        <FriendRequestSidebarOptions {...props.friendRequestSidebarOptionsProps} />
                     </ul>
                     <ul role='list' className='signout-ul'>
                         <SignOutButton />
