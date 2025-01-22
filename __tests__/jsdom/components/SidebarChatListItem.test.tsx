@@ -1,10 +1,19 @@
 import '@testing-library/jest-dom';
 import SidebarChatListItem from "@/components/Sidebar/ChatListItem/component";
 import { render } from "@testing-library/react";
+import { ChatName } from '@/lib/classes/chatName/implementation';
+
+jest.mock('@/lib/classes/chatName/implementation');
 
 describe('SidebarChatListItem', () => {
     beforeEach(() => {
-        jest.resetAllMocks()
+        jest.resetAllMocks();
+        (ChatName as jest.Mock).mockImplementation(() => {
+            return {
+                getChatName: () => "Mocked Chat name"
+            };
+        })
+
     })
     test("list item should display the friend's names", () => {
         const participants: User[] = [
@@ -14,17 +23,7 @@ describe('SidebarChatListItem', () => {
             { name: "Charlie", id: "foo", email: "bar", image: "/spam" },
         ]
         const { getByText } = render(<SidebarChatListItem sessionId="bar" unseenMessages={0} participants={participants} chatId='stub' />);
-        const text = getByText("Chat with Alfred, Betty, and Charlie");
-        expect(text).toBeInTheDocument();
-    });
-
-    test("list item should display the friend's name, different data", () => {
-        const participants: User[] = [
-            { name: "Lucy", id: "foo", email: "bar", image: "/spam" },
-            { name: "theUser", id: "bar", email: "bar", image: "/spam" }
-        ]
-        const { getByText } = render(<SidebarChatListItem sessionId="bar" unseenMessages={0} participants={participants} chatId='stub' />);
-        const text = getByText("Chat with Lucy");
+        const text = getByText("Mocked Chat name");
         expect(text).toBeInTheDocument();
     });
 

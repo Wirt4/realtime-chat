@@ -3,13 +3,15 @@
 import { FC } from "react";
 import { SidebarChatListItemProps } from "./interface";
 import Image from "next/image";
+import { ChatName } from "@/lib/classes/chatName/implementation";
 
 const SidebarChatListItem: FC<SidebarChatListItemProps> = (props) => {
     const { participants, unseenMessages, chatId, sessionId } = props;
+    const chatName = new ChatName(participants, sessionId);
     return <li key={chatId} className="group">
         <a href={`/dashboard/chat/${chatId}`} className='sidebar-chat-list-item'>
             <ChatImage {...props} />
-            {`Chat with ${participantName(participants, sessionId)}`}
+            {chatName.getChatName()}
             <UnseenMessages messages={unseenMessages} />
         </a>
     </li>
@@ -35,33 +37,7 @@ const ChatImage: FC<SidebarChatListItemProps> = (props) => {
     />)
 }
 
-const participantName = (participants: User[], sessionId: string) => {
-    const names = friendNames(participants, sessionId);
 
-    if (names.length === 1) {
-        return names[0];
-    }
-
-    if (names.length === 2) {
-        return names.join(' and ');
-    }
-
-    const lastIndex = names.length - 1;
-    names[lastIndex] = `and ${names[lastIndex]}`;
-    return names.join(', ');
-}
-
-const friendNames = (participants: User[], sessionId: string) => {
-    let names: string[] = [];
-
-    for (let i = 0; i < participants.length; i++) {
-        if (participants[i].id !== sessionId) {
-            names.push(participants[i].name);
-        }
-    }
-
-    return names;
-};
 
 const UnseenMessages: FC<{ messages: number }> = ({ messages }) => {
     if (messages > 0) {
