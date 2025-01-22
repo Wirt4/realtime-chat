@@ -9,8 +9,6 @@ import SignOutButton from "../signOutButton";
 import FriendsList from "./FriendsList/component";
 
 const Sidebar: FC<SidebarProps> = (props) => {
-
-    const { hasActiveChats, hasFriends } = props;
     return (
         <div className='dashboard'>
             <Link href="/dashboard" className='dashboard-link'>
@@ -18,13 +16,9 @@ const Sidebar: FC<SidebarProps> = (props) => {
             </Link>
             <nav className='dashboard-nav-cols'>
                 <ul role='list' className='dashboard-ul'>
-                    {hasActiveChats ? <div className='dashboard-subheader'>
-                        Your Chats
-                    </div> : null}
+                    <ToggleHeder title='Your Chats' exists={props.hasActiveChats} />
                     <SidebarChatList {...props.sidebarChatlistProps} aria-label='chat list' />
-                    {hasFriends ? <div className='dashboard-subheader'>
-                        Your Friends
-                    </div> : null}
+                    <ToggleHeder title='Your Friends' exists={props.hasFriends} />
                     <FriendsList {...props.friendsListProps} aria-label='friend list' />
                     <div className='dashboard-subheader'>Overview</div>
                     <ul role='list' className='dashboard-sub-ul'>
@@ -32,13 +26,19 @@ const Sidebar: FC<SidebarProps> = (props) => {
                         <FriendRequestSidebarOptions {...props.friendRequestSidebarOptionsProps} />
                     </ul>
                     <ul role='list' className='signout-ul'>
-                        <SignOutButton />
-                    </ul>
+                        <SignOutButton /></ul>
                     <ul />
                 </ul>
             </nav>
         </div>
     )
+}
+
+const ToggleHeder: FC<{ title: string, exists: boolean }> = ({ title, exists }) => {
+    if (!exists) return null;
+    return <div className='dashboard-subheader'>
+        {title}
+    </div>
 }
 
 export default Sidebar;

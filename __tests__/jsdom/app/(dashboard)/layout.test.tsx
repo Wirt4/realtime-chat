@@ -44,11 +44,9 @@ describe('Layout tests', () => {
         };
     }
 
-
     beforeEach(() => {
         friends = [];
         sessionId = 'user-id';
-        friendRequests = [];
         initialRequestCount = 0;
         chatId = 'chat-id';
         dashBoardData = mockDashBoardData();
