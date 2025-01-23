@@ -20,15 +20,10 @@ export class RemoveFriendsController extends AbstractFriendsController {
 
         const ids: Ids = { sessionId: userId.toString(), requestId: friendId }
 
-        const areFriends = await service.areAlreadyFriends(ids)
-        if (!areFriends) {
-            return this.respond('Not Friends', 400)
-        }
-
         try {
             await service.removeFriends(ids)
         } catch (error) {
-            return this.respond(error as string, 500)
+            return this.respond(error as string, 400)
         }
 
         return this.ok()

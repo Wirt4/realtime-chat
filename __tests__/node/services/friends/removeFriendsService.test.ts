@@ -20,6 +20,7 @@ describe('removeFriendsService', () => {
         sessionId = 'bar';
     })
     it('calling remove should call remove on the friends repository', async () => {
+        mockRepo.exists = jest.fn().mockResolvedValue(true);
         service = new RemoveFriendsService(mockRepo);
 
         await service.removeFriends({ requestId, sessionId });
@@ -28,13 +29,12 @@ describe('removeFriendsService', () => {
         expect(mockRepo.remove).toHaveBeenCalledWith(requestId, sessionId);
         expect(mockRepo.remove).toHaveBeenCalledWith(sessionId, requestId);
     });
-
-    it('calling areAlreadyFriends should call exists on the friends repository', async () => {
-        mockRepo.exists = jest.fn().mockResolvedValue(true);
+    it('calling remove should only call remove if the friend association exists', async () => {
+        mockRepo.exists = jest.fn().mockResolvedValue(false);
         service = new RemoveFriendsService(mockRepo);
 
-        const result = await service.areAlreadyFriends({ requestId, sessionId });
+        await service.removeFriends({ requestId, sessionId });
 
-        expect(result).toBe(true);
-    });
+        expect(mockRepo.remove).not.toHaveBeenCalled();
+    })
 })

@@ -9,11 +9,8 @@ export class RemoveFriendsService extends aRemoveFriendsService {
         this.friendsRepository = friendsRepository;
     }
 
-    areAlreadyFriends(ids: Ids): Promise<boolean> {
-        return this.friendsRepository.exists(ids.requestId, ids.sessionId);
-    }
-
     async removeFriends(ids: Ids): Promise<void> {
+        if (!await this.friendsRepository.exists(ids.requestId, ids.sessionId)) return;
         await Promise.all([
             this.friendsRepository.remove(ids.requestId, ids.sessionId),
             this.friendsRepository.remove(ids.sessionId, ids.requestId)
