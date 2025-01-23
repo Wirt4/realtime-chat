@@ -3,11 +3,7 @@ import { render, screen } from '@testing-library/react';
 import FriendsList from '@/components/Sidebar/FriendsList/component';
 import { FriendsListProps } from '@/components/Sidebar/FriendsList/interface';
 
-const mockFriends: User[] = [
-    { id: '1', name: 'Charlie', email: 'charlie@example.com', image: '/images/charlie.png' },
-    { id: '2', name: 'Alice', email: 'alice@example.com', image: '/images/alice.png' },
-    { id: '3', name: 'Bob', email: 'bob@example.com', image: '/images/bob.png' },
-];
+const mockFriends = ['Charlie', 'Alice', 'Bob'];
 
 const renderComponent = (props: Partial<FriendsListProps> = {}) => {
     const defaultProps: FriendsListProps = {
@@ -21,7 +17,7 @@ describe('FriendsList', () => {
     test('renders the list of friends', () => {
         renderComponent();
         const listItems = screen.getAllByRole('listitem');
-        expect(listItems).toHaveLength(mockFriends.length);
+        expect(listItems).toHaveLength(3);
     });
 
     test('renders friends in alphabetical order', () => {
@@ -35,7 +31,7 @@ describe('FriendsList', () => {
     test('renders friend names correctly', () => {
         renderComponent();
         mockFriends.forEach(friend => {
-            expect(screen.getByText(friend.name)).toBeInTheDocument();
+            expect(screen.getByText(friend)).toBeInTheDocument();
         });
     });
 });

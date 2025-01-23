@@ -1,3 +1,3 @@
 export interface FriendsListProps {
-    friends: User[];
+    friends: string[];
 }

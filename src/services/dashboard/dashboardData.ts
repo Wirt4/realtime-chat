@@ -31,7 +31,7 @@ export class DashboardData extends aDashboardData {
         const sessionId = session.user.id;
         const asyncData = await this.getAsyncData(sessionId);
 
-        const friendsListProps = { friends: asyncData.friends };
+        const friendsListProps = { friends: asyncData.friendIds };
         const hasFriends = asyncData.friends.length > 0;
         const hasActiveChats = asyncData.friends.length > 0;
         const friendRequestSidebarOptionsProps = this.getFriendRequestSidebarOptionsProps(sessionId, asyncData.friendRequests);
