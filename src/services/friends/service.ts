@@ -2,15 +2,11 @@ import {
     PusherAddFriendInterface, PusherDenyFriendInterface,
 
 } from "@/services/pusher/interfaces";
-import {
-    DenyFriendsServiceInterface
-} from "@/services/friends/interfaces";
+
 import { aFriendsRepository } from "@/repositories/friends/abstract";
 import { aUserRepository } from "@/repositories/user/abstract";
 
-export class FriendsService
-    implements
-    DenyFriendsServiceInterface {
+export class FriendsService {
 
 
     private userRepository: aUserRepository;

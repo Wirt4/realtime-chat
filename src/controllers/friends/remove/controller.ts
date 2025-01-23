@@ -6,9 +6,10 @@ import { aRemoveFriendsService } from "@/services/friends/remove/abstact";
 export class RemoveFriendsController extends AbstractFriendsController {
     async remove(request: Request, service: aRemoveFriendsService) {
         let friendId: string
+        const body = await request.json()
 
         try {
-            friendId = z.object({ idToRemove: z.string() }).parse(await request.json()).idToRemove;
+            friendId = service.getIdToRemove(body);
         } catch {
             return this.respond("Invalid Format", 422)
         }

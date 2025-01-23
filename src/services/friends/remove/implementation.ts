@@ -1,3 +1,4 @@
+import { idToRemoveSchema } from "@/schemas/idToRemoveSchema";
 import { aRemoveFriendsService } from "./abstact";
 import { aFriendsRepository } from '@/repositories/friends/abstract';
 
@@ -15,5 +16,9 @@ export class RemoveFriendsService extends aRemoveFriendsService {
             this.friendsRepository.remove(ids.requestId, ids.sessionId),
             this.friendsRepository.remove(ids.sessionId, ids.requestId)
         ]);
+    }
+
+    getIdToRemove(body: { idToRemove: string; }): string {
+        return idToRemoveSchema.parse(body).idToRemove;
     }
 }

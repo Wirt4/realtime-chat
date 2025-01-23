@@ -18,18 +18,14 @@ describe('Functionality Tests', () => {
             }) as Request
         (myGetServerSession as jest.Mock).mockResolvedValue({ user: { id: 'foo' } });
         service = {
-            removeFriends: jest.fn()
+            removeFriends: jest.fn(),
+            getIdToRemove: jest.fn(({ idToRemove }) => idToRemove)
         }
     });
 
     it("if the body isn't formatted correctly, return a 422", async () => {
-        request = new Request("/api/friends/remove",
-            {
-                method: "POST",
-                body: "",
-                headers: { 'Content-Type': 'application/json' }
-            }) as Request
         controller = new RemoveFriendsController()
+        service.getIdToRemove = jest.fn(() => { throw new Error('Invalid Format') })
         const response = await controller.remove(request, service)
         expect(response.status).toBe(422)
         expect(response.body?.toString()).toEqual('Invalid Format')

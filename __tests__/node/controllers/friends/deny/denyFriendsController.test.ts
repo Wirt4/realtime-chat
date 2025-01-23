@@ -1,17 +1,20 @@
 import { DenyFriendsController } from "@/controllers/friends/deny/controller";
 import myGetServerSession from "@/lib/myGetServerSession";
-import { DenyFriendsServiceInterface } from "@/services/friends/interfaces";
+import { aDenyFriendsService } from "@/services/friends/deny/abstract";
+
 jest.mock("@/lib/myGetServerSession", () => jest.fn());
 
 describe('Deny Tests', () => {
     let controller: DenyFriendsController
-    let service: DenyFriendsServiceInterface
+    let service: aDenyFriendsService
     let request: Request
     beforeEach(() => {
         (myGetServerSession as jest.Mock).mockResolvedValue({ user: { id: 'userId' } });
         controller = new DenyFriendsController()
         service = {
-            removeEntry: jest.fn()
+            removeEntry: jest.fn(),
+            triggerEvent: jest.fn(),
+            getIdToDeny: jest.fn().mockResolvedValue('validID')
         }
         request = new Request('/api/friends/deny', {
             method: 'POST',
