@@ -7,6 +7,7 @@ import AddFriendListItem from "@/components/Sidebar/AddFriendListItem/addFriendL
 import FriendRequestSidebarOptions from "./SidebarOptions/friendRequestSidebarOptions/FriendRequestSidebarOptions";
 import SignOutButton from "../signOutButton";
 import FriendsList from "./FriendsList/component";
+import ToggleHeader from "../ui/toggleHeader/component";
 
 const Sidebar: FC<SidebarProps> = (props) => {
     return (
@@ -16,9 +17,9 @@ const Sidebar: FC<SidebarProps> = (props) => {
             </Link>
             <nav className='dashboard-nav-cols'>
                 <ul role='list' className='dashboard-ul'>
-                    <ToggleHeder title='Your Chats' exists={props.hasActiveChats} />
+                    <ToggleHeader title='Your Chats' exists={props.hasActiveChats} className='dashboard-subheader' />
                     <SidebarChatList {...props.sidebarChatlistProps} aria-label='chat list' />
-                    <ToggleHeder title='Your Friends' exists={props.hasFriends} />
+                    <ToggleHeader title='Your Friends' exists={props.hasFriends} className='dashboard-subheader' />
                     <FriendsList {...props.friendsListProps} aria-label='friend list' />
                     <div className='dashboard-subheader'>Overview</div>
                     <ul role='list' className='dashboard-sub-ul'>
@@ -32,13 +33,6 @@ const Sidebar: FC<SidebarProps> = (props) => {
             </nav>
         </div>
     )
-}
-
-const ToggleHeder: FC<{ title: string, exists: boolean }> = ({ title, exists }) => {
-    if (!exists) return null;
-    return <div className='dashboard-subheader'>
-        {title}
-    </div>
 }
 
 export default Sidebar;

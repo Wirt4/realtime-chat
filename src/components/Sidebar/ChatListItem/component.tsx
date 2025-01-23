@@ -2,50 +2,31 @@
 
 import { FC } from "react";
 import { SidebarChatListItemProps } from "./interface";
-import Image from "next/image";
+import ChatImage from "@/components/Sidebar/ChatImage/component";
 import { ChatName } from "@/lib/classes/chatName/implementation";
+import ToggleHeader from "@/components/ui/toggleHeader/component";
 
 const SidebarChatListItem: FC<SidebarChatListItemProps> = (props) => {
     const { participants, unseenMessages, chatId, sessionId } = props;
     const chatName = new ChatName(participants, sessionId);
+    const iconSize = 32
     return <li key={chatId} className="group">
         <a href={`/dashboard/chat/${chatId}`} className='sidebar-chat-list-item'>
-            <ChatImage {...props} />
+            <ChatImage
+                size={iconSize}
+                chatId={chatId}
+                sessionId={sessionId}
+                participantInfo={participants} />
             {chatName.getChatName()}
             <UnseenMessages messages={unseenMessages} />
         </a>
     </li>
 }
 
-const ChatImage: FC<SidebarChatListItemProps> = (props) => {
-    const { participants, chatId, sessionId } = props;
-    const imgaeSize = 32;
-    let src: string;
-
-    if (participants[0].id === sessionId) {
-        src = participants[1].image
-    } else {
-        src = participants[0].image
-    }
-
-    return (<Image src={src}
-        alt={chatId}
-        referrerPolicy='no-referrer'
-        width={imgaeSize}
-        height={imgaeSize}
-        className='rounded-full'
-    />)
-}
-
-
-
 const UnseenMessages: FC<{ messages: number }> = ({ messages }) => {
-    if (messages > 0) {
-        return <div className='unread-messages-count'>
-            {messages}
-        </div>
-    }
-    return null;
+    return <ToggleHeader title={messages.toString()}
+        exists={messages > 0}
+        className='unread-messages-header' />
 }
 
 export default SidebarChatListItem;
