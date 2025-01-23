@@ -17,7 +17,10 @@ export class DenyFriendsController extends AbstractFriendsController {
         }
         const ids: Ids = { sessionId: session.user.id, requestId: senderId }
         try {
-            await service.removeEntry(ids);
+            await Promise.all([
+                await service.removeEntry(ids),
+                await service.triggerEvent(ids)
+            ]);
         } catch (error) {
             return this.respond(error as string, 424)
         }
