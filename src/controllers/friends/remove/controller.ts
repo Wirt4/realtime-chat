@@ -1,9 +1,10 @@
 import { z } from "zod";
 import { AbstractFriendsController } from "@/controllers/friends/abstract";
-import { RemoveFriendsServiceInterface } from "@/services/friends/interfaces";
+import { aRemoveFriendsService } from "@/services/friends/remove/abstact";
+
 
 export class RemoveFriendsController extends AbstractFriendsController {
-    async remove(request: Request, service: RemoveFriendsServiceInterface) {
+    async remove(request: Request, service: aRemoveFriendsService) {
         let friendId: string
 
         try {

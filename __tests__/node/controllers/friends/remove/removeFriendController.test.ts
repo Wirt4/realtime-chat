@@ -1,12 +1,12 @@
 import { RemoveFriendsController } from "@/controllers/friends/remove/controller";
 import myGetServerSession from "@/lib/myGetServerSession";
-import { RemoveFriendsServiceInterface } from "@/services/friends/interfaces";
+import { aRemoveFriendsService } from "@/services/friends/remove/abstact";
 jest.mock('@/lib/myGetServerSession')
 
 describe('Functionality Tests', () => {
     let request: Request
     let controller: RemoveFriendsController
-    let service: RemoveFriendsServiceInterface
+    let service: aRemoveFriendsService
 
     beforeEach(() => {
         jest.clearAllMocks()
