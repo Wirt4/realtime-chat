@@ -2,25 +2,21 @@ import { Session } from "next-auth"
 import { aDashboardData } from "./abstract";
 import { SidebarProps } from "@/components/Sidebar/interface";
 import { aSessionData } from "../session/abstract";
-import { aUserRepository } from "@/repositories/user/abstract";
 import { sessionDataFactory } from "../session/factory";
-import { aFriendsRepository } from "@/repositories/friends/abstract";
 import { SidebarChatListItemProps } from "@/components/Sidebar/ChatListItem/interface";
 import { FriendRequestSidebarOptionsProps } from "@/components/Sidebar/SidebarOptions/friendRequestSidebarOptions/interface";
 import { SidebarChatListProps } from "@/components/Sidebar/ChatList/interface";
+import { aDashboardFacade } from "@/repositories/dashboardFacade/abstact";
 
 export class DashboardData extends aDashboardData {
     private sessionData: aSessionData
-    private userRepository: aUserRepository
-    private friendRequestsRepository: aFriendsRepository
-    private friendsRepository: aFriendsRepository
+    private facade: aDashboardFacade
 
-    constructor(userRepository: aUserRepository, friendRequestsRepository: aFriendsRepository, friendsRepository: aFriendsRepository) {
+
+    constructor(facade: aDashboardFacade) {
         super()
         this.sessionData = sessionDataFactory();
-        this.userRepository = userRepository;
-        this.friendRequestsRepository = friendRequestsRepository;
-        this.friendsRepository = friendsRepository;
+        this.facade = facade;
     }
 
     async getSession(): Promise<Session> {
@@ -47,12 +43,12 @@ export class DashboardData extends aDashboardData {
     }
 
     private async getAsyncData(sessionId: string) {
-        const friendRequests = await this.friendRequestsRepository.get(sessionId);
-        const friendIds = await this.friendsRepository.get(sessionId);
+        const friendRequests = await this.facade.getFriendRequests(sessionId);
+        const friendIds = await this.facade.getFriendIds(sessionId);
         const friends = await Promise.all(friendIds.map(async (id: string) => {
-            return this.userRepository.getUser(id);
+            return this.facade.getUser(id);
         }));
-        const sessionUser = await this.userRepository.getUser(sessionId);
+        const sessionUser = await this.facade.getUser(sessionId);
         return { friendRequests, friends, friendIds, sessionUser }
     }
 
