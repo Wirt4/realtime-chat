@@ -43,7 +43,7 @@ describe('denyFriendsService', () => {
     });
     it('removeEntry should call friendRequestsRepository.remove', async () => {
         await service.removeEntry(ids);
-        expect(requestsRepository.remove).toHaveBeenCalledWith(ids.requestId, ids.sessionId);
+        expect(requestsRepository.remove).toHaveBeenCalledWith(ids.sessionId, ids.requestId);
     });
     it('triggerEvent should  call the pusher with the request id and the session id', async () => {
         await service.triggerEvent(ids);

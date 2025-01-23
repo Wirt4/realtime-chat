@@ -14,7 +14,7 @@ export class DenyFriendsService extends aDenyFriendsService {
     }
 
     async removeEntry(ids: Ids): Promise<void> {
-        await this.requestsRepository.remove(ids.requestId, ids.sessionId);
+        await this.requestsRepository.remove(ids.sessionId, ids.requestId);
     }
 
     getIdToDeny(body: { id: string; }): string {
