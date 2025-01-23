@@ -48,8 +48,17 @@ describe('DashboardFacade tests', () => {
     });
 
     test('getUser', async () => {
-        // Arrange
-        // Act
-        // Assert
+        const user: User = {
+            id: 'foo',
+            name: 'bar',
+            email: 'fizz',
+            image: 'buzz',
+        }
+        const userId = 'fizz';
+        const getSpy = jest.spyOn(UserRepository.prototype, 'getUser').mockResolvedValue(user);
+
+        const result = await facade.getUser(userId);
+
+        expect(result).toEqual(user);
     });
 });

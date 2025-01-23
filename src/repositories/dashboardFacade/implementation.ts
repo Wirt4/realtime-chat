@@ -25,7 +25,6 @@ export class DashboardFacade extends aDashboardFacade {
     }
 
     async getUser(userId: string) {
-        throw new Error("Not implemented");
-        return {} as User
+        return this.userRepository.getUser(userId);
     }
 }
