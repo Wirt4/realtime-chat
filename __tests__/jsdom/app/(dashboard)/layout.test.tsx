@@ -3,13 +3,13 @@ import Layout from "@/app/(dashboard)/dashboard/layout"
 import { notFound } from "next/navigation"
 import { render, screen, waitFor } from "@testing-library/react";
 import FriendRequestSidebarOptions from "@/components/Sidebar/SidebarOptions/friendRequestSidebarOptions/FriendRequestSidebarOptions";
-import SidebarChatList from "@/components/Sidebar/ChatList/SidebarChatList";
+import SidebarChatList from "@/components/Sidebar/ChatList/component";
 import { dashboardDataFactory } from '@/services/dashboard/factory';
 import { aDashboardData } from '@/services/dashboard/abstract';
 import { Session } from 'next-auth';
 
-jest.mock('@/services/dashboard/implementation', jest.fn())
-jest.mock("@/components/Sidebar/ChatList/SidebarChatList");
+jest.mock('@/services/dashboard/dashboardData', jest.fn())
+jest.mock("@/components/Sidebar/ChatList/component");
 jest.mock("@/components/Sidebar/SidebarOptions/friendRequestSidebarOptions/FriendRequestSidebarOptions");
 jest.mock("@/services/dashboard/factory");
 jest.mock("next/navigation", () => ({
@@ -22,25 +22,36 @@ describe('Layout tests', () => {
     let session: Session;
     let friends: User[]
     let sessionId: string
-    let friendRequests: string[]
     let initialRequestCount: number
     let chatId: string
+    let hasFriends: boolean
+    let hasActiveChats: boolean
 
     const mockDashBoardData = () => {
         return {
             getSession: jest.fn().mockResolvedValue(session),
-            getSidebarProps: jest.fn().mockResolvedValue({ friends, friendRequestSidebarOptions: { initialRequestCount, sessionId }, sidebarChatlist: { friends, sessionId, chatId } }),
+            getSidebarProps: jest.fn().mockResolvedValue({
+                hasFriends,
+                hasActiveChats,
+                friends, friendRequestSidebarOptionsProps: {
+                    initialRequestCount,
+                    sessionId
+                },
+                sidebarChatlistProps: {
+                    friends, sessionId, chatId
+                }
+            }),
         };
     }
-
 
     beforeEach(() => {
         friends = [];
         sessionId = 'user-id';
-        friendRequests = [];
         initialRequestCount = 0;
         chatId = 'chat-id';
         dashBoardData = mockDashBoardData();
+        hasFriends = true;
+        hasActiveChats = true;
         session = {
             user: {
                 id: 'user-id',
@@ -100,6 +111,7 @@ describe('Layout tests', () => {
 
     test('If getFriendsById resolves empty,  then don\'t display "Your Chats"', async () => {
         friends = [];
+        hasActiveChats = false;
         (dashboardDataFactory as jest.Mock).mockReturnValue(mockDashBoardData());
         render(await Layout());
         const text = screen.queryByText('Your Chats');

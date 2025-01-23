@@ -1,10 +1,11 @@
 import '@testing-library/jest-dom';
 import { render } from "@testing-library/react";
-import SidebarChatList from '@/components/Sidebar/ChatList/SidebarChatList';
-import SidebarChatListItem from '@/components/SidebarChatListItem';
+import SidebarChatList from '@/components/Sidebar/ChatList/component';
+import SidebarChatListItem from '@/components/Sidebar/ChatListItem/component';
 import { useState } from 'react'
+import { SidebarChatListItemProps } from '@/components/Sidebar/ChatListItem/interface';
 
-jest.mock('@/components/SidebarChatListItem');
+jest.mock('@/components/Sidebar/ChatListItem/component');
 jest.mock('react', () => ({
     ...jest.requireActual('react'),
     useState: jest.fn()
@@ -13,55 +14,67 @@ jest.mock('react', () => ({
 describe('SidebarChatList', () => {
     beforeEach(() => {
         (useState as jest.Mock).mockImplementation(() => { return [[], jest.fn()] });
-    })
+    });
+
     afterEach(() => {
         jest.resetAllMocks();
-    })
+    });
+
     test('confirm component renders', () => {
-        render(<SidebarChatList friends={[]} sessionId='foo' chatId='bar' />);
+        render(<SidebarChatList chats={[]} sessionId='foo' />);
     });
 
     test('component should be or have a role of list', () => {
-        const { queryByRole } = render(<SidebarChatList friends={[]} sessionId='foo' chatId='bar' />);
+        const { queryByRole } = render(<SidebarChatList chats={[]} sessionId='foo' />);
         const list = queryByRole('list');
         expect(list).toBeInTheDocument();
     });
 
     test('component should call SidebarChatListItem in order', () => {
-        const activeChats = [{
-            name: 'Boris',
-            email: 'karloff@spoooky.com',
-            image: 'stub',
-            id: '12345'
-        }, {
-            name: 'Bela',
-            email: 'lugosi@hungary.eu',
-            image: 'stub',
-            id: '54321'
-        }];
-        (useState as jest.Mock).mockReturnValue([activeChats, jest.fn()]);
-        const listItemSpy = jest.fn();
-        mockSpy(listItemSpy);
-
-        render(<SidebarChatList friends={[]} sessionId='foo' chatId='bar' />);
-
-        expect(listItemSpy.mock.calls).toEqual([
-            [expect.objectContaining({
-                friend: {
-                    name: 'Bela',
-                    email: 'lugosi@hungary.eu',
+        const activeChats: SidebarChatListItemProps[] = [
+            {
+                sessionId: 'foo',
+                chatId: 'beta',
+                unseenMessages: 0,
+                participants: [{
+                    name: 'theUser',
+                    email: 'stub',
                     image: 'stub',
-                    id: '54321'
-                }
-            })],
-            [expect.objectContaining({
-                friend: {
+                    id: 'stub'
+                }, {
                     name: 'Boris',
                     email: 'karloff@spoooky.com',
                     image: 'stub',
                     id: '12345'
                 }
-            })]
+                ]
+            },
+            {
+                sessionId: 'foo',
+                chatId: 'alpha',
+                unseenMessages: 0,
+                participants: [{
+                    name: 'theUser',
+                    email: 'stub',
+                    image: 'stub',
+                    id: 'stub'
+                }, {
+                    name: 'Bela',
+                    email: 'lugosi@hungary.eu',
+                    image: 'stub',
+                    id: '54321'
+                }
+                ]
+            }];
+        (useState as jest.Mock).mockReturnValue([activeChats, jest.fn()]);
+        const listItemSpy = jest.fn();
+        mockSpy(listItemSpy);
+
+        render(<SidebarChatList chats={[]} sessionId='foo' />);
+
+        expect(listItemSpy.mock.calls).toEqual([
+            [expect.objectContaining({ chatId: 'alpha' })],
+            [expect.objectContaining({ chatId: 'beta' })]
         ]);
     });
 
@@ -91,7 +104,7 @@ describe('SidebarChatList', () => {
         const listItemSpy = jest.fn();
         mockSpy(listItemSpy)
 
-        render(<SidebarChatList friends={[]} sessionId='foo' chatId='bar' />);
+        render(<SidebarChatList chats={[]} sessionId='foo' />);
 
         expect(listItemSpy).toHaveBeenCalledWith(expect.objectContaining({ unseenMessages: 1 }));
     });
@@ -129,7 +142,7 @@ describe('SidebarChatList', () => {
         const listItemSpy = jest.fn();
         mockSpy(listItemSpy)
 
-        render(<SidebarChatList friends={[]} sessionId='foo' chatId='bar' />);
+        render(<SidebarChatList chats={[]} sessionId='foo' />);
 
         expect(listItemSpy).toHaveBeenCalledWith(expect.objectContaining({ unseenMessages: 2 }));
     });
@@ -139,53 +152,70 @@ describe('SidebarChatList', () => {
         (useState as jest.Mock).mockImplementation(() => {
             useStateCount++;
             if (useStateCount === 1) {
-                const activeChats = [{
-                    name: 'Sherlock',
-                    email: 'elementarary@detective.uk',
-                    image: 'stub',
-                    id: '221b'
-                },
-                {
-                    name: 'Bela',
-                    email: 'lugosi@hungary.eu',
-                    image: 'stub',
-                    id: '54321'
-                },
-                {
-                    name: 'Ahab',
-                    email: 'captain@pequod.com',
-                    image: 'stub',
-                    id: '666'
-                }]
+                const activeChats: SidebarChatListItemProps[] = [
+                    {
+                        sessionId: 'foo',
+                        participants: [{
+                            name: 'theUser',
+                            email: 'stub',
+                            image: 'stub',
+                            id: 'stub'
+                        }, {
+                            name: 'Sherlock',
+                            email: 'elementarary@detective.uk',
+                            image: 'stub',
+                            id: '221b'
+                        },],
+                        chatId: 'stub',
+                        unseenMessages: 2
+                    },
+                    {
+                        sessionId: 'bar',
+                        participants: [{
+                            name: 'theUser',
+                            email: 'stub',
+                            image: 'stub',
+                            id: 'stub'
+                        }, {
+                            name: 'Bela',
+                            email: 'lugosi@hungary.eu',
+                            image: 'stub',
+                            id: '54321'
+                        }],
+                        chatId: 'stub2',
+                        unseenMessages: 3
+                    }]
                 return [activeChats, jest.fn];
             }
             const unreadMessages = [{
                 id: "foo",
                 senderId: "221b",
                 text: "Hmmmmm",
+                chatId: 'stub',
                 timestamp:
                     1729437427
             },
             {
                 id: "foo",
                 senderId: "221b",
+                chatId: 'stub',
                 text: "Interesting",
                 timestamp:
                     1729437000
             },
-            { id: "stub", senderId: "54321", text: 'blah', timestamp: 0 },
-            { id: "stub", senderId: "54321", text: 'blah', timestamp: 0 },
-            { id: "stub", senderId: "54321", text: 'blah', timestamp: 0 }]
+            { id: "stub", senderId: "54321", chatId: 'stub2', text: 'blah', timestamp: 0 },
+            { id: "stub", senderId: "54321", chatId: 'stub2', text: 'blah', timestamp: 0 },
+            { id: "stub", senderId: "54321", chatId: 'stub2', text: 'blah', timestamp: 0 }]
             return [unreadMessages, jest.fn]
 
         });
         const listItemSpy = jest.fn();
         mockSpy(listItemSpy)
 
-        render(<SidebarChatList friends={[]} sessionId='foo' chatId='bar' />);
+        render(<SidebarChatList chats={[]} sessionId='54321' />);
 
         expect(listItemSpy).toHaveBeenCalledWith(
-            expect.objectContaining({ unseenMessages: 2, friend: expect.objectContaining({ name: "Sherlock" }) }));
+            expect.objectContaining({ unseenMessages: 2, chatId: "stub" }));
     });
 });
 
