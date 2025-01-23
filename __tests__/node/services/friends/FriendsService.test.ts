@@ -14,10 +14,9 @@ describe('getIdToAdd tests', () => {
         }
         const mockFriendsRepository = {} as aFriendsRepository;
         const mockFriendRequestsRepository = {} as aFriendsRepository;
-        const mockPusher = {} as ServiceInterfacePusherFriendsAccept;
         const mockDenyPusher = {} as PusherDenyFriendInterface;
         const mockAddPusher = {} as PusherAddFriendInterface;
-        const service = new FriendsService(mockUserRepository, mockFriendsRepository, mockFriendRequestsRepository, mockPusher, mockDenyPusher, mockAddPusher);
+        const service = new FriendsService(mockUserRepository, mockFriendsRepository, mockFriendRequestsRepository, mockDenyPusher, mockAddPusher);
 
         const actual = await service.getIdToAdd('email@test.com');
 
@@ -30,7 +29,6 @@ describe('UserExists tests', () => {
     let service: FriendsService;
     let mockUserRepository: aUserRepository;
     let mockFriendsRepository: aFriendsRepository;
-    let mockPusher: ServiceInterfacePusherFriendsAccept;
     let mockFriendRequestsRepository: aFriendsRepository;
     let mockDenyPusher: PusherDenyFriendInterface;
     const ids: Ids = { sessionId: 'idToAdd', requestId: 'userId' }
@@ -57,15 +55,11 @@ describe('UserExists tests', () => {
             get: jest.fn()
         }
 
-        mockPusher = {
-            addFriend: jest.fn()
-        }
-
         mockDenyPusher = { denyFriendRequest: jest.fn() }
     })
     it('the userResposixotry confirms the user exists', async () => {
         mockUserRepository.exists = jest.fn().mockResolvedValue(true);
-        service = new FriendsService(mockUserRepository, mockFriendsRepository, mockFriendRequestsRepository, mockPusher, mockDenyPusher, mockAddPusher);
+        service = new FriendsService(mockUserRepository, mockFriendsRepository, mockFriendRequestsRepository, mockDenyPusher, mockAddPusher);
         expect(await service.userExists('userId@test.com')).toBe(true);
         expect(mockUserRepository.exists).toHaveBeenCalledWith('userId@test.com');
     });
@@ -75,7 +69,6 @@ describe('deny request tests', () => {
     let service: FriendsService;
     let mockUserRepository: aUserRepository;
     let mockFriendsRepository: aFriendsRepository;
-    let mockAcceptPusher: ServiceInterfacePusherFriendsAccept;
     let mockFriendRequestsRepository: aFriendsRepository;
     let mockDenyPusher: PusherDenyFriendInterface;
     const ids: Ids = { sessionId: 'idToAdd', requestId: 'userId' }
@@ -102,14 +95,11 @@ describe('deny request tests', () => {
             get: jest.fn()
         }
 
-        mockAcceptPusher = {
-            addFriend: jest.fn()
-        }
 
         mockDenyPusher = {
             denyFriendRequest: jest.fn()
         }
-        service = new FriendsService(mockUserRepository, mockFriendsRepository, mockFriendRequestsRepository, mockAcceptPusher, mockDenyPusher, mockAddPusher);
+        service = new FriendsService(mockUserRepository, mockFriendsRepository, mockFriendRequestsRepository, mockDenyPusher, mockAddPusher);
     })
     it('should call the repository deny method', async () => {
         await service.removeEntry(ids)
@@ -118,7 +108,7 @@ describe('deny request tests', () => {
 
     it('should throw if the repository throws', async () => {
         mockFriendRequestsRepository.remove = jest.fn().mockRejectedValue('error');
-        service = new FriendsService(mockUserRepository, mockFriendsRepository, mockFriendRequestsRepository, mockAcceptPusher, mockDenyPusher, mockAddPusher);
+        service = new FriendsService(mockUserRepository, mockFriendsRepository, mockFriendRequestsRepository, mockDenyPusher, mockAddPusher);
         try {
             await service.removeEntry(ids)
         } catch (error) {
@@ -128,7 +118,7 @@ describe('deny request tests', () => {
 
     it('should throw if the pusherService throws', async () => {
         mockDenyPusher.denyFriendRequest = jest.fn().mockRejectedValue('error')
-        service = new FriendsService(mockUserRepository, mockFriendsRepository, mockFriendRequestsRepository, mockAcceptPusher, mockDenyPusher, mockAddPusher);
+        service = new FriendsService(mockUserRepository, mockFriendsRepository, mockFriendRequestsRepository, mockDenyPusher, mockAddPusher);
         try {
             await service.removeEntry(ids);
             expect(true).toEqual(false)
@@ -136,8 +126,8 @@ describe('deny request tests', () => {
             expect(error).toEqual('Pusher Error')
         }
     });
+});
 
-})
 
 describe('removeFriends tests', () => {
     let service: FriendsService;
@@ -176,7 +166,7 @@ describe('removeFriends tests', () => {
         mockDenyPusher = {
             denyFriendRequest: jest.fn()
         }
-        service = new FriendsService(mockUserRepository, mockFriendsRepository, mockFriendRequestsRepository, mockAcceptPusher, mockDenyPusher, mockAddPusher);
+        service = new FriendsService(mockUserRepository, mockFriendsRepository, mockFriendRequestsRepository, mockDenyPusher, mockAddPusher);
     })
     it('should make two calls to the repo removeFriend method', async () => {
         await service.removeFriends(ids)

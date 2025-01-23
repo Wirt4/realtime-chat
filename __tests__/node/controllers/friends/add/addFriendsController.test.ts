@@ -1,6 +1,6 @@
 import myGetServerSession from "@/lib/myGetServerSession";
 import { AddFriendsController } from "@/controllers/friends/add/controller";
-import { AddFriendsServiceInterface } from "@/services/friends/interfaces";
+import { aAddFriendService } from "@/services/friends/add/abstract";
 jest.mock("@/lib/myGetServerSession", () => jest.fn());
 
 describe('Add Tests', () => {
@@ -9,16 +9,17 @@ describe('Add Tests', () => {
     const userId = 'foo'
     const idToAdd = 'bar'
     const email = 'test@test.com'
-    let service: AddFriendsServiceInterface
+    let service: aAddFriendService
     beforeEach(() => {
         jest.clearAllMocks()
         service = {
-            handleFriendAdd: jest.fn(),
-            getIdToAdd: jest.fn().mockResolvedValue(idToAdd),
+            storeFriendRequest: jest.fn(),
+            getIdFromEmail: jest.fn().mockResolvedValue(idToAdd),
             isSameUser: jest.fn().mockReturnValue(false),
-            isAlreadyAddedToFriendRequests: jest.fn().mockResolvedValueOnce(false),
-            userExists: jest.fn().mockResolvedValue(true),
-            areAlreadyFriends: jest.fn().mockResolvedValue(false)
+            hasFriendRequest: jest.fn().mockResolvedValueOnce(false),
+            userExits: jest.fn().mockResolvedValue(true),
+            areFriends: jest.fn().mockResolvedValue(false),
+            triggerEvent: jest.fn()
         }
         controller = new AddFriendsController();
         (myGetServerSession as jest.Mock).mockResolvedValue({ user: { id: userId } })
@@ -26,7 +27,7 @@ describe('Add Tests', () => {
     })
     it('should call service handleFriendAdd', async () => {
         await controller.addFriendRequest(request, service)
-        expect(service.handleFriendAdd).toHaveBeenCalled()
+        expect(service.storeFriendRequest).toHaveBeenCalled()
     })
     it('if the email in the request body is invalid, return a 422', async () => {
         request = { json: async () => ({}) } as unknown as Request
@@ -38,13 +39,13 @@ describe('Add Tests', () => {
         expect(response.status).not.toEqual(422)
     })
     it('if the user does not exist, return a 400', async () => {
-        service.userExists = jest.fn().mockResolvedValue(false)
+        service.userExits = jest.fn().mockResolvedValue(false)
         const response = await controller.addFriendRequest(request, service)
         expect(response.status).toEqual(400)
     })
     it('userExists should be called with the email in the request body', async () => {
         await controller.addFriendRequest(request, service)
-        expect(service.userExists).toHaveBeenCalledWith(email)
+        expect(service.userExits).toHaveBeenCalledWith(email)
     })
     it('return 401 if the session is bad', async () => {
         (myGetServerSession as jest.Mock).mockResolvedValue(null);
@@ -59,13 +60,13 @@ describe('Add Tests', () => {
         expect(service.isSameUser).toHaveBeenCalledWith(ids)
     })
     it('return 400 if the target is already added', async () => {
-        service.isAlreadyAddedToFriendRequests = jest.fn().mockResolvedValueOnce(true)
+        service.hasFriendRequest = jest.fn().mockResolvedValueOnce(true)
         const response = await controller.addFriendRequest(request, service)
         expect(response.status).toEqual(400)
     })
     it('if user is already friends with target, return 400', async () => {
-        service.isAlreadyAddedToFriendRequests = jest.fn().mockResolvedValueOnce(false)
-        service.areAlreadyFriends = jest.fn().mockResolvedValue(true)
+        service.hasFriendRequest = jest.fn().mockResolvedValueOnce(false)
+        service.areFriends = jest.fn().mockResolvedValue(true)
         const response = await controller.addFriendRequest(request, service)
         expect(response.status).toEqual(400)
     })

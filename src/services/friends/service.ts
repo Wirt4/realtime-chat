@@ -1,9 +1,8 @@
 import {
     PusherAddFriendInterface, PusherDenyFriendInterface,
-    ServiceInterfacePusherFriendsAccept
+
 } from "@/services/pusher/interfaces";
 import {
-    AddFriendsServiceInterface,
     DenyFriendsServiceInterface
 } from "@/services/friends/interfaces";
 import { aFriendsRepository } from "@/repositories/friends/abstract";
@@ -11,14 +10,12 @@ import { aUserRepository } from "@/repositories/user/abstract";
 
 export class FriendsService
     implements
-    AddFriendsServiceInterface,
     DenyFriendsServiceInterface {
 
 
     private userRepository: aUserRepository;
     private friendsRepository: aFriendsRepository;
     private friendsRequestRepository: aFriendsRepository;
-    private acceptPusher: ServiceInterfacePusherFriendsAccept;
     private denyPusher: PusherDenyFriendInterface;
     private addPusher: PusherAddFriendInterface;
 
@@ -26,14 +23,12 @@ export class FriendsService
         userRepository: aUserRepository,
         friendsRepository: aFriendsRepository,
         friendsRequestRepository: aFriendsRepository,
-        acceptPusher: ServiceInterfacePusherFriendsAccept,
         denyPusher: PusherDenyFriendInterface,
         addPusher: PusherAddFriendInterface
     ) {
         this.userRepository = userRepository;
         this.friendsRepository = friendsRepository;
         this.friendsRequestRepository = friendsRequestRepository;
-        this.acceptPusher = acceptPusher;
         this.denyPusher = denyPusher;
         this.addPusher = addPusher;
     }

@@ -17,7 +17,6 @@ export function friendsServiceFactory() {
         friendsRepository,
         friendsRequestRepository,
         pusher,
-        pusher,
         pusher
     );
 }   

@@ -1,6 +1,7 @@
 import { aAddFriendsFacade } from "@/repositories/addFriendsFacade/abstract";
 import { aAddFriendService } from "./abstract";
 import { PusherAddFriendInterface } from "@/services/pusher/interfaces";
+
 export class AddFriendService extends aAddFriendService {
     private pusher: PusherAddFriendInterface;
     private facade: aAddFriendsFacade;
@@ -28,15 +29,15 @@ export class AddFriendService extends aAddFriendService {
     }
 
     areFriends(ids: Ids): Promise<boolean> {
-        throw new Error("Method not implemented.");
+        return this.facade.areFriends(ids);
     }
 
     userExits(email: string): Promise<boolean> {
-        throw new Error("Method not implemented.");
+        return this.facade.userExists(email);
     }
 
     hasFriendRequest(ids: Ids): Promise<boolean> {
-        throw new Error("Method not implemented.");
+        return this.facade.hasFriendRequest(ids);
     }
 
 }

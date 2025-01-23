@@ -1,24 +1,30 @@
 import { AddFriendService } from '@/services/friends/add/implementation';
 import { aAddFriendsFacade } from '@/repositories/addFriendsFacade/abstract';
 import { PusherAddFriendInterface } from '@/services/pusher/interfaces';
+
 describe('addFriendService tests', () => {
     let ids: Ids;
     let email: string;
     let facade: aAddFriendsFacade;
     let pusher: PusherAddFriendInterface;
     let service: AddFriendService;
+
     beforeEach(() => {
         ids = { requestId: 'a-request-id', sessionId: 'a-session-id' };
         email = 'senderEmail@test.com';
         facade = {
             store: jest.fn(),
-            getUserId: jest.fn()
+            getUserId: jest.fn(),
+            areFriends: jest.fn(),
+            hasFriendRequest: jest.fn(),
+            userExists: jest.fn()
         };
         pusher = {
             addFriendRequest: jest.fn()
         }
         service = new AddFriendService(facade, pusher);
     });
+
     it('trigger event should call the pusher', async () => {
         await service.triggerEvent(ids, email);
 
@@ -48,5 +54,38 @@ describe('addFriendService tests', () => {
     it('isSameUser should compare the strings', () => {
         expect(service.isSameUser({ requestId: 'ayn', sessionId: 'ayn' })).toBe(true);
         expect(service.isSameUser({ requestId: 'oil', sessionId: 'water' })).toBe(false);
-    })
+    });
+
+    it('areFriends should call the facade method areFriends', async () => {
+        facade.areFriends = jest.fn().mockResolvedValue(false);
+        service = new AddFriendService(facade, pusher);
+
+        const result = await service.areFriends(ids);
+
+        expect(result).toBe(false);
+        expect(facade.areFriends).toHaveBeenCalledTimes(1);
+        expect(facade.areFriends).toHaveBeenCalledWith(ids);
+    });
+
+    it('userExists should call facade', async () => {
+        facade.userExists = jest.fn().mockResolvedValue(true);
+        service = new AddFriendService(facade, pusher);
+
+        const result = await service.userExits(email);
+
+        expect(result).toBe(true);
+        expect(facade.userExists).toHaveBeenCalledTimes(1);
+        expect(facade.userExists).toHaveBeenCalledWith(email);
+    });
+
+    it('hasFriendRequest should call the facade', async () => {
+        facade.hasFriendRequest = jest.fn().mockResolvedValue(false);
+        service = new AddFriendService(facade, pusher);
+
+        const result = await service.hasFriendRequest(ids);
+
+        expect(result).toBe(false);
+        expect(facade.hasFriendRequest).toHaveBeenCalledTimes(1);
+        expect(facade.hasFriendRequest).toHaveBeenCalledWith(ids);
+    });
 });
