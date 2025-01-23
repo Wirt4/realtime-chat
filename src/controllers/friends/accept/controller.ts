@@ -32,11 +32,16 @@ export class AcceptFriendsController extends AbstractFriendsController {
     }
 
     isKnownError(error: string): boolean {
-        return error === FriendRequestStatus.AlreadyFriends || error == FriendRequestStatus.NoExistingFriendRequest
+        return error === FriendRequestStatus.AlreadyFriends || error == FriendRequestStatus.NoExistingFriendRequest;
     }
 
     async handle(ids: Ids, service: aAcceptFriendsService): Promise<void> {
-        return service.handleRequest(ids);
+        const areFriends = await service.areFriends(ids)
+        if (areFriends) throw FriendRequestStatus.AlreadyFriends;
+        const hasExistingFriendRequest = await service.hasExistingRequest(ids);
+        if (!hasExistingFriendRequest) throw FriendRequestStatus.NoExistingFriendRequest;
+        await service.store(ids);
+        return service.triggerEvent(ids);
     }
 
     async getIdToAdd(request: Request): Promise<string | boolean> {

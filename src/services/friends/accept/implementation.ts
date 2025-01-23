@@ -10,22 +10,30 @@ export class AcceptFriendsService extends aAcceptFriendsService {
         super()
         this.facade = facade
         this.pusherService = pusher
+    };
 
-    }
+    areFriends(ids: Ids): Promise<boolean> {
+        return this.facade.areFriends(ids);
+    };
 
-    async handleRequest(ids: Ids): Promise<void> {
-        const areFriends = await this.facade.areFriends(ids)
-        if (areFriends) throw 'Already friends';
-        const hasExistingFriendRequest = await this.facade.hasExistingFriendRequest(ids);
-        if (!hasExistingFriendRequest) throw 'No friend request found';
+    hasExistingRequest(ids: Ids): Promise<boolean> {
+        return this.facade.hasExistingFriendRequest(ids);
+    };
+
+    async triggerEvent(ids: Ids): Promise<void> {
         const sessionUser = await this.facade.getUser(ids.sessionId);
         const requestUser = await this.facade.getUser(ids.requestId);
         await Promise.all([
+            this.pusherService.addFriend(ids.sessionId, requestUser),
+            this.pusherService.addFriend(ids.requestId, sessionUser)
+        ])
+    };
+
+    async store(ids: Ids): Promise<void> {
+        await Promise.all([
             this.facade.addFriend(ids),
             this.facade.addFriend({ requestId: ids.sessionId, sessionId: ids.requestId }),
-            this.facade.removeRequest(ids),
-            this.pusherService.addFriend(ids.sessionId, requestUser),
-            this.pusherService.addFriend(ids.requestId, sessionUser),
+            this.facade.removeRequest(ids)
         ])
-    }
+    };
 }

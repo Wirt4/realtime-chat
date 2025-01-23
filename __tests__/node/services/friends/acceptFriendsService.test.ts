@@ -19,113 +19,65 @@ describe('acceptFriendsService', () => {
         };
     });
 
-    it('if areFriends resolves to true, then throw', async () => {
+    it('areFriends tests', async () => {
+        const ids: Ids = { requestId: '1', sessionId: '2' };
         facade.areFriends = jest.fn().mockResolvedValue(true);
-        service = new AcceptFriendsService(facade, mockPusher);
 
-        try {
-            await service.handleRequest({ requestId: '1', sessionId: '2' });
-            expect(true).toBe(false);
-        } catch (e) {
-            expect(e).toBe('Already friends');
-        }
+        service = new AcceptFriendsService(facade, mockPusher);
+        const result = await service.areFriends(ids);
+
+        expect(facade.areFriends).toHaveBeenCalledWith(ids);
+        expect(result).toBe(true);
     });
 
-    it("if areFriends resolves to false, then don't throw already friends", async () => {
-        service = new AcceptFriendsService(facade, mockPusher);
-
-        try {
-            await service.handleRequest({ requestId: '1', sessionId: '2' });
-        } catch (e) {
-            expect(e).not.toBe('Already friends');
-        }
-    });
-
-    it('if hasExistingFriendRequest resolves to false, then throw', async () => {
+    it('hasExistingRequest tests', async () => {
+        const ids: Ids = { requestId: '1', sessionId: '2' };
         facade.hasExistingFriendRequest = jest.fn().mockResolvedValue(false);
         service = new AcceptFriendsService(facade, mockPusher);
 
-        try {
-            await service.handleRequest({ requestId: '1', sessionId: '2' });
-            expect(true).toBe(false);
-        } catch (e) {
-            expect(e).toBe('No friend request found');
-        }
+        const result = await service.hasExistingRequest(ids);
+        expect(facade.hasExistingFriendRequest).toHaveBeenCalledWith(ids);
+        expect(result).toBe(false);
     });
 
-    it('if no errors, get the users from the ids', async () => {
-        const sessionId = 'foo';
-        const requestId = 'bar';
+    it('triggerEvent test', async () => {
+        const ids: Ids = { requestId: '1', sessionId: '2' };
         const sessionUser: User = {
-            id: sessionId, email: 'stub',
+            id: ids.sessionId, email: 'stub',
             image: 'stub', name: 'stub'
         };
         const requestuser: User = {
-            id: requestId, email: 'stub',
+            id: ids.requestId, email: 'stub',
             image: 'stub', name: 'stub'
         };
         facade.getUser = jest.fn(async (id: string) => {
-            if (id === sessionId) {
+            if (id === ids.sessionId) {
                 return sessionUser
             }
             return requestuser;
-
         });
+
         service = new AcceptFriendsService(facade, mockPusher);
 
-        await service.handleRequest({ requestId, sessionId });
+        await service.triggerEvent(ids);
 
-        expect(facade.getUser).toHaveBeenCalledTimes(2);
-        expect(facade.getUser).toHaveBeenCalledWith(sessionId);
-        expect(facade.getUser).toHaveBeenCalledWith(requestId);
+
+        expect(mockPusher.addFriend).toHaveBeenCalledTimes(2);
+        expect(mockPusher.addFriend).toHaveBeenCalledWith(ids.requestId, sessionUser);
+        expect(mockPusher.addFriend).toHaveBeenCalledWith(ids.sessionId, requestuser);
     });
 
-    it('friends should be mutually added', async () => {
+    it('store test: should take care of adding the friend and removing the request', async () => {
         const requestId = 'merry';
         const sessionId = 'pippin';
         service = new AcceptFriendsService(facade, mockPusher);
 
-        await service.handleRequest({ requestId, sessionId });
+        await service.store({ requestId, sessionId });
 
         expect(facade.addFriend).toHaveBeenCalledTimes(2);
         expect(facade.addFriend).toHaveBeenCalledWith({ requestId, sessionId });
         expect(facade.addFriend).toHaveBeenCalledWith({ requestId: sessionId, sessionId: requestId });
-    })
-
-    it('removeRequest should be called', async () => {
-        const requestId = 'merry';
-        const sessionId = 'pippin';
-        service = new AcceptFriendsService(facade, mockPusher);
-
-        await service.handleRequest({ requestId, sessionId });
-
         expect(facade.removeRequest).toHaveBeenCalledTimes(1);
-        expect(facade.addFriend).toHaveBeenCalledWith({ requestId, sessionId });
-    });
-
-    it('pusher should be called with the correct arguments', async () => {
-        const sessionId = 'foo';
-        const requestId = 'bar';
-        const sessionUser: User = {
-            id: sessionId, email: 'stub',
-            image: 'stub', name: 'stub'
-        };
-        const requestuser: User = {
-            id: requestId, email: 'stub',
-            image: 'stub', name: 'stub'
-        };
-        facade.getUser = jest.fn(async (id: string) => {
-            if (id === sessionId) {
-                return sessionUser
-            }
-            return requestuser;
-        });
-        service = new AcceptFriendsService(facade, mockPusher);
-
-        await service.handleRequest({ requestId, sessionId });
-
-        expect(mockPusher.addFriend).toHaveBeenCalledTimes(2);
-        expect(mockPusher.addFriend).toHaveBeenCalledWith(requestId, sessionUser);
-        expect(mockPusher.addFriend).toHaveBeenCalledWith(sessionId, requestuser);
+        expect(facade.removeRequest).toHaveBeenCalledWith({ requestId, sessionId });
     });
 });
