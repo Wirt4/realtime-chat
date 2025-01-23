@@ -27,7 +27,7 @@ export class DashboardData extends aDashboardData {
         const sessionId = session.user.id;
         const asyncData = await this.getAsyncData(sessionId);
 
-        const friendsListProps = { friends: asyncData.friendIds };
+        const friendsListProps = { friends: asyncData.friendNames };
         const hasFriends = asyncData.friends.length > 0;
         const hasActiveChats = asyncData.friends.length > 0;
         const friendRequestSidebarOptionsProps = this.getFriendRequestSidebarOptionsProps(sessionId, asyncData.friendRequests);
@@ -48,8 +48,9 @@ export class DashboardData extends aDashboardData {
         const friends = await Promise.all(friendIds.map(async (id: string) => {
             return this.facade.getUser(id);
         }));
+        const friendNames = friends.map(friend => friend.name);
         const sessionUser = await this.facade.getUser(sessionId);
-        return { friendRequests, friends, friendIds, sessionUser }
+        return { friendRequests, friends, friendNames, sessionUser }
     }
 
 
