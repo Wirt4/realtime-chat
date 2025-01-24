@@ -1,5 +1,7 @@
 import { FC } from "react";
 import { FriendsListProps } from "./interface";
+import PopupComponent from "../../ui/popup/component";
+
 
 const FriendsList: FC<FriendsListProps> = (props) => {
     const { friends } = props;
@@ -10,6 +12,7 @@ const FriendsList: FC<FriendsListProps> = (props) => {
             }).map((friend: string) => {
                 return (<li className='sidebar-chat-list-item'>
                     <span className='truncate'>{friend}</span>
+                    <PopupComponent />
                 </li>)
             })}
         </ul>)
