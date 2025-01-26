@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from "react";
+import { FC, useState } from "react";
+import { PopupProps } from "./interface";
 
-const PopupComponent = () => {
+
+const PopupComponent: FC<PopupProps> = ({ title }) => {
     const [isVisible, setIsVisible] = useState(false);
 
     const openPopup = () => setIsVisible(true);
@@ -13,9 +15,9 @@ const PopupComponent = () => {
             {/* Trigger Button */}
             <button
                 onClick={openPopup}
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                className="truncate"
             >
-                Open Popup
+                {title}
             </button>
 
             {/* Popup */}
