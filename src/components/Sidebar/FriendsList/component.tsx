@@ -11,9 +11,9 @@ const FriendsList: FC<FriendsListProps> = ({ friends = [] }) => {
     const openPopup = () => setIsVisible(true);
     const closePopup = () => setIsVisible(false);
     const apiPost = async (senderId: string) => {
+        console.log("clicked")
         await axios.post('/api/friends/remove', { idToRemove: senderId });
     }
-
 
     const sortedFriends = friends.sort((friendA, friendB) => friendA.name?.localeCompare(friendB.name));
     return (
@@ -26,8 +26,8 @@ const FriendsList: FC<FriendsListProps> = ({ friends = [] }) => {
                         <li className='sidebar-chat-list-item'>
                             <div className="flex flex-col">
                                 <ul className="flex flex-col pl-4">
-                                    <li>Chat</li>
-                                    <li onClick={() => apiPost(friend.id)}>Remove Friend</li>
+                                    <li className='sidebar-chat-list-item'>Chat</li>
+                                    <li className='sidebar-chat-list-item' onClick={() => apiPost(friend.id)}>Remove Friend</li>
                                 </ul>
                             </div>
                         </li>
