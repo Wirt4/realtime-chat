@@ -1,14 +1,16 @@
-import {z} from "zod";
-import {AbstractFriendsController} from "@/controllers/friends/abstract";
-import {RemoveFriendsServiceInterface} from "@/services/friends/interfaces";
+import { z } from "zod";
+import { AbstractFriendsController } from "@/controllers/friends/abstract";
+import { aRemoveFriendsService } from "@/services/friends/remove/abstact";
+
 
 export class RemoveFriendsController extends AbstractFriendsController {
-    async remove(request: Request, service: RemoveFriendsServiceInterface) {
+    async remove(request: Request, service: aRemoveFriendsService) {
         let friendId: string
+        const body = await request.json()
 
-        try{
-           friendId = z.object({idToRemove: z.string()}).parse(await request.json()).idToRemove;
-        }catch{
+        try {
+            friendId = service.getIdToRemove(body);
+        } catch {
             return this.respond("Invalid Format", 422)
         }
 
@@ -17,17 +19,12 @@ export class RemoveFriendsController extends AbstractFriendsController {
             return this.unauthorized()
         }
 
-        const ids:Ids = {sessionId: userId.toString(), requestId: friendId}
+        const ids: Ids = { sessionId: userId.toString(), requestId: friendId }
 
-        const areFriends = await service.areAlreadyFriends(ids, this.repository)
-        if (!areFriends) {
-            return this.respond('Not Friends', 400)
-        }
-
-        try{
-            await service.removeFriends(ids, this.repository)
-        }catch(error){
-            return this.respond(error as string, 500)
+        try {
+            await service.removeFriends(ids)
+        } catch (error) {
+            return this.respond(error as string, 400)
         }
 
         return this.ok()

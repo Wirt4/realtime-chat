@@ -1,4 +1,4 @@
-import Helpers from "@/components/ChatInput/helpers";
+import Helpers, {StateSetters} from "@/components/ChatInput/helpers";
 import React from "react";
 import axios from "axios";
 
@@ -14,7 +14,7 @@ describe('HandleKeystroke tests', () => {
             setInput: jest.fn(),
             setIsLoading: jest.fn(),
             reference: jest.fn()
-        }
+        } as unknown as StateSetters
         helpers = new Helpers(s, 'stub')
         sendMessageSpy = jest.spyOn(helpers, 'SendMessage')
         mockedAxios.post.mockImplementation(jest.fn());
@@ -69,7 +69,7 @@ describe('SendMessage tests', () => {
             setInput: jest.fn(),
             setIsLoading,
             reference: jest.fn()
-        }
+        } as unknown as StateSetters
         helpers = new Helpers(s, 'stub')
         mockedAxios.post.mockImplementation(jest.fn());
     })
@@ -99,7 +99,7 @@ describe('SendMessage tests', () => {
     test('axios post should be called with chatId: juliet--romeo', async ()=>{
         const input = 'I am and always will be your friend'
         const chatId = 'juliet--romeo'
-        const s = {setInput: jest.fn(), setIsLoading: jest.fn()}
+        const s = {setInput: jest.fn(), setIsLoading: jest.fn()} as unknown as StateSetters
         helpers = new Helpers(s, chatId)
         await helpers.SendMessage(input)
         expect(mockedAxios.post).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({chatId: chatId}));
@@ -108,7 +108,7 @@ describe('SendMessage tests', () => {
     test('axios post should be called with chatId: gorignack--jason', async ()=>{
         const input = 'I am and always will be your friend'
         const chatId = 'gorignack--jason'
-        const s = {setInput: jest.fn(), setIsLoading: jest.fn()}
+        const s = {setInput: jest.fn(), setIsLoading: jest.fn()} as unknown as StateSetters
         helpers = new Helpers(s, chatId)
         await helpers.SendMessage(input)
         expect(mockedAxios.post).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({chatId: chatId}));
@@ -149,7 +149,7 @@ describe('clearInput tests', ()=>{
             setInput: setInputSpy,
             setIsLoading: jest.fn(),
             reference: jest.fn()
-        }
+        } as unknown as StateSetters
         helpers = new Helpers(s, 'stub')
     })
 
@@ -167,7 +167,7 @@ describe('SetFocus tests',()=>{
         jest.resetAllMocks()
         focusSpy = jest.fn()
         reference = {current:{focus: focusSpy}}
-        const s = {setInput: jest.fn, setIsLoading: jest.fn(), reference: reference}
+        const s = {setInput: jest.fn, setIsLoading: jest.fn(), reference: reference} as unknown as StateSetters
         helpers = new Helpers(s, 'stub')
     })
 

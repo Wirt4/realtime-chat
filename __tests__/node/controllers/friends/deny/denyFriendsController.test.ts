@@ -1,17 +1,20 @@
-import {DenyFriendsController} from "@/controllers/friends/deny/controller";
+import { DenyFriendsController } from "@/controllers/friends/deny/controller";
 import myGetServerSession from "@/lib/myGetServerSession";
-import {DenyFriendsServiceInterface} from "@/services/friends/interfaces";
-jest.mock("@/lib/myGetServerSession",()=> jest.fn());
+import { aDenyFriendsService } from "@/services/friends/deny/abstract";
 
-describe('Deny Tests',()=>{
+jest.mock("@/lib/myGetServerSession", () => jest.fn());
+
+describe('Deny Tests', () => {
     let controller: DenyFriendsController
-    let service: DenyFriendsServiceInterface
+    let service: aDenyFriendsService
     let request: Request
-    beforeEach(()=>{
-        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'userId'}});
+    beforeEach(() => {
+        (myGetServerSession as jest.Mock).mockResolvedValue({ user: { id: 'userId' } });
         controller = new DenyFriendsController()
-        service ={
-            removeEntry: jest.fn()
+        service = {
+            removeEntry: jest.fn(),
+            triggerEvent: jest.fn(),
+            getIdToDeny: jest.fn().mockResolvedValue('validID')
         }
         request = new Request('/api/friends/deny', {
             method: 'POST',
@@ -42,21 +45,21 @@ describe('Deny Tests',()=>{
         const result = await controller.deny(request, service)
         expect(result.status).not.toEqual(422)
     })
-    it('the removal service throws',async ()=>{
+    it('the removal service throws', async () => {
         service.removeEntry = jest.fn().mockRejectedValue("Redis Error")
         const result = await controller.deny(request, service)
         expect(result.status).toEqual(424)
         expect(result.body?.toString()).toEqual("Redis Error")
     })
-    it('the removal service resolves',async ()=>{
+    it('the removal service resolves', async () => {
         const result = await controller.deny(request, service)
         expect(result.status).toEqual(200)
     })
-    it('the removal service is called with the correct arguments',async ()=>{
+    it('the removal service is called with the correct arguments', async () => {
         await controller.deny(request, service)
-        expect(service.removeEntry).toHaveBeenCalledWith({sessionId:'userId', requestId: 'validID'}, expect.anything(), expect.anything())
+        expect(service.removeEntry).toHaveBeenCalledWith({ sessionId: 'userId', requestId: 'validID' })
     })
-    it('if the pusher trigger fails, the response is  424',async ()=>{
+    it('if the pusher trigger fails, the response is  424', async () => {
         service.removeEntry = jest.fn().mockRejectedValue("Pusher Error")
         const result = await controller.deny(request, service)
         expect(result.status).toEqual(424)

@@ -1,94 +1,111 @@
 import {
-    FriendsAbstractInterface,
-    FriendsAddInterface, FriendsDenyInterface, FriendsRemoveInterface,
-} from "@/repositories/friends/interfaces";
-import {
     PusherAddFriendInterface, PusherDenyFriendInterface,
-    ServiceInterfacePusherFriendsAccept
+
 } from "@/services/pusher/interfaces";
-import {
-    AcceptFriendsServiceInterface,
-    AddFriendsServiceInterface,
-    DenyFriendsServiceInterface,
-    RemoveFriendsServiceInterface
-} from "@/services/friends/interfaces";
 
-export class FriendsService
-    implements
-        AcceptFriendsServiceInterface,
-        AddFriendsServiceInterface,
-        DenyFriendsServiceInterface,
-        RemoveFriendsServiceInterface
-{
+import { aFriendsRepository } from "@/repositories/friends/abstract";
+import { aUserRepository } from "@/repositories/user/abstract";
 
-    async userExists(email: string, friendsRepository: FriendsAbstractInterface): Promise<boolean>{
-        return friendsRepository.userExists(email)
+export class FriendsService {
+
+
+    private userRepository: aUserRepository;
+    private friendsRepository: aFriendsRepository;
+    private friendsRequestRepository: aFriendsRepository;
+    private denyPusher: PusherDenyFriendInterface;
+    private addPusher: PusherAddFriendInterface;
+
+    constructor(
+        userRepository: aUserRepository,
+        friendsRepository: aFriendsRepository,
+        friendsRequestRepository: aFriendsRepository,
+        denyPusher: PusherDenyFriendInterface,
+        addPusher: PusherAddFriendInterface
+    ) {
+        this.userRepository = userRepository;
+        this.friendsRepository = friendsRepository;
+        this.friendsRequestRepository = friendsRequestRepository;
+        this.denyPusher = denyPusher;
+        this.addPusher = addPusher;
     }
 
-    async areAlreadyFriends(ids: Ids, friendsRepository: FriendsAbstractInterface): Promise<boolean>{
-        return friendsRepository.areFriends(ids.sessionId, ids.requestId)
+    async userExists(email: string): Promise<boolean> {
+        return this.userRepository.exists(email)
     }
 
-    async isAlreadyAddedToFriendRequests(ids: Ids, friendsRepository: FriendsAbstractInterface): Promise<boolean>{
-        return friendsRepository.hasExistingFriendRequest(ids.sessionId, ids.requestId)
+    async areAlreadyFriends(ids: Ids): Promise<boolean> {
+        return false
+        // return this.friendsRepository.exists(ids.sessionId, ids.requestId)
     }
 
-    async handleFriendRequest(ids: Ids, friendsRepository: FriendsAddInterface, pusherService: ServiceInterfacePusherFriendsAccept): Promise<void>{
-        if (await this.areAlreadyFriends(ids, friendsRepository)) {
-            throw FriendRequestStatus.AlreadyFriends
-        }
-
-        if (!await this.isAlreadyAddedToFriendRequests(ids, friendsRepository)) {
-            throw FriendRequestStatus.NoExistingFriendRequest
-        }
-
-        const toAdd = await friendsRepository.getUser(ids.requestId)
-        const user = await friendsRepository.getUser(ids.sessionId)
-
-        await Promise.all([
-            friendsRepository.addToFriends(ids.requestId, ids.sessionId),
-            friendsRepository.addToFriends(ids.sessionId, ids.requestId),
-            friendsRepository.removeFriendRequest(ids.sessionId, ids.requestId),
-            pusherService.addFriend(ids.requestId, user),
-            pusherService.addFriend(ids.sessionId, toAdd),
-        ])
+    async isAlreadyAddedToFriendRequests(ids: Ids): Promise<boolean> {
+        //replace
+        return this.friendsRequestRepository.exists(ids.sessionId, ids.requestId)
     }
 
-    async handleFriendAdd(ids: Ids, senderEmail: string, friendsRepository: FriendsAddInterface, pusherService: PusherAddFriendInterface): Promise<void>{
-        await pusherService.addFriendRequest(ids.sessionId, ids.requestId, senderEmail)
-        await friendsRepository.addToFriendRequests(ids.sessionId, ids.requestId)
+    /**  async handleFriendRequest(ids: Ids,): Promise<void> {
+         const areAlreadyFriends = await this.friendsRepository.exists(ids.requestId, ids.sessionId); //stub
+         if (areAlreadyFriends) {
+             throw FriendRequestStatus.AlreadyFriends
+         }
+ 
+         const hasExistingFriendRequest = await this.friendsRequestRepository.exists(ids.sessionId, ids.requestId)
+         if (!hasExistingFriendRequest) {
+             throw FriendRequestStatus.NoExistingFriendRequest
+         }
+ 
+         const toAdd = await this.userRepository.getUser(ids.requestId)
+         const user = await this.userRepository.getUser(ids.sessionId)
+ 
+         await Promise.all([
+             this.friendsRepository.add(ids.requestId, ids.sessionId),
+             this.friendsRepository.add(ids.sessionId, ids.requestId),
+             this.friendsRequestRepository.remove(ids.sessionId, ids.requestId),
+             this.acceptPusher.addFriend(ids.requestId, user),
+             this.acceptPusher.addFriend(ids.sessionId, toAdd),
+         ])
+ 
+     }*/
+
+    async handleFriendAdd(ids: Ids): Promise<void> {
+        const user = await this.userRepository.getUser(ids.sessionId)
+        const senderEmail = user.email;
+        await this.addPusher.addFriendRequest(ids.sessionId, ids.requestId, senderEmail)
+        //replace
+        await this.friendsRequestRepository.add(ids.requestId, ids.sessionId);
     }
 
-    async getIdToAdd(email: string, friendsRepository: FriendsAbstractInterface): Promise<string>{
-        return friendsRepository.getUserId(email)
+    async getIdToAdd(email: string): Promise<string> {
+        const id = await this.userRepository.getId(email);
+        return id || ""
     }
 
-    isSameUser(ids:Ids): boolean{
+    isSameUser(ids: Ids): boolean {
         return ids.sessionId == ids.requestId
     }
 
-    async removeEntry(ids:Ids, repository:FriendsDenyInterface, pusher: PusherDenyFriendInterface ): Promise<void> {
-        try{
-           await repository.removeEntry(ids)
-        }catch{
+    async removeEntry(ids: Ids): Promise<void> {
+        try {
+            await this.friendsRequestRepository.remove(ids.requestId, ids.sessionId);
+        } catch {
             throw 'Redis Error'
         }
-        try{
-            await pusher.denyFriendRequest(ids.sessionId, ids.requestId)
-        }catch {
+        try {
+            await this.denyPusher.denyFriendRequest(ids.sessionId, ids.requestId)
+        } catch {
             throw 'Pusher Error'
         }
     }
 
-    async removeFriends(ids: Ids, friendsRepository: FriendsRemoveInterface): Promise<void> {
+    async removeFriends(ids: Ids): Promise<void> {
         await Promise.all([
-            friendsRepository.removeFriend(ids.sessionId, ids.requestId),
-            friendsRepository.removeFriend(ids.requestId, ids.sessionId),
+            this.friendsRepository.remove(ids.sessionId, ids.requestId),
+            this.friendsRepository.remove(ids.requestId, ids.sessionId),
         ])
     }
 }
 
-export enum FriendRequestStatus{
+export enum FriendRequestStatus {
     AlreadyFriends = 'Already Friends',
     NoExistingFriendRequest = 'No Existing Friend Request'
 }

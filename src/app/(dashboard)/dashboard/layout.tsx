@@ -1,61 +1,33 @@
-import React, {ReactNode} from "react";
-import {notFound} from "next/navigation";
-import Link from "next/link";
-import {Icons} from "@/components/Icons";
-import AddFriendListItem from "@/app/(dashboard)/dashboard/addFriendListItem";
-import FriendRequestSidebarOptions from "@/components/friendRequestSidebarOptions/FriendRequestSidebarOptions";
-import fetchRedis from "@/helpers/redis";
-import myGetServerSession from "@/lib/myGetServerSession";
-import SignOutButton from "@/components/signOutButton";
-import getFriendsById from "@/helpers/getFriendsById";
-import SidebarChatList from "@/components/SidebarChatList";
-import QueryBuilder from "@/lib/queryBuilder";
+import React, { ReactNode } from "react";
+import { notFound } from "next/navigation";
+import { Session } from "next-auth";
+import { dashboardDataFactory } from "@/services/dashboard/factory";
+import { aDashboardData } from "@/services/dashboard/abstract";
+import { SidebarProps } from "@/components/Sidebar/interface";
+import Sidebar from "@/components/Sidebar/component";
+
 
 interface LayoutProps {
     children: ReactNode
 }
 
-const Layout = async ({children}: LayoutProps = {children:null})=>{
-    const session = await myGetServerSession();
+const Layout = async ({ children }: LayoutProps = { children: null }) => {
+    const dashboardData: aDashboardData = dashboardDataFactory();
+    let session: Session | null = null;
 
-    if (!session){
+    try {
+        session = await dashboardData.getSession();
+    } catch {
         notFound();
     }
 
-    const userId = session?.user?.id
-    const friendRequests = await fetchRedis("smembers", QueryBuilder.incomingFriendRequests(userId));
-    const friendRequestProps = {
-        initialRequestCount: friendRequests.length,
-        sessionId: userId
-    }
-
-    const friends = await getFriendsById(userId);
-
-    return<div className='dashboard-window'>
-        <div className='dashboard'>
-        <Link href="/dashboard" className='dashboard-link'>
-           <Icons.Logo className='dashboard-logo'/>
-        </Link>
-            {friends.length > 0 ? <div className='dashboard-subheader'>
-            Your Chats
-        </div>: null}
-            <nav className='dashboard-nav-cols'>
-                <ul role='list' className='dashboard-ul'>
-                    <SidebarChatList friends={friends} aria-label='chat list' sessionId={userId}/>
-                    <div className='dashboard-subheader'>Overview</div>
-                        <ul role='list' className='dashboard-sub-ul'>
-                            <AddFriendListItem/>
-                            <FriendRequestSidebarOptions {...friendRequestProps}/>
-                        </ul>
-                    <ul role='list' className='signout-ul'>
-                        <SignOutButton/>
-                    </ul>
-                    <ul/>
-                </ul>
-            </nav>
-        </div>
+    const sidebarProps: SidebarProps = await dashboardData.getSidebarProps(session as Session);
+    return <div className='dashboard-window'>
+        <Sidebar{...sidebarProps} />
         {children}
-    </div>;
+    </div>
 }
+
+
 
 export default Layout;
