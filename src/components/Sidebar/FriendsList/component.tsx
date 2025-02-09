@@ -2,8 +2,7 @@
 
 import { FC, useState } from "react";
 import { FriendsListProps } from "./interface";
-import { X } from "lucide-react";
-import Button from "@/components/ui/button/Button";
+import axios from "axios";
 
 const FriendsList: FC<FriendsListProps> = (props) => {
     const { friends } = props;
@@ -11,6 +10,11 @@ const FriendsList: FC<FriendsListProps> = (props) => {
 
     const openPopup = () => setIsVisible(true);
     const closePopup = () => setIsVisible(false);
+
+    const apiPost = async (senderId: string) => {
+        await axios.post('/api/friends/remove', { id: senderId });
+    }
+
     return (
         <ul className='sidebar-chat-list'>
             {friends?.sort((friendA: string, friendB: string) => {
@@ -24,7 +28,7 @@ const FriendsList: FC<FriendsListProps> = (props) => {
                             <div className="flex flex-col">
                                 <ul className="flex flex-col pl-4">
                                     <li>Chat</li>
-                                    <li>Remove friend</li>
+                                    <li onClick={() => apiPost('stub')}>Remove Friend</li>
                                 </ul>
                             </div>
                         </li>
