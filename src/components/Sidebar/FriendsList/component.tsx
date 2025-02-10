@@ -5,13 +5,10 @@ import { FriendsListProps } from "./interface";
 import axios from "axios";
 
 const FriendsList: FC<FriendsListProps> = ({ friends = [] }) => {
-    console.log("friends:")
-    console.log(friends);
     const [isVisible, setIsVisible] = useState(false);
     const openPopup = () => setIsVisible(true);
     const closePopup = () => setIsVisible(false);
     const apiPost = async (senderId: string) => {
-        console.log("clicked")
         await axios.post('/api/friends/remove', { idToRemove: senderId });
     }
 

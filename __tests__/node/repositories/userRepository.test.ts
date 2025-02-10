@@ -97,17 +97,20 @@ describe('UserRepository userChats', () => {
             srem: jest.fn(),
             sadd: jest.fn(),
         } as unknown as Redis;
-    })
+    });
+
     it('getUserChats', async () => {
         const userRepository = new UserRepository(mockDb);
         expect(userRepository.getUserChats('userId')).resolves.toEqual(expected);
         expect(mockDb.smembers).toHaveBeenCalledWith('user:userId:chats');
     });
+
     it('removeUserChat', async () => {
         const userRepository = new UserRepository(mockDb);
         await userRepository.removeUserChat('userId', 'chatId');
         expect(mockDb.srem).toHaveBeenCalledWith('user:userId:chats', 'chatId');
     });
+
     it('addUserChat', async () => {
         const userRepository = new UserRepository(mockDb);
         await userRepository.addUserChat('userId', 'chatId');
