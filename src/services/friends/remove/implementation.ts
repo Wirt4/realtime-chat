@@ -26,13 +26,21 @@ export class RemoveFriendsService extends aRemoveFriendsService {
             this.friendsRepository.remove(ids.requestId, ids.sessionId),
             this.friendsRepository.remove(ids.sessionId, ids.requestId)
         ]);
+
         const requestUsersChats: ChatProfile[] = await this.userRepository.getUserChats(ids.requestId);
+        if (requestUsersChats.length === 0) return;
         const sessionUserChats: ChatProfile[] = await this.userRepository.getUserChats(ids.sessionId);
+        if (sessionUserChats.length === 0) return;
+
         const rawChats = requestUsersChats.concat(sessionUserChats);
         const targetChats = new Set<string>();
 
-        rawChats.forEach(chat => {
-            if (chat.participants.length === 2 && chat.participants.includes(ids.requestId) && chat.participants.includes(ids.sessionId)) {
+        rawChats.forEach(async chat => {
+            if (
+                chat.participants.length === 2
+                && chat.participants.includes(ids.requestId)
+                && chat.participants.includes(ids.sessionId)
+            ) {
                 targetChats.add(chat.id);
             }
         });
