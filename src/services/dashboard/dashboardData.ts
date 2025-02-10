@@ -48,7 +48,7 @@ export class DashboardData extends aDashboardData {
         const friends = await Promise.all(friendIds.map(async (id: string) => {
             return this.facade.getUser(id);
         }));
-        let friendProfiles: { name: string, id: string }[] = [];
+        const friendProfiles: { name: string, id: string }[] = [];
         for (const friend of friends) {
             friendProfiles.push({ name: friend.name, id: friend.id });
         }
@@ -65,7 +65,7 @@ export class DashboardData extends aDashboardData {
     }
 
     private sidebarChatlistProps(sessionId: string, sessionUser: User, friends: User[]): SidebarChatListProps {
-        let chats: SidebarChatListItemProps[] = [];
+        const chats: SidebarChatListItemProps[] = [];
 
         for (const friend of friends) {
             chats.push({
