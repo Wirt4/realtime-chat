@@ -1,4 +1,4 @@
 interface ChatProfile {
-    participants: string[]
+    members: Set<string>
     id: string
 }

@@ -4,6 +4,7 @@ import { RemoveFriendsService } from '@/services/friends/remove/implementation';
 import { idToRemoveSchema } from '@/schemas/idToRemoveSchema';
 import { aUserRepository } from '@/repositories/user/abstract';
 import { aMessageRepository } from '@/repositories/message/removeAll/abstract';
+import { aChatProfileRepository } from '@/repositories/chatProfile/abstract';
 jest.mock('@/schemas/idToRemoveSchema');
 
 describe('removeFriendsService', () => {
@@ -11,6 +12,7 @@ describe('removeFriendsService', () => {
     let mockUsersRepo: aUserRepository;
     let mockMessageRepo: aMessageRepository;
     let service: aRemoveFriendsService;
+    let mockChatProfileRepo: aChatProfileRepository
     let requestId: string;
     let sessionId: string;
 
@@ -27,16 +29,22 @@ describe('removeFriendsService', () => {
             exists: jest.fn(),
             getId: jest.fn(),
             getUser: jest.fn(),
+            removeUserChat: jest.fn(),
+            addUserChat: jest.fn(),
         }
         mockMessageRepo = {
             removeAllMessages: jest.fn(),
+        }
+        mockChatProfileRepo = {
+            getChatProfile: jest.fn(),
+            createChatProfile: jest.fn(),
         }
         requestId = 'foo';
         sessionId = 'bar';
     })
     it('calling remove should call remove on the friends repository', async () => {
         mockFriendsRepo.exists = jest.fn().mockResolvedValue(true);
-        service = new RemoveFriendsService(mockFriendsRepo, mockUsersRepo, mockMessageRepo);
+        service = new RemoveFriendsService(mockFriendsRepo, mockUsersRepo, mockMessageRepo, mockChatProfileRepo);
 
         await service.removeFriends({ requestId, sessionId });
 
@@ -46,7 +54,7 @@ describe('removeFriendsService', () => {
     });
     it('calling remove should only call remove if the friend association exists', async () => {
         mockFriendsRepo.exists = jest.fn().mockResolvedValue(false);
-        service = new RemoveFriendsService(mockFriendsRepo, mockUsersRepo, mockMessageRepo);
+        service = new RemoveFriendsService(mockFriendsRepo, mockUsersRepo, mockMessageRepo, mockChatProfileRepo);
 
         await service.removeFriends({ requestId, sessionId });
 
@@ -86,22 +94,47 @@ describe('removeFriendsService', () => {
         jest.spyOn(idToRemoveSchema, 'parse').mockReturnValue(body);
         jest.spyOn(mockUsersRepo, 'getUserChats').mockImplementation(async (id: string) => {
             if (id === requestId) {
-                return [{ participants: [requestId, sessionId], id: 'toremove' }, { participants: [requestId, "Leia"], id: 'spam' }];
+                return new Set(['toremove', 'spam', 'quasi']);
             }
             if (id === sessionId) {
-                return [{ participants: [sessionId, requestId, "Leia"], id: 'eggs' }, { participants: [requestId, sessionId], id: 'toremove' }];
+                return new Set(['quasi', 'eggs', 'toremove']);
             }
-            return [];
+            return new Set();
+        });
+        jest.spyOn(mockChatProfileRepo, 'getChatProfile').mockImplementation(async (chatId: string) => {
+            if (chatId === 'toremove') {
+                return { id: 'toremove', members: new Set([requestId, sessionId]) };
+            }
+            if (chatId === 'spam') {
+                return { id: 'spam', members: new Set([requestId, 'Leia']) };
+            }
+            if (chatId === 'quasi') {
+                return { id: 'quasi', members: new Set([requestId, sessionId, 'Leia']) };
+            }
+            if (chatId === 'eggs') {
+                return { id: 'eggs', members: new Set([sessionId, 'Leia']) };
+            }
+            const members: Set<string> = new Set([]);
+            return { id: 'unexpected', members };
         })
 
-        service = new RemoveFriendsService(mockFriendsRepo, mockUsersRepo, mockMessageRepo);
+        service = new RemoveFriendsService(mockFriendsRepo, mockUsersRepo, mockMessageRepo, mockChatProfileRepo);
 
         await service.removeFriends({ requestId, sessionId });
 
         expect(mockUsersRepo.getUserChats).toHaveBeenCalledTimes(2);
         expect(mockUsersRepo.getUserChats).toHaveBeenCalledWith(requestId);
         expect(mockUsersRepo.getUserChats).toHaveBeenCalledWith(sessionId);
+
+        expect(mockChatProfileRepo.getChatProfile).toHaveBeenCalledTimes(2);
+        expect(mockChatProfileRepo.getChatProfile).toHaveBeenCalledWith('toremove');
+        expect(mockChatProfileRepo.getChatProfile).toHaveBeenCalledWith('quasi');
+
+        expect(mockUsersRepo.removeUserChat).toHaveBeenCalledTimes(2);
+        expect(mockUsersRepo.removeUserChat).toHaveBeenCalledWith(requestId, 'toremove');
+        expect(mockUsersRepo.removeUserChat).toHaveBeenCalledWith(sessionId, 'toremove');
+
         expect(mockMessageRepo.removeAllMessages).toHaveBeenCalledTimes(1);
-        // expect(mockMessageRepo.removeAllMessages).toHaveBeenCalledWith('toremove');
+        expect(mockMessageRepo.removeAllMessages).toHaveBeenCalledWith('toremove');
     });
 });
