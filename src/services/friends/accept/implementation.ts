@@ -40,7 +40,17 @@ export class AcceptFriendsService extends aAcceptFriendsService {
         await Promise.all([
             this.facade.addFriend(ids),
             this.facade.addFriend({ requestId: ids.sessionId, sessionId: ids.requestId }),
-            this.facade.removeRequest(ids)
+            this.facade.removeRequest(ids),
+            this.generateNewChat(ids)
         ]);
     };
+
+    private async generateNewChat(ids: Ids): Promise<void> {
+        //generate a chatId
+        await Promise.all([
+            //add the chat to the sessionId's chats
+            //add the chat to the requestId's chats
+            //create the chatProfile keyed to the chatID
+        ])
+    }
 }
