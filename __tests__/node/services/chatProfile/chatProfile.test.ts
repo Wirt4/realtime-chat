@@ -9,4 +9,12 @@ describe("Create Chat Id Tests", () => {
         expect(typeof id).toBe("string");
         expect(id.length).toBe(74);
     })
+    it("The IDs should be unique", () => {
+        const chatProfileService = new ChatProfileServce();
+
+        const id1 = chatProfileService.createChatId();
+        const id2 = chatProfileService.createChatId();
+
+        expect(id1).not.toEqual(id2);
+    })
 });
