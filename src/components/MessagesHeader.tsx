@@ -2,25 +2,20 @@
 
 import { FC, useState } from "react";
 import Image from "next/image";
-import { Loader2 } from "lucide-react";
-import axios from "axios";
 
 interface MessagesHeaderProps {
     partner: User
     chatId: string
 }
 
-const MessagesHeader: FC<MessagesHeaderProps> = ({ partner, chatId }) => {
-    const { image, name, email, id } = partner
+const MessagesHeader: FC<MessagesHeaderProps> = ({ partner }) => {
+    const { image, name, email } = partner
     const [hidden, setHidden] = useState<boolean>(true)
-    const [loading, setLoading] = useState<boolean>(false)
+
     const toggle = () => {
-        setHidden(prev => !prev)
+        setHidden(!hidden)
     }
 
-    if (loading) {
-        return <Loader2 className='loading' aria-label="loading" />
-    }
 
     return <div className='chat-b'>
         <div className='chat-c'>

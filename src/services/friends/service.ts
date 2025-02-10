@@ -33,39 +33,11 @@ export class FriendsService {
         return this.userRepository.exists(email)
     }
 
-    async areAlreadyFriends(ids: Ids): Promise<boolean> {
-        return false
-        // return this.friendsRepository.exists(ids.sessionId, ids.requestId)
-    }
-
     async isAlreadyAddedToFriendRequests(ids: Ids): Promise<boolean> {
         //replace
         return this.friendsRequestRepository.exists(ids.sessionId, ids.requestId)
     }
 
-    /**  async handleFriendRequest(ids: Ids,): Promise<void> {
-         const areAlreadyFriends = await this.friendsRepository.exists(ids.requestId, ids.sessionId); //stub
-         if (areAlreadyFriends) {
-             throw FriendRequestStatus.AlreadyFriends
-         }
- 
-         const hasExistingFriendRequest = await this.friendsRequestRepository.exists(ids.sessionId, ids.requestId)
-         if (!hasExistingFriendRequest) {
-             throw FriendRequestStatus.NoExistingFriendRequest
-         }
- 
-         const toAdd = await this.userRepository.getUser(ids.requestId)
-         const user = await this.userRepository.getUser(ids.sessionId)
- 
-         await Promise.all([
-             this.friendsRepository.add(ids.requestId, ids.sessionId),
-             this.friendsRepository.add(ids.sessionId, ids.requestId),
-             this.friendsRequestRepository.remove(ids.sessionId, ids.requestId),
-             this.acceptPusher.addFriend(ids.requestId, user),
-             this.acceptPusher.addFriend(ids.sessionId, toAdd),
-         ])
- 
-     }*/
 
     async handleFriendAdd(ids: Ids): Promise<void> {
         const user = await this.userRepository.getUser(ids.sessionId)
