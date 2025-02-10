@@ -9,7 +9,11 @@ export class RemoveFriendsService extends aRemoveFriendsService {
     private userRepository: aUserRepository;
     private messageRepository: aMessageRepository;
 
-    constructor(friendsRepository: aFriendsRepository, userRepository: aUserRepository, messageRepository: aMessageRepository) {
+    constructor(
+        friendsRepository: aFriendsRepository,
+        userRepository: aUserRepository,
+        messageRepository: aMessageRepository
+    ) {
         super()
         this.friendsRepository = friendsRepository;
         this.userRepository = userRepository;
@@ -25,12 +29,12 @@ export class RemoveFriendsService extends aRemoveFriendsService {
         const requestUsersChats: ChatProfile[] = await this.userRepository.getUserChats(ids.requestId);
         const sessionUserChats: ChatProfile[] = await this.userRepository.getUserChats(ids.sessionId);
         const rawChats = requestUsersChats.concat(sessionUserChats);
-        const targetChats: string[] = [];
+        const targetChats = new Set<string>();
 
         rawChats.forEach(chat => {
             if (chat.participants.length === 2 && chat.participants.includes(ids.requestId) && chat.participants.includes(ids.sessionId)) {
+                targetChats.add(chat.id);
             }
-            targetChats.push(chat.id);
         });
 
         targetChats.forEach(async chatId => {

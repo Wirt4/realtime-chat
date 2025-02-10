@@ -10,7 +10,6 @@ const FriendListItem: FC<FriendListItemProps> = ({ name, id }) => {
 
     const removeFriend = async () => {
         await axios.post('/api/friends/remove', { idToRemove: id });
-        await axios.post('/api/message/remove/all', { idToRemove: id });
         setIsVisible(false);
     }
 
