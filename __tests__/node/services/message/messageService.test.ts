@@ -10,7 +10,7 @@ jest.mock("nanoid", () => ({
 }));
 
 describe('isChatMember tests', () => {
-    let profile: ChatProfile
+    let profile: SenderHeader
     let service: MessageService
     beforeEach(() => {
         profile = {
@@ -31,7 +31,7 @@ describe('isChatMember tests', () => {
 describe('areFriends tests', () => {
     let friendsRepo: aFriendsRepository
     let service: MessageService
-    let profile: ChatProfile
+    let profile: SenderHeader
     beforeEach(() => {
         friendsRepo = {
             exists: jest.fn().mockResolvedValue(true),
@@ -65,7 +65,7 @@ describe('sendMessage tests', () => {
     let service: MessageService
     let repo: aSendMessageRepository
     let text: string
-    let profile: ChatProfile
+    let profile: SenderHeader
     let pusher: PusherSendMessageInterface
     beforeEach(() => {
         jest.resetAllMocks()

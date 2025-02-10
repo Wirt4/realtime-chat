@@ -30,7 +30,7 @@ export class MessageSendController extends AbstractMessageController {
         }
         const body = await request.json()
         const chatId = body.chatId
-        const chatProfile: ChatProfile = { id: chatId as string, sender: sessionUser as string }
+        const chatProfile: SenderHeader = { id: chatId as string, sender: sessionUser as string }
 
         const areFriends = await service.areFriends(chatProfile, this.friendsRepository)
         const isChatMember = service.isChatMember(chatProfile)

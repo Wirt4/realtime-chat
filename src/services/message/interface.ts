@@ -5,8 +5,8 @@ import { aMessageRepository } from "@/repositories/message/removeAll/abstract";
 import { aSendMessageRepository } from "@/repositories/message/send/abstract";
 
 export interface MessageSendInterface extends MessageServiceInterface {
-    areFriends(chatProfile: ChatProfile, repository: aFriendsRepository): Promise<boolean>
-    sendMessage(chatProfile: ChatProfile, text: string, repository: aSendMessageRepository, pusher: PusherSendMessageInterface): Promise<void>
+    areFriends(chatProfile: SenderHeader, repository: aFriendsRepository): Promise<boolean>
+    sendMessage(chatProfile: SenderHeader, text: string, repository: aSendMessageRepository, pusher: PusherSendMessageInterface): Promise<void>
 }
 
 export interface MessageRemoveAllInterface extends MessageServiceInterface {
@@ -14,5 +14,5 @@ export interface MessageRemoveAllInterface extends MessageServiceInterface {
 }
 
 interface MessageServiceInterface {
-    isChatMember(chatProfile: ChatProfile): boolean
+    isChatMember(chatProfile: SenderHeader): boolean
 }

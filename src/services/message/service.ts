@@ -8,17 +8,17 @@ import { aSendMessageRepository } from "@/repositories/message/send/abstract";
 export class MessageService implements
     MessageSendInterface,
     MessageRemoveAllInterface {
-    isChatMember(chatProfile: ChatProfile): boolean {
+    isChatMember(chatProfile: SenderHeader): boolean {
         const participants = new Participants(chatProfile.id)
         return participants.isParticipant(chatProfile.sender)
     }
 
-    async areFriends(chatProfile: ChatProfile, friendRepository: aFriendsRepository): Promise<boolean> {
+    async areFriends(chatProfile: SenderHeader, friendRepository: aFriendsRepository): Promise<boolean> {
         const participants = new Participants(chatProfile.id)
         return friendRepository.exists(chatProfile.sender, participants.getCorrespondent(chatProfile.sender))
     }
 
-    async sendMessage(chatProfile: ChatProfile, text: string, repository: aSendMessageRepository, pusher: PusherSendMessageInterface): Promise<void> {
+    async sendMessage(chatProfile: SenderHeader, text: string, repository: aSendMessageRepository, pusher: PusherSendMessageInterface): Promise<void> {
         const msg = { id: nanoid(), senderId: chatProfile.sender, text, timestamp: Date.now() }
         await Promise.all([
             repository.sendMessage(chatProfile.id, msg),
