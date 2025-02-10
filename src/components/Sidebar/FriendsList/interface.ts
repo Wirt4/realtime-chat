@@ -1,3 +1,8 @@
 export interface FriendsListProps {
-    friends: string[];
+    friends: Profile[];
+}
+
+interface Profile {
+    name: string;
+    id: string;
 }
