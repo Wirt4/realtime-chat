@@ -10,7 +10,8 @@ describe("ChatProfileService", () => {
         jest.resetAllMocks();
         mockRepository = {
             createChatProfile: jest.fn(),
-            getChatProfile: jest.fn()
+            getChatProfile: jest.fn(),
+            addChatMember: jest.fn()
         }
         mockIdGenerator = {
             newId: jest.fn()
@@ -40,8 +41,7 @@ describe("ChatProfileService", () => {
     });
 
     test('when createChat is called, it should pass the id to the repository.createNewProfile', async () => {
-
-        const mockIdGenerator = {
+        mockIdGenerator = {
             newId: jest.fn().mockReturnValue("456")
         }
         const emptySet = new Set();
@@ -50,5 +50,19 @@ describe("ChatProfileService", () => {
         await chatProfileService.createChat();
 
         expect(mockRepository.createChatProfile).toHaveBeenCalledWith("456", emptySet);
+    });
+
+    test('when addUserToChat is called, it should pass the chatId and userId to the repository.addUserToChat', async () => {
+        const chatId = "123";
+        const userId = "456";
+        mockIdGenerator = {
+            newId: jest.fn().mockReturnValue(chatId)
+        }
+        chatProfileService = new ChatProfileService(mockRepository, mockIdGenerator);
+        await chatProfileService.createChat();
+
+        await chatProfileService.addUserToChat(chatId, userId);
+
+        expect(mockRepository.addChatMember).toHaveBeenCalledWith(chatId, userId);
     });
 });
