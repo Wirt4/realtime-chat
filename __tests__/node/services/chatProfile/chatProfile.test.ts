@@ -1,26 +1,14 @@
 import { ChatProfileService } from "@/services/chatProfile/implementation";
+describe("ChatProfileService", () => {
 
-describe("Create Chat Id Tests", () => {
-    let service: ChatProfileService;
-    beforeEach(() => {
-        service = new ChatProfileService();
-    });
-    it("The ID should be a string 74 chars long", () => {
-        const id = service.createChat();
+    test('CreateChat Test should call idGenerator.create()', async () => {
+        const mockIdGenerator = {
+            newId: jest.fn()
+        }
+        const chatProfileService = new ChatProfileService(mockIdGenerator);
 
-        expect(typeof id).toBe("string");
-        expect(id.length).toBe(74);
-    })
-    it("The IDs should be unique", () => {
-        const id1 = service.createChat();
-        const id2 = service.createChat();
+        await chatProfileService.createChat();
 
-        expect(id1).not.toEqual(id2);
-    })
-    it("The two middle chars should be hypens", () => {
-        const id = service.createChat();
-
-        expect(id[36]).toBe("-");
-        expect(id[37]).toBe("-");
+        expect(mockIdGenerator.newId).toHaveBeenCalledTimes(1);
     })
 });
