@@ -2,6 +2,19 @@ import { aChatProfileService } from "./abstract";
 
 export class ChatProfileServce implements aChatProfileService {
     createChatId(): string {
-        return "123456781234567812345678123456712341230045678123456781234567812345671234--";
+        const array = new Uint8Array(74);
+        crypto.getRandomValues(array);
+        console.log(array);
+        console.log(array.length);
+        return this.arrToString(array);
+    }
+
+    private arrToString(arr: Uint8Array): string {
+        const allowed = "-abcdefghijklmnopqrstuvwxyz0123456789";
+        let s = ""
+        for (let i = 0; i < arr.length; i++) {
+            s += allowed[arr[i] % allowed.length];
+        }
+        return s;
     }
 }
