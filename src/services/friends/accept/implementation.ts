@@ -49,7 +49,9 @@ export class AcceptFriendsService extends aAcceptFriendsService {
     };
 
     async generateNewChat(ids: Ids): Promise<void> {
-        const newChatId = await this.chatProfileService.createChat();
+        await this.chatProfileService.createChat();
+
+        const newChatId = this.chatProfileService.getChatId();
         await Promise.all([
             this.facade.addToUserChats(ids.requestId, newChatId),
             this.facade.addToUserChats(ids.sessionId, newChatId),
