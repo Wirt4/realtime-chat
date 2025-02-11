@@ -1,32 +1,54 @@
+import { aChatProfileRepository } from "@/repositories/chatProfile/abstract";
 import { ChatProfileService } from "@/services/chatProfile/implementation";
+import { aIdGeneratorService } from "@/services/idGenerator/abstract";
 describe("ChatProfileService", () => {
+    let mockRepository: aChatProfileRepository;
+    let mockIdGenerator: aIdGeneratorService;
+    let chatProfileService: ChatProfileService;
 
-    test('CreateChat Test should call idGenerator.create()', async () => {
-        const mockIdGenerator = {
+    beforeEach(() => {
+        jest.resetAllMocks();
+        mockRepository = {
+            createChatProfile: jest.fn(),
+            getChatProfile: jest.fn()
+        }
+        mockIdGenerator = {
             newId: jest.fn()
         }
-        const chatProfileService = new ChatProfileService(mockIdGenerator);
+        chatProfileService = new ChatProfileService(mockRepository, mockIdGenerator);
+    });
 
+    test('CreateChat Test should call idGenerator.create()', async () => {
         await chatProfileService.createChat();
 
         expect(mockIdGenerator.newId).toHaveBeenCalledTimes(1);
     });
 
     test('If getChatId is called before create, then it should throw', async () => {
-        const mockIdGenerator = {
-            newId: jest.fn()
-        }
-        const chatProfileService = new ChatProfileService(mockIdGenerator);
         expect(() => chatProfileService.getChatId()).toThrow();
     });
+
     test('If getChatId is called before create, then it should throw', async () => {
-        const mockIdGenerator = {
+        mockIdGenerator = {
             newId: jest.fn().mockReturnValue("123")
         }
-        const chatProfileService = new ChatProfileService(mockIdGenerator);
+        chatProfileService = new ChatProfileService(mockRepository, mockIdGenerator);
 
         await chatProfileService.createChat();
 
         expect(chatProfileService.getChatId()).toEqual("123");
+    });
+
+    test('when createChat is called, it should pass the id to the repository.createNewProfile', async () => {
+
+        const mockIdGenerator = {
+            newId: jest.fn().mockReturnValue("456")
+        }
+        const emptySet = new Set();
+        chatProfileService = new ChatProfileService(mockRepository, mockIdGenerator);
+
+        await chatProfileService.createChat();
+
+        expect(mockRepository.createChatProfile).toHaveBeenCalledWith("456", emptySet);
     });
 });
