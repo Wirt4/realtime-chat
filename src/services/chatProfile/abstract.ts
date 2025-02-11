@@ -1,3 +1,4 @@
 export abstract class aChatProfileService {
-    abstract createChatId(): string
+    abstract createChat(): Promise<string>
+    abstract addUserToChat(chatId: string, userId: string): Promise<void>
 }

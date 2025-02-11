@@ -2,15 +2,18 @@ import { aAcceptFriendsService } from "./abstract";
 import { ServiceInterfacePusherFriendsAccept } from "@/services/pusher/interfaces";
 import { aAcceptFriendsFacade } from "@/repositories/acceptFriendsFacade/abstract";
 import { friendSchema } from "@/schemas/friendSchema";
+import { aChatProfileService } from "@/services/chatProfile/abstract";
 
 export class AcceptFriendsService extends aAcceptFriendsService {
     private facade: aAcceptFriendsFacade;
     private pusherService: ServiceInterfacePusherFriendsAccept;
+    private chatProfileService: aChatProfileService;
 
-    constructor(facade: aAcceptFriendsFacade, pusher: ServiceInterfacePusherFriendsAccept) {
+    constructor(facade: aAcceptFriendsFacade, pusher: ServiceInterfacePusherFriendsAccept, chatProfileService: aChatProfileService) {
         super()
         this.facade = facade
         this.pusherService = pusher
+        this.chatProfileService = chatProfileService
     };
 
     getIdToAdd(body: { id: string; }): string {
@@ -45,12 +48,13 @@ export class AcceptFriendsService extends aAcceptFriendsService {
         ]);
     };
 
-    private async generateNewChat(ids: Ids): Promise<void> {
-        //generate a chatId
+    async generateNewChat(ids: Ids): Promise<void> {
+        const newChatId = await this.chatProfileService.createChat();
         await Promise.all([
-            //add the chat to the sessionId's chats
-            //add the chat to the requestId's chats
-            //create the chatProfile keyed to the chatID
+            this.facade.addToUserChats(ids.requestId, newChatId),
+            this.facade.addToUserChats(ids.sessionId, newChatId),
+            this.chatProfileService.addUserToChat(newChatId, ids.requestId),
+            this.chatProfileService.addUserToChat(newChatId, ids.sessionId),
         ])
     }
 }

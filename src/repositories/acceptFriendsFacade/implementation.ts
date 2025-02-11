@@ -3,6 +3,8 @@ import { FriendRequestsRepository } from "@/repositories/friends/requestsImpleme
 import { aAcceptFriendsFacade } from "./abstract";
 import { Redis } from "@upstash/redis";
 import { UserRepository } from "../user/implementation";
+import { ChatProfileService } from "@/services/chatProfile/implementation";
+
 
 export class AcceptFriendsFacade extends aAcceptFriendsFacade {
     private friendsRepository: FriendsRepository;

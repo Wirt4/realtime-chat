@@ -1,11 +1,9 @@
 import { aChatProfileService } from "./abstract";
 
-export class ChatProfileServce implements aChatProfileService {
-    createChatId(): string {
+export class ChatProfileService implements aChatProfileService {
+    createChat(): string {
         const array = new Uint8Array(74);
         crypto.getRandomValues(array);
-        console.log(array);
-        console.log(array.length);
         return this.arrToString(array);
     }
 
