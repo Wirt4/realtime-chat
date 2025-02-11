@@ -13,7 +13,11 @@ export class ChatProfileServce implements aChatProfileService {
         const allowed = "-abcdefghijklmnopqrstuvwxyz0123456789";
         let s = ""
         for (let i = 0; i < arr.length; i++) {
-            s += allowed[arr[i] % allowed.length];
+            if (i === 36 || i === 37) {
+                s += "-";
+            } else {
+                s += allowed[arr[i] % allowed.length];
+            }
         }
         return s;
     }
