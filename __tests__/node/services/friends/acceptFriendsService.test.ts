@@ -188,7 +188,7 @@ describe('acceptFriendsService.generateNewChat', () => {
 
         await service.generateNewChat({ requestId: 'requestUser', sessionId: 'sessionUser' });
 
-        expect(mockChatProfileService.addUserToChat).toHaveBeenCalledWith('randomizedChatId', 'requestUser');
-        expect(mockChatProfileService.addUserToChat).toHaveBeenCalledWith('randomizedChatId', 'sessionUser');
+        expect(mockChatProfileService.addUserToChat).toHaveBeenCalledWith('requestUser');
+        expect(mockChatProfileService.addUserToChat).toHaveBeenCalledWith('sessionUser');
     });
 });

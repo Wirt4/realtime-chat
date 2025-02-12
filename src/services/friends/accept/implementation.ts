@@ -55,8 +55,8 @@ export class AcceptFriendsService extends aAcceptFriendsService {
         await Promise.all([
             this.facade.addToUserChats(ids.requestId, newChatId),
             this.facade.addToUserChats(ids.sessionId, newChatId),
-            this.chatProfileService.addUserToChat(newChatId, ids.requestId),
-            this.chatProfileService.addUserToChat(newChatId, ids.sessionId),
+            this.chatProfileService.addUserToChat(ids.requestId),
+            this.chatProfileService.addUserToChat(ids.sessionId),
         ])
     }
 }
