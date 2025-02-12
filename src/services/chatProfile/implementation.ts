@@ -5,12 +5,14 @@ import { IdGeneratorService } from "../idGenerator/implementation";
 
 export class ChatProfileService implements aChatProfileService {
     private idGenerator: aIdGeneratorService
-    private chatId: string | null = null;
+    private chatId: string | null;
     private repo: aChatProfileRepository;
+    private err = "Chat not yet created";
 
     constructor(repo: aChatProfileRepository, idGenerator: aIdGeneratorService = new IdGeneratorService()) {
         this.idGenerator = idGenerator;
         this.repo = repo;
+        this.chatId = null;
     }
 
     async createChat(): Promise<void> {
@@ -18,14 +20,18 @@ export class ChatProfileService implements aChatProfileService {
         await this.repo.createChatProfile(this.chatId, new Set());
     }
 
-    async addUserToChat(chatId: string, userId: string): Promise<void> {
-        await this.repo.addChatMember(chatId, userId);
+    async addUserToChat(userId: string): Promise<void> {
+        if (this.chatId) {
+            await this.repo.addChatMember(this.chatId, userId);
+            return
+        }
+        throw this.err
     }
 
     getChatId(): string {
         if (this.chatId) {
             return this.chatId;
         }
-        throw "Chat not yet created"
+        throw this.err;
     }
 }

@@ -34,7 +34,7 @@ export class RemoveFriendsService extends aRemoveFriendsService {
         if (requestUsersChats.size === 0) return;
         const sessionUserChats: Set<string> = await this.userRepository.getUserChats(ids.sessionId);
         if (sessionUserChats.size === 0) return;
-        let intersection = new Set([...requestUsersChats].filter(x => sessionUserChats.has(x)));
+        const intersection = new Set([...requestUsersChats].filter(x => sessionUserChats.has(x)));
         if (intersection.size === 0) return;
         intersection.forEach(async chatId => {
             const profile = await this.chatProfileRepository.getChatProfile(chatId);

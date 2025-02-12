@@ -53,16 +53,23 @@ describe("ChatProfileService", () => {
     });
 
     test('when addUserToChat is called, it should pass the chatId and userId to the repository.addUserToChat', async () => {
-        const chatId = "123";
         const userId = "456";
+        const chatId = "23442";
         mockIdGenerator = {
             newId: jest.fn().mockReturnValue(chatId)
         }
         chatProfileService = new ChatProfileService(mockRepository, mockIdGenerator);
         await chatProfileService.createChat();
 
-        await chatProfileService.addUserToChat(chatId, userId);
+        await chatProfileService.addUserToChat(userId);
 
         expect(mockRepository.addChatMember).toHaveBeenCalledWith(chatId, userId);
+    });
+
+    test('If addUserToChat is called before create, then it should throw', async () => {
+        try {
+            await chatProfileService.addUserToChat("456");
+            fail("Should have thrown");
+        } catch { }
     });
 });

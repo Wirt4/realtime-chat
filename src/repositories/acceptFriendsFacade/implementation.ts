@@ -3,10 +3,10 @@ import { FriendRequestsRepository } from "@/repositories/friends/requestsImpleme
 import { aAcceptFriendsFacade } from "./abstract";
 import { Redis } from "@upstash/redis";
 import { UserRepository } from "../user/implementation";
-import { ChatProfileService } from "@/services/chatProfile/implementation";
 
 
 export class AcceptFriendsFacade extends aAcceptFriendsFacade {
+
     private friendsRepository: FriendsRepository;
     private friendsRequestRepository: FriendRequestsRepository;
     private userRepository: UserRepository;
@@ -16,6 +16,10 @@ export class AcceptFriendsFacade extends aAcceptFriendsFacade {
         this.friendsRepository = new FriendsRepository(db);
         this.friendsRequestRepository = new FriendRequestsRepository(db);
         this.userRepository = new UserRepository(db);
+    }
+
+    async addToUserChats(userId: string, chatId: string): Promise<void> {
+        await this.userRepository.addUserChat(userId, chatId);
     }
 
     areFriends(ids: Ids): Promise<boolean> {
