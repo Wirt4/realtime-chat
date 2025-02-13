@@ -34,32 +34,32 @@ describe('FriendActions', () => {
         });
 
     });
-    /** 
-    it('makes an API call and hides the actions when "Remove Friend" is clicked',  () => {
-        mockedAxios.post.mockResolvedValueOnce({ status: 200 });
 
+    it('makes an API call and hides the actions when "Remove Friend" is clicked', async () => {
         render(<FriendListItemAPIActions id={friendId} />);
 
         const removeButton = screen.getByText('Remove Friend');
         fireEvent.click(removeButton);
-        expect(screen.queryByText('Chat')).not.toBeInTheDocument();
-        expect(screen.queryByText('Remove Friend')).not.toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.queryByText('Chat')).not.toBeInTheDocument();
+            expect(screen.queryByText('Remove Friend')).not.toBeInTheDocument();
+        });
     });
 
-        it('handles API errors gracefully', async () => {
-            mockedAxios.post.mockRejectedValueOnce(new Error('API Error'));
-    
-            render(<FriendActions friendId={friendId} />);
-    
-            const removeButton = screen.getByText('Remove Friend');
-            fireEvent.click(removeButton);
-    
-            await waitFor(() => {
-                expect(mockedAxios.post).toHaveBeenCalledWith('/api/friends/remove', { idToRemove: friendId });
-            });
-    
-            // Ensure actions are still visible after a failed request
-            expect(screen.getByText('Chat')).toBeInTheDocument();
-            expect(screen.getByText('Remove Friend')).toBeInTheDocument();
-        });*/
+    /*  it('handles API errors gracefully', async () => {
+          mockedAxios.post.mockRejectedValueOnce(new Error('API Error'));
+  
+          render(<FriendActions friendId={friendId} />);
+  
+          const removeButton = screen.getByText('Remove Friend');
+          fireEvent.click(removeButton);
+  
+          await waitFor(() => {
+              expect(mockedAxios.post).toHaveBeenCalledWith('/api/friends/remove', { idToRemove: friendId });
+          });
+  
+          // Ensure actions are still visible after a failed request
+          expect(screen.getByText('Chat')).toBeInTheDocument();
+          expect(screen.getByText('Remove Friend')).toBeInTheDocument();
+      });*/
 });
