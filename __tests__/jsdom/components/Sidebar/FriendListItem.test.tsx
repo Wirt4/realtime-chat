@@ -18,7 +18,13 @@ describe('FriendItem', () => {
         expect(screen.getByText('John Doe')).toBeInTheDocument();
     });
 
-    /*it('toggles FriendActions when the name is clicked', () => {
+    it('actions should not be initially visible when document is loaded', () => {
+        render(<FriendListItem friend={friend} />);
+        expect(screen.queryByTestId('friend-actions')).not.toBeInTheDocument();
+    });
+
+    /**
+     * it('toggles FriendActions when the name is clicked', () => {
         render(<FriendItem friend={friend} />);
         
         const nameElement = screen.getByText('John Doe');
@@ -33,5 +39,6 @@ describe('FriendItem', () => {
         // Click again to hide actions
         fireEvent.click(nameElement);
         expect(screen.queryByTestId('friend-actions')).not.toBeInTheDocument();
-    });*/
+    });
+     */
 });
