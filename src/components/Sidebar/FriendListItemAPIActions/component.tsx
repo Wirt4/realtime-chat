@@ -10,7 +10,6 @@ const FriendListItemAPIActions: FC<FriendListItemAPIActionsProps> = ({ id }) => 
             setVisible(false);
         } catch (err) {
             console.error(err);
-            setVisible(true);
         }
     }
     return (
