@@ -13,7 +13,7 @@ describe('FriendItem', () => {
     };
 
     it('renders the friend name correctly', () => {
-        render(<FriendListItem id={friend.id} name={friend.name} />);
+        render(<FriendListItem friend={friend} />);
 
         expect(screen.getByText('John Doe')).toBeInTheDocument();
     });

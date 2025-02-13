@@ -1,4 +1,8 @@
 export default interface FriendListItemProps {
-    name: string;
+    friend: FriendInfo;
+}
+
+export interface FriendInfo {
     id: string;
+    name: string;
 }
