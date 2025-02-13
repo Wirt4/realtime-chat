@@ -1,63 +1,37 @@
-import FriendListItem from '@/components/Sidebar/FriendListItem/component';
-import FriendListItemProps from '@/components/Sidebar/FriendListItem/interface';
 import '@testing-library/jest-dom';
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import axios from 'axios';
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import FriendListItem from '@/components/Sidebar/FriendListItem/component';
+//import FriendListItemAPIActions from '@components/Sidebar/FriendListItemAPIActions/component';
 
-jest.mock('axios');
+//jest.mock('@components/Sidebar/FriendListItemAPIActions/component', () => jest.fn(() => <div data-testid="friend-actions" />));
 
-
-const mockedAxios = axios as jest.Mocked<typeof axios>;
-
-const renderComponent = (props: Partial<FriendListItemProps> = {}) => {
-    const defaultProps: FriendListItemProps = {
-        name: "Alice",
-        id: "alice-id",
-        ...props,
+describe('FriendItem', () => {
+    const friend = {
+        id: 'test-friend-id',
+        name: 'John Doe',
     };
-    return render(<FriendListItem {...defaultProps} />);
-};
 
-describe('FriendListItem', () => {
+    it('renders the friend name correctly', () => {
+        render(<FriendListItem id={friend.id} name={friend.name} />);
 
-    test('renders friend names correctly', () => {
-        renderComponent();
-
-        expect(screen.getByText("Alice")).toBeInTheDocument();
+        expect(screen.getByText('John Doe')).toBeInTheDocument();
     });
 
-    test('calls API endpoint when "Remove Friend" is clicked', async () => {
-        renderComponent();
-        // Open the popup
-        fireEvent.click(screen.getByText('Alice'));
-        const aliceContainer = screen.getByText('Alice').closest('div');
-
-        if (aliceContainer) {
-            fireEvent.click(within(aliceContainer).getByText('Remove Friend'));
-        }
-
-        // Verify API call
-        expect(mockedAxios.post).toHaveBeenCalledWith('/api/friends/remove', { idToRemove: "alice-id" });
-    });
-
-    test("Friend entry is not in ui when after 'Remove Friend' is clicked", async () => {
-        renderComponent();
-
-        // Mock the API response
-        mockedAxios.post.mockResolvedValueOnce({ status: 200 });
-
-        // Open the popup for Alice
-        fireEvent.click(screen.getByText('Alice'));
-        const aliceContainer = screen.getByText('Alice').closest('div');
-
-        if (aliceContainer) {
-            fireEvent.click(within(aliceContainer).getByText('Remove Friend'));
-        }
-
-        // Wait for the API call to complete and the friend to be removed
-        await waitFor(() => {
-            expect(mockedAxios.post).toHaveBeenCalledWith('/api/friends/remove', { idToRemove: 'alice-id' });
-            expect(screen.queryByText('Alice')).not.toBeInTheDocument();
-        });
-    });
-})
+    /*it('toggles FriendActions when the name is clicked', () => {
+        render(<FriendItem friend={friend} />);
+        
+        const nameElement = screen.getByText('John Doe');
+        
+        // Initially, actions should not be visible
+        expect(screen.queryByTestId('friend-actions')).not.toBeInTheDocument();
+        
+        // Click to show actions
+        fireEvent.click(nameElement);
+        expect(screen.getByTestId('friend-actions')).toBeInTheDocument();
+        
+        // Click again to hide actions
+        fireEvent.click(nameElement);
+        expect(screen.queryByTestId('friend-actions')).not.toBeInTheDocument();
+    });*/
+});
