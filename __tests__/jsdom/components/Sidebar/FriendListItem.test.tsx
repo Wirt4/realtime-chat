@@ -2,9 +2,8 @@ import '@testing-library/jest-dom';
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import FriendListItem from '@/components/Sidebar/FriendListItem/component';
-//import FriendListItemAPIActions from '@components/Sidebar/FriendListItemAPIActions/component';
 
-//jest.mock('@components/Sidebar/FriendListItemAPIActions/component', () => jest.fn(() => <div data-testid="friend-actions" />));
+jest.mock("@/components/Sidebar/FriendListItemAPIActions/component", () => jest.fn(() => <div data-testid="friend-actions" />));
 
 describe('FriendItem', () => {
     const friend = {
@@ -22,6 +21,15 @@ describe('FriendItem', () => {
         render(<FriendListItem friend={friend} />);
         expect(screen.queryByTestId('friend-actions')).not.toBeInTheDocument();
     });
+
+    it('toggles FriendActions when the name is clicked', () => {
+        render(<FriendListItem friend={friend} />);
+
+        const nameElement = screen.getByText('John Doe');
+        fireEvent.click(nameElement);
+        expect(screen.getByTestId('friend-actions')).toBeInTheDocument();
+    });
+
 
     /**
      * it('toggles FriendActions when the name is clicked', () => {
