@@ -10,12 +10,14 @@ const FriendListItemAPIActions: FC<FriendListItemAPIActionsProps> = ({ id }) => 
     }
     return (
         <>
-            {visible && (<div>
-                <li>Chat</li>
-                <li onClick={removeFriend}>
-                    Remove Friend
-                </li>
-            </div>)}
+            {visible && (
+                <div>
+                    <li>Chat</li>
+                    <li onClick={removeFriend}>
+                        Remove Friend
+                    </li>
+                </div>
+            )}
         </>
     )
 }
