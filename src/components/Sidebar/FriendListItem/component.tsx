@@ -1,20 +1,15 @@
 import { FC, useState } from "react";
 import FriendListItemProps from "./interface";
 import axios from "axios";
+import { useRouter } from 'next/navigation';
 
 const FriendListItem: FC<FriendListItemProps> = ({ name, id }) => {
-    //parent component starts out visible
     const [isVisible, setIsVisible] = useState(true);
-    //The popup starts out invisible
     const [popupIsVisible, setPopupIsVisible] = useState(false);
 
     const removeFriend = async () => {
-        await axios.post('/api/friends/remove', { idToRemove: id });
         setIsVisible(false);
-    }
-
-    if (!isVisible) {
-        return null;
+        await axios.post('/api/friends/remove', { idToRemove: id });
     }
 
     return (

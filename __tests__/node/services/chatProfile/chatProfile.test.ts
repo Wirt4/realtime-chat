@@ -44,12 +44,11 @@ describe("ChatProfileService", () => {
         mockIdGenerator = {
             newId: jest.fn().mockReturnValue("456")
         }
-        const emptySet = new Set();
         chatProfileService = new ChatProfileService(mockRepository, mockIdGenerator);
 
         await chatProfileService.createChat();
 
-        expect(mockRepository.createChatProfile).toHaveBeenCalledWith("456", emptySet);
+        expect(mockRepository.createChatProfile).toHaveBeenCalledWith("456");
     });
 
     test('when addUserToChat is called, it should pass the chatId and userId to the repository.addUserToChat', async () => {

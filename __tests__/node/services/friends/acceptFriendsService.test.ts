@@ -182,12 +182,13 @@ describe('acceptFriendsService.generateNewChat', () => {
         expect(facade.addToUserChats).toHaveBeenCalledWith('requestUser', 'randomizedChatId');
         expect(facade.addToUserChats).toHaveBeenCalledWith('sessionUser', 'randomizedChatId');
     });
+
     it('generateNewChat should call add the id returned by chatProfileService to the chats entry for the sessionId', async () => {
         mockChatProfileService.getChatId = jest.fn(() => 'randomizedChatId');
         service = new AcceptFriendsService(facade, mockPusher, mockChatProfileService);
 
         await service.generateNewChat({ requestId: 'requestUser', sessionId: 'sessionUser' });
-
+        expect(mockChatProfileService.createChat).toHaveBeenCalledTimes(1);
         expect(mockChatProfileService.addUserToChat).toHaveBeenCalledWith('requestUser');
         expect(mockChatProfileService.addUserToChat).toHaveBeenCalledWith('sessionUser');
     });

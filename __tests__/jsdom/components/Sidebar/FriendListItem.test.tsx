@@ -6,7 +6,9 @@ import axios from 'axios';
 
 jest.mock('axios');
 
+
 const mockedAxios = axios as jest.Mocked<typeof axios>;
+
 const renderComponent = (props: Partial<FriendListItemProps> = {}) => {
     const defaultProps: FriendListItemProps = {
         name: "Alice",
@@ -17,6 +19,7 @@ const renderComponent = (props: Partial<FriendListItemProps> = {}) => {
 };
 
 describe('FriendListItem', () => {
+
     test('renders friend names correctly', () => {
         renderComponent();
 

@@ -16,12 +16,14 @@ export class ChatProfileService implements aChatProfileService {
     }
 
     async createChat(): Promise<void> {
+        console.log("creating chat");
         this.chatId = this.idGenerator.newId();
-        await this.repo.createChatProfile(this.chatId, new Set());
+        await this.repo.createChatProfile(this.chatId);
     }
 
     async addUserToChat(userId: string): Promise<void> {
-        if (this.chatId) {
+        console.log("addUserToChat called");
+        if (this.chatId !== null) {
             await this.repo.addChatMember(this.chatId, userId);
             return
         }
@@ -29,6 +31,7 @@ export class ChatProfileService implements aChatProfileService {
     }
 
     getChatId(): string {
+        console.log("getChatId called");
         if (this.chatId) {
             return this.chatId;
         }
