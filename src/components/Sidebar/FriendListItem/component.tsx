@@ -8,7 +8,7 @@ const FriendListItem: FC<FriendListItemProps> = ({ friend }) => {
 
     return (
         <li className='sidebar-chat-list-item'>
-            <span onClick={() => isVisible ? setIsVisible(false) : setIsVisible(true)} className='truncate'>{friend.name}</span>
+            <span onClick={() => setIsVisible(p => !p)} className='truncate'>{friend.name}</span>
             {isVisible && (<FriendListItemAPIActions id={friend.id} />)}
         </li>
     )
