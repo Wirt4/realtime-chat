@@ -1,7 +1,6 @@
 import { FC, useState } from "react";
 import FriendListItemProps from "./interface";
 import axios from "axios";
-import { useRouter } from 'next/navigation';
 
 const FriendListItem: FC<FriendListItemProps> = ({ name, id }) => {
     const [isVisible, setIsVisible] = useState(true);
