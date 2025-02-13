@@ -49,9 +49,7 @@ describe('FriendActions', () => {
 
     it('handles API errors gracefully', async () => {
         mockedAxios.post.mockRejectedValueOnce(new Error('API Error'));
-
         render(<FriendListItemAPIActions id={friendId} />);
-
         const removeButton = screen.getByText('Remove Friend');
         fireEvent.click(removeButton);
 
