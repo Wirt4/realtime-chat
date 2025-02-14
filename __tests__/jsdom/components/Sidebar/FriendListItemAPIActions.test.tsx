@@ -21,8 +21,8 @@ describe('FriendActions', () => {
         expect(getByText('Remove Friend')).toBeInTheDocument();
     });
 
-    it('makes an API call when "Remove Friend" is clicked', async () => {
-        mockedAxios.post.mockResolvedValueOnce({ status: 200 });
+    it('calls "/api/friends/remove" when "Remove Friend" is clicked', async () => {
+        mockedAxios.post.mockResolvedValue({ status: 200 });
         render(<FriendListItemAPIActions id={friendId} />);
         const removeButton = screen.getByText('Remove Friend');
 
@@ -30,6 +30,20 @@ describe('FriendActions', () => {
 
         await waitFor(() => {
             expect(mockedAxios.post).toHaveBeenCalledWith('/api/friends/remove', { idToRemove: friendId });
+        });
+
+    });
+
+
+    it('calls "/api/friends/remove" when "Remove Friend" is clicked', async () => {
+        mockedAxios.post.mockResolvedValue({ status: 200 });
+        render(<FriendListItemAPIActions id={friendId} />);
+        const removeButton = screen.getByText('Remove Friend');
+
+        fireEvent.click(removeButton);
+
+        await waitFor(() => {
+            expect(mockedAxios.post).toHaveBeenCalledWith('/api/message/remove/all', expect.anything());
         });
 
     });
