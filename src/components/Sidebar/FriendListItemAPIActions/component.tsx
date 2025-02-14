@@ -7,8 +7,10 @@ const FriendListItemAPIActions: FC<FriendListItemAPIActionsProps> = ({ id }) => 
     const [visible, setVisible] = useState(true);
     const removeFriend = async () => {
         try {
-            await axios.post('/api/friends/remove', { idToRemove: id });
-            await axios.post('/api/message/remove/all', { idToRemove: id });
+            await Promise.all([
+                axios.post('/api/friends/remove', { idToRemove: id }),
+                axios.post('/api/message/remove/all', { idToRemove: id })
+            ]);
             setVisible(false);
         } catch (err) {
             console.error(err);
