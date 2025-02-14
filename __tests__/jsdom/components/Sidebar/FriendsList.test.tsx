@@ -5,7 +5,7 @@ import FriendsList from '@/components/Sidebar/FriendsList/component';
 import { FriendInfo } from '@/components/Sidebar/FriendListItem/interface';
 
 
-//jest.mock('./FriendItem', () => jest.fn(() => <li data-testid="friend-item" />));
+jest.mock('@/components/Sidebar/FriendListItem/component', () => jest.fn(() => <li data-testid="friend-item" />));
 
 describe('FriendList', () => {
     const friends: FriendInfo[] = [
