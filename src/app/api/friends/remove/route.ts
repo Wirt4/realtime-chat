@@ -7,7 +7,6 @@ import { MessageRepository } from "@/repositories/message/removeAll/implementati
 import { ChatProfileRepository } from "@/repositories/chatProfile/implementation";
 
 /**
- * @swagger
  * /api/friends/remove:
  *   post:
  *     summary: Remove a friend
