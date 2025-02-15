@@ -26,34 +26,15 @@ export class ChatProfileService implements aChatProfileService {
         if (users.size == 0) {
             throw new Error('parameter "users" may not be an empty set');
         }
-        /**
-         * 1 if users.size >0 0 go to step 3
-         * 2. Throw error 
-         * 3. create an iterator for users
-         * 4. commonChats = await this.userRepo.getUserChats(<first user from iterator>)
-         * 5. if the iterator does not have next value, go to step 11
-         * 6. iteartor.next()
-         * 7. temp = await this.userRepo.getUserChats(<first user from iterator>)
-         * 8. commonChats = union of commonChats and temp
-         * 9. if commonChats size is 0 , go to step10, else go to step 5
-         * 10. return null
-         * 11. if commonChats.size is 1 go to step 13, else go to step 12  
-         * 12. throw error "more than one common chat, this should not happen"
-         * 13. set this.chatId to the only member of commonChats
-         * 
-         */
-
-
 
         let intersection: Set<string> = new Set();
-        let flag = true;
+        let firstIteration = true;
 
         await users.forEach(async (userId) => {
             const userChats = await this.userRepository.getUserChats(userId);
-
-            if (flag) {
+            if (firstIteration) {
                 intersection = userChats;
-                flag = false;
+                firstIteration = false;
             } else {
                 intersection = intersection.intersection(userChats);
             }
