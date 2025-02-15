@@ -6,13 +6,15 @@ import { AcceptFriendsFacade } from "@/repositories/acceptFriendsFacade/implemen
 import { db } from "@/lib/db";
 import { ChatProfileService } from "@/services/chatProfile/implementation";
 import { ChatProfileRepository } from "@/repositories/chatProfile/implementation";
+import { UserRepository } from "@/repositories/user/implementation";
 
 export async function POST(request: Request): Promise<Response> {
     const facade = new AcceptFriendsFacade(db);
 
     const pusherService = new ServicePusher(getPusherServer());
     const chatProfileRepository = new ChatProfileRepository(db);
-    const chatProfileService = new ChatProfileService(chatProfileRepository);
+    const userRepository = new UserRepository(db);
+    const chatProfileService = new ChatProfileService(chatProfileRepository, userRepository);
 
     const service = new AcceptFriendsService(facade, pusherService, chatProfileService);
     const controller = new AcceptFriendsController()
