@@ -35,6 +35,7 @@ export class ChatProfileRepository extends aChatProfileRepository {
             members: new Set(memberList)
         }
     }
+
     private keyAddress(chatId: string) {
         return `chat:${chatId}:members`;
     }

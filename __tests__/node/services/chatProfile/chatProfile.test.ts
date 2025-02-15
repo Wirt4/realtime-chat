@@ -1,24 +1,34 @@
 import { aChatProfileRepository } from "@/repositories/chatProfile/abstract";
+import { aUserRepository } from "@/repositories/user/abstract";
 import { ChatProfileService } from "@/services/chatProfile/implementation";
 import { aIdGeneratorService } from "@/services/idGenerator/abstract";
 
 describe("ChatProfileService", () => {
-    let mockRepository: aChatProfileRepository;
+    let mockProfileRepository: aChatProfileRepository;
     let mockIdGenerator: aIdGeneratorService;
     let chatProfileService: ChatProfileService;
+    let mockUserRepository: aUserRepository;
 
     beforeEach(() => {
         jest.resetAllMocks();
-        mockRepository = {
+        mockProfileRepository = {
             createChatProfile: jest.fn(),
             getChatProfile: jest.fn(),
             addChatMember: jest.fn(),
-            getChatProfileFromUsers: jest.fn().mockResolvedValue({ members: new Set(), id: "123" })
         }
         mockIdGenerator = {
             newId: jest.fn()
         }
-        chatProfileService = new ChatProfileService(mockRepository, mockIdGenerator);
+        mockUserRepository = {
+            getUserChats: jest.fn(),
+            getUser: jest.fn(),
+            exists: jest.fn(),
+            getId: jest.fn(),
+            removeUserChat: jest.fn(),
+            addUserChat: jest.fn(),
+        },
+
+            chatProfileService = new ChatProfileService(mockProfileRepository, mockUserRepository, mockIdGenerator);
     });
 
     test('CreateChat Test should call idGenerator.create()', async () => {
@@ -35,7 +45,7 @@ describe("ChatProfileService", () => {
         mockIdGenerator = {
             newId: jest.fn().mockReturnValue("123")
         }
-        chatProfileService = new ChatProfileService(mockRepository, mockIdGenerator);
+        chatProfileService = new ChatProfileService(mockProfileRepository, mockUserRepository, mockIdGenerator);
 
         await chatProfileService.createChat();
 
@@ -46,11 +56,11 @@ describe("ChatProfileService", () => {
         mockIdGenerator = {
             newId: jest.fn().mockReturnValue("456")
         }
-        chatProfileService = new ChatProfileService(mockRepository, mockIdGenerator);
+        chatProfileService = new ChatProfileService(mockProfileRepository, mockUserRepository, mockIdGenerator);
 
         await chatProfileService.createChat();
 
-        expect(mockRepository.createChatProfile).toHaveBeenCalledWith("456");
+        expect(mockProfileRepository.createChatProfile).toHaveBeenCalledWith("456");
     });
 
     test('when addUserToChat is called, it should pass the chatId and userId to the repository.addUserToChat', async () => {
@@ -59,12 +69,12 @@ describe("ChatProfileService", () => {
         mockIdGenerator = {
             newId: jest.fn().mockReturnValue(chatId)
         }
-        chatProfileService = new ChatProfileService(mockRepository, mockIdGenerator);
+        chatProfileService = new ChatProfileService(mockProfileRepository, mockUserRepository, mockIdGenerator);
         await chatProfileService.createChat();
 
         await chatProfileService.addUserToChat(userId);
 
-        expect(mockRepository.addChatMember).toHaveBeenCalledWith(chatId, userId);
+        expect(mockProfileRepository.addChatMember).toHaveBeenCalledWith(chatId, userId);
     });
 
     test('If addUserToChat is called before create, then it should throw', async () => {
@@ -86,44 +96,24 @@ describe("ChatProfileService", () => {
         }
     });
 
-    test('If loadProfileFromUsers is called with a non-empty set, then it should pass the argument to repository.getProfileFromUsers', async () => {
-        const expected = new Set(["123", "456"]);
-
-        await chatProfileService.loadProfileFromUsers(expected);
-
-        expect(mockRepository.getChatProfileFromUsers).toHaveBeenCalledWith(expected);
-    });
-
-    test('If repository.getProfileFromUsers throws, then loadProfileFromUsers should throw  "can\'t retrive chat Id from repository"', async () => {
-        const input = new Set(["123", "456"]);
-        mockRepository.getChatProfileFromUsers = jest.fn().mockRejectedValue(new Error("test"));
-
+    test('If loadProfileFromUsers is called with an empty set, then it should throw "parameter users may not be an empty set"', async () => {
         try {
-            await chatProfileService.loadProfileFromUsers(input);
+            await chatProfileService.loadProfileFromUsers(new Set());
 
             fail("Should have thrown");
         } catch (err) {
             if (err instanceof Error) {
-                expect(err.message).toEqual("can't retrive chat Id from repository");
+                expect(err.message).toEqual("parameter \"users\" may not be an empty set");
             }
         }
     });
+    test('If loadProfileFromUsers is should call userReposistory.getUserChats for each user in users', async () => {
+        const users = new Set(["123", "456"]);
 
-    test('If repository.getProfileFromUsers resolvs, then set the current chatProfile to that loaded', async () => {
-        const input = new Set(["123", "456"]);
-        mockRepository.getChatProfileFromUsers = jest.fn().mockResolvedValue({ members: input, id: "789" });
+        await chatProfileService.loadProfileFromUsers(users);
 
-        await chatProfileService.loadProfileFromUsers(input);
-
-        expect(chatProfileService.getChatId()).toEqual("789");
+        expect(mockUserRepository.getUserChats).toHaveBeenCalledWith("123");
+        expect(mockUserRepository.getUserChats).toHaveBeenCalledWith("456");
     });
 
-    test('If repository.getProfileFromUsers resolves to null, then set the current chatProfile to an empty string', async () => {
-        const input = new Set(["123", "456"]);
-        mockRepository.getChatProfileFromUsers = jest.fn().mockResolvedValue(null);
-
-        await chatProfileService.loadProfileFromUsers(input);
-
-        expect(chatProfileService.getChatId()).toEqual("");
-    });
 });
