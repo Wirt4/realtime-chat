@@ -16,7 +16,10 @@ export class ChatProfileService implements aChatProfileService {
     }
 
     loadProfileFromUsers(users: Set<string>): Promise<ChatProfile> {
-        throw new Error("parameter \"users\" may not be an empty set");
+        if (users.size > 0) {
+            return this.repo.getChatProfileFromUsers(users);
+        }
+        throw new Error('parameter "users" may not be an empty set');
     }
 
     async createChat(): Promise<void> {

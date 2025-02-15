@@ -85,4 +85,12 @@ describe("ChatProfileService", () => {
         }
     });
 
+    test('If loadProfileFromUsers is called with a non-empty set, then it should pass the argument to repository.getProfileFromUsers"', async () => {
+        const expected = new Set(["123", "456"]);
+
+        await chatProfileService.loadProfileFromUsers(expected);
+
+        expect(mockRepository.getChatProfileFromUsers).toHaveBeenCalledWith(expected);
+    });
+
 });
