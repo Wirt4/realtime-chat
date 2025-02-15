@@ -14,7 +14,7 @@ describe("ChatProfileService", () => {
             createChatProfile: jest.fn(),
             getChatProfile: jest.fn(),
             addChatMember: jest.fn(),
-            getChatProfileFromUsers: jest.fn()
+            getChatProfileFromUsers: jest.fn().mockResolvedValue({ members: new Set(), id: "123" })
         }
         mockIdGenerator = {
             newId: jest.fn()
@@ -110,4 +110,12 @@ describe("ChatProfileService", () => {
         }
     });
 
+    test('If repository.getProfileFromUsers resolvs, then set the current chatProfile to that loaded', async () => {
+        const input = new Set(["123", "456"]);
+        mockRepository.getChatProfileFromUsers = jest.fn().mockResolvedValue({ members: input, id: "789" });
+
+        await chatProfileService.loadProfileFromUsers(input);
+
+        expect(chatProfileService.getChatId()).toEqual("789");
+    });
 });
