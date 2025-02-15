@@ -1,3 +1,4 @@
 export interface FriendListItemAPIActionsProps {
-    id: string;
+    friendId: string;
+    userId: string;
 }

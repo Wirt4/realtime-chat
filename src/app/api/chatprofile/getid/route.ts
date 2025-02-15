@@ -1,6 +1,6 @@
 /**
- * /api/chatprofile/id:
- *   get:
+ * /api/chatprofile/getid:
+ *   post:
  *     summary: fetch a chat id by participant user ids
  *     description: fetch a chat id by participant user ids
  *     tags:
