@@ -1,6 +1,7 @@
 import { aChatProfileRepository } from "@/repositories/chatProfile/abstract";
 import { ChatProfileService } from "@/services/chatProfile/implementation";
 import { aIdGeneratorService } from "@/services/idGenerator/abstract";
+
 describe("ChatProfileService", () => {
     let mockRepository: aChatProfileRepository;
     let mockIdGenerator: aIdGeneratorService;
@@ -11,7 +12,8 @@ describe("ChatProfileService", () => {
         mockRepository = {
             createChatProfile: jest.fn(),
             getChatProfile: jest.fn(),
-            addChatMember: jest.fn()
+            addChatMember: jest.fn(),
+            getChatProfileFromUsers: jest.fn()
         }
         mockIdGenerator = {
             newId: jest.fn()
@@ -71,4 +73,16 @@ describe("ChatProfileService", () => {
             fail("Should have thrown");
         } catch { }
     });
+
+    test('If loadProfileFromUsers is called with an empty set, then it should throw "parameter users may not be an empty set"', async () => {
+        try {
+            await chatProfileService.loadProfileFromUsers(new Set());
+            fail("Should have thrown");
+        } catch (err) {
+            if (err instanceof Error) {
+                expect(err.message).toEqual("parameter \"users\" may not be an empty set");
+            }
+        }
+    });
+
 });

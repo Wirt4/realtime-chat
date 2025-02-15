@@ -15,6 +15,10 @@ export class ChatProfileService implements aChatProfileService {
         this.chatId = null;
     }
 
+    loadProfileFromUsers(users: Set<string>): Promise<ChatProfile> {
+        throw new Error("parameter \"users\" may not be an empty set");
+    }
+
     async createChat(): Promise<void> {
         console.log("creating chat");
         this.chatId = this.idGenerator.newId();
