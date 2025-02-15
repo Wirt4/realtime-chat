@@ -43,11 +43,33 @@ export class ChatProfileService implements aChatProfileService {
          * 
          */
 
-        for (const user of users) {
-            await this.userRepository.getUserChats(user);
+
+
+        let stub: Set<string> = new Set();
+        let flag = true;
+
+        await users.forEach(async (userId) => {
+            const userChats = await this.userRepository.getUserChats(userId);
+            console.log("user chats", userChats)
+
+            if (flag) {
+                stub = userChats;
+                flag = false;
+            } else {
+                console.log("finding intersection")
+                stub = stub.intersection(userChats);
+                console.log("found intersection", stub)
+            }
+        });
+
+        console.log("stub", stub);
+
+        if (stub.size === 0) {
+            this.chatId = "";
+            return;
         }
 
-        this.chatId = "";
+        this.chatId = stub.values().next().value as string;
     }
 
     async createChat(): Promise<void> {
