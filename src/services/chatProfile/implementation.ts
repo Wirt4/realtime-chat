@@ -45,26 +45,28 @@ export class ChatProfileService implements aChatProfileService {
 
 
 
-        let stub: Set<string> = new Set();
+        let intersection: Set<string> = new Set();
         let flag = true;
 
         await users.forEach(async (userId) => {
             const userChats = await this.userRepository.getUserChats(userId);
 
             if (flag) {
-                stub = userChats;
+                intersection = userChats;
                 flag = false;
             } else {
-                stub = stub.intersection(userChats);
+                intersection = intersection.intersection(userChats);
             }
         });
 
-        if (stub.size === 0) {
-            this.chatId = "";
-            return;
-        }
+        this.chatId = "";
 
-        this.chatId = stub.values().next().value as string;
+        await intersection.forEach(async (chatId) => {
+            const profile = await this.profileRepository.getChatProfile(chatId);
+            if (profile.members.size == users.size) {
+                this.chatId = chatId;
+            }
+        });
     }
 
     async createChat(): Promise<void> {

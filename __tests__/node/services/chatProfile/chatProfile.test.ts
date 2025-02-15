@@ -138,10 +138,44 @@ describe("ChatProfileService", () => {
             }
             return new Set(["bar", "eggs"]);
         });
+        mockProfileRepository.getChatProfile = jest.fn().mockImplementation(async (chatId: string) => {
+            if (chatId == "bar") {
+                return {
+                    members: new Set(["123", "456"])
+                }
+            }
+            return {
+                members: new Set(["123"])
+            }
+        })
 
         await chatProfileService.loadProfileFromUsers(users);
 
         expect(chatProfileService.getChatId()).toEqual("bar");
+    });
+
+    test("If the users have one chat in common, but  they aren't the only participants of that chat then the chatId should be set to  an empty string", async () => {
+        const users = new Set(["123", "456"]);
+        mockUserRepository.getUserChats = jest.fn().mockImplementation(async (userId: string) => {
+            if (userId == "123") {
+                return new Set(["foo", "bar"]);
+            }
+            return new Set(["bar", "eggs"]);
+        });
+        mockProfileRepository.getChatProfile = jest.fn().mockImplementation(async (chatId: string) => {
+            if (chatId == "bar") {
+                return {
+                    members: new Set(["123", "456", "890"])
+                }
+            }
+            return {
+                members: new Set(["123"])
+            }
+        })
+
+        await chatProfileService.loadProfileFromUsers(users);
+
+        expect(chatProfileService.getChatId()).toEqual("");
     });
 
 });
