@@ -22,7 +22,9 @@ export class ChatProfileService implements aChatProfileService {
 
         try {
             const profile = await this.repo.getChatProfileFromUsers(users);
-            this.chatId = profile.id;
+            if (profile) {
+                this.chatId = profile.id;
+            }
         } catch {
             throw new Error("can't retrive chat Id from repository");
         }
