@@ -16,10 +16,11 @@ export class ChatProfileService implements aChatProfileService {
     }
 
     loadProfileFromUsers(users: Set<string>): Promise<ChatProfile> {
-        if (users.size > 0) {
-            return this.repo.getChatProfileFromUsers(users);
+        if (users.size == 0) {
+            throw new Error('parameter "users" may not be an empty set');
         }
-        throw new Error('parameter "users" may not be an empty set');
+
+        return this.repo.getChatProfileFromUsers(users);
     }
 
     async createChat(): Promise<void> {
