@@ -64,7 +64,7 @@ describe('FriendActions', () => {
         fireEvent.click(removeButton);
 
         await waitFor(() => {
-            expect(mockedAxios.post).toHaveBeenCalledWith('/api/message/remove/all', expect.anything());
+            expect(mockedAxios.post).toHaveBeenCalledWith('/api/message/remove/all', expect.objectContaining({ chatId: 'fun-test-chat-id' }));
         });
     });
 
