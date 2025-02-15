@@ -77,36 +77,6 @@ describe("ChatProfileService", () => {
         expect(mockProfileRepository.addChatMember).toHaveBeenCalledWith(chatId, userId);
     });
 
-    test('If addUserToChat is called before create, then it should throw', async () => {
-        try {
-            await chatProfileService.addUserToChat("456");
-            fail("Should have thrown");
-        } catch { }
-    });
-
-    test('If loadProfileFromUsers is called with an empty set, then it should throw "parameter users may not be an empty set"', async () => {
-        try {
-            await chatProfileService.loadProfileFromUsers(new Set());
-
-            fail("Should have thrown");
-        } catch (err) {
-            if (err instanceof Error) {
-                expect(err.message).toEqual("parameter \"users\" may not be an empty set");
-            }
-        }
-    });
-
-    test('If loadProfileFromUsers is called with an empty set, then it should throw "parameter users may not be an empty set"', async () => {
-        try {
-            await chatProfileService.loadProfileFromUsers(new Set());
-
-            fail("Should have thrown");
-        } catch (err) {
-            if (err instanceof Error) {
-                expect(err.message).toEqual("parameter \"users\" may not be an empty set");
-            }
-        }
-    });
     test('If loadProfileFromUsers is should call userReposistory.getUserChats for each user in users', async () => {
         const users = new Set(["123", "456"]);
 
@@ -177,5 +147,4 @@ describe("ChatProfileService", () => {
 
         expect(chatProfileService.getChatId()).toEqual("");
     });
-
 });

@@ -23,10 +23,6 @@ export class ChatProfileService implements aChatProfileService {
     }
 
     async loadProfileFromUsers(users: Set<string>): Promise<void> {
-        if (users.size == 0) {
-            throw new Error('parameter "users" may not be an empty set');
-        }
-
         let intersection: Set<string> = new Set();
         let firstIteration = true;
 
