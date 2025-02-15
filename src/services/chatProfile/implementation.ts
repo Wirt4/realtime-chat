@@ -15,22 +15,24 @@ export class ChatProfileService implements aChatProfileService {
         this.chatId = null;
     }
 
-    loadProfileFromUsers(users: Set<string>): Promise<ChatProfile> {
+    async loadProfileFromUsers(users: Set<string>): Promise<void> {
         if (users.size == 0) {
             throw new Error('parameter "users" may not be an empty set');
         }
 
-        return this.repo.getChatProfileFromUsers(users);
+        try {
+            await this.repo.getChatProfileFromUsers(users);
+        } catch {
+            throw new Error("can't retrive chat Id from repository");
+        }
     }
 
     async createChat(): Promise<void> {
-        console.log("creating chat");
         this.chatId = this.idGenerator.newId();
         await this.repo.createChatProfile(this.chatId);
     }
 
     async addUserToChat(userId: string): Promise<void> {
-        console.log("addUserToChat called");
         if (this.chatId !== null) {
             await this.repo.addChatMember(this.chatId, userId);
             return
@@ -39,7 +41,6 @@ export class ChatProfileService implements aChatProfileService {
     }
 
     getChatId(): string {
-        console.log("getChatId called");
         if (this.chatId) {
             return this.chatId;
         }

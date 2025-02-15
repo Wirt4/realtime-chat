@@ -1,6 +1,7 @@
 import { aChatProfileRepository } from "@/repositories/chatProfile/abstract";
 import { ChatProfileService } from "@/services/chatProfile/implementation";
 import { aIdGeneratorService } from "@/services/idGenerator/abstract";
+import { mock } from "node:test";
 
 describe("ChatProfileService", () => {
     let mockRepository: aChatProfileRepository;
@@ -77,6 +78,7 @@ describe("ChatProfileService", () => {
     test('If loadProfileFromUsers is called with an empty set, then it should throw "parameter users may not be an empty set"', async () => {
         try {
             await chatProfileService.loadProfileFromUsers(new Set());
+
             fail("Should have thrown");
         } catch (err) {
             if (err instanceof Error) {
@@ -85,12 +87,27 @@ describe("ChatProfileService", () => {
         }
     });
 
-    test('If loadProfileFromUsers is called with a non-empty set, then it should pass the argument to repository.getProfileFromUsers"', async () => {
+    test('If loadProfileFromUsers is called with a non-empty set, then it should pass the argument to repository.getProfileFromUsers', async () => {
         const expected = new Set(["123", "456"]);
 
         await chatProfileService.loadProfileFromUsers(expected);
 
         expect(mockRepository.getChatProfileFromUsers).toHaveBeenCalledWith(expected);
+    });
+
+    test('If repository.getProfileFromUsers throws, then loadProfileFromUsers should throw  "can\'t retrive chat Id from repository"', async () => {
+        const input = new Set(["123", "456"]);
+        mockRepository.getChatProfileFromUsers = jest.fn().mockRejectedValue(new Error("test"));
+
+        try {
+            await chatProfileService.loadProfileFromUsers(input);
+
+            fail("Should have thrown");
+        } catch (err) {
+            if (err instanceof Error) {
+                expect(err.message).toEqual("can't retrive chat Id from repository");
+            }
+        }
     });
 
 });
