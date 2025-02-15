@@ -21,16 +21,8 @@ export class ChatProfileService implements aChatProfileService {
         }
 
         try {
-            console.log('calling profile');
             const profile = await this.repo.getChatProfileFromUsers(users);
-            console.log('profile', profile);
-            if (profile) {
-                console.log('setting chatId to', profile.id);
-                this.chatId = profile.id;
-            } else {
-                console.log('setting chatId to empty string');
-                this.chatId = "";
-            }
+            this.chatId = profile?.id ?? "";
         } catch {
             throw new Error("can't retrive chat Id from repository");
         }
@@ -50,9 +42,9 @@ export class ChatProfileService implements aChatProfileService {
     }
 
     getChatId(): string {
-        if (this.chatId !== null) {
-            return this.chatId;
+        if (this.chatId === null) {
+            throw this.err;
         }
-        throw this.err;
+        return this.chatId;
     }
 }
