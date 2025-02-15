@@ -116,4 +116,18 @@ describe("ChatProfileService", () => {
         expect(mockUserRepository.getUserChats).toHaveBeenCalledWith("456");
     });
 
+    test('If the users have no chats in commen, then the chatId should be set to an empty string', async () => {
+        const users = new Set(["123", "456"]);
+        mockUserRepository.getUserChats = jest.fn().mockImplementation(async (userId: string) => {
+            if (userId == "123") {
+                return new Set(["foo", "bar"]);
+            }
+            return new Set(["spam", "eggs"]);
+        })
+
+        await chatProfileService.loadProfileFromUsers(users);
+
+        expect(chatProfileService.getChatId()).toEqual("");
+    });
+
 });

@@ -7,15 +7,19 @@ import { aUserRepository } from "@/repositories/user/abstract";
 export class ChatProfileService implements aChatProfileService {
     private idGenerator: aIdGeneratorService
     private chatId: string | null;
-    private repo: aChatProfileRepository;
-    private userRepo: aUserRepository;
+    private profileRepository: aChatProfileRepository;
+    private userRepository: aUserRepository;
     private err = "Chat not yet created";
 
-    constructor(chatProfileRepository: aChatProfileRepository, userRepository: aUserRepository, idGenerator: aIdGeneratorService = new IdGeneratorService()) {
+    constructor(
+        chatProfileRepository: aChatProfileRepository,
+        userRepository: aUserRepository,
+        idGenerator: aIdGeneratorService = new IdGeneratorService()
+    ) {
         this.idGenerator = idGenerator;
-        this.repo = chatProfileRepository;
+        this.profileRepository = chatProfileRepository;
         this.chatId = null;
-        this.userRepo = userRepository;
+        this.userRepository = userRepository;
     }
 
     async loadProfileFromUsers(users: Set<string>): Promise<void> {
@@ -40,20 +44,20 @@ export class ChatProfileService implements aChatProfileService {
          */
 
         for (const user of users) {
-            await this.userRepo.getUserChats(user);
+            await this.userRepository.getUserChats(user);
         }
 
-
+        this.chatId = "";
     }
 
     async createChat(): Promise<void> {
         this.chatId = this.idGenerator.newId();
-        await this.repo.createChatProfile(this.chatId);
+        await this.profileRepository.createChatProfile(this.chatId);
     }
 
     async addUserToChat(userId: string): Promise<void> {
         if (this.chatId !== null) {
-            await this.repo.addChatMember(this.chatId, userId);
+            await this.profileRepository.addChatMember(this.chatId, userId);
             return
         }
         throw this.err
