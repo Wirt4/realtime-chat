@@ -3,14 +3,19 @@ import { FriendListItemAPIActionsProps } from "./interface";
 import { FC, useState } from "react";
 import Link from "next/link";
 
-const FriendListItemAPIActions: FC<FriendListItemAPIActionsProps> = ({ friendId: id }) => {
+const FriendListItemAPIActions: FC<FriendListItemAPIActionsProps> = ({ friendId, userId }) => {
     const [visible, setVisible] = useState(true);
     const removeFriend = async () => {
         try {
+            const res = await axios.post(`/api/chatprofile/getid`, { participants: [friendId, userId] })
+            console.log({ res });
+            const chatId = res.data.chatId;
+            if (chatId !== '') {
+                await axios.post('/api/message/remove/all', { chatId });
+            }
+
             await Promise.all([
-                axios.post('/api/friends/remove', { idToRemove: id }),
-                axios.post('/api/message/remove/all', { idToRemove: id }),
-                axios.get(`/api/chatprofile/id`, { participants: [id] })
+                axios.post('/api/friends/remove', { idToRemove: friendId }),
             ]);
             setVisible(false);
         } catch (err) {

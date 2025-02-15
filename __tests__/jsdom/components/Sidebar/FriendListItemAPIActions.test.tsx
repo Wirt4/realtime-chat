@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import FriendListItemAPIActions from '@/components/Sidebar/FriendListItemAPIActions/component';
 import axios from 'axios';
 import '@testing-library/jest-dom';
+import { stat } from 'fs';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -13,7 +14,15 @@ describe('FriendActions', () => {
 
     beforeEach(() => {
         mockedAxios.post.mockReset();
-        mockedAxios.get.mockReset();
+        mockedAxios.post.mockImplementation(async (endpoint, payload) => {
+            if (endpoint === '/api/chatprofile/getid') {
+                return {
+                    data: { chatId: 'fun-test-chat-id' },
+                    status: 200
+                }
+            }
+            return { status: 200 }
+        });
     });
 
     it('renders the actions correctly', () => {
@@ -24,19 +33,20 @@ describe('FriendActions', () => {
     });
 
     it('calls GET "/api/chatprofile/id" when "Remove Friend" is clicked', async () => {
-        mockedAxios.get.mockResolvedValue({ status: 200 });
+        mockedAxios.post.mockResolvedValue({ status: 200 });
         render(<FriendListItemAPIActions friendId={friendId} userId={userId} />);
         const removeButton = screen.getByText('Remove Friend');
 
         fireEvent.click(removeButton);
 
         await waitFor(() => {
-            expect(mockedAxios.get).toHaveBeenCalledWith('/api/chatprofile/id', expect.objectContaining({ participants: expect.arrayContaining([friendId]) }));
+            expect(mockedAxios.post).toHaveBeenCalledWith('/api/chatprofile/getid', expect.objectContaining({
+                participants: expect.arrayContaining([friendId, userId])
+            }));
         });
     });
 
     it('calls "/api/friends/remove" when "Remove Friend" is clicked', async () => {
-        mockedAxios.post.mockResolvedValue({ status: 200 });
         render(<FriendListItemAPIActions friendId={friendId} userId={userId} />);
         const removeButton = screen.getByText('Remove Friend');
 
@@ -47,9 +57,7 @@ describe('FriendActions', () => {
         });
     });
 
-
     it('calls "/api/message/remove/all" when "Remove Friend" is clicked', async () => {
-        mockedAxios.post.mockResolvedValue({ status: 200 });
         render(<FriendListItemAPIActions friendId={friendId} userId={userId} />);
         const removeButton = screen.getByText('Remove Friend');
 
@@ -58,11 +66,23 @@ describe('FriendActions', () => {
         await waitFor(() => {
             expect(mockedAxios.post).toHaveBeenCalledWith('/api/message/remove/all', expect.anything());
         });
+    });
 
+    it('calls "when  the return value of "/api/chatprofile/getid" is an empty string, then "/api/message/remove/all" is not triggered', async () => {
+        mockedAxios.post.mockImplementation(async () => {
+            return { data: { chatId: '' } }
+        });
+        render(<FriendListItemAPIActions friendId={friendId} userId={userId} />);
+        const removeButton = screen.getByText('Remove Friend');
+
+        fireEvent.click(removeButton);
+
+        await waitFor(() => {
+            expect(mockedAxios.post).not.toHaveBeenCalledWith('/api/message/remove/all', expect.anything());
+        });
     });
 
     it('makes an API call and hides the actions when "Remove Friend" is clicked', async () => {
-        mockedAxios.post.mockResolvedValueOnce({ status: 200 });
         render(<FriendListItemAPIActions friendId={friendId} userId={userId} />);
         const removeButton = screen.getByText('Remove Friend');
 
@@ -78,16 +98,13 @@ describe('FriendActions', () => {
         mockedAxios.post.mockRejectedValueOnce(new Error('API Error'));
         render(<FriendListItemAPIActions friendId={friendId} userId={userId} />);
         const removeButton = screen.getByText('Remove Friend');
+
         fireEvent.click(removeButton);
 
         await waitFor(() => {
-            expect(mockedAxios.post).toHaveBeenCalledWith('/api/friends/remove', { idToRemove: friendId });
+            expect(screen.getByText('Chat')).toBeInTheDocument();
+            expect(screen.getByText('Remove Friend')).toBeInTheDocument();
         });
-
-        // Ensure actions are still visible after a failed request
-        expect(screen.getByText('Chat')).toBeInTheDocument();
-        expect(screen.getByText('Remove Friend')).toBeInTheDocument();
     });
-
 });
 
