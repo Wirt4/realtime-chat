@@ -50,19 +50,14 @@ export class ChatProfileService implements aChatProfileService {
 
         await users.forEach(async (userId) => {
             const userChats = await this.userRepository.getUserChats(userId);
-            console.log("user chats", userChats)
 
             if (flag) {
                 stub = userChats;
                 flag = false;
             } else {
-                console.log("finding intersection")
                 stub = stub.intersection(userChats);
-                console.log("found intersection", stub)
             }
         });
-
-        console.log("stub", stub);
 
         if (stub.size === 0) {
             this.chatId = "";
