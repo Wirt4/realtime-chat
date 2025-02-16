@@ -31,3 +31,9 @@
  *       500:
  *         description: Internal server error.
  */
+
+export async function POST(request: Request): Promise<Response> {
+    // create a controller
+    // return controller.getChatIdFromUsers(request)
+    return Response.json({});
+}

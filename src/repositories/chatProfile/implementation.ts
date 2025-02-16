@@ -11,7 +11,6 @@ export class ChatProfileRepository extends aChatProfileRepository {
 
     async addChatMember(chatId: string, userId: string): Promise<void> {
         const chatExist = await this.database.exists(this.keyAddress(chatId));
-        console.log("chat exists", chatExist);
         if (chatExist === 0) {
             throw new Error(`Chat ${chatId} not exist`);
         }

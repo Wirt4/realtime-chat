@@ -1,6 +1,11 @@
 //stub
 
+import { db } from "@/lib/db";
 import myGetServerSession from "@/lib/myGetServerSession";
+import { ChatProfileRepository } from "@/repositories/chatProfile/implementation";
+import { UserRepository } from "@/repositories/user/implementation";
+import { chatProfileParticpantSchema } from "@/schemas/chatProfileParticipantSchema";
+import { ChatProfileService } from "@/services/chatProfile/implementation";
 
 //1 get session id
 //2 if session id is not null, go to step 4
@@ -17,6 +22,19 @@ export class ChatProfileController {
         if (!session) {
             return new Response("", { status: 401 });
         }
+
+        let participants: string[];
+        try {
+            const body = await request.json();
+            participants = chatProfileParticpantSchema.parse(body).participants;
+        } catch {
+            return new Response("", { status: 400 });
+        }
+        const participantsSet = new Set(participants);
+        const chatRepo = new ChatProfileRepository(db);
+        const userRepo = new UserRepository(db);
+        const service = new ChatProfileService(chatRepo, userRepo);
+        await service.loadProfileFromUsers(participantsSet);
         return new Response("", { status: 405 });
     }
 }
