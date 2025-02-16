@@ -23,18 +23,28 @@ export class ChatProfileController {
             return new Response("", { status: 401 });
         }
 
-        let participants: string[];
+        let participantsSet: Set<string>;
         try {
-            const body = await request.json();
-            participants = chatProfileParticpantSchema.parse(body).participants;
+            participantsSet = await this.parseSet(request);
         } catch {
             return new Response("", { status: 400 });
         }
-        const participantsSet = new Set(participants);
+
+        const service = this.createService();
+        await service.loadProfileFromUsers(participantsSet);
+        return new Response("", { status: 405 });
+    }
+
+    private createService(): ChatProfileService {
         const chatRepo = new ChatProfileRepository(db);
         const userRepo = new UserRepository(db);
         const service = new ChatProfileService(chatRepo, userRepo);
-        await service.loadProfileFromUsers(participantsSet);
-        return new Response("", { status: 405 });
+        return service;
+    }
+
+    private async parseSet(request: Request): Promise<Set<string>> {
+        const body = await request.json();
+        const participants = chatProfileParticpantSchema.parse(body).participants;
+        return new Set(participants);
     }
 }
