@@ -32,7 +32,7 @@ export class ChatProfileController {
 
         const service = this.createService();
         await service.loadProfileFromUsers(participantsSet);
-        return new Response("", { status: 405 });
+        return new Response(JSON.stringify({ chatId: service.getChatId() }), { status: 405 });
     }
 
     private createService(): ChatProfileService {

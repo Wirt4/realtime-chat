@@ -7,13 +7,16 @@ jest.mock("@/services/chatProfile/implementation");
 jest.mock("@/lib/myGetServerSession", () => jest.fn());
 
 describe("get chat profile id from users tests", () => {
-    let getIdFromUsersSpy: jest.SpyInstance;
+    let loadIdFromUsersSpy: jest.SpyInstance;
+    let mockGetChatId: jest.SpyInstance
     beforeEach(() => {
         jest.resetAllMocks();
-        getIdFromUsersSpy = jest.fn();
+        loadIdFromUsersSpy = jest.fn();
+        mockGetChatId = jest.fn();
         (myGetServerSession as jest.Mock).mockResolvedValue({ user: { id: 'userId' } });
         (ChatProfileService as jest.Mock).mockImplementation(() => ({
-            loadProfileFromUsers: getIdFromUsersSpy,
+            loadProfileFromUsers: loadIdFromUsersSpy,
+            getChatId: mockGetChatId
         }));
 
     });
@@ -49,6 +52,16 @@ describe("get chat profile id from users tests", () => {
 
         await controller.getChatIdFromUsers(request);
 
-        expect(getIdFromUsersSpy).toHaveBeenCalledWith(new Set(["jay", "bob"]));
+        expect(loadIdFromUsersSpy).toHaveBeenCalledWith(new Set(["jay", "bob"]));
     });
+
+    it("ouptuput of service call should be in the response body", async () => {
+        const controller = new ChatProfileController();
+        const request = new Request("stub.address", { method: "POST", body: JSON.stringify({ participants: ["bob", "jay"] }) });
+        mockGetChatId.mockReturnValue("target-chat-id");
+
+        const result = await controller.getChatIdFromUsers(request);
+
+        expect(await result.json()).toEqual({ chatId: "target-chat-id" });
+    })
 });
