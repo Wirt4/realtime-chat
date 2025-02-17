@@ -13,6 +13,10 @@ export interface MessageRemoveAllInterface extends MessageServiceInterface {
     deleteChat(chatId: string, repository: aMessageRepository): Promise<number>
 }
 
+export interface GetMessagesInterface {
+    getMessages(chatId: string, repository: aMessageRepository): Promise<Message[]>
+}
+
 interface MessageServiceInterface {
     isChatMember(chatProfile: SenderHeader): boolean
 }
