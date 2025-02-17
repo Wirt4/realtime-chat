@@ -14,16 +14,19 @@ export class GetMessageController extends AbstractMessageController {
         if (request.method !== "GET") {
             return this._respond(null, 405);
         }
+
         const url = new URL(request.url);
-        const id = url.searchParams.get("id");
-        if (!id) {
+        const chatId = url.searchParams.get("id");
+        if (!chatId) {
             return this._respond(null, 400);
         }
+
         const session = await myGetServerSession();
         if (!session) {
             return this._respond(null, 401);
         }
-        const messages = await this.service.getMessages("sidmaksfwalrwams8sjfnakwej4vgy8sdv2w--8ansdkfanwjawf-0k2kas-asjfacvgte4567", new MessageRepository());
+
+        const messages = await this.service.getMessages(chatId, new MessageRepository());
         return this._respond(messages, 200);
     }
 
