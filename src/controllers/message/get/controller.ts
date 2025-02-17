@@ -13,9 +13,13 @@ export class GetMessageController extends AbstractMessageController {
     public async execute(request: Request): Promise<Response> {
         const session = await myGetServerSession();
         if (!session) {
-            return new Response(JSON.stringify({}), { status: 401 });
+            return this._respond(null, 401);
         }
-        const data = await this.service.getMessages("sidmaksfwalrwams8sjfnakwej4vgy8sdv2w--8ansdkfanwjawf-0k2kas-asjfacvgte4567", new MessageRepository());
-        return new Response(JSON.stringify({ data }), { status: 200 });
+        const messages = await this.service.getMessages("sidmaksfwalrwams8sjfnakwej4vgy8sdv2w--8ansdkfanwjawf-0k2kas-asjfacvgte4567", new MessageRepository());
+        return this._respond(messages, 200);
+    }
+
+    private async _respond(content: any, status: number): Promise<Response> {
+        return new Response(JSON.stringify({ data: content }), { status });
     }
 }
