@@ -9,7 +9,7 @@ export class GetMessageController extends AbstractMessageController {
         this.service = service;
     }
     public async execute(request: Request): Promise<Response> {
-        await this.service.getMessages('stub', new MessageRepository());
+        await this.service.getMessages("sidmaksfwalrwams8sjfnakwej4vgy8sdv2w--8ansdkfanwjawf-0k2kas-asjfacvgte4567", new MessageRepository());
 
         return new Response(JSON.stringify({}), { status: 401 });
     }
