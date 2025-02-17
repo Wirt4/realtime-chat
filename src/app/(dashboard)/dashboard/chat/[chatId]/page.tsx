@@ -6,6 +6,7 @@ import ChatInput from "@/components/ChatInput/ChatInput";
 import MessagesHeader from "@/components/MessagesHeader";
 import myGetServerSession from "@/lib/myGetServerSession";
 import axios from "axios";
+import { get } from "http";
 
 interface ChatProps {
     params: {
@@ -19,16 +20,15 @@ const Page: FC<ChatProps> = async ({ params }) => {
     }
     const session = await myGetServerSession();
     if (!session) notFound();
-    const chatProfile = await axios.get(`api/chatprofile/getprofile?id=${params.chatId}`)
-    if (!chatProfile?.data) notFound();
-    if (!chatProfile.data?.members.has(session?.user.id)) notFound();
-    // fetch the chat profile from GET api/chatprofile/getprofile?id=chatId
+    const { chatId } = params;
+    const chatProfile = await getChatProfile(chatId);
+    await getUsers(chatId);
+    if (!chatProfile) notFound();
+    if (!chatProfile?.members.has(session?.user.id)) notFound();
+
 
     return <div />
 
-    // fetch the chat profile from GET api/chatprofile/getprofile?id=chatId
-    // if the chat profile is null, return not found
-    // if the profile.members does not include sessionID, return not found
     // fetch the messages from Get api/messages/get?id=chatId
     // fetch the participants from api/chatprofile/getUsers?id=chatId
     // if participants[0] == sessionID, then user = participants[0], partner = participants[1], else user = participants[1], partner = participants[0]
@@ -73,4 +73,14 @@ export default Page;
 function isValidId(id: string): boolean {
     const regex = /^[a-z0-9-]{36}--[a-z0-9-]{36}$/;
     return regex.test(id);
+}
+
+async function getChatProfile(chatId: string) {
+    const res = await axios.get(`api/chatprofile/getprofile?id=${chatId}`)
+    return res.data;
+}
+
+async function getUsers(chatId: string) {
+    const res = await axios.get(`api/chatprofile/getUsers?id=${chatId}`)
+    return res.data;
 }

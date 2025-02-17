@@ -56,4 +56,8 @@ describe('ChatPage renders with expected content', () => {
         render(await Page({ params: { chatId: testId } }));
         expect(notFound).toHaveBeenCalled();
     });
+    test("axios.GET should be called with api/chatprofile/getUsers?id=<chatId>", async () => {
+        render(await Page({ params: { chatId: testId } }));
+        expect(mockedAxios.get).toHaveBeenCalledWith(expect.stringContaining('api/chatprofile/getUsers?id='));
+    });
 })
