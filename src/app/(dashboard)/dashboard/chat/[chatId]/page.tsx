@@ -71,7 +71,6 @@ const Display: FC<DisplayProps> = ({ chatInfo, participants }) => {
     )
 }
 
-
 export default Page;
 
 function isValidId(id: string): boolean {
