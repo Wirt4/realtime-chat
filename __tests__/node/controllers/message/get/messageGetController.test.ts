@@ -63,4 +63,12 @@ describe('messageGetController', () => {
         response = await controller.execute(request);
         expect(response.status).toBe(400);
     });
+    it('if the chat id is ill-formatted, return 400', async () => {
+        request = new Request(`${url}/api/message/get?id=badformatting`, {
+            method: "GET",
+            headers: { 'Content-Type': 'application/json' }
+        });
+        response = await controller.execute(request);
+        expect(response.status).toBe(400);
+    });
 });

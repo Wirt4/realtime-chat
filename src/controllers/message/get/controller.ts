@@ -20,6 +20,10 @@ export class GetMessageController extends AbstractMessageController {
         if (!chatId) {
             return this._respond(null, 400);
         }
+        const regex = /^[a-z0-9-]{36}--[a-z0-9-]{36}$/;
+        if (!regex.test(chatId)) {
+            return this._respond(null, 400);
+        }
 
         const session = await myGetServerSession();
         if (!session) {
