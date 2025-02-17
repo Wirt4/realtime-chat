@@ -1,9 +1,10 @@
 import { GetMessageController } from "@/controllers/message/get/controller";
+import { getMessageServiceFactory } from "@/controllers/message/get/serviceFactory";
 import myGetServerSession from "@/lib/myGetServerSession";
 import { GetMessagesInterface } from "@/services/message/interface";
-import { get } from "http";
 
 jest.mock("@/lib/myGetServerSession");
+jest.mock("@/controllers/message/get/serviceFactory", jest.fn);
 
 describe('messageGetController', () => {
     let testId: string;
@@ -11,6 +12,8 @@ describe('messageGetController', () => {
     let controller: GetMessageController;
     let response: Response;
     let getMessagesMock: jest.Mock;
+    let messages: Message[];
+
     beforeEach(() => {
         jest.resetAllMocks();
         (myGetServerSession as jest.Mock).mockResolvedValue({ user: { id: 'kappa' } });
@@ -19,9 +22,17 @@ describe('messageGetController', () => {
             method: "GET",
             headers: { 'Content-Type': 'application/json' }
         });
-        getMessagesMock = jest.fn();
+        messages = [{
+            senderId: "stub",
+            receiverId: "bar",
+            timestamp: 123,
+            text: "Hello World"
+        }]
+        getMessagesMock = jest.fn(async () => messages);
+
         controller = new GetMessageController({ getMessages: getMessagesMock });
-    })
+    });
+
     it('return 401 if server session is null', async () => {
         (myGetServerSession as jest.Mock).mockResolvedValue(null);
         response = await controller.execute(request);
@@ -30,7 +41,11 @@ describe('messageGetController', () => {
 
     it('if all checks pass, then pass the chatId to the service', async () => {
         await controller.execute(request);
-
         expect(getMessagesMock).toHaveBeenCalledWith(testId, expect.anything());
+    });
+    it('if all checks pass, then result should have the data set to the array of messages', async () => {
+        response = await controller.execute(request);
+        expect(response.status).toBe(200);
+        expect(await response.json()).toEqual(expect.objectContaining({ data: messages }));
     });
 });
