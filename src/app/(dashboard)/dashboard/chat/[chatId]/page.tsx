@@ -8,6 +8,7 @@ import { Message } from "@/lib/validations/messages";
 import ChatInput from "@/components/ChatInput/ChatInput";
 import Participants from "@/lib/chatParticipants";
 import MessagesHeader from "@/components/MessagesHeader";
+import { isMapIterator } from "util/types";
 
 interface ChatProps {
     params: {
@@ -16,8 +17,11 @@ interface ChatProps {
 }
 
 const Page: FC<ChatProps> = async ({ params }) => {
-    //pull chat id from params
     // if chat id is invalid, return not found
+    const regex = /^[a-z0-9-]{36}--[a-z0-9-]{36}$/;
+    if (params.chatId == "" || !regex.test(params.chatId)) {
+        notFound();
+    }
     // fetch the session
     // if the session is null, return not found
     // sessionID = sesson.user.id
@@ -28,21 +32,22 @@ const Page: FC<ChatProps> = async ({ params }) => {
     // fetch the participants from api/chatprofile/getUsers?id=chatId
     // if participants[0] == sessionID, then user = participants[0], partner = participants[1], else user = participants[1], partner = participants[0]
     // return the page with the messages and the chat input
-    const session = await myGetServerSession();
-    const userId = session?.user?.id as string
-    const { chatId } = params
-    const participants = new Participants(chatId, userId as string) //this is the participants being computed by splitting the id, needs to be a lookup now
-    const helpers = new Helpers()
-    const initialMessages = await helpers.getChatMessages(chatId)
 
-    if (!participants.includesSession()) {
-        notFound();
+
+    const chatInfo = { chatId: 'stub', messages: [] }
+    const sessionUser = {
+        name: 'boo',
+        email: 'stub',
+        image: '/stub',
+        id: 'stub',
     }
-    const partner = (await db.get(participants.getPartnerQuery())) as User;
-    const sessionUser = (await db.get(participants.getSessionUserQuery())) as User;
-
-    const chatInfo = { chatId: chatId, messages: initialMessages }
-    const chatters = { user: sessionUser, partner: partner, sessionId: userId }
+    const partner = {
+        name: 'Bob',
+        email: 'stub',
+        image: '/stub',
+        id: 'stub',
+    }
+    const chatters = { user: sessionUser, partner: partner, sessionId: 'stub' }
     return <Display chatInfo={chatInfo} participants={chatters} />
 }
 
