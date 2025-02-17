@@ -70,4 +70,8 @@ describe('ChatPage renders with expected content', () => {
         render(await Page({ params: { chatId: testId } }));
         expect(mockedAxios.get).toHaveBeenCalledWith(expect.stringContaining('api/messages/get?id='));
     });
+    test("page should diplay with 'Chat With <Partner>'", async () => {
+        const { queryByText } = render(await Page({ params: { chatId: testId } }));
+        expect(queryByText("Chat With Bob")).toBeInTheDocument();
+    });
 })

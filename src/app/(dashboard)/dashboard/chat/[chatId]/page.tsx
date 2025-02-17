@@ -34,10 +34,8 @@ const Page: FC<ChatProps> = async ({ params }) => {
     }
     await handler.getMessages();
     await handler.getUsers();
-    return <div />
+    return <div>Chat With Bob</div>
 
-    // fetch the messages from Get api/messages/get?id=chatId
-    // fetch the participants from api/chatprofile/getUsers?id=chatId
     // if participants[0] == sessionID, then user = participants[0], partner = participants[1], else user = participants[1], partner = participants[0]
     // return the page with the messages and the chat input
 }
