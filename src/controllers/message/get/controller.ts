@@ -11,6 +11,9 @@ export class GetMessageController extends AbstractMessageController {
         this.service = service;
     }
     public async execute(request: Request): Promise<Response> {
+        if (request.method !== "GET") {
+            return this._respond(null, 405);
+        }
         const session = await myGetServerSession();
         if (!session) {
             return this._respond(null, 401);

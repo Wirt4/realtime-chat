@@ -1,7 +1,5 @@
 import { GetMessageController } from "@/controllers/message/get/controller";
-import { getMessageServiceFactory } from "@/controllers/message/get/serviceFactory";
 import myGetServerSession from "@/lib/myGetServerSession";
-import { GetMessagesInterface } from "@/services/message/interface";
 
 jest.mock("@/lib/myGetServerSession");
 jest.mock("@/controllers/message/get/serviceFactory", jest.fn);
@@ -38,7 +36,14 @@ describe('messageGetController', () => {
         response = await controller.execute(request);
         expect(response.status).toBe(401);
     });
-
+    it('return 405 if method is not GET', async () => {
+        request = new Request(`/api/message/get?id=${testId}`, {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' }
+        });
+        response = await controller.execute(request);
+        expect(response.status).toBe(405);
+    });
     it('if all checks pass, then pass the chatId to the service', async () => {
         await controller.execute(request);
         expect(getMessagesMock).toHaveBeenCalledWith(testId, expect.anything());
