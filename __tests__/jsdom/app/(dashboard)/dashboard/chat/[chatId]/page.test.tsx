@@ -44,17 +44,19 @@ describe('ChatPage renders with expected content', () => {
     test('Given the users ID is "userid1" and that the partner has a name of "Bob": when the page renders, then the title should be "Chat with Bob"', async () => {
         (getServerSession as jest.Mock).mockResolvedValue({ user: { id: 'userid1' } });
         //mock the call to GET aapi/chatprofile/getUsers?id=chatId
-        mockedAxios.get.mockResolvedValue([{
-            name: "Bob",
-            email: "stub",
-            image: "stub",
-            id: "userid2"
-        }, {
-            name: "The User",
-            email: "stub",
-            image: "stub",
-            id: "userid1"
-        }]);
+        mockedAxios.get.mockResolvedValue({
+            data: [{
+                name: "Bob",
+                email: "stub",
+                image: "/stub",
+                id: "userid2"
+            }, {
+                name: "The User",
+                email: "stub",
+                image: "/stub",
+                id: "userid1"
+            }]
+        });
         render(await Page({ params: { chatId: testId } }));
         expect(document.title).toEqual('Chat with Bob');
     })

@@ -9,6 +9,7 @@ import ChatInput from "@/components/ChatInput/ChatInput";
 import Participants from "@/lib/chatParticipants";
 import MessagesHeader from "@/components/MessagesHeader";
 import { isMapIterator } from "util/types";
+import axios from "axios";
 
 interface ChatProps {
     params: {
@@ -18,8 +19,9 @@ interface ChatProps {
 
 const Page: FC<ChatProps> = async ({ params }) => {
     // if chat id is invalid, return not found
+    const { chatId } = params
     const regex = /^[a-z0-9-]{36}--[a-z0-9-]{36}$/;
-    if (params.chatId == "" || !regex.test(params.chatId)) {
+    if (chatId == "" || !regex.test(params.chatId)) {
         notFound();
     }
     // fetch the session
@@ -33,21 +35,31 @@ const Page: FC<ChatProps> = async ({ params }) => {
     // if participants[0] == sessionID, then user = participants[0], partner = participants[1], else user = participants[1], partner = participants[0]
     // return the page with the messages and the chat input
 
-
+    const session = await myGetServerSession()
     const chatInfo = { chatId: 'stub', messages: [] }
-    const sessionUser = {
-        name: 'boo',
+    let user: User = {
+        name: 'stub',
         email: 'stub',
-        image: '/stub',
-        id: 'stub',
+        image: 'http://stub',
+        id: 'stub'
     }
-    const partner = {
+    let partner: User = {
         name: 'Bob',
         email: 'stub',
-        image: '/stub',
-        id: 'stub',
+        image: 'http://stub',
+        id: 'stub'
+    };
+    const rawParticipants = await axios.get('/api/chatprofile/getUsers', { params: { id: chatId } })
+    console.log("axios result", rawParticipants)
+    for (let u in rawParticipants?.data) {
+        if (rawParticipants.data[u].id == session?.user.id) {
+            user = rawParticipants.data[u]
+        } else {
+            partner = rawParticipants.data[u]
+        }
     }
-    const chatters = { user: sessionUser, partner: partner, sessionId: 'stub' }
+
+    const chatters = { user, partner, sessionId: 'stub' }
     return <Display chatInfo={chatInfo} participants={chatters} />
 }
 
