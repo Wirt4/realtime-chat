@@ -1,11 +1,9 @@
 import { FC } from "react";
 import { notFound } from "next/navigation";
-import myGetServerSession from "@/lib/myGetServerSession";
 import Messages from "@/components/Messages";
 import { Message } from "@/lib/validations/messages";
 import ChatInput from "@/components/ChatInput/ChatInput";
 import MessagesHeader from "@/components/MessagesHeader";
-import axios from "axios";
 
 interface ChatProps {
     params: {
@@ -14,18 +12,11 @@ interface ChatProps {
 }
 
 const Page: FC<ChatProps> = async ({ params }) => {
-    // if chat id is invalid, return not found
-    if (!params.chatId) {
-        notFound();
-    }
-    const regex = /^[a-z0-9-]{36}--[a-z0-9-]{36}$/;
-    if (!regex.test(params.chatId)) {
+    if (!isValidId(params.chatId)) {
         notFound();
     }
     return <div />
 
-    // if chat id is invalid, return not found
-    //const regex = /^[a-z0-9-]{36}--[a-z0-9-]{36}$/;
     // fetch the session
     // if the session is null, return not found
     // sessionID = sesson.user.id
@@ -72,3 +63,8 @@ const Display: FC<DisplayProps> = ({ chatInfo, participants }) => {
 
 
 export default Page;
+
+function isValidId(id: string): boolean {
+    const regex = /^[a-z0-9-]{36}--[a-z0-9-]{36}$/;
+    return regex.test(id);
+}
