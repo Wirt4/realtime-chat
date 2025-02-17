@@ -11,12 +11,14 @@ describe('messageGetController', () => {
     let response: Response;
     let getMessagesMock: jest.Mock;
     let messages: Message[];
+    let url: string
 
     beforeEach(() => {
         jest.resetAllMocks();
+        url = 'http://localhost:3000';
         (myGetServerSession as jest.Mock).mockResolvedValue({ user: { id: 'kappa' } });
         testId = "sidmaksfwalrwams8sjfnakwej4vgy8sdv2w--8ansdkfanwjawf-0k2kas-asjfacvgte4567";
-        request = new Request(`/api/message/get?id=${testId}`, {
+        request = new Request(`${url}/api/message/get?id=${testId}`, {
             method: "GET",
             headers: { 'Content-Type': 'application/json' }
         });
@@ -37,7 +39,7 @@ describe('messageGetController', () => {
         expect(response.status).toBe(401);
     });
     it('return 405 if method is not GET', async () => {
-        request = new Request(`/api/message/get?id=${testId}`, {
+        request = new Request(`${url}/api/message/get?id=${testId}`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' }
         });
@@ -52,5 +54,13 @@ describe('messageGetController', () => {
         response = await controller.execute(request);
         expect(response.status).toBe(200);
         expect(await response.json()).toEqual(expect.objectContaining({ data: messages }));
+    });
+    it('if there is no query string, return 400', async () => {
+        request = new Request(`${url}/api/message/get`, {
+            method: "GET",
+            headers: { 'Content-Type': 'application/json' }
+        });
+        response = await controller.execute(request);
+        expect(response.status).toBe(400);
     });
 });

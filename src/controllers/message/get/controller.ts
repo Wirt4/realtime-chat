@@ -14,6 +14,11 @@ export class GetMessageController extends AbstractMessageController {
         if (request.method !== "GET") {
             return this._respond(null, 405);
         }
+        const url = new URL(request.url);
+        const id = url.searchParams.get("id");
+        if (!id) {
+            return this._respond(null, 400);
+        }
         const session = await myGetServerSession();
         if (!session) {
             return this._respond(null, 401);
