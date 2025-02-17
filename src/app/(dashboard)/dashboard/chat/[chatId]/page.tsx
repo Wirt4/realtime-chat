@@ -25,11 +25,9 @@ const Page: FC<ChatProps> = async ({ params }) => {
     }
     const { chatId } = params;
     const chatProfile = await getChatProfile(chatId);
-    if (!chatProfile) notFound();
-    if (!chatProfile?.members.has(session?.user.id)) {
+    if (!chatProfile || !chatProfile?.members.has(session?.user.id)) {
         notFound();
         return
-
     }
     await getUsers(chatId);
     return <div />
