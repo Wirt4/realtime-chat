@@ -32,8 +32,9 @@
  *         description: Internal server error.
  */
 
+import { ChatProfileController } from "@/controllers/chatProfile/controller";
+
 export async function POST(request: Request): Promise<Response> {
-    // create a controller
-    // return controller.getChatIdFromUsers(request)
-    return Response.json({});
+    const controller = new ChatProfileController();
+    return controller.getChatIdFromUsers(request);
 }

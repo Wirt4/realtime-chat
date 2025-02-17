@@ -7,9 +7,12 @@ export class ChatName extends aChatName {
         super();
         this.names = [];
         for (let i = 0; i < partcipants.length; i++) {
-            if (partcipants[i].id !== sessionId) {
-                this.names.push(partcipants[i].name);
+            if (partcipants[i].name === sessionId) {
+                continue;
             }
+
+            this.names.push(partcipants[i].name);
+
         }
         this.names.sort();
     }

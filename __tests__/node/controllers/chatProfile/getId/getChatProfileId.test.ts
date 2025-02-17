@@ -1,7 +1,6 @@
 import { ChatProfileController } from "@/controllers/chatProfile/controller";
 import myGetServerSession from "@/lib/myGetServerSession";
 import { ChatProfileService } from "@/services/chatProfile/implementation";
-import { get } from "http";
 
 jest.mock("@/services/chatProfile/implementation");
 jest.mock("@/lib/myGetServerSession", () => jest.fn());
@@ -20,6 +19,7 @@ describe("get chat profile id from users tests", () => {
         }));
 
     });
+
     it("method 'getChatIdFromUsers'", async () => {
         const controller = new ChatProfileController();
 
@@ -63,5 +63,6 @@ describe("get chat profile id from users tests", () => {
         const result = await controller.getChatIdFromUsers(request);
 
         expect(await result.json()).toEqual({ chatId: "target-chat-id" });
+        expect(result.status).toEqual(200);
     })
 });

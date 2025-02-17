@@ -3,11 +3,11 @@ import { FC } from 'react';
 import { FriendsListProps } from './interface';
 import FriendListItem from '../FriendListItem/component';
 
-const FriendsList: FC<FriendsListProps> = ({ friends = [] }) => {
+const FriendsList: FC<FriendsListProps> = (props) => {
 
     return <ul className='sidebar-chat-list'>
-        {friends.map((friend) => (
-            <FriendListItem key={friend.id} friend={friend} />
+        {props.friends.map((friend) => (
+            <FriendListItem key={friend.id} friend={friend} sessionid={props.sessionid} />
         ))}
     </ul>
 }
