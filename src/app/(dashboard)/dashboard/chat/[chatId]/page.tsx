@@ -26,13 +26,14 @@ const Page: FC<ChatProps> = async ({ params }) => {
     }
 
     const { chatId } = params;
-    const chatProfile = await getChatProfile(chatId);
+    const handler = new AxiosWrapper(chatId);
+    const chatProfile = await handler.getChatProfile()
     if (!chatProfile || !chatProfile?.members.has(session?.user.id)) {
         notFound();
         return
     }
-    await axios.get(`api/messages/get?id=chatId`)
-    await getUsers(chatId);
+    await handler.getMessages();
+    await handler.getUsers();
     return <div />
 
     // fetch the messages from Get api/messages/get?id=chatId
@@ -81,12 +82,27 @@ function isValidId(id: string): boolean {
     return regex.test(id);
 }
 
-async function getChatProfile(chatId: string) {
-    const res = await axios.get(`api/chatprofile/getprofile?id=${chatId}`)
-    return res.data;
-}
+class AxiosWrapper {
+    private chatId: string;
 
-async function getUsers(chatId: string) {
-    const res = await axios.get(`api/chatprofile/getUsers?id=${chatId}`)
-    return res.data;
+    constructor(chatId: string) {
+        this.chatId = chatId;
+    }
+
+    async getChatProfile() {
+        return this.get('api/chatprofile/getprofile');
+    }
+
+    async getUsers() {
+        return this.get('api/chatprofile/getUsers');
+    }
+
+    async getMessages() {
+        return this.get('api/messages/get');
+    }
+
+    private async get(endpoint: string) {
+        const res = await axios.get(`${endpoint}?id=${this.chatId}`)
+        return res?.data;
+    }
 }
