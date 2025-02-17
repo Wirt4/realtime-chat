@@ -5,11 +5,9 @@ import Page from '@/app/(dashboard)/dashboard/chat/[chatId]/page'
 import { notFound } from "next/navigation";
 import myGetServerSession from '@/lib/myGetServerSession';
 import axios from "axios";
-
 jest.mock("next/navigation", () => ({
     notFound: jest.fn(),
 }));
-
 jest.mock('@/lib/pusher', () => ({
     getPusherClient: jest.fn(),
 }))
@@ -36,7 +34,7 @@ describe('ChatPage renders with expected content', () => {
         render(await Page({ params: { chatId: testId } }));
         expect(notFound).not.toHaveBeenCalled();
     });
-    /*test("if chatId is empty, notFound is called", async () => {
+    test("if chatId is empty, notFound is called", async () => {
         render(await Page({ params: { chatId: "" } }));
         expect(notFound).toHaveBeenCalled();
     });
@@ -75,8 +73,7 @@ describe('ChatPage renders with expected content', () => {
         expect(mockedAxios.get).toHaveBeenCalledWith(expect.stringContaining('api/messages/get?id='));
     });
     test("page should diplay with 'Chat With <Partner>'", async () => {
-        const { queryByText } = render(await Page({ params: { chatId: testId } }));
-        expect(queryByText("Chat With Bob")).toBeInTheDocument();
+        const { getByText } = render(await Page({ params: { chatId: testId } }));
+        expect(getByText("Chat With Bob")).toBeInTheDocument();
     });
-    */
 })

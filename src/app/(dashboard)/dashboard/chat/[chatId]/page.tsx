@@ -59,7 +59,7 @@ const Display: FC<DisplayProps> = ({ chatInfo, participants }) => {
 
     return (
         <>
-            <title>{`Chat with ${partner.name}`}</title>
+            <title>{`Chat With ${partner.name}`}</title>
             <div className='chat-a'>
                 <MessagesHeader partner={partner} chatId={chatId} />
                 <Messages initialMessages={chatInfo.messages} participants={participants} chatId={chatId} />
