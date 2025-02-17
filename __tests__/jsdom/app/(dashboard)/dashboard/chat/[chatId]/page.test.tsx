@@ -46,8 +46,13 @@ describe('ChatPage renders with expected content', () => {
         expect(mockedAxios.get).toHaveBeenCalledWith(expect.stringContaining('api/chatprofile/getprofile?id='));
         expect(mockedAxios.get).toHaveBeenCalledWith(expect.stringContaining(testId));
     });
-    test("if api/chatprofile/getprofile?id=<chatId> resoves to null, then not fount", async () => {
+    test("if api/chatprofile/getprofile?id=<chatId> resoves to null, then not found", async () => {
         mockedAxios.get.mockResolvedValueOnce({ data: null });
+        render(await Page({ params: { chatId: testId } }));
+        expect(notFound).toHaveBeenCalled();
+    });
+    test("if the session users id is not a part of the chat profile, then not found", async () => {
+        (myGetServerSession as jest.Mock).mockResolvedValue({ user: { id: 'outsiderid' } });
         render(await Page({ params: { chatId: testId } }));
         expect(notFound).toHaveBeenCalled();
     });

@@ -21,6 +21,7 @@ const Page: FC<ChatProps> = async ({ params }) => {
     if (!session) notFound();
     const chatProfile = await axios.get(`api/chatprofile/getprofile?id=${params.chatId}`)
     if (!chatProfile?.data) notFound();
+    if (!chatProfile.data?.members.has(session?.user.id)) notFound();
     // fetch the chat profile from GET api/chatprofile/getprofile?id=chatId
 
     return <div />
