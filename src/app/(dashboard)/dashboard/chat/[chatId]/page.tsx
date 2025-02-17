@@ -4,6 +4,8 @@ import Messages from "@/components/Messages";
 import { Message } from "@/lib/validations/messages";
 import ChatInput from "@/components/ChatInput/ChatInput";
 import MessagesHeader from "@/components/MessagesHeader";
+import myGetServerSession from "@/lib/myGetServerSession";
+import axios from "axios";
 
 interface ChatProps {
     params: {
@@ -15,11 +17,14 @@ const Page: FC<ChatProps> = async ({ params }) => {
     if (!isValidId(params.chatId)) {
         notFound();
     }
+    const session = await myGetServerSession();
+    if (!session) notFound();
+    const chatProfile = await axios.get(`api/chatprofile/getprofile?id=${params.chatId}`)
+    if (!chatProfile?.data) notFound();
+    // fetch the chat profile from GET api/chatprofile/getprofile?id=chatId
+
     return <div />
 
-    // fetch the session
-    // if the session is null, return not found
-    // sessionID = sesson.user.id
     // fetch the chat profile from GET api/chatprofile/getprofile?id=chatId
     // if the chat profile is null, return not found
     // if the profile.members does not include sessionID, return not found
