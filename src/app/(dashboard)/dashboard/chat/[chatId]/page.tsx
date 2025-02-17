@@ -34,19 +34,8 @@ const Page: FC<ChatProps> = async ({ params }) => {
     }
     await handler.getMessages();
     const users = await handler.getUsers();
-    let user: User;
-    let partner: User;
 
-    if (users[0].id === session.user.id) {
-        user = users[0];
-        partner = users[1];
-    } else {
-        user = users[1];
-        partner = users[0];
-    }
-
-
-    return <Display chatInfo={chatProfile} participants={{ user, partner, sessionId: session?.user?.id }} />
+    return <Display chatInfo={chatProfile} participants={deriveChatParticipants(session?.user?.id, users)} />
 }
 
 interface DisplayProps {
@@ -112,4 +101,17 @@ class AxiosWrapper {
         const res = await axios.get(`${endpoint}?id=${this.chatId}`)
         return res?.data;
     }
+}
+
+function deriveChatParticipants(sessionId: string, participants: User[]): ChatParticipants {
+    let user: User;
+    let partner: User;
+    if (participants[0].id === sessionId) {
+        user = participants[0];
+        partner = participants[1];
+    } else {
+        user = participants[1];
+        partner = participants[0];
+    }
+    return { user, partner, sessionId: sessionId }
 }
