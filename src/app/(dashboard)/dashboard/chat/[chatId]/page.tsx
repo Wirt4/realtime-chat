@@ -6,7 +6,6 @@ import ChatInput from "@/components/ChatInput/ChatInput";
 import MessagesHeader from "@/components/MessagesHeader";
 import myGetServerSession from "@/lib/myGetServerSession";
 import axios from "axios";
-import { get } from "http";
 
 interface ChatProps {
     params: {
@@ -17,16 +16,22 @@ interface ChatProps {
 const Page: FC<ChatProps> = async ({ params }) => {
     if (!isValidId(params.chatId)) {
         notFound();
+        return
     }
     const session = await myGetServerSession();
-    if (!session) notFound();
+    if (!session) {
+        notFound();
+        return
+    }
     const { chatId } = params;
     const chatProfile = await getChatProfile(chatId);
-    await getUsers(chatId);
     if (!chatProfile) notFound();
-    if (!chatProfile?.members.has(session?.user.id)) notFound();
+    if (!chatProfile?.members.has(session?.user.id)) {
+        notFound();
+        return
 
-
+    }
+    await getUsers(chatId);
     return <div />
 
     // fetch the messages from Get api/messages/get?id=chatId

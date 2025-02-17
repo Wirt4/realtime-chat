@@ -23,7 +23,6 @@ describe('ChatPage renders with expected content', () => {
         mockedAxios.get.mockResolvedValue({ data: { members: new Set(['userid1', 'userid2']), id: testId } });
     });
 
-
     test('page renders', async () => {
         render(await Page({ params: { chatId: testId } }));
         expect(notFound).not.toHaveBeenCalled();
@@ -55,6 +54,8 @@ describe('ChatPage renders with expected content', () => {
         (myGetServerSession as jest.Mock).mockResolvedValue({ user: { id: 'outsiderid' } });
         render(await Page({ params: { chatId: testId } }));
         expect(notFound).toHaveBeenCalled();
+        //don't call other endpoints
+        expect(mockedAxios.get).toHaveBeenCalledTimes(1);
     });
     test("axios.GET should be called with api/chatprofile/getUsers?id=<chatId>", async () => {
         render(await Page({ params: { chatId: testId } }));
