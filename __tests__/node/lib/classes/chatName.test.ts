@@ -1,7 +1,7 @@
 import { ChatName } from '@/lib/classes/chatName/implementation';
 
 describe('ChatName tests', () => {
-    it('rshould return a default title but not include the users name', () => {
+    test('should return a default title but not include the users name', () => {
         const participants: User[] = [
             { name: "Alfred", id: "foo", email: "bar", image: "/spam" },
             { name: "theUser", id: "bar", email: "bar", image: "/spam" },
@@ -12,7 +12,8 @@ describe('ChatName tests', () => {
         const chatName = new ChatName(participants, sessionId);
         expect(chatName.getChatName()).toEqual("Chat with Alfred, Betty, and Charlie");
     })
-    it('rshould return a default title but not include the users name', () => {
+
+    test('should return a default title but not include the users name', () => {
         const participants: User[] = [
             { name: "Alfred", id: "bar", email: "bar", image: "/spam" },
             { name: "theUser", id: "foo", email: "bar", image: "/spam" },
