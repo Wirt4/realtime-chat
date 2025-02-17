@@ -33,11 +33,8 @@ const Page: FC<ChatProps> = async ({ params }) => {
         return
     }
     await handler.getMessages();
-    await handler.getUsers();
-    return <div>Chat With Bob</div>
-
-    // if participants[0] == sessionID, then user = participants[0], partner = participants[1], else user = participants[1], partner = participants[0]
-    // return the page with the messages and the chat input
+    const users = await handler.getUsers();
+    return <Display chatInfo={chatProfile} participants={{ user: users[0], partner: users[1], sessionId: session?.user?.id }} />
 }
 
 interface DisplayProps {
