@@ -26,6 +26,16 @@ describe('ChatPage renders with expected content', () => {
             if (url.includes('api/chatprofile/getprofile?id=')) {
                 return { data: { members: new Set(['userid1', 'userid2']), id: testId } }
             }
+            if (url.includes('api/messages/get?id=')) {
+                return {
+                    data: [{
+                        senderId: 'userid2',
+                        receiverId: 'userid1',
+                        text: "Hello, this is Bob",
+                        timestamp: 1234567890
+                    }]
+                }
+            }
             return { data: [{ id: 'userid1', name: 'Session User' }, { id: 'userid2', name: 'Bob' }] }
         });
     });
@@ -75,5 +85,9 @@ describe('ChatPage renders with expected content', () => {
     test("page should diplay with 'Chat With <Partner>'", async () => {
         const { getByText } = render(await Page({ params: { chatId: testId } }));
         expect(getByText("Chat With Bob")).toBeInTheDocument();
+    });
+    test("page should render with the chat content returned by the messages", async () => {
+        const { getByText } = render(await Page({ params: { chatId: testId } }));
+        expect(getByText("Hello, this is Bob")).toBeInTheDocument();
     });
 })

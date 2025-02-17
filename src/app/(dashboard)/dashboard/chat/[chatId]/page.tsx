@@ -32,10 +32,11 @@ const Page: FC<ChatProps> = async ({ params }) => {
         notFound();
         return
     }
-    await handler.getMessages();
+    const messages = await handler.getMessages();
+    const chatInfo = { chatId, messages }
     const users = await handler.getUsers();
 
-    return <Display chatInfo={chatProfile} participants={deriveChatParticipants(session?.user?.id, users)} />
+    return <Display chatInfo={chatInfo} participants={deriveChatParticipants(session?.user?.id, users)} />
 }
 
 interface DisplayProps {
