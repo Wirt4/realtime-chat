@@ -20,7 +20,12 @@ describe('ChatPage renders with expected content', () => {
         jest.resetAllMocks();
         testId = "sidmaksfwalrwams8sjfnakwej4vgy8sdv2w--8ansdkfanwjawf-0k2kas-asjfacvgte4567";
         (myGetServerSession as jest.Mock).mockResolvedValue({ user: { id: 'userid1' } });
-        mockedAxios.get.mockResolvedValue({ data: { members: new Set(['userid1', 'userid2']), id: testId } });
+        mockedAxios.get.mockImplementation(async (url: string) => {
+            if (url.includes('api/chatprofile/getprofile?id=')) {
+                return { data: { members: new Set(['userid1', 'userid2']), id: testId } }
+            }
+            return { data: { users: [{ id: 'userid1', name: 'Session User' }, { id: 'userid2', name: 'Bob' }] } }
+        });
     });
 
     test('page renders', async () => {
@@ -60,5 +65,9 @@ describe('ChatPage renders with expected content', () => {
     test("axios.GET should be called with api/chatprofile/getUsers?id=<chatId>", async () => {
         render(await Page({ params: { chatId: testId } }));
         expect(mockedAxios.get).toHaveBeenCalledWith(expect.stringContaining('api/chatprofile/getUsers?id='));
+    });
+    test("GET should be called with api/messages/get?id=<chatId>", async () => {
+        render(await Page({ params: { chatId: testId } }));
+        expect(mockedAxios.get).toHaveBeenCalledWith(expect.stringContaining('api/messages/get?id='));
     });
 })

@@ -18,17 +18,20 @@ const Page: FC<ChatProps> = async ({ params }) => {
         notFound();
         return
     }
+
     const session = await myGetServerSession();
     if (!session) {
         notFound();
         return
     }
+
     const { chatId } = params;
     const chatProfile = await getChatProfile(chatId);
     if (!chatProfile || !chatProfile?.members.has(session?.user.id)) {
         notFound();
         return
     }
+    await axios.get(`api/messages/get?id=chatId`)
     await getUsers(chatId);
     return <div />
 
