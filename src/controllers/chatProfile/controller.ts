@@ -75,21 +75,12 @@ export class ChatProfileController {
 
         const service = this.createService();
         const fetchedData = await service.getUsers(chatId);
-
-
-        return this.respond({
-            data: [{
-                name: 'Mario',
-                email: 'stub',
-                image: 'stub',
-                id: '/stub',
-            }, {
-                name: 'Luigi',
-                email: 'stub',
-                image: 'stub',
-                id: '/stub'
-            }]
+        let data: User[] = []
+        fetchedData?.forEach((user) => {
+            data.push(user);
         })
+
+        return this.respond({ data })
     }
 
     private async respond(content: any, status: number = 200): Promise<Response> {
