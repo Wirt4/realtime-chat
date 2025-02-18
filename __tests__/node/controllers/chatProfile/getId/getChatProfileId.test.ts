@@ -66,3 +66,22 @@ describe("get chat profile id from users tests", () => {
         expect(result.status).toEqual(200);
     })
 });
+
+describe("get profile tests", () => {
+    it("if method is not get, return 405", async () => {
+        const controller = new ChatProfileController();
+        const request = new Request("stub.address?chatId=1234", { method: "POST" });
+
+        const result = await controller.getProfile(request);
+
+        expect(result.status).toEqual(405);
+    });
+    it("if request does not have query param 'chatId'", async () => {
+        const controller = new ChatProfileController();
+        const request = new Request("stub.address", { method: "GET" });
+
+        const result = await controller.getProfile(request);
+
+        expect(result.status).toEqual(400);
+    });
+})

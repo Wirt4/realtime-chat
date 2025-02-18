@@ -24,6 +24,13 @@ export class ChatProfileController {
         return new Response(JSON.stringify({ chatId }));
     }
 
+    async getProfile(request: Request): Promise<Response> {
+        if (request.method === "GET") {
+            return new Response(JSON.stringify({}), { status: 400 });
+        }
+        return new Response(JSON.stringify({}), { status: 405 });
+    }
+
     private createService(): ChatProfileService {
         const chatRepo = new ChatProfileRepository(db);
         const userRepo = new UserRepository(db);
