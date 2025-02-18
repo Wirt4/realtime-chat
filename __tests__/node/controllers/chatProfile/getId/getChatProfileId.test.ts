@@ -145,3 +145,15 @@ describe("get profile tests", () => {
         ));
     });
 });
+
+describe("getUsers tests", () => {
+    it("if method is not get, return 405", async () => {
+        const testId = "111111111111111111111111111111111111--111111111111111111111111111111111111";
+        const request = new Request(`http://localhost:3000?id=${testId}`, { method: "POST" });
+        const controller = new ChatProfileController();
+
+        const result = await controller.getUsers(request);
+
+        expect(result.status).toEqual(405);
+    });
+})
