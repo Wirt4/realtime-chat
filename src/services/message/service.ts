@@ -33,9 +33,7 @@ export class MessageService implements
     }
 
     async getMessages(chatId: string, repository: aGetMessagesRepository): Promise<Message[]> {
-        await repository.getMessages(chatId)
-        return []
-
+        return repository.getMessages(chatId)
     }
 }
 

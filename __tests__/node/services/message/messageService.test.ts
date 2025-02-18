@@ -142,4 +142,14 @@ describe('getMessages tests', () => {
         await service.getMessages(chatId, repo)
         expect(repo.getMessages).toHaveBeenCalledWith(chatId)
     });
+    it('confirm parameters passed to repository', async () => {
+        const messages = [{ text: "hello" }]
+        const repo = {
+            getMessages: jest.fn().mockResolvedValue(messages),
+        }
+        const service = new MessageService()
+        const chatId = 'foo--bar'
+        const result = await service.getMessages(chatId, repo)
+        expect(result).toEqual(messages);
+    });
 });
