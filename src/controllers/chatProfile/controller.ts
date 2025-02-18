@@ -55,6 +55,10 @@ export class ChatProfileController {
         return this.respond({ data });
     }
 
+    async getUsers(request: Request): Promise<Response> {
+        return this.respond("", 405);
+    }
+
     private async respond(content: any, status: number = 200): Promise<Response> {
         return new Response(JSON.stringify(content), { status });
     }
