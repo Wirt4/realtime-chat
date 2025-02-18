@@ -130,3 +130,16 @@ describe('deleteChat tests', () => {
         expect(repo.removeAllMessages).toHaveBeenCalledWith(chatId)
     })
 })
+
+
+describe('getMessages tests', () => {
+    it('confirm parameters passed to repository', async () => {
+        const repo = {
+            getMessages: jest.fn(),
+        }
+        const service = new MessageService()
+        const chatId = 'foo--bar'
+        await service.getMessages(chatId, repo)
+        expect(repo.getMessages).toHaveBeenCalledWith(chatId)
+    });
+});

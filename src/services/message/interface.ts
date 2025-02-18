@@ -3,6 +3,7 @@ import { PusherSendMessageInterface } from "@/services/pusher/interfaces";
 import { aFriendsRepository } from "@/repositories/friends/abstract";
 import { aMessageRepository } from "@/repositories/message/removeAll/abstract";
 import { aSendMessageRepository } from "@/repositories/message/send/abstract";
+import { aGetMessagesRepository } from "@/repositories/message/get/abstract";
 
 export interface MessageSendInterface extends MessageServiceInterface {
     areFriends(chatProfile: SenderHeader, repository: aFriendsRepository): Promise<boolean>
@@ -14,7 +15,7 @@ export interface MessageRemoveAllInterface extends MessageServiceInterface {
 }
 
 export interface GetMessagesInterface {
-    getMessages(chatId: string, repository: aMessageRepository): Promise<Message[]>
+    getMessages(chatId: string, repository: aGetMessagesRepository): Promise<Message[]>
 }
 
 interface MessageServiceInterface {

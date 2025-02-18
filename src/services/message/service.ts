@@ -4,6 +4,7 @@ import { PusherSendMessageInterface } from "@/services/pusher/interfaces";
 import { aFriendsRepository } from "@/repositories/friends/abstract";
 import { aMessageRepository } from "@/repositories/message/removeAll/abstract";
 import { aSendMessageRepository } from "@/repositories/message/send/abstract";
+import { aGetMessagesRepository } from "@/repositories/message/get/abstract";
 
 export class MessageService implements
     MessageSendInterface,
@@ -31,8 +32,8 @@ export class MessageService implements
         return repository.removeAllMessages(chatId)
     }
 
-    async getMessages(chatId: string, repository: aMessageRepository): Promise<Message[]> {
-        //stub
+    async getMessages(chatId: string, repository: aGetMessagesRepository): Promise<Message[]> {
+        await repository.getMessages(chatId)
         return []
 
     }
