@@ -147,22 +147,26 @@ describe("get profile tests", () => {
 });
 
 describe("getUsers tests", () => {
+    let testId: string;
+    let controller: ChatProfileController;
+    let request: Request;
+    let result: Response;
+    beforeEach(() => {
+        jest.resetAllMocks();
+        testId = "111111111111111111111111111111111111--111111111111111111111111111111111111";
+        controller = new ChatProfileController();
+        request = new Request(`http://localhost:3000?id=${testId}`, { method: "GET" });
+
+    })
     it("if method is not get, return 405", async () => {
-        const testId = "111111111111111111111111111111111111--111111111111111111111111111111111111";
-        const request = new Request(`http://localhost:3000?id=${testId}`, { method: "POST" });
-        const controller = new ChatProfileController();
-
-        const result = await controller.getUsers(request);
-
+        request = new Request(`http://localhost:3000?id=${testId}`, { method: "POST" });
+        result = await controller.getUsers(request);
         expect(result.status).toEqual(405);
     });
 
     it("if url does not have testID param, return 400", async () => {
-        const request = new Request('http://localhost:3000', { method: "GET" });
-        const controller = new ChatProfileController();
-
-        const result = await controller.getUsers(request);
-
+        request = new Request('http://localhost:3000', { method: "GET" });
+        result = await controller.getUsers(request);
         expect(result.status).toEqual(400);
     });
 })
