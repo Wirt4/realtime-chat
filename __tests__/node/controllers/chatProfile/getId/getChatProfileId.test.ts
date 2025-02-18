@@ -78,7 +78,7 @@ describe("get profile tests", () => {
         controller = new ChatProfileController();
         request = new Request(`http://localhost:3000?id=${testId}`, { method: "GET" });
         (myGetServerSession as jest.Mock).mockResolvedValue({ user: { id: 'kappa' } });
-        mockGetProfile = jest.fn();
+        mockGetProfile = jest.fn().mockReturnValue({ id: testId, members: new Set(["user1", "user2"]) });
         (ChatProfileService as jest.Mock).mockImplementation(() => ({
             getProfile: mockGetProfile,
         }));
@@ -124,10 +124,18 @@ describe("get profile tests", () => {
 
         expect(result.status).toEqual(401);
     });
-
     it("if all checks pass, then pass the test ID to the service method getProfile", async () => {
         await controller.getProfile(request);
 
         expect(mockGetProfile).toHaveBeenCalledWith(testId);
+    });
+    it("if all checks pass, then return a response with key 'data'", async () => {
+        const response = await controller.getProfile(request);
+        expect(await response.json()).toEqual(expect.objectContaining({ data: expect.anything() }));
+    });
+    it("if the service returns null, then data is null", async () => {
+        mockGetProfile.mockResolvedValue(null);
+        const response = await controller.getProfile(request);
+        expect(await response.json()).toEqual(expect.objectContaining({ data: null }));
     });
 });

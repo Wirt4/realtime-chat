@@ -42,8 +42,8 @@ export class ChatProfileController {
         }
 
         const service = this.createService();
-        await service.getProfile(chatId);
-        return this.respond("");
+        const data = await service.getProfile(chatId);
+        return this.respond({ data });
     }
 
     private async respond(content: any, status: number = 200): Promise<Response> {
