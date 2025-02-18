@@ -10,25 +10,33 @@ export class ChatProfileController {
     async getChatIdFromUsers(request: Request): Promise<Response> {
         const session = await myGetServerSession();
         if (!session) {
-            return new Response("", { status: 401 });
+            return this.respond("", 401);
         }
         let participantsSet: Set<string>;
         try {
             participantsSet = await this.parseSet(request);
         } catch {
-            return new Response("", { status: 400 });
+            return this.respond("", 400);
         }
         const service = this.createService();
         await service.loadProfileFromUsers(participantsSet);
         const chatId = service.getChatId();
-        return new Response(JSON.stringify({ chatId }));
+        return this.respond({ chatId });
     }
 
     async getProfile(request: Request): Promise<Response> {
         if (request.method === "GET") {
-            return new Response(JSON.stringify({}), { status: 400 });
+            const url = new URL(request.url);
+            const chatId = url.searchParams.get("chatId");
+            if (!chatId) {
+                return this.respond("", 400);
+            }
         }
-        return new Response(JSON.stringify({}), { status: 405 });
+        return this.respond("", 405);
+    }
+
+    private async respond(content: any, status: number = 200): Promise<Response> {
+        return new Response(JSON.stringify(content), { status });
     }
 
     private createService(): ChatProfileService {
