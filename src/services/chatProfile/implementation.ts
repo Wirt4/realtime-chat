@@ -51,7 +51,8 @@ export class ChatProfileService implements aChatProfileService {
     }
 
     async getUsers(chatId: string): Promise<Set<User>> {
-        throw new Error("Method not implemented.");
+        await this.profileRepository.getChatProfile(chatId);
+        return new Set();
     }
 
     async createChat(): Promise<void> {

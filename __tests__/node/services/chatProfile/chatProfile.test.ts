@@ -155,3 +155,37 @@ describe("ChatProfileService", () => {
         expect(mockProfileRepository.getChatProfile).toHaveBeenCalledWith(chatId);
     });
 });
+
+describe("GetUsers tests", () => {
+    let mockProfileRepository: aChatProfileRepository;
+    let chatProfileService: ChatProfileService;
+    let mockIdGenerator: aIdGeneratorService;
+    let mockUserRepository: aUserRepository;
+    beforeEach(() => {
+        jest.resetAllMocks();
+        mockProfileRepository = {
+            createChatProfile: jest.fn(),
+            getChatProfile: jest.fn(),
+            addChatMember: jest.fn(),
+        }
+        mockIdGenerator = {
+            newId: jest.fn()
+        }
+        mockUserRepository = {
+            getUserChats: jest.fn(),
+            getUser: jest.fn(),
+            exists: jest.fn(),
+            getId: jest.fn(),
+            removeUserChat: jest.fn(),
+            addUserChat: jest.fn(),
+        },
+
+            chatProfileService = new ChatProfileService(mockProfileRepository, mockUserRepository, mockIdGenerator);
+    })
+    test("getUsers should call profileRepository.getId with the chat Id", async () => {
+        const chatId = "123";
+        await chatProfileService.getUsers(chatId);
+
+        expect(mockProfileRepository.getChatProfile).toHaveBeenCalledWith(chatId);
+    })
+})
