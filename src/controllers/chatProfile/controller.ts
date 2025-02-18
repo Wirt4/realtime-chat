@@ -28,7 +28,7 @@ export class ChatProfileController {
     async getProfile(request: Request): Promise<Response> {
         if (request.method === "GET") {
             const url = new URL(request.url);
-            const chatId = url.searchParams.get("chatId");
+            const chatId = url.searchParams.get("id");
             if (!chatId || !Utils.isValidChatId(chatId)) {
                 return this.respond("", 400);
             }

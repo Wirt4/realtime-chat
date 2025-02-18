@@ -75,12 +75,12 @@ describe("get profile tests", () => {
         jest.resetAllMocks();
         testId = "111111111111111111111111111111111111--111111111111111111111111111111111111";
         controller = new ChatProfileController();
-        request = new Request(`http://localhost:3000?chatId=${testId}`, { method: "GET" });
+        request = new Request(`http://localhost:3000?id=${testId}`, { method: "GET" });
         (myGetServerSession as jest.Mock).mockResolvedValue({ user: { id: 'kappa' } });
 
     })
     it("if method is not get, return 405", async () => {
-        request = new Request(`http://localhost:3000?chatId=${testId}`, { method: "POST" });
+        request = new Request(`http://localhost:3000?id=${testId}`, { method: "POST" });
 
         const result = await controller.getProfile(request);
 
@@ -99,14 +99,14 @@ describe("get profile tests", () => {
         expect(result.status).not.toEqual(400);
     });
     it("if request  query param 'chatId' is an empty string call 400", async () => {
-        request = new Request("http://localhost:3000?chatId=", { method: "GET" });
+        request = new Request("http://localhost:3000?id=", { method: "GET" });
 
         const result = await controller.getProfile(request);
 
         expect(result.status).toEqual(400);
     });
     it("if request query param 'chatId' is incorrectly formatted, return 400", async () => {
-        request = new Request("http://localhost:3000?chatId=badformatting", { method: "GET" });
+        request = new Request("http://localhost:3000?id=badformatting", { method: "GET" });
 
         const result = await controller.getProfile(request);
 
