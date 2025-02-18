@@ -72,6 +72,7 @@ describe("get profile tests", () => {
     let controller: ChatProfileController;
     let request: Request;
     let mockGetProfile: jest.Mock;
+
     beforeEach(() => {
         jest.resetAllMocks();
         testId = "111111111111111111111111111111111111--111111111111111111111111111111111111";
@@ -156,17 +157,62 @@ describe("getUsers tests", () => {
         testId = "111111111111111111111111111111111111--111111111111111111111111111111111111";
         controller = new ChatProfileController();
         request = new Request(`http://localhost:3000?id=${testId}`, { method: "GET" });
+        (myGetServerSession as jest.Mock).mockResolvedValue({ user: { id: 'kappa' } });
+        (ChatProfileService as jest.Mock).mockImplementation(() => ({
+            getUsers: jest.fn().mockResolvedValue(new Set([{
+                name: 'Mario',
+                email: 'stub',
+                image: 'stub',
+                id: '/stub',
+            }, {
+                name: 'Luigi',
+                email: 'stub',
+                image: 'stub',
+                id: '/stub'
+            }])),
+        }));
 
-    })
+    });
+
     it("if method is not get, return 405", async () => {
         request = new Request(`http://localhost:3000?id=${testId}`, { method: "POST" });
         result = await controller.getUsers(request);
         expect(result.status).toEqual(405);
     });
-
     it("if url does not have testID param, return 400", async () => {
         request = new Request('http://localhost:3000', { method: "GET" });
         result = await controller.getUsers(request);
         expect(result.status).toEqual(400);
+    });
+    it("if server session resolves to null , return 401", async () => {
+        (myGetServerSession as jest.Mock).mockResolvedValue(null);
+        result = await controller.getUsers(request);
+        expect(result.status).toEqual(401);
+    });
+    it("if all checks pass, then pass the test ID to the service method getUsers", async () => {
+        const mockGetUsers = jest.fn();
+        (ChatProfileService as jest.Mock).mockImplementation(() => ({
+            getUsers: mockGetUsers,
+        }));
+        await controller.getUsers(request);
+        expect(mockGetUsers).toHaveBeenCalledWith(testId);
+    });
+    it("if all checks pass, then return a response with key 'data'", async () => {
+        result = await controller.getUsers(request);
+        expect(await result.json()).toEqual(expect.objectContaining(
+            {
+                data: expect.arrayContaining([{
+                    name: 'Mario',
+                    email: 'stub',
+                    image: 'stub',
+                    id: '/stub',
+                }, {
+                    name: 'Luigi',
+                    email: 'stub',
+                    image: 'stub',
+                    id: '/stub'
+                }])
+            }
+        ));
     });
 })

@@ -56,7 +56,40 @@ export class ChatProfileController {
     }
 
     async getUsers(request: Request): Promise<Response> {
-        return request.method === "GET" ? this.respond("", 400) : this.respond("", 405);
+        if (request.method !== "GET") {
+            return this.respond("", 405);
+        }
+
+        const url = new URL(request.url);
+        const chatId = url.searchParams.get("id");
+
+        if (!chatId || !Utils.isValidChatId(chatId)) {
+            return this.respond("", 400);
+        }
+
+        const session = await myGetServerSession();
+
+        if (!session) {
+            return this.respond("", 401);
+        }
+
+        const service = this.createService();
+        const fetchedData = await service.getUsers(chatId);
+
+
+        return this.respond({
+            data: [{
+                name: 'Mario',
+                email: 'stub',
+                image: 'stub',
+                id: '/stub',
+            }, {
+                name: 'Luigi',
+                email: 'stub',
+                image: 'stub',
+                id: '/stub'
+            }]
+        })
     }
 
     private async respond(content: any, status: number = 200): Promise<Response> {
