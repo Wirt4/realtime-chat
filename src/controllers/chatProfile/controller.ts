@@ -26,21 +26,24 @@ export class ChatProfileController {
     }
 
     async getProfile(request: Request): Promise<Response> {
-        if (request.method === "GET") {
-            const url = new URL(request.url);
-            const chatId = url.searchParams.get("id");
-            if (!chatId || !Utils.isValidChatId(chatId)) {
-                return this.respond("", 400);
-            }
-            const session = await myGetServerSession();
-            if (!session) {
-                return this.respond("", 401);
-            }
-            const service = this.createService();
-            await service.getProfile(chatId);
-
+        if (request.method !== "GET") {
+            return this.respond("", 405);
         }
-        return this.respond("", 405);
+
+        const url = new URL(request.url);
+        const chatId = url.searchParams.get("id");
+        if (!chatId || !Utils.isValidChatId(chatId)) {
+            return this.respond("", 400);
+        }
+
+        const session = await myGetServerSession();
+        if (!session) {
+            return this.respond("", 401);
+        }
+
+        const service = this.createService();
+        await service.getProfile(chatId);
+        return this.respond("");
     }
 
     private async respond(content: any, status: number = 200): Promise<Response> {
