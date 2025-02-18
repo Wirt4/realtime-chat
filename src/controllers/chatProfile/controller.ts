@@ -32,6 +32,11 @@ export class ChatProfileController {
             if (!chatId || !Utils.isValidChatId(chatId)) {
                 return this.respond("", 400);
             }
+            const session = await myGetServerSession();
+            if (!session) {
+                return this.respond("", 401);
+            }
+
         }
         return this.respond("", 405);
     }

@@ -76,6 +76,7 @@ describe("get profile tests", () => {
         testId = "111111111111111111111111111111111111--111111111111111111111111111111111111";
         controller = new ChatProfileController();
         request = new Request(`http://localhost:3000?chatId=${testId}`, { method: "GET" });
+        (myGetServerSession as jest.Mock).mockResolvedValue({ user: { id: 'kappa' } });
 
     })
     it("if method is not get, return 405", async () => {
@@ -111,4 +112,11 @@ describe("get profile tests", () => {
 
         expect(result.status).toEqual(400);
     });
-})
+    it("if the session is null, then return 401", async () => {
+        (myGetServerSession as jest.Mock).mockResolvedValue(null);
+
+        const result = await controller.getProfile(request);
+
+        expect(result.status).toEqual(401);
+    });
+});
