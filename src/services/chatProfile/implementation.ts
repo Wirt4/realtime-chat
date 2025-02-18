@@ -51,8 +51,25 @@ export class ChatProfileService implements aChatProfileService {
     }
 
     async getUsers(chatId: string): Promise<Set<User>> {
-        await this.profileRepository.getChatProfile(chatId);
-        return new Set();
+        const userSet: Set<User> = new Set();
+        try {
+            await this.profileRepository.getChatProfile(chatId);
+        } catch {
+        } finally {
+            const user1 = {
+                name: "Mary",
+                email: "stub",
+                image: "/stub",
+                id: "123"
+            }
+            const user2 = {
+                id: "789",
+                name: "Sue",
+                email: "stub",
+                image: "/stub"
+            }
+            return new Set([user1, user2]);
+        }
     }
 
     async createChat(): Promise<void> {

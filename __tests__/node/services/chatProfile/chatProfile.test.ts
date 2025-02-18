@@ -161,11 +161,28 @@ describe("GetUsers tests", () => {
     let chatProfileService: ChatProfileService;
     let mockIdGenerator: aIdGeneratorService;
     let mockUserRepository: aUserRepository;
+    let user1: User
+    let user2: User
     beforeEach(() => {
         jest.resetAllMocks();
+        user1 = {
+            name: "Mary",
+            email: "stub",
+            image: "/stub",
+            id: "123"
+        }
+        user2 = {
+            id: "789",
+            name: "Sue",
+            email: "stub",
+            image: "/stub"
+        }
         mockProfileRepository = {
             createChatProfile: jest.fn(),
-            getChatProfile: jest.fn(),
+            getChatProfile: jest.fn().mockResolvedValue({
+                id: "456",
+                members: new Set(["123", "789"])
+            }),
             addChatMember: jest.fn(),
         }
         mockIdGenerator = {
@@ -173,7 +190,12 @@ describe("GetUsers tests", () => {
         }
         mockUserRepository = {
             getUserChats: jest.fn(),
-            getUser: jest.fn(),
+            getUser: jest.fn().mockImplementation(async (userId) => {
+                if (userId == "123") {
+                    return user1;
+                }
+                return user2;
+            }),
             exists: jest.fn(),
             getId: jest.fn(),
             removeUserChat: jest.fn(),
@@ -181,9 +203,15 @@ describe("GetUsers tests", () => {
         },
 
             chatProfileService = new ChatProfileService(mockProfileRepository, mockUserRepository, mockIdGenerator);
-    })
-    test("getUsers should call profileRepository.getId with the chat Id", async () => {
-        const chatId = "123";
+    });
+    test("getUsers should return a set of users", async () => {
+        const chatId = "456";
+        const users = await chatProfileService.getUsers(chatId);
+
+        expect(users).toEqual(new Set([user1, user2]));
+    });
+    test("getUsers should return the user profiles of each member of the chat", async () => {
+        const chatId = "456";
         await chatProfileService.getUsers(chatId);
 
         expect(mockProfileRepository.getChatProfile).toHaveBeenCalledWith(chatId);
