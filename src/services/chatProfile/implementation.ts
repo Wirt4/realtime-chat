@@ -22,6 +22,10 @@ export class ChatProfileService implements aChatProfileService {
         this.userRepository = userRepository;
     }
 
+    getProfile(chatId: string): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
+
     async loadProfileFromUsers(users: Set<string>): Promise<void> {
         let intersection: Set<string> = new Set();
         let firstIteration = true;

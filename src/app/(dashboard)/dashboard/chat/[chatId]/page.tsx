@@ -86,15 +86,15 @@ class AxiosWrapper {
     }
 
     async getChatProfile() {
-        return this.get('api/chatprofile/getprofile');
+        return this.get('api/chatprofile/getprofile?id=' + this.chatId);
     }
 
     async getUsers() {
-        return this.get('api/chatprofile/getUsers');
+        return this.get('api/chatprofile/getUsers?id=' + this.chatId);
     }
 
     async getMessages() {
-        return this.get('api/messages/get');
+        return this.get('api/messages/get?id=' + this.chatId);
     }
 
     private async get(endpoint: string) {

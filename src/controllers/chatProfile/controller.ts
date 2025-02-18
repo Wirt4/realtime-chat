@@ -36,6 +36,8 @@ export class ChatProfileController {
             if (!session) {
                 return this.respond("", 401);
             }
+            const service = this.createService();
+            await service.getProfile(chatId);
 
         }
         return this.respond("", 405);

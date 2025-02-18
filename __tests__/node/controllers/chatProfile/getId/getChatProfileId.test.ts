@@ -15,7 +15,7 @@ describe("get chat profile id from users tests", () => {
         (myGetServerSession as jest.Mock).mockResolvedValue({ user: { id: 'userId' } });
         (ChatProfileService as jest.Mock).mockImplementation(() => ({
             loadProfileFromUsers: loadIdFromUsersSpy,
-            getChatId: mockGetChatId
+            getChatId: mockGetChatId,
         }));
 
     });
@@ -71,12 +71,17 @@ describe("get profile tests", () => {
     let testId: string;
     let controller: ChatProfileController;
     let request: Request;
+    let mockGetProfile: jest.Mock;
     beforeEach(() => {
         jest.resetAllMocks();
         testId = "111111111111111111111111111111111111--111111111111111111111111111111111111";
         controller = new ChatProfileController();
         request = new Request(`http://localhost:3000?id=${testId}`, { method: "GET" });
         (myGetServerSession as jest.Mock).mockResolvedValue({ user: { id: 'kappa' } });
+        mockGetProfile = jest.fn();
+        (ChatProfileService as jest.Mock).mockImplementation(() => ({
+            getProfile: mockGetProfile,
+        }));
 
     })
     it("if method is not get, return 405", async () => {
@@ -118,5 +123,11 @@ describe("get profile tests", () => {
         const result = await controller.getProfile(request);
 
         expect(result.status).toEqual(401);
+    });
+
+    it("if all checks pass, then pass the test ID to the service method getProfile", async () => {
+        await controller.getProfile(request);
+
+        expect(mockGetProfile).toHaveBeenCalledWith(testId);
     });
 });
