@@ -200,9 +200,9 @@ describe("GetUsers tests", () => {
             getId: jest.fn(),
             removeUserChat: jest.fn(),
             addUserChat: jest.fn(),
-        },
+        }
 
-            chatProfileService = new ChatProfileService(mockProfileRepository, mockUserRepository, mockIdGenerator);
+        chatProfileService = new ChatProfileService(mockProfileRepository, mockUserRepository, mockIdGenerator);
     });
     test("getUsers should return a set of users", async () => {
         const chatId = "456";
@@ -215,5 +215,26 @@ describe("GetUsers tests", () => {
         await chatProfileService.getUsers(chatId);
 
         expect(mockProfileRepository.getChatProfile).toHaveBeenCalledWith(chatId);
+    })
+    test("if a user id does not exist in the repository, then the call should still return an array filled with the viable users", async () => {
+        const chatId = "456";
+        mockUserRepository = {
+            getUserChats: jest.fn(),
+            getUser: jest.fn().mockImplementation(async (userId) => {
+                if (userId == "123") {
+                    return user1;
+                }
+                throw ("user not found");
+            }),
+            exists: jest.fn(),
+            getId: jest.fn(),
+            removeUserChat: jest.fn(),
+            addUserChat: jest.fn(),
+        }
+        chatProfileService = new ChatProfileService(mockProfileRepository, mockUserRepository, mockIdGenerator);
+
+        const users = await chatProfileService.getUsers(chatId);
+
+        expect(users).toEqual(new Set([user1]));
     })
 })
