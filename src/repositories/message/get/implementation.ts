@@ -17,11 +17,9 @@ export class GetMessagesRepository extends aGetMessagesRepository {
         timestamp: number
     }[]> {
         const rawData = await this.db.zrange(`chat:${chatId}:messages`, 0, -1);
-        console.log('rawData', rawData);
         if (rawData?.length === 0) return []
         try {
             const messages = rawData.map((message) => JSON.parse(message) as Message);
-            console.log('parsed JSON', messages)
             return messageArraySchema.parse(messages);
         } catch {
             throw new Error('database returned invalid message format');
