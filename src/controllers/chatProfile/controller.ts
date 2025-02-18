@@ -31,6 +31,10 @@ export class ChatProfileController {
             if (!chatId) {
                 return this.respond("", 400);
             }
+            const regex = /^[a-z0-9-]{36}--[a-z0-9-]{36}$/;
+            if (!regex.test(chatId)) {
+                return this.respond("", 400);
+            }
         }
         return this.respond("", 405);
     }

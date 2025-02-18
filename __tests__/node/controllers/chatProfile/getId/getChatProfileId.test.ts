@@ -97,4 +97,18 @@ describe("get profile tests", () => {
 
         expect(result.status).not.toEqual(400);
     });
+    it("if request  query param 'chatId' is an empty string call 400", async () => {
+        request = new Request("http://localhost:3000?chatId=", { method: "GET" });
+
+        const result = await controller.getProfile(request);
+
+        expect(result.status).toEqual(400);
+    });
+    it("if request query param 'chatId' is incorrectly formatted, return 400", async () => {
+        request = new Request("http://localhost:3000?chatId=badformatting", { method: "GET" });
+
+        const result = await controller.getProfile(request);
+
+        expect(result.status).toEqual(400);
+    });
 })
