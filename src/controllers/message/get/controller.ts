@@ -1,8 +1,8 @@
 import { AbstractMessageController } from "../abstractController";
-import { MessageRepository } from "@/repositories/message/removeAll/implementation";
 import { GetMessagesInterface } from "@/services/message/interface";
 import { getMessageServiceFactory } from "./serviceFactory";
 import myGetServerSession from "@/lib/myGetServerSession";
+import { GetMessagesRepository } from "@/repositories/message/get/implementation";
 
 export class GetMessageController extends AbstractMessageController {
     private service: GetMessagesInterface;
@@ -28,7 +28,7 @@ export class GetMessageController extends AbstractMessageController {
             return this._respond(null, 401);
         }
 
-        const messages = await this.service.getMessages(chatId, new MessageRepository());
+        const messages = await this.service.getMessages(chatId, new GetMessagesRepository());
         return this._respond(messages, 200);
     }
 

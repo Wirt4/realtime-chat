@@ -5,6 +5,7 @@ import { aFriendsRepository } from "@/repositories/friends/abstract";
 import { aMessageRepository } from "@/repositories/message/removeAll/abstract";
 import { aSendMessageRepository } from "@/repositories/message/send/abstract";
 import { aGetMessagesRepository } from "@/repositories/message/get/abstract";
+import { Message } from "@/lib/validations/messages";
 
 export class MessageService implements
     MessageSendInterface,
