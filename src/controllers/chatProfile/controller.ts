@@ -56,7 +56,7 @@ export class ChatProfileController {
     }
 
     async getUsers(request: Request): Promise<Response> {
-        return this.respond("", 405);
+        return request.method === "GET" ? this.respond("", 400) : this.respond("", 405);
     }
 
     private async respond(content: any, status: number = 200): Promise<Response> {

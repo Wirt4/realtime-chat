@@ -156,4 +156,13 @@ describe("getUsers tests", () => {
 
         expect(result.status).toEqual(405);
     });
+
+    it("if url does not have testID param, return 400", async () => {
+        const request = new Request('http://localhost:3000', { method: "GET" });
+        const controller = new ChatProfileController();
+
+        const result = await controller.getUsers(request);
+
+        expect(result.status).toEqual(400);
+    });
 })
