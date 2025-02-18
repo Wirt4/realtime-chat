@@ -6,6 +6,7 @@ import ChatInput from "@/components/ChatInput/ChatInput";
 import MessagesHeader from "@/components/MessagesHeader";
 import myGetServerSession from "@/lib/myGetServerSession";
 import axios from "axios";
+import { Utils } from "@/lib/utils";
 
 interface ChatProps {
     params: {
@@ -14,7 +15,7 @@ interface ChatProps {
 }
 
 const Page: FC<ChatProps> = async ({ params }) => {
-    if (!isValidId(params.chatId)) {
+    if (!Utils.isValidChatId(params.chatId)) {
         notFound();
         return
     }
@@ -72,11 +73,6 @@ const Display: FC<DisplayProps> = ({ chatInfo, participants }) => {
 }
 
 export default Page;
-
-function isValidId(id: string): boolean {
-    const regex = /^[a-z0-9-]{36}--[a-z0-9-]{36}$/;
-    return regex.test(id);
-}
 
 class AxiosWrapper {
     private chatId: string;

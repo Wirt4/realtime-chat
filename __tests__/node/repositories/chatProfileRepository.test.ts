@@ -45,7 +45,6 @@ describe('repository.chatProfile tests', () => {
 
         expect(mockDb.sadd).toHaveBeenCalledWith('chat:chatId:members', 'userId');
     });
-
     test("If createChatProfile is called with an empty set, then it should still call the database", async () => {
         await chatProfileRepository.createChatProfile("123");
         expect(mockDb.sadd).toHaveBeenCalledTimes(1);
