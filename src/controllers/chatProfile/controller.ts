@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import myGetServerSession from "@/lib/myGetServerSession";
+import { Utils } from "@/lib/utils";
 import { ChatProfileRepository } from "@/repositories/chatProfile/implementation";
 import { UserRepository } from "@/repositories/user/implementation";
 import { chatProfileParticpantSchema } from "@/schemas/chatProfileParticipantSchema";
@@ -28,11 +29,7 @@ export class ChatProfileController {
         if (request.method === "GET") {
             const url = new URL(request.url);
             const chatId = url.searchParams.get("chatId");
-            if (!chatId) {
-                return this.respond("", 400);
-            }
-            const regex = /^[a-z0-9-]{36}--[a-z0-9-]{36}$/;
-            if (!regex.test(chatId)) {
+            if (!chatId || !Utils.isValidChatId(chatId)) {
                 return this.respond("", 400);
             }
         }

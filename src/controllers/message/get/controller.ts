@@ -3,6 +3,7 @@ import { GetMessagesInterface } from "@/services/message/interface";
 import { getMessageServiceFactory } from "./serviceFactory";
 import myGetServerSession from "@/lib/myGetServerSession";
 import { GetMessagesRepository } from "@/repositories/message/get/implementation";
+import { Utils } from "@/lib/utils";
 
 export class GetMessageController extends AbstractMessageController {
     private service: GetMessagesInterface;
@@ -17,9 +18,8 @@ export class GetMessageController extends AbstractMessageController {
 
         const url = new URL(request.url);
         const chatId = url.searchParams.get("id");
-        const regex = /^[a-z0-9-]{36}--[a-z0-9-]{36}$/;
 
-        if (!(chatId && regex.test(chatId))) {
+        if (!(chatId && Utils.isValidChatId(chatId))) {
             return this._respond(null, 400);
         }
 
