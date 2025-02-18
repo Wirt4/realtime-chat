@@ -9,8 +9,7 @@ import { ChatProfileService } from "@/services/chatProfile/implementation";
 export class ChatProfileController {
     //TODO: live test 
     async getChatIdFromUsers(request: Request): Promise<Response> {
-        const session = await myGetServerSession();
-        if (!session) {
+        if (! await this.isAuthorized()) {
             return this.respond("", 401);
         }
 
@@ -33,14 +32,15 @@ export class ChatProfileController {
             return this.respond("", 405);
         }
 
-        const url = new URL(request.url);
-        const chatId = url.searchParams.get("id");
-        if (!chatId || !Utils.isValidChatId(chatId)) {
+        let chatId: string;
+        try {
+            chatId = this.getValidChatId(request);
+        } catch {
             return this.respond("", 400);
         }
 
-        const session = await myGetServerSession();
-        if (!session) {
+
+        if (! await this.isAuthorized()) {
             return this.respond("", 401);
         }
 
@@ -60,27 +60,43 @@ export class ChatProfileController {
             return this.respond("", 405);
         }
 
-        const url = new URL(request.url);
-        const chatId = url.searchParams.get("id");
 
-        if (!chatId || !Utils.isValidChatId(chatId)) {
+        let chatId: string;
+        try {
+            chatId = this.getValidChatId(request);
+        } catch {
             return this.respond("", 400);
         }
 
-        const session = await myGetServerSession();
-
-        if (!session) {
+        if (! await this.isAuthorized()) {
             return this.respond("", 401);
         }
 
         const service = this.createService();
         const fetchedData = await service.getUsers(chatId);
-        let data: User[] = []
+        const data: User[] = [];
+
         fetchedData?.forEach((user) => {
             data.push(user);
         })
 
         return this.respond({ data })
+    }
+
+    private getValidChatId(request: Request): string {
+        const url = new URL(request.url);
+        const chatId = url.searchParams.get("id");
+
+        if (!(chatId && Utils.isValidChatId(chatId))) {
+            throw new Error("Invalid chat ID");
+        }
+
+        return chatId;
+    }
+
+    private async isAuthorized(): Promise<boolean> {
+        const session = await myGetServerSession();
+        return !!session;
     }
 
     private async respond(content: any, status: number = 200): Promise<Response> {
