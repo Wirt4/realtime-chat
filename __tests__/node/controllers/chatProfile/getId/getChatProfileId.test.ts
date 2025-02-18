@@ -138,4 +138,10 @@ describe("get profile tests", () => {
         const response = await controller.getProfile(request);
         expect(await response.json()).toEqual(expect.objectContaining({ data: null }));
     });
+    it("if the service returns a profile, then data is is the equvialent of that profile", async () => {
+        const response = await controller.getProfile(request);
+        expect(await response.json()).toEqual(expect.objectContaining(
+            { data: expect.objectContaining({ id: testId, members: expect.arrayContaining(['user1', 'user2']) }) }
+        ));
+    });
 });

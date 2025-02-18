@@ -22,7 +22,7 @@ export class ChatProfileService implements aChatProfileService {
         this.userRepository = userRepository;
     }
 
-    getProfile(chatId: string): Promise<void> {
+    getProfile(chatId: string): Promise<ChatProfile> {
         throw new Error("Method not implemented.");
     }
 

@@ -42,7 +42,12 @@ export class ChatProfileController {
         }
 
         const service = this.createService();
-        const data = await service.getProfile(chatId);
+        const fetchedData = await service.getProfile(chatId);
+        if (!fetchedData) {
+            return this.respond({ data: null });
+        }
+        const members: string[] = Array.from(fetchedData.members);
+        const data = { members, id: fetchedData.id };
         return this.respond({ data });
     }
 
