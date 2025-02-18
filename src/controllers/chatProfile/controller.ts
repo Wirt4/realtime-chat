@@ -13,12 +13,15 @@ export class ChatProfileController {
         if (!session) {
             return this.respond("", 401);
         }
+
         let participantsSet: Set<string>;
+
         try {
             participantsSet = await this.parseSet(request);
         } catch {
             return this.respond("", 400);
         }
+
         const service = this.createService();
         await service.loadProfileFromUsers(participantsSet);
         const chatId = service.getChatId();
@@ -46,6 +49,7 @@ export class ChatProfileController {
         if (!fetchedData) {
             return this.respond({ data: null });
         }
+
         const members: string[] = Array.from(fetchedData.members);
         const data = { members, id: fetchedData.id };
         return this.respond({ data });

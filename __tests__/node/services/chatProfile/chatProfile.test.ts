@@ -147,4 +147,11 @@ describe("ChatProfileService", () => {
 
         expect(chatProfileService.getChatId()).toEqual("");
     });
+
+    test("service.getProfile passes the id to the chatprofile repository", async () => {
+        const chatId = "123";
+        await chatProfileService.getProfile(chatId);
+
+        expect(mockProfileRepository.getChatProfile).toHaveBeenCalledWith(chatId);
+    });
 });
