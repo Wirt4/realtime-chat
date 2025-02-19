@@ -10,10 +10,7 @@ export class ChatProfileRepository extends aChatProfileRepository {
     }
 
     async addChatMember(chatId: string, userId: string): Promise<void> {
-        const chatExist = await this.database.exists(this.keyAddress(chatId));
-        if (chatExist === 0) {
-            throw new Error(`Chat ${chatId} not exist`);
-        }
+        await this.checkChatExist(chatId);
         await this.database.sadd(this.keyAddress(chatId), userId);
     }
 
@@ -28,10 +25,7 @@ export class ChatProfileRepository extends aChatProfileRepository {
     }
 
     async getChatProfile(chatId: string): Promise<ChatProfile> {
-        const chatExist = await this.database.exists(this.keyAddress(chatId));
-        if (chatExist === 0) {
-            throw new Error(`Chat ${chatId} not exist`);
-        }
+        await this.checkChatExist(chatId);
         const memberList = await this.database.smembers(this.keyAddress(chatId)) as string[];
         return {
             id: chatId,
@@ -40,11 +34,35 @@ export class ChatProfileRepository extends aChatProfileRepository {
     }
 
     async overWriteChatProfile(profile: ChatProfile): Promise<void> {
-        //add test so it throws if chatId does not exist
-        throw new Error('Method not implemented.');
+        await this.checkChatExist(profile.id);
+
+        if (profile.members.size === 0) {
+            await this.database.del(this.keyAddress(profile.id));
+            return;
+        }
+
+        const dbMembersList = await this.database.smembers(this.keyAddress(profile.id));
+        const dbMembers = new Set(dbMembersList);
+        const membersToAdd = Array.from(profile.members).filter(member => !dbMembers.has(member));
+
+        membersToAdd.forEach(async (member) => {
+            await this.database.sadd(this.keyAddress(profile.id), member);
+        });
+
+        const membersToRemove = Array.from(dbMembers).filter(member => !profile.members.has(member));
+        membersToRemove.forEach(async (member) => {
+            await this.database.srem(this.keyAddress(profile.id), member);
+        });
     }
 
     private keyAddress(chatId: string) {
         return `chat:${chatId}:members`;
+    }
+
+    private async checkChatExist(chatId: string): Promise<void> {
+        const chatExist = await this.database.exists(this.keyAddress(chatId));
+        if (chatExist === 0) {
+            throw new Error(`Chat ${chatId} not exist`);
+        }
     }
 }

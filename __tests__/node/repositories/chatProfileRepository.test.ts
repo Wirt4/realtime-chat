@@ -8,6 +8,8 @@ describe('repository.chatProfile tests', () => {
         mockDb = {
             sadd: jest.fn(),
             exists: jest.fn().mockResolvedValue(1),
+            del: jest.fn(),
+            smembers: jest.fn().mockResolvedValue([]),
         } as unknown as Redis;
         chatProfileRepository = new ChatProfileRepository(mockDb);
     })
@@ -60,4 +62,46 @@ describe('repository.chatProfile tests', () => {
         await chatProfileRepository.createChatProfile("123");
         expect(mockDb.sadd).toHaveBeenCalledTimes(1);
     });
+    it('overWriteChatProfile should throw an error if no such chat exists', async () => {
+        mockDb.exists = jest.fn().mockResolvedValue(0);
+        chatProfileRepository = new ChatProfileRepository(mockDb);
+        const chatId = 'chatId-not-exist';
+        try {
+            await chatProfileRepository.overWriteChatProfile({ id: chatId, members: new Set() });
+            fail('Should have thrown an error');
+        } catch (e: any) {
+            expect(e.message).toBe(`Chat ${chatId} not exist`);
+        }
+    });
+
+    it('overWriteChatProfile should delete the whole set if the members parameter is empty', async () => {
+        chatProfileRepository = new ChatProfileRepository(mockDb);
+        const chatId = 'chat-to-delete';
+
+        await chatProfileRepository.overWriteChatProfile({ id: chatId, members: new Set() });
+
+        expect(mockDb.del).toHaveBeenCalledWith('chat:chat-to-delete:members');
+    });
+
+    it('overWriteChatProfile should read the existing members of the profile if the set it nonempty', async () => {
+        chatProfileRepository = new ChatProfileRepository(mockDb);
+        const chatId = 'happy-path';
+
+        await chatProfileRepository.overWriteChatProfile({ id: chatId, members: new Set(["user1", "user2"]) });
+
+        expect(mockDb.del).not.toHaveBeenCalledWith('chat:happy-path:members');
+        expect(mockDb.smembers).toHaveBeenCalledWith('chat:happy-path:members');
+    });
+
+    it('if the new set contains members the existing db entry does not, then they should be written to the db', async () => {
+        mockDb.smembers = jest.fn().mockResolvedValue(['user1']);
+        chatProfileRepository = new ChatProfileRepository(mockDb);
+        const chatId = 'happy-path';
+
+        await chatProfileRepository.overWriteChatProfile({ id: chatId, members: new Set(["user1", "user2"]) });
+
+        expect(mockDb.sadd).toHaveBeenCalledWith('chat:happy-path:members', 'user2');
+    });
+
+
 });
