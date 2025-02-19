@@ -54,23 +54,25 @@ export class ChatProfileService implements aChatProfileService {
         const userSet: Set<User> = new Set();
         let profile: ChatProfile = { id: chatId, members: new Set() };
         let fetchedMembers: string[] = [];
+        let flag = false;
         try {
             profile = await this.profileRepository.getChatProfile(chatId);
             fetchedMembers = [...profile.members];
             let currentUser: User
-            fetchedMembers.forEach(async (userId) => {
+            for (const userId of fetchedMembers) {
                 try {
                     currentUser = await this.userRepository.getUser(userId);
                     userSet.add(currentUser);
                 }
                 catch {
+                    flag = true;
                     profile.members.delete(userId);
                 }
-            })
+            }
         } catch {
             return userSet;
         }
-        await this.profileRepository.overWriteChatProfile(profile);
+        if (flag) await this.profileRepository.overWriteChatProfile(profile);
 
         return userSet;
 

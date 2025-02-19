@@ -262,4 +262,9 @@ describe("GetUsers tests", () => {
 
         expect(mockProfileRepository.overWriteChatProfile).toHaveBeenCalledWith(expected);
     })
+    test("if all users are valid, then the overWriteChatProfile should not be called", async () => {
+        await chatProfileService.getUsers(chatId);
+
+        expect(mockProfileRepository.overWriteChatProfile).not.toHaveBeenCalled();
+    })
 })
