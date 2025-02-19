@@ -10,6 +10,7 @@ export class GetMessagesRepository extends aGetMessagesRepository {
         super();
         this.db = getMessageRepositoryFactory();
     }
+
     async getMessages(chatId: string): Promise<{
         id: string,
         senderId: string,

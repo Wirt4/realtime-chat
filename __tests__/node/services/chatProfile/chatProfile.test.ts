@@ -15,6 +15,7 @@ describe("ChatProfileService", () => {
             createChatProfile: jest.fn(),
             getChatProfile: jest.fn(),
             addChatMember: jest.fn(),
+            overWriteChatProfile: jest.fn(),
         }
         mockIdGenerator = {
             newId: jest.fn()

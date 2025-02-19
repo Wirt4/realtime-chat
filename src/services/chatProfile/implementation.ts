@@ -52,27 +52,29 @@ export class ChatProfileService implements aChatProfileService {
 
     async getUsers(chatId: string): Promise<Set<User>> {
         const userSet: Set<User> = new Set();
-        let profile: ChatProfile = { id: chatId, members: new Set() };
-        let fetchedMembers: string[] = [];
-        let flag = false;
+        let profile: ChatProfile;
+
         try {
             profile = await this.profileRepository.getChatProfile(chatId);
-            fetchedMembers = [...profile.members];
-            let currentUser: User
-            for (const userId of fetchedMembers) {
-                try {
-                    currentUser = await this.userRepository.getUser(userId);
-                    userSet.add(currentUser);
-                }
-                catch {
-                    flag = true;
-                    profile.members.delete(userId);
-                }
-            }
         } catch {
             return userSet;
         }
-        if (flag) await this.profileRepository.overWriteChatProfile(profile);
+
+        const nullMembers: Set<string> = new Set();
+        let currentUser: User;
+        for (const userId of profile.members) {
+            try {
+                currentUser = await this.userRepository.getUser(userId);
+                userSet.add(currentUser);
+            }
+            catch {
+                nullMembers.add(userId);
+            }
+        }
+
+        if (nullMembers.size > 0) {
+            await this.UpdateRepository(profile, nullMembers);
+        }
 
         return userSet;
 
@@ -96,5 +98,10 @@ export class ChatProfileService implements aChatProfileService {
             throw this.err;
         }
         return this.chatId;
+    }
+
+    private async UpdateRepository(profile: ChatProfile, nullMembers: Set<string>): Promise<void> {
+        profile.members = profile.members.difference(nullMembers);
+        return this.profileRepository.overWriteChatProfile(profile);
     }
 }

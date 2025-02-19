@@ -37,6 +37,17 @@ describe('repository.chatProfile tests', () => {
             expect(e.message).toBe(`Chat ${chatId} not exist`);
         }
     });
+    it('If there is no existing chat with the id, getChatprofile should throw an arror', async () => {
+        mockDb.exists = jest.fn().mockResolvedValue(0);
+        chatProfileRepository = new ChatProfileRepository(mockDb);
+        const chatId = 'chatId-not-exist';
+        try {
+            await chatProfileRepository.getChatProfile(chatId);
+            fail('Should have thrown an error');
+        } catch (e: any) {
+            expect(e.message).toBe(`Chat ${chatId} not exist`);
+        }
+    });
     it('If the key exits, then addChatMember should resolve', async () => {
         await chatProfileRepository.addChatMember('stub', 'userId');
     });

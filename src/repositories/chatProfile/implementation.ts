@@ -28,11 +28,20 @@ export class ChatProfileRepository extends aChatProfileRepository {
     }
 
     async getChatProfile(chatId: string): Promise<ChatProfile> {
+        const chatExist = await this.database.exists(this.keyAddress(chatId));
+        if (chatExist === 0) {
+            throw new Error(`Chat ${chatId} not exist`);
+        }
         const memberList = await this.database.smembers(this.keyAddress(chatId)) as string[];
         return {
             id: chatId,
             members: new Set(memberList)
         }
+    }
+
+    async overWriteChatProfile(profile: ChatProfile): Promise<void> {
+        //add test so it throws if chatId does not exist
+        throw new Error('Method not implemented.');
     }
 
     private keyAddress(chatId: string) {
