@@ -42,17 +42,15 @@ export class ChatProfileRepository extends aChatProfileRepository {
         }
 
         const dbMembersList = await this.database.smembers(this.keyAddress(profile.id));
+
         const dbMembers = new Set(dbMembersList);
-        const membersToAdd = Array.from(profile.members).filter(member => !dbMembers.has(member));
+        const membersToAdd = Array.from(profile.members.difference(dbMembers));
+        const membersToRemove = Array.from(dbMembers.difference(profile.members));
 
-        membersToAdd.forEach(async (member) => {
-            await this.database.sadd(this.keyAddress(profile.id), member);
-        });
-
-        const membersToRemove = Array.from(dbMembers).filter(member => !profile.members.has(member));
-        membersToRemove.forEach(async (member) => {
-            await this.database.srem(this.keyAddress(profile.id), member);
-        });
+        await Promise.all([
+            this.database.sadd(this.keyAddress(profile.id), membersToAdd),
+            this.database.srem(this.keyAddress(profile.id), membersToRemove)
+        ]);
     }
 
     private keyAddress(chatId: string) {

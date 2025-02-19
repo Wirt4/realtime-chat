@@ -10,6 +10,7 @@ describe('repository.chatProfile tests', () => {
             exists: jest.fn().mockResolvedValue(1),
             del: jest.fn(),
             smembers: jest.fn().mockResolvedValue([]),
+            srem: jest.fn()
         } as unknown as Redis;
         chatProfileRepository = new ChatProfileRepository(mockDb);
     })
@@ -98,10 +99,19 @@ describe('repository.chatProfile tests', () => {
         chatProfileRepository = new ChatProfileRepository(mockDb);
         const chatId = 'happy-path';
 
-        await chatProfileRepository.overWriteChatProfile({ id: chatId, members: new Set(["user1", "user2"]) });
+        await chatProfileRepository.overWriteChatProfile({ id: chatId, members: new Set(["user1", "user2", "user3"]) });
 
-        expect(mockDb.sadd).toHaveBeenCalledWith('chat:happy-path:members', 'user2');
+        expect(mockDb.sadd).toHaveBeenCalledWith('chat:happy-path:members', ['user2', 'user3']);
     });
 
+    it('if the db members contain entries the new set does not, then those members should be removed', async () => {
+        mockDb.smembers = jest.fn().mockResolvedValue(['user1', 'user2', 'user3']);
+        chatProfileRepository = new ChatProfileRepository(mockDb);
+        const chatId = 'happy-path';
+
+        await chatProfileRepository.overWriteChatProfile({ id: chatId, members: new Set(["user1"]) });
+
+        expect(mockDb.srem).toHaveBeenCalledWith('chat:happy-path:members', ['user2', 'user3']);
+    });
 
 });
