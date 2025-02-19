@@ -44,8 +44,9 @@ export class ChatProfileRepository extends aChatProfileRepository {
         const dbMembersList = await this.database.smembers(this.keyAddress(profile.id));
 
         const dbMembers = new Set(dbMembersList);
-        const membersToAdd = Array.from(profile.members.difference(dbMembers));
-        const membersToRemove = Array.from(dbMembers.difference(profile.members));
+        const membersToAdd = [...profile.members].filter(x => ![...dbMembers].includes(x))
+
+        const membersToRemove = [...dbMembers].filter(x => ![...profile.members].includes(x));
 
         await Promise.all([
             this.database.sadd(this.keyAddress(profile.id), membersToAdd),

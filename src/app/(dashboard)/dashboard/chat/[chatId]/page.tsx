@@ -5,8 +5,13 @@ import { Message } from "@/lib/validations/messages";
 import ChatInput from "@/components/ChatInput/ChatInput";
 import MessagesHeader from "@/components/MessagesHeader";
 import myGetServerSession from "@/lib/myGetServerSession";
-import axios from "axios";
 import { Utils } from "@/lib/utils";
+import { ChatProfileRepository } from "@/repositories/chatProfile/implementation";
+import { UserRepository } from "@/repositories/user/implementation";
+import { ChatProfileService } from "@/services/chatProfile/implementation";
+import { db } from "@/lib/db";
+import { MessageService } from "@/services/message/service";
+import { GetMessagesRepository } from "@/repositories/message/get/implementation";
 
 interface ChatProps {
     params: {
@@ -82,24 +87,36 @@ class AxiosWrapper {
     }
 
     async getChatProfile() {
-        return this.get('api/chatprofile/getprofile?id=' + this.chatId);
+        const chatRepo = new ChatProfileRepository(db);
+        const userRepo = new UserRepository(db);
+        const service = new ChatProfileService(chatRepo, userRepo);
+        return service.getProfile(this.chatId);
     }
 
-    async getUsers() {
-        return this.get('api/chatprofile/getUsers?id=' + this.chatId);
+    async getUsers(): Promise<User[]> {
+        const chatRepo = new ChatProfileRepository(db);
+        const userRepo = new UserRepository(db);
+        const service = new ChatProfileService(chatRepo, userRepo);
+        const userSet = await service.getUsers(this.chatId);
+        return Array.from(userSet);
     }
 
     async getMessages() {
-        return this.get('api/messages/get?id=' + this.chatId);
+        const messageService = new MessageService();
+        return messageService.getMessages(this.chatId, new GetMessagesRepository());
     }
 
-    private async get(endpoint: string) {
-        const res = await axios.get(`${endpoint}?id=${this.chatId}`)
-        return res?.data;
-    }
+    /* private async get(endpoint: string) {
+         const messageService = new MessageService();
+         return messageService.getMessages(endpoint);
+         const res = await axios.get(`${endpoint}?id=${this.chatId}`)
+         return res?.data;
+     }*/
 }
 
 function deriveChatParticipants(sessionId: string, participants: User[]): ChatParticipants {
+    console.log('sessionId', sessionId);
+    console.log('participants', participants);
     let user: User;
     let partner: User;
     if (participants[0].id === sessionId) {

@@ -65,6 +65,9 @@ export class ChatProfileService implements aChatProfileService {
         for (const userId of profile.members) {
             try {
                 currentUser = await this.userRepository.getUser(userId);
+                if (currentUser === null) {
+                    throw new Error("User not found");
+                }
                 userSet.add(currentUser);
             }
             catch {
@@ -101,7 +104,9 @@ export class ChatProfileService implements aChatProfileService {
     }
 
     private async UpdateRepository(profile: ChatProfile, nullMembers: Set<string>): Promise<void> {
-        profile.members = profile.members.difference(nullMembers);
+        console.log("chatProile", profile);
+        console.log("nullMembers", nullMembers);
+        profile.members = new Set([...profile.members].filter(x => ![...nullMembers].includes(x)));
         return this.profileRepository.overWriteChatProfile(profile);
     }
 }

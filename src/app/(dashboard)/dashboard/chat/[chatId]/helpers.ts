@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import fetchRedis from "@/helpers/redis";
-import { messageArraySchema } from "@/lib/validations/messages";
 import QueryBuilder from "@/lib/queryBuilder";
 
 export class Helpers {
