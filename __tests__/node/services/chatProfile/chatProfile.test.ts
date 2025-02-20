@@ -203,12 +203,9 @@ describe("GetUsers tests", () => {
 
         expect(users).toEqual(new Set([user1, user2]));
     });
-    /*test("getUsers should return the user profiles of each member of the chat", async () => {
-        await chatProfileService.getUsers(chatId);
 
-        expect(mockFacade.getChatProfile).toHaveBeenCalledWith(chatId);
-    })
     test("if a user id does not exist in the repository, then the call should still return an array filled with the viable users", async () => {
+        mockFacade.getChatProfile = jest.fn().mockResolvedValue({ id: "456", members: new Set(["123", "789"]) });
         mockFacade.getUser = jest.fn().mockImplementation(async (userId) => {
             if (userId == "123") {
                 return user1;
@@ -248,5 +245,5 @@ describe("GetUsers tests", () => {
         await chatProfileService.getUsers(chatId);
 
         expect(mockFacade.overwriteProfile).not.toHaveBeenCalled();
-    })*/
+    })
 })

@@ -25,10 +25,11 @@
  *       500:
  *         description: Internal server error.
  */
-
+/*
 import { ChatProfileController } from "@/controllers/chatProfile/controller";
 
 export async function GET(request: Request): Promise<Response> {
     const controller = new ChatProfileController();
     return controller.getProfile(request);
 }
+*/

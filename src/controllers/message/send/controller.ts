@@ -33,9 +33,12 @@ export class MessageSendController extends AbstractMessageController {
         const chatProfile: SenderHeader = { id: chatId as string, sender: sessionUser as string }
 
         const areFriends = await service.areFriends(chatProfile, this.friendsRepository)
+        console.log('areFriends', areFriends)
         const isChatMember = service.isChatMember(chatProfile)
+        console.log('isChatMember', isChatMember)
 
         if (!(isChatMember && areFriends)) {
+            //old logic for areFriend and isChatmember returning false
             return this.unauthorized()
         }
 
