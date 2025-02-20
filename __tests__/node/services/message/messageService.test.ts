@@ -51,7 +51,7 @@ describe('areFriends tests', () => {
     beforeEach(() => {
         repositoryFacade = {
             getChatProfile: jest.fn(),
-            ProfileExists: jest.fn().mockResolvedValue(true),
+            friendshipExists: jest.fn().mockResolvedValue(true),
             sendMessage: jest.fn(),
             getMessage: jest.fn(),
             removeAllMessages: jest.fn(),
@@ -62,20 +62,20 @@ describe('areFriends tests', () => {
         service = new MessageService()
         profile = {
             sender: 'foo',
-            id: 'bar--foo'
+            id: 'generated-id'
         }
     })
     it('users are friends', async () => {
         expect(await service.areFriends(profile)).toEqual(true)
     })
     it('users are not friends', async () => {
-        repositoryFacade.ProfileExists = jest.fn().mockResolvedValue(false);
+        repositoryFacade.friendshipExists = jest.fn().mockResolvedValue(false);
         (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
         expect(await service.areFriends(profile)).toEqual(false)
     })
     it('confirm parameters passed to repository', async () => {
         await service.areFriends(profile)
-        expect(repositoryFacade.ProfileExists).toHaveBeenCalledWith(['foo', 'bar'])
+        expect(repositoryFacade.friendshipExists).toHaveBeenCalledWith('foo', 'bar')
     })
 })
 /*

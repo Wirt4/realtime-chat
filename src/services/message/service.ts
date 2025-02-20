@@ -2,23 +2,26 @@ import { GetMessagesInterface, MessageRemoveAllInterface, MessageSendInterface }
 import { nanoid } from "nanoid";
 import { Message } from "@/lib/validations/messages";
 import { messageRepositoryFactory } from "./factories";
+import { MessageRepositoryFacade } from "./repositoryFacade";
 
 export class MessageService implements
     MessageSendInterface,
     GetMessagesInterface,
     MessageRemoveAllInterface {
+    private readonly repoFacade: MessageRepositoryFacade
+    constructor() {
+        this.repoFacade = messageRepositoryFactory()
+    }
+
     async isChatMember(chatProfile: SenderHeader): Promise<boolean> {
-        const f = messageRepositoryFactory()
-        const profile = await f.getChatProfile(chatProfile.id)
+        const profile = await this.repoFacade.getChatProfile(chatProfile.id)
         return profile.members.has(chatProfile.sender)
     }
 
     async areFriends(chatProfile: SenderHeader): Promise<boolean> {
+        //this logic is iffy
         const participants = new Participants(chatProfile.id)
-        const f = messageRepositoryFactory()
-        return f.ProfileExists([chatProfile.sender, participants.getCorrespondent(chatProfile.sender)])
-        return false
-        // return friendRepository.exists(chatProfile.sender, participants.getCorrespondent(chatProfile.sender))
+        return this.repoFacade.friendshipExists(chatProfile.sender, participants.getCorrespondent(chatProfile.sender))
     }
 
     async sendMessage(chatProfile: SenderHeader, text: string,): Promise<void> {
