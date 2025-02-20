@@ -1,9 +1,5 @@
 import { MessageService } from "@/services/message/service";
-import { nanoid } from "nanoid";
 import { PusherSendMessageInterface } from "@/services/pusher/interfaces";
-import { aFriendsRepository } from "@/repositories/friends/abstract";
-import { aMessageRepository } from "@/repositories/message/removeAll/abstract";
-import { aSendMessageRepository } from "@/repositories/message/send/abstract";
 import { aChatProfileRepository } from "@/repositories/chatProfile/abstract";
 import { messageRepositoryFactory, messagePusherFactory } from "@/services/message/factories";
 
@@ -20,9 +16,7 @@ jest.mock('@/services/message/factories', () => ({
 describe('isChatMember tests', () => {
     let profile: SenderHeader
     let service: MessageService
-    let profileRepo: aChatProfileRepository
     let repositoryFacade: any
-    let pusher: PusherSendMessageInterface
     beforeEach(() => {
         repositoryFacade = {
             getChatProfile: jest.fn().mockResolvedValue({ members: new Set(['foo', 'bar']), id: 'generated-id' }),
@@ -33,15 +27,11 @@ describe('isChatMember tests', () => {
             getMessages: jest.fn()
 
         }
-        pusher = {
-            sendMessage: jest.fn()
-        }
         profile = {
             sender: "foo",
             id: "generated-id"
         };
         (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
-        (messagePusherFactory as jest.Mock).mockReturnValue(pusher);
         service = new MessageService()
     })
     it('user is a part of the chat', () => {

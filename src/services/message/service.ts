@@ -1,12 +1,6 @@
 import { GetMessagesInterface, MessageRemoveAllInterface, MessageSendInterface } from "@/services/message/interface";
 import { nanoid } from "nanoid";
-import { PusherSendMessageInterface } from "@/services/pusher/interfaces";
-import { aFriendsRepository } from "@/repositories/friends/abstract";
-import { aMessageRepository } from "@/repositories/message/removeAll/abstract";
-import { aSendMessageRepository } from "@/repositories/message/send/abstract";
-import { aGetMessagesRepository } from "@/repositories/message/get/abstract";
 import { Message } from "@/lib/validations/messages";
-import { aChatProfileRepository } from "@/repositories/chatProfile/abstract";
 import { messageRepositoryFactory } from "./factories";
 
 export class MessageService implements
