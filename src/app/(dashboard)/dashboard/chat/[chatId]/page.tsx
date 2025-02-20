@@ -6,10 +6,7 @@ import ChatInput from "@/components/ChatInput/ChatInput";
 import MessagesHeader from "@/components/MessagesHeader";
 import myGetServerSession from "@/lib/myGetServerSession";
 import { Utils } from "@/lib/utils";
-import { ChatProfileRepository } from "@/repositories/chatProfile/implementation";
-import { UserRepository } from "@/repositories/user/implementation";
 import { ChatProfileService } from "@/services/chatProfile/implementation";
-import { db } from "@/lib/db";
 
 interface ChatProps {
     params: {
@@ -30,7 +27,7 @@ const Page: FC<ChatProps> = async ({ params }) => {
     }
 
     const { chatId } = params;
-    const handler = new AxiosWrapper(chatId);
+    const handler = new Handler(chatId);
     const chatProfile = await handler.getChatProfile()
     if (!chatProfile || !chatProfile?.members.has(session?.user.id)) {
         notFound();
@@ -77,7 +74,7 @@ const Display: FC<DisplayProps> = ({ chatInfo, participants }) => {
 
 export default Page;
 
-class AxiosWrapper {
+class Handler {
     private chatId: string;
 
     constructor(chatId: string) {
@@ -85,16 +82,12 @@ class AxiosWrapper {
     }
 
     async getChatProfile() {
-        const chatRepo = new ChatProfileRepository(db);
-        const userRepo = new UserRepository(db);
-        const service = new ChatProfileService(chatRepo, userRepo);
+        const service = new ChatProfileService();
         return service.getProfile(this.chatId);
     }
 
     async getUsers(): Promise<User[]> {
-        const chatRepo = new ChatProfileRepository(db);
-        const userRepo = new UserRepository(db);
-        const service = new ChatProfileService(chatRepo, userRepo);
+        const service = new ChatProfileService();
         const userSet = await service.getUsers(this.chatId);
         return Array.from(userSet);
     }

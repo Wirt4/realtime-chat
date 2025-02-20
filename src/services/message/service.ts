@@ -7,22 +7,24 @@ import { aSendMessageRepository } from "@/repositories/message/send/abstract";
 import { aGetMessagesRepository } from "@/repositories/message/get/abstract";
 import { Message } from "@/lib/validations/messages";
 import { aChatProfileRepository } from "@/repositories/chatProfile/abstract";
+import { messageRepositoryFactory } from "./factories";
 
 export class MessageService implements
     MessageSendInterface,
     GetMessagesInterface,
     MessageRemoveAllInterface {
-    async isChatMember(chatProfile: SenderHeader, repo: aChatProfileRepository): Promise<boolean> {
-        const profile = await repo.getChatProfile(chatProfile.id)
+    async isChatMember(chatProfile: SenderHeader): Promise<boolean> {
+        const f = messageRepositoryFactory()
+        const profile = await f.getChatProfile(chatProfile.id)
         return profile.members.has(chatProfile.sender)
     }
 
-    async areFriends(chatProfile: SenderHeader, friendRepository: aFriendsRepository): Promise<boolean> {
+    async areFriends(chatProfile: SenderHeader): Promise<boolean> {
         const participants = new Participants(chatProfile.id)
         return friendRepository.exists(chatProfile.sender, participants.getCorrespondent(chatProfile.sender))
     }
 
-    async sendMessage(chatProfile: SenderHeader, text: string, repository: aSendMessageRepository, pusher: PusherSendMessageInterface): Promise<void> {
+    async sendMessage(chatProfile: SenderHeader, text: string,): Promise<void> {
         const msg = { id: nanoid(), senderId: chatProfile.sender, text, timestamp: Date.now() }
         await Promise.all([
             repository.sendMessage(chatProfile.id, msg),
@@ -30,11 +32,11 @@ export class MessageService implements
         ])
     }
 
-    async deleteChat(chatId: string, repository: aMessageRepository): Promise<number> {
+    async deleteChat(chatId: string,): Promise<number> {
         return repository.removeAllMessages(chatId)
     }
 
-    async getMessages(chatId: string, repository: aGetMessagesRepository): Promise<Message[]> {
+    async getMessages(chatId: string): Promise<Message[]> {
         return repository.getMessages(chatId)
     }
 }
