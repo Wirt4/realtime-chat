@@ -5,13 +5,12 @@ import repositoryFacadeFactory from "./repositoryFacadeFactory";
 import chatProfileRepositoryFacade from "./repositoryFacade";
 
 export class ChatProfileService implements aChatProfileService {
-    private idGenerator: aIdGeneratorService
+    private static readonly CHAT_NOT_CREATED_ERROR = "Chat not yet created";
+    private idGenerator: aIdGeneratorService;
     private chatId: string | null;
-    private err = "Chat not yet created";
     private repositoryFacade: chatProfileRepositoryFacade;
 
-    constructor(idGenerator: aIdGeneratorService = new IdGeneratorService()
-    ) {
+    constructor(idGenerator: aIdGeneratorService = new IdGeneratorService()) {
         this.idGenerator = idGenerator;
         this.chatId = null;
         this.repositoryFacade = repositoryFacadeFactory();
@@ -22,53 +21,46 @@ export class ChatProfileService implements aChatProfileService {
     }
 
     async loadProfileFromUsers(users: Set<string>): Promise<void> {
-        let intersection: Set<string> = new Set();
-        let firstIteration = true;
+        let intersection: Set<string> | null = null;
 
-        await users.forEach(async (userId) => {
+        for (const userId of users) {
             const userChats = await this.repositoryFacade.getUserChats(userId);
-            if (firstIteration) {
-                intersection = userChats;
-                firstIteration = false;
-            } else {
-                intersection = this.setIntersection(intersection, userChats);
-            }
-        });
+            intersection = intersection ? this.setIntersection(intersection, userChats) : userChats;
+        }
 
         this.chatId = "";
 
-        await intersection.forEach(async (chatId) => {
-            const profile = await this.repositoryFacade.getChatProfile(chatId);
-            if (profile.members.size == users.size) {
-                this.chatId = chatId;
+        if (intersection) {
+            for (const chatId of intersection) {
+                const profile = await this.repositoryFacade.getChatProfile(chatId);
+                if (profile.members.size === users.size) {
+                    this.chatId = chatId;
+                    break;
+                }
             }
-        });
+        }
     }
 
     async getUsers(chatId: string): Promise<Set<User>> {
-        const userSet: Set<User> = new Set();
-        let profile: ChatProfile;
-
         try {
-            profile = await this.repositoryFacade.getChatProfile(chatId);
+            const profile = await this.repositoryFacade.getChatProfile(chatId);
+            return this.fetchUsers(profile);
         } catch {
-            return userSet;
+            return new Set();
         }
+    }
 
+    private async fetchUsers(profile: ChatProfile): Promise<Set<User>> {
+        const userSet: Set<User> = new Set();
         const nullMembers: Set<string> = new Set();
-        let currentUser: User;
-        if (profile?.members) {
-            for (const userId of profile.members) {
-                try {
-                    currentUser = await this.repositoryFacade.getUser(userId);
-                    if (currentUser === null) {
-                        throw new Error("User not found");
-                    }
-                    userSet.add(currentUser);
-                }
-                catch {
-                    nullMembers.add(userId);
-                }
+
+        for (const userId of profile?.members || []) {
+            try {
+                const user = await this.repositoryFacade.getUser(userId);
+                if (!user) throw new Error();
+                userSet.add(user);
+            } catch {
+                nullMembers.add(userId);
             }
         }
 
@@ -77,7 +69,6 @@ export class ChatProfileService implements aChatProfileService {
         }
 
         return userSet;
-
     }
 
     async createChat(): Promise<void> {
@@ -86,35 +77,22 @@ export class ChatProfileService implements aChatProfileService {
     }
 
     async addUserToChat(userId: string): Promise<void> {
-        if (this.chatId !== null) {
-            await this.repositoryFacade.addChatMember(this.chatId, userId);
-            return
-        }
-        throw this.err
+        if (this.chatId === null) throw new Error(ChatProfileService.CHAT_NOT_CREATED_ERROR);
+        await this.repositoryFacade.addChatMember(this.chatId, userId);
     }
 
     getChatId(): string {
-        if (this.chatId === null) {
-            throw this.err;
-        }
+        if (this.chatId === null) throw new Error(ChatProfileService.CHAT_NOT_CREATED_ERROR);
         return this.chatId;
     }
 
     private setIntersection(set1: Set<string>, set2: Set<string>): Set<string> {
-        if (!set1 || !set2) {
-            return new Set();
-        }
-        const i: Set<string> = new Set();
-        for (const x of set1) {
-            if (set2.has(x)) {
-                i.add(x);
-            }
-        }
-        return i;
+        if (!set1?.size || !set2?.size) return new Set();
+        return new Set([...set1].filter(x => set2.has(x)));
     }
 
     private async UpdateRepository(profile: ChatProfile, nullMembers: Set<string>): Promise<void> {
-        profile.members = new Set([...profile.members].filter(x => ![...nullMembers].includes(x)));
+        profile.members = new Set([...profile.members].filter(x => !nullMembers.has(x)));
         return this.repositoryFacade.overwriteProfile(profile);
     }
 }
