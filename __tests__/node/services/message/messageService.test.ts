@@ -4,6 +4,7 @@ import { PusherSendMessageInterface } from "@/services/pusher/interfaces";
 import { aFriendsRepository } from "@/repositories/friends/abstract";
 import { aMessageRepository } from "@/repositories/message/removeAll/abstract";
 import { aSendMessageRepository } from "@/repositories/message/send/abstract";
+import { aChatProfileRepository } from "@/repositories/chatProfile/abstract";
 
 jest.mock("nanoid", () => ({
     nanoid: jest.fn(),
@@ -12,19 +13,26 @@ jest.mock("nanoid", () => ({
 describe('isChatMember tests', () => {
     let profile: SenderHeader
     let service: MessageService
+    let profileRepo: aChatProfileRepository
     beforeEach(() => {
         profile = {
             sender: "foo",
-            id: "bar--foo"
+            id: "generated-id"
+        }
+        profileRepo = {
+            createChatProfile: jest.fn(),
+            getChatProfile: jest.fn().mockResolvedValue({ members: new Set(['foo', 'bar']), id: 'generated-id' }),
+            addChatMember: jest.fn(),
+            overWriteChatProfile: jest.fn(),
         }
         service = new MessageService()
     })
     it('user is a part of the chat', () => {
-        expect(service.isChatMember(profile)).toEqual(true)
+        expect(service.isChatMember(profile, profileRepo)).resolves.toEqual(true)
     })
     it('user is not a part of the chat', () => {
         profile.sender = 'batman'
-        expect(service.isChatMember(profile)).toEqual(false)
+        expect(service.isChatMember(profile, profileRepo)).resolves.toEqual(false)
     })
 })
 

@@ -6,14 +6,15 @@ import { aMessageRepository } from "@/repositories/message/removeAll/abstract";
 import { aSendMessageRepository } from "@/repositories/message/send/abstract";
 import { aGetMessagesRepository } from "@/repositories/message/get/abstract";
 import { Message } from "@/lib/validations/messages";
+import { aChatProfileRepository } from "@/repositories/chatProfile/abstract";
 
 export class MessageService implements
     MessageSendInterface,
     GetMessagesInterface,
     MessageRemoveAllInterface {
-    isChatMember(chatProfile: SenderHeader): boolean {
-        const participants = new Participants(chatProfile.id)
-        return participants.isParticipant(chatProfile.sender)
+    async isChatMember(chatProfile: SenderHeader, repo: aChatProfileRepository): Promise<boolean> {
+        const profile = await repo.getChatProfile(chatProfile.id)
+        return profile.members.has(chatProfile.sender)
     }
 
     async areFriends(chatProfile: SenderHeader, friendRepository: aFriendsRepository): Promise<boolean> {
@@ -48,6 +49,7 @@ class Participants {
     }
 
     isParticipant(userId: string): boolean {
+        //outdated logic
         return userId === this.user1 || userId === this.user2
     }
 

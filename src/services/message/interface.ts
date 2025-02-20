@@ -5,6 +5,7 @@ import { aMessageRepository } from "@/repositories/message/removeAll/abstract";
 import { aSendMessageRepository } from "@/repositories/message/send/abstract";
 import { aGetMessagesRepository } from "@/repositories/message/get/abstract";
 import { Message } from "@/lib/validations/messages";
+import { aChatProfileRepository } from "@/repositories/chatProfile/abstract";
 
 export interface MessageSendInterface extends MessageServiceInterface {
     areFriends(chatProfile: SenderHeader, repository: aFriendsRepository): Promise<boolean>
@@ -20,5 +21,5 @@ export interface GetMessagesInterface {
 }
 
 interface MessageServiceInterface {
-    isChatMember(chatProfile: SenderHeader): boolean
+    isChatMember(chatProfile: SenderHeader, repo: aChatProfileRepository): Promise<boolean>
 }

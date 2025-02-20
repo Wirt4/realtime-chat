@@ -7,6 +7,7 @@ import { aFriendsRepository } from "@/repositories/friends/abstract";
 import { db } from "@/lib/db";
 import { aSendMessageRepository } from "@/repositories/message/send/abstract";
 import { SendMessageRepository } from "@/repositories/message/send/implementation";
+import { ChatProfileRepository } from "@/repositories/chatProfile/implementation";
 
 
 export class MessageSendController extends AbstractMessageController {
@@ -34,7 +35,7 @@ export class MessageSendController extends AbstractMessageController {
 
         const areFriends = await service.areFriends(chatProfile, this.friendsRepository)
         console.log('areFriends', areFriends)
-        const isChatMember = service.isChatMember(chatProfile)
+        const isChatMember = await service.isChatMember(chatProfile, new ChatProfileRepository(db))
         console.log('isChatMember', isChatMember)
 
         if (!(isChatMember && areFriends)) {
