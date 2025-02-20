@@ -2,6 +2,7 @@ import { MessageService } from "@/services/message/service";
 import { PusherSendMessageInterface } from "@/services/pusher/interfaces";
 import { aChatProfileRepository } from "@/repositories/chatProfile/abstract";
 import { messageRepositoryFactory, messagePusherFactory } from "@/services/message/factories";
+import { MessageRepositoryFacade } from "@/services/message/repositoryFacade";
 
 
 jest.mock("nanoid", () => ({
@@ -16,7 +17,7 @@ jest.mock('@/services/message/factories', () => ({
 describe('isChatMember tests', () => {
     let profile: SenderHeader
     let service: MessageService
-    let repositoryFacade: any
+    let repositoryFacade: MessageRepositoryFacade
     beforeEach(() => {
         repositoryFacade = {
             getChatProfile: jest.fn().mockResolvedValue({ members: new Set(['foo', 'bar']), id: 'generated-id' }),
@@ -42,18 +43,22 @@ describe('isChatMember tests', () => {
         expect(service.isChatMember(profile)).resolves.toEqual(false)
     })
 })
-/*
+
 describe('areFriends tests', () => {
-    let friendsRepo: aFriendsRepository
+    let repositoryFacade: MessageRepositoryFacade
     let service: MessageService
     let profile: SenderHeader
     beforeEach(() => {
-        friendsRepo = {
-            exists: jest.fn().mockResolvedValue(true),
-            get: jest.fn(),
-            add: jest.fn(),
-            remove: jest.fn(),
-        }
+        repositoryFacade = {
+            getChatProfile: jest.fn(),
+            userExists: jest.fn().mockResolvedValue(true),
+            sendMessage: jest.fn(),
+            getMessage: jest.fn(),
+            removeAllMessages: jest.fn(),
+            getMessages: jest.fn()
+
+        };
+        (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
         service = new MessageService()
         profile = {
             sender: 'foo',
@@ -61,18 +66,19 @@ describe('areFriends tests', () => {
         }
     })
     it('users are friends', async () => {
-        expect(await service.areFriends(profile, friendsRepo)).toEqual(true)
+        expect(await service.areFriends(profile)).toEqual(true)
     })
     it('users are not friends', async () => {
-        friendsRepo.exists = jest.fn().mockResolvedValue(false)
-        expect(await service.areFriends(profile, friendsRepo)).toEqual(false)
+        repositoryFacade.userExists = jest.fn().mockResolvedValue(false)
+            (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
+        expect(await service.areFriends(profile)).toEqual(false)
     })
     it('confirm parameters passed to repository', async () => {
-        await service.areFriends(profile, friendsRepo)
-        expect(friendsRepo.exists).toHaveBeenCalledWith('foo', 'bar')
+        await service.areFriends(profile)
+        expect(repositoryFacade.userExists).toHaveBeenCalledWith('foo', 'bar')
     })
 })
-
+/*
 describe('sendMessage tests', () => {
     beforeAll(() => {
         jest.useFakeTimers()
