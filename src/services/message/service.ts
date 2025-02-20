@@ -15,6 +15,8 @@ export class MessageService implements
 
     async areFriends(chatProfile: SenderHeader): Promise<boolean> {
         const participants = new Participants(chatProfile.id)
+        const f = messageRepositoryFactory()
+        return f.ProfileExists([chatProfile.sender, participants.getCorrespondent(chatProfile.sender)])
         return false
         // return friendRepository.exists(chatProfile.sender, participants.getCorrespondent(chatProfile.sender))
     }

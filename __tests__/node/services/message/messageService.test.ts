@@ -21,7 +21,7 @@ describe('isChatMember tests', () => {
     beforeEach(() => {
         repositoryFacade = {
             getChatProfile: jest.fn().mockResolvedValue({ members: new Set(['foo', 'bar']), id: 'generated-id' }),
-            userExists: jest.fn(),
+            ProfileExists: jest.fn(),
             sendMessage: jest.fn(),
             getMessage: jest.fn(),
             removeAllMessages: jest.fn(),
@@ -51,7 +51,7 @@ describe('areFriends tests', () => {
     beforeEach(() => {
         repositoryFacade = {
             getChatProfile: jest.fn(),
-            userExists: jest.fn().mockResolvedValue(true),
+            ProfileExists: jest.fn().mockResolvedValue(true),
             sendMessage: jest.fn(),
             getMessage: jest.fn(),
             removeAllMessages: jest.fn(),
@@ -69,13 +69,13 @@ describe('areFriends tests', () => {
         expect(await service.areFriends(profile)).toEqual(true)
     })
     it('users are not friends', async () => {
-        repositoryFacade.userExists = jest.fn().mockResolvedValue(false)
-            (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
+        repositoryFacade.ProfileExists = jest.fn().mockResolvedValue(false);
+        (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
         expect(await service.areFriends(profile)).toEqual(false)
     })
     it('confirm parameters passed to repository', async () => {
         await service.areFriends(profile)
-        expect(repositoryFacade.userExists).toHaveBeenCalledWith('foo', 'bar')
+        expect(repositoryFacade.ProfileExists).toHaveBeenCalledWith(['foo', 'bar'])
     })
 })
 /*
