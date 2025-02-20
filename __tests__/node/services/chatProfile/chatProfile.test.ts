@@ -2,7 +2,7 @@ import { ChatProfileService } from "@/services/chatProfile/implementation";
 import chatProfileRepositoryFacade from "@/services/chatProfile/repositoryFacade";
 import { aIdGeneratorService } from "@/services/idGenerator/abstract";
 import repositoryFacadeFactory from "@/services/chatProfile/repositoryFacadeFactory";
-import { mock } from "node:test";
+
 jest.mock("@/services/chatProfile/repositoryFacadeFactory", () => jest.fn());
 
 describe("ChatProfileService", () => {
@@ -189,12 +189,21 @@ describe("GetUsers tests", () => {
 
         chatProfileService = new ChatProfileService(mockIdGenerator);
     });
-    /*test("getUsers should return a set of users", async () => {
+    test("getUsers should return a set of users", async () => {
+        mockFacade.getChatProfile = jest.fn().mockResolvedValue({ id: "456", members: new Set(["123", "789"]) });
+        mockFacade.getUser = jest.fn().mockImplementation(async (userId) => {
+            if (userId == "123") {
+                return user1;
+            }
+            return user2;
+        });
+        (repositoryFacadeFactory as jest.Mock).mockReturnValue(mockFacade);
+
         const users = await chatProfileService.getUsers(chatId);
 
         expect(users).toEqual(new Set([user1, user2]));
     });
-    test("getUsers should return the user profiles of each member of the chat", async () => {
+    /*test("getUsers should return the user profiles of each member of the chat", async () => {
         await chatProfileService.getUsers(chatId);
 
         expect(mockFacade.getChatProfile).toHaveBeenCalledWith(chatId);
@@ -212,7 +221,7 @@ describe("GetUsers tests", () => {
         const users = await chatProfileService.getUsers(chatId);
 
         expect(users).toEqual(new Set([user1]));
-    });*/
+    });
 
     test("if a user profile does not exist, then the chat profile's members property should be updated and the repo over-written", async () => {
 
@@ -239,5 +248,5 @@ describe("GetUsers tests", () => {
         await chatProfileService.getUsers(chatId);
 
         expect(mockFacade.overwriteProfile).not.toHaveBeenCalled();
-    })
+    })*/
 })

@@ -44,6 +44,7 @@ export class ChatProfileService implements aChatProfileService {
     async getUsers(chatId: string): Promise<Set<User>> {
         try {
             const profile = await this.repositoryFacade.getChatProfile(chatId);
+            console.log("profile", profile);
             return this.fetchUsers(profile);
         } catch {
             return new Set();
