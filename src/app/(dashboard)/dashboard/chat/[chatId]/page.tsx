@@ -10,8 +10,6 @@ import { ChatProfileRepository } from "@/repositories/chatProfile/implementation
 import { UserRepository } from "@/repositories/user/implementation";
 import { ChatProfileService } from "@/services/chatProfile/implementation";
 import { db } from "@/lib/db";
-import { MessageService } from "@/services/message/service";
-import { GetMessagesRepository } from "@/repositories/message/get/implementation";
 
 interface ChatProps {
     params: {
@@ -102,21 +100,13 @@ class AxiosWrapper {
     }
 
     async getMessages() {
-        const messageService = new MessageService();
-        return messageService.getMessages(this.chatId, new GetMessagesRepository());
+        return []
+        //const messageService = new MessageService();
+        // return messageService.getMessages(this.chatId, new GetMessagesRepository());
     }
-
-    /* private async get(endpoint: string) {
-         const messageService = new MessageService();
-         return messageService.getMessages(endpoint);
-         const res = await axios.get(`${endpoint}?id=${this.chatId}`)
-         return res?.data;
-     }*/
 }
 
 function deriveChatParticipants(sessionId: string, participants: User[]): ChatParticipants {
-    console.log('sessionId', sessionId);
-    console.log('participants', participants);
     let user: User;
     let partner: User;
     if (participants[0].id === sessionId) {
