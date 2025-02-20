@@ -1,29 +1,24 @@
-import { aChatProfileRepository } from "@/repositories/chatProfile/abstract";
 import { aIdGeneratorService } from "../idGenerator/abstract";
 import { aChatProfileService } from "./abstract";
 import { IdGeneratorService } from "../idGenerator/implementation";
-import { aUserRepository } from "@/repositories/user/abstract";
+import repositoryFacadeFactory from "./repositoryFacadeFactory";
+import chatProfileRepositoryFacade from "./repositoryFacade";
 
 export class ChatProfileService implements aChatProfileService {
     private idGenerator: aIdGeneratorService
     private chatId: string | null;
-    private profileRepository: aChatProfileRepository;
-    private userRepository: aUserRepository;
     private err = "Chat not yet created";
+    private repositoryFacade: chatProfileRepositoryFacade;
 
-    constructor(
-        chatProfileRepository: aChatProfileRepository,
-        userRepository: aUserRepository,
-        idGenerator: aIdGeneratorService = new IdGeneratorService()
+    constructor(idGenerator: aIdGeneratorService = new IdGeneratorService()
     ) {
         this.idGenerator = idGenerator;
-        this.profileRepository = chatProfileRepository;
         this.chatId = null;
-        this.userRepository = userRepository;
+        this.repositoryFacade = repositoryFacadeFactory();
     }
 
     async getProfile(chatId: string): Promise<ChatProfile> {
-        return this.profileRepository.getChatProfile(chatId);
+        return this.repositoryFacade.getChatProfile(chatId);
     }
 
     async loadProfileFromUsers(users: Set<string>): Promise<void> {
@@ -31,19 +26,19 @@ export class ChatProfileService implements aChatProfileService {
         let firstIteration = true;
 
         await users.forEach(async (userId) => {
-            const userChats = await this.userRepository.getUserChats(userId);
+            const userChats = await this.repositoryFacade.getUserChats(userId);
             if (firstIteration) {
                 intersection = userChats;
                 firstIteration = false;
             } else {
-                intersection = intersection.intersection(userChats);
+                intersection = this.setIntersection(intersection, userChats);
             }
         });
 
         this.chatId = "";
 
         await intersection.forEach(async (chatId) => {
-            const profile = await this.profileRepository.getChatProfile(chatId);
+            const profile = await this.repositoryFacade.getChatProfile(chatId);
             if (profile.members.size == users.size) {
                 this.chatId = chatId;
             }
@@ -55,23 +50,25 @@ export class ChatProfileService implements aChatProfileService {
         let profile: ChatProfile;
 
         try {
-            profile = await this.profileRepository.getChatProfile(chatId);
+            profile = await this.repositoryFacade.getChatProfile(chatId);
         } catch {
             return userSet;
         }
 
         const nullMembers: Set<string> = new Set();
         let currentUser: User;
-        for (const userId of profile.members) {
-            try {
-                currentUser = await this.userRepository.getUser(userId);
-                if (currentUser === null) {
-                    throw new Error("User not found");
+        if (profile?.members) {
+            for (const userId of profile.members) {
+                try {
+                    currentUser = await this.repositoryFacade.getUser(userId);
+                    if (currentUser === null) {
+                        throw new Error("User not found");
+                    }
+                    userSet.add(currentUser);
                 }
-                userSet.add(currentUser);
-            }
-            catch {
-                nullMembers.add(userId);
+                catch {
+                    nullMembers.add(userId);
+                }
             }
         }
 
@@ -85,12 +82,12 @@ export class ChatProfileService implements aChatProfileService {
 
     async createChat(): Promise<void> {
         this.chatId = this.idGenerator.newId();
-        await this.profileRepository.createChatProfile(this.chatId);
+        await this.repositoryFacade.createChatProfile(this.chatId);
     }
 
     async addUserToChat(userId: string): Promise<void> {
         if (this.chatId !== null) {
-            await this.profileRepository.addChatMember(this.chatId, userId);
+            await this.repositoryFacade.addChatMember(this.chatId, userId);
             return
         }
         throw this.err
@@ -103,10 +100,21 @@ export class ChatProfileService implements aChatProfileService {
         return this.chatId;
     }
 
+    private setIntersection(set1: Set<string>, set2: Set<string>): Set<string> {
+        if (!set1 || !set2) {
+            return new Set();
+        }
+        const i: Set<string> = new Set();
+        for (const x of set1) {
+            if (set2.has(x)) {
+                i.add(x);
+            }
+        }
+        return i;
+    }
+
     private async UpdateRepository(profile: ChatProfile, nullMembers: Set<string>): Promise<void> {
-        console.log("chatProile", profile);
-        console.log("nullMembers", nullMembers);
         profile.members = new Set([...profile.members].filter(x => ![...nullMembers].includes(x)));
-        return this.profileRepository.overWriteChatProfile(profile);
+        return this.repositoryFacade.overwriteProfile(profile);
     }
 }
