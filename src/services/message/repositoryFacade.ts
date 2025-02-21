@@ -5,4 +5,5 @@ export interface MessageRepositoryFacade {
     getMessage: (id: string) => Promise<any>,
     removeAllMessages: (id: string) => Promise<number>,
     getMessages: (id: string) => Promise<any>
+    removeChat: (id: string) => Promise<void>
 }

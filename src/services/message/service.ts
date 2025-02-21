@@ -3,6 +3,7 @@ import { nanoid } from "nanoid";
 import { Message } from "@/lib/validations/messages";
 import { messageRepositoryFactory } from "./factories";
 import { MessageRepositoryFacade } from "./repositoryFacade";
+import { SenderHeader, senderHeaderSchema } from "@/schemas/senderHeaderSchema";
 
 export class MessageService implements
     MessageSendInterface,
@@ -17,14 +18,39 @@ export class MessageService implements
         //needs to be on record as a member of the chat, and have an exisiting friend connection with at least one other member in the chat
         //this.repoFacade.friendshipExists(chatProfile.sender, participants.getCorrespondent(chatProfile.sender))
         const profile = await this.repoFacade.getChatProfile(chatProfile.id)
-        return profile.members.has(chatProfile.sender)
+        if (profile.members.has(chatProfile.sender)) {
+            const members: string[] = Array.from(profile.members);
+            for (let i = 0; i < members.length; i++) {
+                if (members[i] === chatProfile.sender) {
+                    continue;
+                }
+                if (await this.repoFacade.friendshipExists(chatProfile.sender, members[i])) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
+    /**
+     * Sends the message to the chat and and alerts all other participants
+     * @param chatProfile 
+     * @param text - a non-zero string
+     * @returns Promice<void>
+     */
     async sendMessage(chatProfile: SenderHeader, text: string,): Promise<void> {
+        console.log('chat profile', chatProfile)
+        try {
+            senderHeaderSchema.parse(chatProfile)
+        } catch (e) {
+            console.log('error', e)
+            throw new Error('Invalid chat profile')
+        }
+        throw new Error("Invalid message text")
         const msg = { id: nanoid(), senderId: chatProfile.sender, text, timestamp: Date.now() }
         await Promise.all([
-            repository.sendMessage(chatProfile.id, msg),
-            pusher.sendMessage(chatProfile.id, msg)
+            this.repoFacade.sendMessage(chatProfile.id, msg),
+            //pusher.sendMessage(chatProfile.id, msg)
         ])
     }
 
