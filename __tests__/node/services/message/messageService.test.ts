@@ -172,9 +172,10 @@ describe('deleteChat tests', () => {
             getMessages: jest.fn(),
             removeChat: jest.fn()
 
-        }
-        service = new MessageService()
-        chatId = 'foo--bar'
+        };
+        (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
+        service = new MessageService();
+        chatId = '123456789876543212345678909876543212--123456789876543212345678909876543212';
     });
     it('precondition: chatId is a nonempty string', async () => {
         try {
@@ -183,30 +184,38 @@ describe('deleteChat tests', () => {
         } catch (e) {
             expect(e).toEqual(new Error('Invalid chatId'))
         }
-    })
-})
-
-/*
-describe('getMessages tests', () => {
-    it('confirm parameters passed to repository', async () => {
-        const repo = {
-            getMessages: jest.fn(),
-        }
-        const service = new MessageService()
-        const chatId = 'foo--bar'
-        await service.getMessages(chatId, repo)
-        expect(repo.getMessages).toHaveBeenCalledWith(chatId)
     });
-    it('confirm parameters passed to repository', async () => {
-        const messages = [{ text: "hello" }]
-        const repo = {
-            getMessages: jest.fn().mockResolvedValue(messages),
+    it('precondition: chatId is an invalid chat id', async () => {
+        try {
+            await service.deleteChat("bad format")
+            fail('should have thrown an error')
+        } catch (e) {
+            expect(e).toEqual(new Error('Invalid chatId'))
         }
-        const service = new MessageService()
-        const chatId = 'foo--bar'
-        const result = await service.getMessages(chatId, repo)
-        expect(result).toEqual(messages);
+    });
+    it('postcondition: repos removeAll is called', async () => {
+        await service.deleteChat(chatId)
+        expect(repositoryFacade.removeAllMessages).toHaveBeenCalledWith(chatId)
     });
 });
 
-*/
+describe('getMessages tests', () => {
+    let chatId: string;
+    beforeEach(() => {
+        chatId = '123456789876543212345678909876543212--123456789876543212345678909876543212';
+    });
+    it('precondition: chat id is a valid, nonempty string', async () => {
+        try {
+            await new MessageService().getMessages('')
+            fail('should have thrown an error')
+        } catch (e) {
+            expect(e).toEqual(new Error('Invalid chatId'))
+        }
+        try {
+            await new MessageService().getMessages('bad format')
+            fail('should have thrown an error')
+        } catch (e) {
+            expect(e).toEqual(new Error('Invalid chatId'))
+        }
+    })
+});

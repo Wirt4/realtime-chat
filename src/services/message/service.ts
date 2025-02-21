@@ -6,6 +6,7 @@ import { MessageRepositoryFacade } from "./repositoryFacade";
 import { SenderHeader, senderHeaderSchema } from "@/schemas/senderHeaderSchema";
 import { z } from "zod";
 import { PusherSendMessageInterface } from "../pusher/interfaces";
+import { Utils } from "@/lib/utils";
 
 export class MessageService implements
     MessageSendInterface,
@@ -18,9 +19,12 @@ export class MessageService implements
         this.pusher = messagePusherFactory()
     }
 
+    /**
+     * Checks if the user is a member of the chat
+     * @param chatProfile 
+     * @returns Promise<boolean>
+     */
     async isValidChatMember(chatProfile: SenderHeader): Promise<boolean> {
-        //needs to be on record as a member of the chat, and have an exisiting friend connection with at least one other member in the chat
-        //this.repoFacade.friendshipExists(chatProfile.sender, participants.getCorrespondent(chatProfile.sender))
         const profile = await this.repoFacade.getChatProfile(chatProfile.id)
         if (profile.members.has(chatProfile.sender)) {
             const members: string[] = Array.from(profile.members);
@@ -56,17 +60,13 @@ export class MessageService implements
      * @param chatId - a non-empty, valid chatID
      * @returns Promise<void>
      */
-
     async deleteChat(chatId: string,): Promise<void> {
-        try {
-            this.validateNonEmptyString(chatId)
-        } catch (e) {
-            throw new Error('Invalid chatId')
-        }
-        //return repository.removeAllMessages(chatId)
+        this.validateChatId(chatId);
+        await this.repoFacade.removeAllMessages(chatId);
     }
 
     async getMessages(chatId: string): Promise<Message[]> {
+        this.validateChatId(chatId);
         //return repository.getMessages(chatId)
         return [];
     }
@@ -76,6 +76,21 @@ export class MessageService implements
             this.validateNonEmptyString(text)
         } catch (e) {
             throw new Error('Invalid message text')
+        }
+    }
+
+    private validateChatId(chatId: string): void {
+        try {
+            this.validateNonEmptyString(chatId)
+            this.validateChatFormat(chatId)
+        } catch {
+            throw new Error('Invalid chatId')
+        }
+    }
+
+    private validateChatFormat(chatId: string): void {
+        if (!Utils.isValidChatId(chatId)) {
+            throw new Error('Invalid chatId')
         }
     }
 

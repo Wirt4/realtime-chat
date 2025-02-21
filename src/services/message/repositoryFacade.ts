@@ -3,7 +3,7 @@ export interface MessageRepositoryFacade {
     friendshipExists: (user1: string, user2: string) => Promise<boolean>,
     sendMessage: (id: string, msg: any) => Promise<void>,
     getMessage: (id: string) => Promise<any>,
-    removeAllMessages: (id: string) => Promise<number>,
+    removeAllMessages: (id: string) => Promise<void>,
     getMessages: (id: string) => Promise<any>
     removeChat: (id: string) => Promise<void>
 }
