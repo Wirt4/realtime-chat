@@ -15,5 +15,5 @@ export interface GetMessagesInterface {
 }
 
 interface MessageServiceInterface {
-    isChatMember(chatProfile: SenderHeader): Promise<boolean>
+    isValidChatMember(chatProfile: SenderHeader): Promise<boolean>
 }

@@ -21,7 +21,7 @@ describe('isChatMember tests', () => {
     beforeEach(() => {
         repositoryFacade = {
             getChatProfile: jest.fn().mockResolvedValue({ members: new Set(['foo', 'bar']), id: 'generated-id' }),
-            ProfileExists: jest.fn(),
+            friendshipExists: jest.fn(),
             sendMessage: jest.fn(),
             getMessage: jest.fn(),
             removeAllMessages: jest.fn(),
@@ -36,48 +36,18 @@ describe('isChatMember tests', () => {
         service = new MessageService()
     })
     it('user is a part of the chat', () => {
-        expect(service.isChatMember(profile)).resolves.toEqual(true)
+        expect(service.isValidChatMember(profile)).resolves.toEqual(true)
     })
     it('user is not a part of the chat', () => {
         profile.sender = 'batman'
-        expect(service.isChatMember(profile)).resolves.toEqual(false)
-    })
-})
-
-describe('areFriends tests', () => {
-    let repositoryFacade: MessageRepositoryFacade
-    let service: MessageService
-    let profile: SenderHeader
-    beforeEach(() => {
-        repositoryFacade = {
-            getChatProfile: jest.fn(),
-            friendshipExists: jest.fn().mockResolvedValue(true),
-            sendMessage: jest.fn(),
-            getMessage: jest.fn(),
-            removeAllMessages: jest.fn(),
-            getMessages: jest.fn()
-
-        };
+        expect(service.isValidChatMember(profile)).resolves.toEqual(false)
+    });
+    it('if the chatProfile has zero members, return false', async () => {
+        repositoryFacade.getChatProfile = jest.fn().mockResolvedValue({ members: new Set(), id: 'generated-id' });
         (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
-        service = new MessageService()
-        profile = {
-            sender: 'foo',
-            id: 'generated-id'
-        }
+        expect(service.isValidChatMember(profile)).resolves.toEqual(false);
     })
-    it('users are friends', async () => {
-        expect(await service.areFriends(profile)).toEqual(true)
-    })
-    it('users are not friends', async () => {
-        repositoryFacade.friendshipExists = jest.fn().mockResolvedValue(false);
-        (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
-        expect(await service.areFriends(profile)).toEqual(false)
-    })
-    it('confirm parameters passed to repository', async () => {
-        await service.areFriends(profile)
-        expect(repositoryFacade.friendshipExists).toHaveBeenCalledWith('foo', 'bar')
-    })
-})
+});
 /*
 describe('sendMessage tests', () => {
     beforeAll(() => {

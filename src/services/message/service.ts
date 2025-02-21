@@ -13,15 +13,11 @@ export class MessageService implements
         this.repoFacade = messageRepositoryFactory()
     }
 
-    async isChatMember(chatProfile: SenderHeader): Promise<boolean> {
+    async isValidChatMember(chatProfile: SenderHeader): Promise<boolean> {
+        //needs to be on record as a member of the chat, and have an exisiting friend connection with at least one other member in the chat
+        //this.repoFacade.friendshipExists(chatProfile.sender, participants.getCorrespondent(chatProfile.sender))
         const profile = await this.repoFacade.getChatProfile(chatProfile.id)
         return profile.members.has(chatProfile.sender)
-    }
-
-    async areFriends(chatProfile: SenderHeader): Promise<boolean> {
-        //this logic is iffy
-        const participants = new Participants(chatProfile.id)
-        return this.repoFacade.friendshipExists(chatProfile.sender, participants.getCorrespondent(chatProfile.sender))
     }
 
     async sendMessage(chatProfile: SenderHeader, text: string,): Promise<void> {

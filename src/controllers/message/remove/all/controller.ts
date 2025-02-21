@@ -20,7 +20,7 @@ export class MessageRemoveAllController extends AbstractMessageController {
 
         const chatProfile: SenderHeader = { id: chatId.toString(), sender: sessionId.toString() }
 
-        if (!service.isChatMember(chatProfile)) {
+        if (!service.isValidChatMember(chatProfile)) {
             return this.unauthorized()
         }
         try {
