@@ -14,7 +14,7 @@ jest.mock('@/services/message/factories', () => ({
     messageRepositoryFactory: jest.fn(),
     messagePusherFactory: jest.fn(),
 }));
-/*
+
 describe('isChatMember tests', () => {
     let profile: SenderHeader
     let service: MessageService
@@ -57,7 +57,7 @@ describe('isChatMember tests', () => {
         expect(service.isValidChatMember(profile)).resolves.toEqual(false);
     });
 });
-*/
+
 describe('sendMessage tests', () => {
     let repositoryFacade: MessageRepositoryFacade;
     beforeAll(() => {
@@ -154,46 +154,39 @@ describe('sendMessage tests', () => {
         (nanoid as jest.Mock).mockReturnValue('c-3po');
         await service.sendMessage(profile, text)
         expect(repositoryFacade.sendMessage).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ id: 'c-3po' }))
-    })
-    /* it('the message passed to the repository should be stamped with nanoId', async () => {
-         (nanoid as jest.Mock).mockReturnValue('c-3po');
-         await service.sendMessage(profile, text, repo, pusher)
-         expect(repo.sendMessage).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ id: 'c-3po' }))
-     })
-     it('the message passed to the repository should be stamped with the correct senderId from the profile', async () => {
-         await service.sendMessage(profile, text, repo, pusher)
-         expect(repo.sendMessage).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ senderId: profile.sender }))
-     })
-     it('the message passed to the repository should be set with the text', async () => {
-         jest.setSystemTime(new Date(1730156654))
-         await service.sendMessage(profile, text, repo, pusher)
-         expect(repo.sendMessage).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ timestamp: 1730156654 }))
-     })
-     it('confirm parameters passed to repository', async () => {
-         await service.sendMessage(profile, text, repo, pusher)
-         expect(pusher.sendMessage).toHaveBeenCalledWith(profile.id, expect.anything())
-     })*/
+    });
 })
 
-/*
+
 describe('deleteChat tests', () => {
+    let repositoryFacade: MessageRepositoryFacade
     let service: MessageService
-    let repo: aMessageRepository
     let chatId: string
     beforeEach(() => {
-        repo = {
+        repositoryFacade = {
+            getChatProfile: jest.fn(),
+            friendshipExists: jest.fn(),
+            sendMessage: jest.fn(),
+            getMessage: jest.fn(),
             removeAllMessages: jest.fn(),
+            getMessages: jest.fn(),
+            removeChat: jest.fn()
+
         }
         service = new MessageService()
         chatId = 'foo--bar'
-    })
-    it('confirm parameters passed to repository', async () => {
-        await service.deleteChat(chatId, repo)
-        expect(repo.removeAllMessages).toHaveBeenCalledWith(chatId)
+    });
+    it('precondition: chatId is a nonempty string', async () => {
+        try {
+            await service.deleteChat("")
+            fail('should have thrown an error')
+        } catch (e) {
+            expect(e).toEqual(new Error('Invalid chatId'))
+        }
     })
 })
 
-
+/*
 describe('getMessages tests', () => {
     it('confirm parameters passed to repository', async () => {
         const repo = {
@@ -215,4 +208,5 @@ describe('getMessages tests', () => {
         expect(result).toEqual(messages);
     });
 });
+
 */

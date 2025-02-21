@@ -51,12 +51,25 @@ export class MessageService implements
         return this.sendAndPush(chatProfile.id, msg);
     }
 
-    async deleteChat(chatId: string,): Promise<number> {
-        return repository.removeAllMessages(chatId)
+    /**
+     * 
+     * @param chatId - a non-empty, valid chatID
+     * @returns Promise<void>
+     */
+
+    async deleteChat(chatId: string,): Promise<void> {
+        const schema = z.string().nonempty()
+        try {
+            schema.parse(chatId)
+        } catch (e) {
+            throw new Error('Invalid chatId')
+        }
+        //return repository.removeAllMessages(chatId)
     }
 
     async getMessages(chatId: string): Promise<Message[]> {
-        return repository.getMessages(chatId)
+        //return repository.getMessages(chatId)
+        return [];
     }
 
     private validateMessageContent(text: string): void {

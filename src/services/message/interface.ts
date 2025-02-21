@@ -1,4 +1,5 @@
 import { Message } from "@/lib/validations/messages";
+import { SenderHeader } from "@/schemas/senderHeaderSchema";
 
 
 export interface MessageSendInterface extends MessageServiceInterface {
@@ -6,7 +7,7 @@ export interface MessageSendInterface extends MessageServiceInterface {
 }
 
 export interface MessageRemoveAllInterface extends MessageServiceInterface {
-    deleteChat(chatId: string): Promise<number>
+    deleteChat(chatId: string): Promise<void>
 }
 
 export interface GetMessagesInterface {
