@@ -205,17 +205,13 @@ describe('getMessages tests', () => {
         chatId = '123456789876543212345678909876543212--123456789876543212345678909876543212';
     });
     it('precondition: chat id is a valid, nonempty string', async () => {
-        try {
-            await new MessageService().getMessages('')
-            fail('should have thrown an error')
-        } catch (e) {
-            expect(e).toEqual(new Error('Invalid chatId'))
-        }
-        try {
-            await new MessageService().getMessages('bad format')
-            fail('should have thrown an error')
-        } catch (e) {
-            expect(e).toEqual(new Error('Invalid chatId'))
-        }
+        ["", "bad format"].forEach(async (id) => {
+            try {
+                await new MessageService().getMessages(id)
+                fail('should have thrown an error')
+            } catch (e) {
+                expect(e).toEqual(new Error('Invalid chatId'))
+            }
+        });
     })
 });
