@@ -67,8 +67,9 @@ export class MessageService implements
 
     async getMessages(chatId: string): Promise<Message[]> {
         this.validateChatId(chatId);
-        //return repository.getMessages(chatId)
-        return [];
+        const messages = await this.repoFacade.getMessages(chatId)
+        this.validateMessageArray(messages);
+        return messages
     }
 
     private validateMessageContent(text: string): void {
@@ -112,6 +113,20 @@ export class MessageService implements
             this.repoFacade.sendMessage(chatId, message),
             this.pusher.sendMessage(chatId, message)
         ])
+    }
+
+    private validateMessageArray(messages: Message[]): void {
+        const schema = z.array(z.object({
+            id: z.string(),
+            senderId: z.string(),
+            text: z.string(),
+            timestamp: z.number()
+        }));
+        try {
+            schema.parse(messages);
+        } catch {
+            throw new Error('Repository error, invalid format');
+        }
     }
 }
 

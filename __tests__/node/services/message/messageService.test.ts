@@ -201,7 +201,19 @@ describe('deleteChat tests', () => {
 
 describe('getMessages tests', () => {
     let chatId: string;
+    let repositoryFacade: MessageRepositoryFacade;
     beforeEach(() => {
+        repositoryFacade = {
+            getChatProfile: jest.fn(),
+            friendshipExists: jest.fn(),
+            sendMessage: jest.fn(),
+            getMessage: jest.fn(),
+            removeAllMessages: jest.fn(),
+            getMessages: jest.fn(),
+            removeChat: jest.fn()
+
+        };
+        (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
         chatId = '123456789876543212345678909876543212--123456789876543212345678909876543212';
     });
     it('precondition: chat id is a valid, nonempty string', async () => {
@@ -213,5 +225,40 @@ describe('getMessages tests', () => {
                 expect(e).toEqual(new Error('Invalid chatId'))
             }
         });
-    })
+    });
+    it("poscondition: returns an array of messages: must be an array", async () => {
+        repositoryFacade.getMessages = jest.fn().mockResolvedValue(-1);
+        (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
+        try {
+            await new MessageService().getMessages(chatId);
+            fail('should have thrown an error')
+        } catch (e) {
+            expect(e).toEqual(new Error('Repository error, invalid format'));
+        }
+    });
+    it("poscondition: returns an array of messages", async () => {
+        repositoryFacade.getMessages = jest.fn().mockResolvedValue([]);
+        (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
+        try {
+            await new MessageService().getMessages(chatId);
+        } catch {
+            fail('should not have thrown an error')
+        }
+    });
+    it("poscondition: returns must be an array of messages", async () => {
+        repositoryFacade.getMessages = jest.fn().mockResolvedValue(["foo", "bar"]);
+        (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
+        try {
+            await new MessageService().getMessages(chatId);
+            fail('should not have thrown an error');
+        } catch (e) {
+            expect(e).toEqual(new Error('Repository error, invalid format'));
+        }
+    });
+    it("calls the repo with the chat id", async () => {
+        repositoryFacade.getMessages = jest.fn().mockResolvedValue([]);
+        (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
+        await new MessageService().getMessages(chatId);
+        expect(repositoryFacade.getMessages).toHaveBeenCalledWith(chatId);
+    });
 });
