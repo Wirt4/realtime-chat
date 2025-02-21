@@ -58,9 +58,8 @@ export class MessageService implements
      */
 
     async deleteChat(chatId: string,): Promise<void> {
-        const schema = z.string().nonempty()
         try {
-            schema.parse(chatId)
+            this.validateNonEmptyString(chatId)
         } catch (e) {
             throw new Error('Invalid chatId')
         }
@@ -73,9 +72,8 @@ export class MessageService implements
     }
 
     private validateMessageContent(text: string): void {
-        const schema = z.string().nonempty()
         try {
-            schema.parse(text)
+            this.validateNonEmptyString(text)
         } catch (e) {
             throw new Error('Invalid message text')
         }
@@ -84,10 +82,14 @@ export class MessageService implements
     private validateProfile(profile: SenderHeader): void {
         try {
             senderHeaderSchema.parse(profile)
-        } catch (e) {
-            console.log('error', e)
+        } catch {
             throw new Error('Invalid chat profile')
         }
+    }
+
+    private validateNonEmptyString(text: string): void {
+        const schema = z.string().nonempty()
+        schema.parse(text)
     }
 
     private async sendAndPush(chatId: string, message: Message): Promise<void> {
