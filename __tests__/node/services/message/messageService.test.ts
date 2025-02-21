@@ -1,12 +1,13 @@
 import { MessageService } from "@/services/message/service";
-import { messageRepositoryFactory } from "@/services/message/factories";
+import { messagePusherFactory, messageRepositoryFactory } from "@/services/message/factories";
 import { MessageRepositoryFacade } from "@/services/message/repositoryFacade";
 import { PusherSendMessageInterface } from "@/services/pusher/interfaces";
 import { SenderHeader } from "@/schemas/senderHeaderSchema";
+import { nanoid } from "nanoid";
 
 
 jest.mock("nanoid", () => ({
-    nanoid: jest.fn(),
+    nanoid: jest.fn().mockReturnValue('nano-id-value'),
 }));
 
 jest.mock('@/services/message/factories', () => ({
@@ -87,7 +88,9 @@ describe('sendMessage tests', () => {
             sendMessage: jest.fn()
         };
         (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
+        (messagePusherFactory as jest.Mock).mockReturnValue(pusher);
         service = new MessageService();
+        (nanoid as jest.Mock).mockReturnValue('stub');
     })
     afterAll(() => {
         jest.useRealTimers()
@@ -108,30 +111,68 @@ describe('sendMessage tests', () => {
             expect(e).toEqual(new Error('Invalid message text'))
         }
     });
-
-    /*it('the message passed to the repository should be stamped with nanoId', async () => {
-        (nanoid as jest.Mock).mockReturnValue('c-3po');
+    it("precondition: text is a non-empty string", async () => {
+        try {
+            await service.sendMessage(profile, "valid text")
+        } catch (e) {
+            fail('should not have thrown an error')
+        }
+    });
+    it("precondition: text is a non-empty string", async () => {
+        try {
+            await service.sendMessage(profile, 3 as unknown as string);
+            fail('should have thrown an error');
+        } catch (e) {
+            expect(e).toEqual(new Error('Invalid message text'));
+        }
+    });
+    it("postcondition: message is sent to the repository complete with an id and timestamp", async () => {
         await service.sendMessage(profile, text)
-        expect(repo.sendMessage).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ id: 'c-3po' }))
-    })
+        expect(repositoryFacade.sendMessage).toHaveBeenCalledWith(
+            expect.stringContaining(profile.id),
+            expect.objectContaining({
+                id: expect.any(String),
+                senderId: profile.sender,
+                text,
+                timestamp: expect.any(Number)
+            }))
+
+    });
+    it("postcondition: message is sent to the pusher", async () => {
+        await service.sendMessage(profile, text)
+        expect(pusher.sendMessage).toHaveBeenCalledWith(
+            expect.stringContaining(profile.id),
+            expect.objectContaining({
+                id: expect.any(String),
+                senderId: profile.sender,
+                text,
+                timestamp: expect.any(Number)
+            }))
+    });
+
     it('the message passed to the repository should be stamped with nanoId', async () => {
         (nanoid as jest.Mock).mockReturnValue('c-3po');
-        await service.sendMessage(profile, text, repo, pusher)
-        expect(repo.sendMessage).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ id: 'c-3po' }))
+        await service.sendMessage(profile, text)
+        expect(repositoryFacade.sendMessage).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ id: 'c-3po' }))
     })
-    it('the message passed to the repository should be stamped with the correct senderId from the profile', async () => {
-        await service.sendMessage(profile, text, repo, pusher)
-        expect(repo.sendMessage).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ senderId: profile.sender }))
-    })
-    it('the message passed to the repository should be set with the text', async () => {
-        jest.setSystemTime(new Date(1730156654))
-        await service.sendMessage(profile, text, repo, pusher)
-        expect(repo.sendMessage).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ timestamp: 1730156654 }))
-    })
-    it('confirm parameters passed to repository', async () => {
-        await service.sendMessage(profile, text, repo, pusher)
-        expect(pusher.sendMessage).toHaveBeenCalledWith(profile.id, expect.anything())
-    })*/
+    /* it('the message passed to the repository should be stamped with nanoId', async () => {
+         (nanoid as jest.Mock).mockReturnValue('c-3po');
+         await service.sendMessage(profile, text, repo, pusher)
+         expect(repo.sendMessage).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ id: 'c-3po' }))
+     })
+     it('the message passed to the repository should be stamped with the correct senderId from the profile', async () => {
+         await service.sendMessage(profile, text, repo, pusher)
+         expect(repo.sendMessage).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ senderId: profile.sender }))
+     })
+     it('the message passed to the repository should be set with the text', async () => {
+         jest.setSystemTime(new Date(1730156654))
+         await service.sendMessage(profile, text, repo, pusher)
+         expect(repo.sendMessage).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ timestamp: 1730156654 }))
+     })
+     it('confirm parameters passed to repository', async () => {
+         await service.sendMessage(profile, text, repo, pusher)
+         expect(pusher.sendMessage).toHaveBeenCalledWith(profile.id, expect.anything())
+     })*/
 })
 
 /*

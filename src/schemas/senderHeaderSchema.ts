@@ -7,4 +7,4 @@ const senderHeaderSchema = z.object({
 
 type SenderHeader = z.infer<typeof senderHeaderSchema>;
 
-export { senderHeaderSchema }
+export { senderHeaderSchema, type SenderHeader };

@@ -1,17 +1,21 @@
 import { GetMessagesInterface, MessageRemoveAllInterface, MessageSendInterface } from "@/services/message/interface";
 import { nanoid } from "nanoid";
 import { Message } from "@/lib/validations/messages";
-import { messageRepositoryFactory } from "./factories";
+import { messagePusherFactory, messageRepositoryFactory } from "./factories";
 import { MessageRepositoryFacade } from "./repositoryFacade";
 import { SenderHeader, senderHeaderSchema } from "@/schemas/senderHeaderSchema";
+import { z } from "zod";
+import { PusherSendMessageInterface } from "../pusher/interfaces";
 
 export class MessageService implements
     MessageSendInterface,
     GetMessagesInterface,
     MessageRemoveAllInterface {
     private readonly repoFacade: MessageRepositoryFacade
+    private readonly pusher: PusherSendMessageInterface
     constructor() {
         this.repoFacade = messageRepositoryFactory()
+        this.pusher = messagePusherFactory()
     }
 
     async isValidChatMember(chatProfile: SenderHeader): Promise<boolean> {
@@ -39,19 +43,12 @@ export class MessageService implements
      * @returns Promice<void>
      */
     async sendMessage(chatProfile: SenderHeader, text: string,): Promise<void> {
-        console.log('chat profile', chatProfile)
-        try {
-            senderHeaderSchema.parse(chatProfile)
-        } catch (e) {
-            console.log('error', e)
-            throw new Error('Invalid chat profile')
-        }
-        throw new Error("Invalid message text")
-        const msg = { id: nanoid(), senderId: chatProfile.sender, text, timestamp: Date.now() }
-        await Promise.all([
-            this.repoFacade.sendMessage(chatProfile.id, msg),
-            //pusher.sendMessage(chatProfile.id, msg)
-        ])
+        this.validateProfile(chatProfile);
+        this.validateMessageContent(text);
+        const messageId: string = nanoid();
+        const date: number = Date.now();
+        const msg = { id: messageId, senderId: chatProfile.sender, text, timestamp: date };
+        return this.sendAndPush(chatProfile.id, msg);
     }
 
     async deleteChat(chatId: string,): Promise<number> {
@@ -60,6 +57,31 @@ export class MessageService implements
 
     async getMessages(chatId: string): Promise<Message[]> {
         return repository.getMessages(chatId)
+    }
+
+    private validateMessageContent(text: string): void {
+        const schema = z.string().nonempty()
+        try {
+            schema.parse(text)
+        } catch (e) {
+            throw new Error('Invalid message text')
+        }
+    }
+
+    private validateProfile(profile: SenderHeader): void {
+        try {
+            senderHeaderSchema.parse(profile)
+        } catch (e) {
+            console.log('error', e)
+            throw new Error('Invalid chat profile')
+        }
+    }
+
+    private async sendAndPush(chatId: string, message: Message): Promise<void> {
+        await Promise.all([
+            this.repoFacade.sendMessage(chatId, message),
+            this.pusher.sendMessage(chatId, message)
+        ])
     }
 }
 
