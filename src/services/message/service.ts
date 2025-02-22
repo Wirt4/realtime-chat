@@ -8,7 +8,6 @@ import { messagePusherFactory, messageRepositoryFactory } from "./factories";
 import { MessageRepositoryFacade } from "./repositoryFacade";
 import { SenderHeader } from "@/schemas/senderHeaderSchema";
 import { PusherSendMessageInterface } from "../pusher/interfaces";
-import { Utils } from "@/lib/utils";
 import { MessageValidatorInterface } from "./validator";
 
 export class MessageService implements
@@ -58,7 +57,7 @@ export class MessageService implements
      * @returns Promise<void>
      */
     async deleteChat(chatId: string,): Promise<void> {
-        this.validateChatId(chatId);
+        this.validator.validateChatId(chatId);
         await this.repoFacade.removeAllMessages(chatId);
     }
 
@@ -68,38 +67,10 @@ export class MessageService implements
      * @returns array of Message objects
      */
     async getMessages(chatId: string): Promise<Message[]> {
-        this.validateChatId(chatId);
+        this.validator.validateChatId(chatId);
         const messages = await this.repoFacade.getMessages(chatId)
-        this.validateMessageArray(messages);
+        this.validator.validateMessageArray(messages);
         return messages
-    }
-
-    private validateMessageContent(text: string): void {
-        try {
-            this.validateNonEmptyString(text)
-        } catch (e) {
-            throw new Error('Invalid message text')
-        }
-    }
-
-    private validateChatId(chatId: string): void {
-        try {
-            this.validateNonEmptyString(chatId)
-            this.validateChatFormat(chatId)
-        } catch {
-            throw new Error('Invalid chatId')
-        }
-    }
-
-    private validateChatFormat(chatId: string): void {
-        if (!Utils.isValidChatId(chatId)) {
-            throw new Error('Invalid chatId')
-        }
-    }
-
-    private validateNonEmptyString(text: string): void {
-        const schema = z.string().nonempty()
-        schema.parse(text)
     }
 
     private async sendAndPush(chatId: string, message: Message): Promise<void> {
@@ -131,7 +102,6 @@ export class MessageService implements
         const profile = await this.repoFacade.getChatProfile(chatId)
         return profile
     }
-
 
     private async hasFriendInChat(sender: string, members: Set<string>): Promise<boolean> {
         for (const member of members) {

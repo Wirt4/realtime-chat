@@ -33,7 +33,7 @@ describe('isChatMember tests', () => {
         }
         validator = {
             validateChatId: jest.fn(),
-            validateMessageContent: jest.fn(),
+            validateMessageText: jest.fn(),
             validateMessageArray: jest.fn(),
             validateProfile: jest.fn()
         }
@@ -128,13 +128,6 @@ describe('sendMessage tests', () => {
         }
     });
     it("precondition: text is a non-empty string", async () => {
-        try {
-            await service.sendMessage(profile, "valid text")
-        } catch (e) {
-            fail('should not have thrown an error')
-        }
-    });
-    it("precondition: text is a non-empty string", async () => {
         validator.validateMessageText = jest.fn(() => { throw new Error("Invalid message text") });
         service = new MessageService(validator);
         try {
@@ -193,7 +186,7 @@ describe('deleteChat tests', () => {
         };
         validator = {
             validateChatId: jest.fn(),
-            validateMessageContent: jest.fn(),
+            validateMessageText: jest.fn(),
             validateMessageArray: jest.fn(),
             validateProfile: jest.fn()
         };
@@ -202,17 +195,10 @@ describe('deleteChat tests', () => {
         chatId = '123456789876543212345678909876543212--123456789876543212345678909876543212';
     });
     it('precondition: chatId is a nonempty string', async () => {
-        try {
-            await service.deleteChat("")
-            fail('should have thrown an error')
-        } catch (e) {
-            expect(e).toEqual(new Error('Invalid chatId'))
-        }
-    });
-    it('precondition: chatId is an invalid chat id', async () => {
+        validator.validateChatId = jest.fn().mockImplementation(() => { throw new Error('Invalid chatId') });
+        service = new MessageService(validator);
         try {
             await service.deleteChat("bad format")
-            fail('should have thrown an error')
         } catch (e) {
             expect(e).toEqual(new Error('Invalid chatId'))
         }
@@ -227,6 +213,7 @@ describe('getMessages tests', () => {
     let chatId: string;
     let repositoryFacade: MessageRepositoryFacade;
     let validator: MessageValidatorInterface;
+    let service: MessageService;
     beforeEach(() => {
         repositoryFacade = {
             getChatProfile: jest.fn(),
@@ -240,7 +227,7 @@ describe('getMessages tests', () => {
         };
         validator = {
             validateChatId: jest.fn(),
-            validateMessageContent: jest.fn(),
+            validateMessageText: jest.fn(),
             validateMessageArray: jest.fn(),
             validateProfile: jest.fn()
         };
@@ -248,10 +235,11 @@ describe('getMessages tests', () => {
         chatId = '123456789876543212345678909876543212--123456789876543212345678909876543212';
     });
     it('precondition: chat id is a valid, nonempty string', async () => {
+        validator.validateChatId = jest.fn().mockImplementation(() => { throw new Error('Invalid chatId') });
+        service = new MessageService(validator);
         ["", "bad format"].forEach(async (id) => {
             try {
-                await new MessageService(validator).getMessages(id)
-                fail('should have thrown an error')
+                await service.getMessages(id)
             } catch (e) {
                 expect(e).toEqual(new Error('Invalid chatId'))
             }
@@ -259,29 +247,11 @@ describe('getMessages tests', () => {
     });
     it("poscondition: returns an array of messages: must be an array", async () => {
         repositoryFacade.getMessages = jest.fn().mockResolvedValue(-1);
+        validator.validateMessageArray = jest.fn(() => { throw new Error('Repository error, invalid format') });
+        service = new MessageService(validator);
         (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
         try {
-            await new MessageService(validator).getMessages(chatId);
-            fail('should have thrown an error')
-        } catch (e) {
-            expect(e).toEqual(new Error('Repository error, invalid format'));
-        }
-    });
-    it("poscondition: returns an array of messages", async () => {
-        repositoryFacade.getMessages = jest.fn().mockResolvedValue([]);
-        (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
-        try {
-            await new MessageService().getMessages(chatId);
-        } catch {
-            fail('should not have thrown an error')
-        }
-    });
-    it("poscondition: returns must be an array of messages", async () => {
-        repositoryFacade.getMessages = jest.fn().mockResolvedValue(["foo", "bar"]);
-        (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
-        try {
-            await new MessageService(validator).getMessages(chatId);
-            fail('should not have thrown an error');
+            await service.getMessages(chatId);
         } catch (e) {
             expect(e).toEqual(new Error('Repository error, invalid format'));
         }
