@@ -1,12 +1,15 @@
 import { GetMessagesInterface, MessageRemoveAllInterface, MessageSendInterface } from "@/services/message/interface";
 import { nanoid } from "nanoid";
+import { z } from "zod";
+
 import { Message } from "@/lib/validations/messages";
+
 import { messagePusherFactory, messageRepositoryFactory } from "./factories";
 import { MessageRepositoryFacade } from "./repositoryFacade";
 import { SenderHeader, senderHeaderSchema } from "@/schemas/senderHeaderSchema";
-import { z } from "zod";
 import { PusherSendMessageInterface } from "../pusher/interfaces";
 import { Utils } from "@/lib/utils";
+import { MessageValidatorInterface } from "./validator";
 
 export class MessageService implements
     MessageSendInterface,
@@ -14,9 +17,11 @@ export class MessageService implements
     MessageRemoveAllInterface {
     private readonly repoFacade: MessageRepositoryFacade
     private readonly pusher: PusherSendMessageInterface
-    constructor() {
+    private readonly validator: MessageValidatorInterface
+    constructor(validator: MessageValidatorInterface) {
         this.repoFacade = messageRepositoryFactory()
         this.pusher = messagePusherFactory()
+        this.validator = validator
     }
 
     /**
@@ -25,19 +30,11 @@ export class MessageService implements
      * @returns Promise<boolean>
      */
     async isValidChatMember(chatProfile: SenderHeader): Promise<boolean> {
-        const profile = await this.repoFacade.getChatProfile(chatProfile.id)
-        if (profile.members.has(chatProfile.sender)) {
-            const members: string[] = Array.from(profile.members);
-            for (let i = 0; i < members.length; i++) {
-                if (members[i] === chatProfile.sender) {
-                    continue;
-                }
-                if (await this.repoFacade.friendshipExists(chatProfile.sender, members[i])) {
-                    return true;
-                }
-            }
+        const profile = await this.getProfile(chatProfile.id);
+        if (!this.isMemberOfChat(profile, chatProfile.sender)) {
+            return false;
         }
-        return false;
+        return this.hasFriendInChat(chatProfile.sender, profile.members);
     }
 
     /**
@@ -47,7 +44,8 @@ export class MessageService implements
      * @returns Promice<void>
      */
     async sendMessage(chatProfile: SenderHeader, text: string,): Promise<void> {
-        this.validateProfile(chatProfile);
+        this.validator.validateProfile(chatProfile);
+        //this.validateProfile(chatProfile);
         this.validateMessageContent(text);
         const messageId: string = nanoid();
         const date: number = Date.now();
@@ -65,6 +63,11 @@ export class MessageService implements
         await this.repoFacade.removeAllMessages(chatId);
     }
 
+    /**
+     * 
+     * @param chatId - a non-empty, valid chatID
+     * @returns array of Message objects
+     */
     async getMessages(chatId: string): Promise<Message[]> {
         this.validateChatId(chatId);
         const messages = await this.repoFacade.getMessages(chatId)
@@ -128,23 +131,23 @@ export class MessageService implements
             throw new Error('Repository error, invalid format');
         }
     }
-}
 
-class Participants {
-    private readonly user1: string
-    private readonly user2: string
-    constructor(chatId: string) {
-        const [user1, user2] = chatId.split('--')
-        this.user1 = user1
-        this.user2 = user2
+    private isMemberOfChat(chatProfile: ChatProfile, sender: string): boolean {
+        return chatProfile.members.has(sender);
     }
 
-    isParticipant(userId: string): boolean {
-        //outdated logic
-        return userId === this.user1 || userId === this.user2
+    private async getProfile(chatId: string): Promise<ChatProfile> {
+        const profile = await this.repoFacade.getChatProfile(chatId)
+        return profile
     }
 
-    getCorrespondent(userId: string): string {
-        return userId === this.user1 ? this.user2 : this.user1
+
+    private async hasFriendInChat(sender: string, members: Set<string>): Promise<boolean> {
+        for (const member of members) {
+            if (member !== sender && await this.repoFacade.friendshipExists(sender, member)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -4,7 +4,7 @@ import { MessageRepositoryFacade } from "@/services/message/repositoryFacade";
 import { PusherSendMessageInterface } from "@/services/pusher/interfaces";
 import { SenderHeader } from "@/schemas/senderHeaderSchema";
 import { nanoid } from "nanoid";
-
+import { MessageValidatorInterface } from "@/services/message/validator";
 
 jest.mock("nanoid", () => ({
     nanoid: jest.fn().mockReturnValue('nano-id-value'),
@@ -19,6 +19,7 @@ describe('isChatMember tests', () => {
     let profile: SenderHeader
     let service: MessageService
     let repositoryFacade: MessageRepositoryFacade
+    let validator: MessageValidatorInterface
     beforeEach(() => {
         repositoryFacade = {
             getChatProfile: jest.fn().mockResolvedValue({ members: new Set(['foo', 'bar']), id: 'generated-id' }),
@@ -30,12 +31,18 @@ describe('isChatMember tests', () => {
             removeChat: jest.fn()
 
         }
+        validator = {
+            validateChatId: jest.fn(),
+            validateMessageContent: jest.fn(),
+            validateMessageArray: jest.fn(),
+            validateProfile: jest.fn()
+        }
         profile = {
             sender: "foo",
             id: "generated-id"
         };
         (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
-        service = new MessageService()
+        service = new MessageService(validator)
     })
     it('user is a part of the chat', () => {
         expect(service.isValidChatMember(profile)).resolves.toEqual(true)
@@ -67,6 +74,7 @@ describe('sendMessage tests', () => {
     let service: MessageService;
     let profile: SenderHeader;
     let text: string;
+    let validator: MessageValidatorInterface;
     beforeEach(() => {
         jest.resetAllMocks();
         repositoryFacade = {
@@ -79,6 +87,12 @@ describe('sendMessage tests', () => {
             removeChat: jest.fn()
 
         }
+        validator = {
+            validateChatId: jest.fn(),
+            validateMessageContent: jest.fn(),
+            validateMessageArray: jest.fn(),
+            validateProfile: jest.fn()
+        }
         text = 'hello'
         profile = {
             sender: 'foo',
@@ -89,13 +103,15 @@ describe('sendMessage tests', () => {
         };
         (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
         (messagePusherFactory as jest.Mock).mockReturnValue(pusher);
-        service = new MessageService();
+        service = new MessageService(validator);
         (nanoid as jest.Mock).mockReturnValue('stub');
     })
     afterAll(() => {
         jest.useRealTimers()
     })
     it('precondition: profile is a SenderHeader type', async () => {
+        validator.validateProfile = jest.fn().mockImplementation(() => { throw new Error('Invalid chat profile') });
+        service = new MessageService(validator);
         try {
             await service.sendMessage({} as SenderHeader, text)
             fail('should have thrown an error')
@@ -162,6 +178,7 @@ describe('deleteChat tests', () => {
     let repositoryFacade: MessageRepositoryFacade
     let service: MessageService
     let chatId: string
+    let validator: MessageValidatorInterface
     beforeEach(() => {
         repositoryFacade = {
             getChatProfile: jest.fn(),
@@ -173,8 +190,14 @@ describe('deleteChat tests', () => {
             removeChat: jest.fn()
 
         };
+        validator = {
+            validateChatId: jest.fn(),
+            validateMessageContent: jest.fn(),
+            validateMessageArray: jest.fn(),
+            validateProfile: jest.fn()
+        };
         (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
-        service = new MessageService();
+        service = new MessageService(validator);
         chatId = '123456789876543212345678909876543212--123456789876543212345678909876543212';
     });
     it('precondition: chatId is a nonempty string', async () => {
@@ -202,6 +225,7 @@ describe('deleteChat tests', () => {
 describe('getMessages tests', () => {
     let chatId: string;
     let repositoryFacade: MessageRepositoryFacade;
+    let validator: MessageValidatorInterface;
     beforeEach(() => {
         repositoryFacade = {
             getChatProfile: jest.fn(),
@@ -213,13 +237,19 @@ describe('getMessages tests', () => {
             removeChat: jest.fn()
 
         };
+        validator = {
+            validateChatId: jest.fn(),
+            validateMessageContent: jest.fn(),
+            validateMessageArray: jest.fn(),
+            validateProfile: jest.fn()
+        };
         (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
         chatId = '123456789876543212345678909876543212--123456789876543212345678909876543212';
     });
     it('precondition: chat id is a valid, nonempty string', async () => {
         ["", "bad format"].forEach(async (id) => {
             try {
-                await new MessageService().getMessages(id)
+                await new MessageService(validator).getMessages(id)
                 fail('should have thrown an error')
             } catch (e) {
                 expect(e).toEqual(new Error('Invalid chatId'))
@@ -230,7 +260,7 @@ describe('getMessages tests', () => {
         repositoryFacade.getMessages = jest.fn().mockResolvedValue(-1);
         (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
         try {
-            await new MessageService().getMessages(chatId);
+            await new MessageService(validator).getMessages(chatId);
             fail('should have thrown an error')
         } catch (e) {
             expect(e).toEqual(new Error('Repository error, invalid format'));
@@ -249,7 +279,7 @@ describe('getMessages tests', () => {
         repositoryFacade.getMessages = jest.fn().mockResolvedValue(["foo", "bar"]);
         (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
         try {
-            await new MessageService().getMessages(chatId);
+            await new MessageService(validator).getMessages(chatId);
             fail('should not have thrown an error');
         } catch (e) {
             expect(e).toEqual(new Error('Repository error, invalid format'));
@@ -258,7 +288,7 @@ describe('getMessages tests', () => {
     it("calls the repo with the chat id", async () => {
         repositoryFacade.getMessages = jest.fn().mockResolvedValue([]);
         (messageRepositoryFactory as jest.Mock).mockReturnValue(repositoryFacade);
-        await new MessageService().getMessages(chatId);
+        await new MessageService(validator).getMessages(chatId);
         expect(repositoryFacade.getMessages).toHaveBeenCalledWith(chatId);
     });
 });
