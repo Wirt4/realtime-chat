@@ -6,7 +6,7 @@ import { Message } from "@/lib/validations/messages";
 
 import { messagePusherFactory, messageRepositoryFactory } from "./factories";
 import { MessageRepositoryFacade } from "./repositoryFacade";
-import { SenderHeader, senderHeaderSchema } from "@/schemas/senderHeaderSchema";
+import { SenderHeader } from "@/schemas/senderHeaderSchema";
 import { PusherSendMessageInterface } from "../pusher/interfaces";
 import { Utils } from "@/lib/utils";
 import { MessageValidatorInterface } from "./validator";
@@ -44,9 +44,8 @@ export class MessageService implements
      * @returns Promice<void>
      */
     async sendMessage(chatProfile: SenderHeader, text: string,): Promise<void> {
+        this.validator.validateMessageText(text);
         this.validator.validateProfile(chatProfile);
-        //this.validateProfile(chatProfile);
-        this.validateMessageContent(text);
         const messageId: string = nanoid();
         const date: number = Date.now();
         const msg = { id: messageId, senderId: chatProfile.sender, text, timestamp: date };
@@ -95,14 +94,6 @@ export class MessageService implements
     private validateChatFormat(chatId: string): void {
         if (!Utils.isValidChatId(chatId)) {
             throw new Error('Invalid chatId')
-        }
-    }
-
-    private validateProfile(profile: SenderHeader): void {
-        try {
-            senderHeaderSchema.parse(profile)
-        } catch {
-            throw new Error('Invalid chat profile')
         }
     }
 

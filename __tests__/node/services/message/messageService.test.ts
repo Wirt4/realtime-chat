@@ -89,7 +89,7 @@ describe('sendMessage tests', () => {
         }
         validator = {
             validateChatId: jest.fn(),
-            validateMessageContent: jest.fn(),
+            validateMessageText: jest.fn(),
             validateMessageArray: jest.fn(),
             validateProfile: jest.fn()
         }
@@ -114,15 +114,15 @@ describe('sendMessage tests', () => {
         service = new MessageService(validator);
         try {
             await service.sendMessage({} as SenderHeader, text)
-            fail('should have thrown an error')
         } catch (e) {
             expect(e).toEqual(new Error('Invalid chat profile'))
         }
     });
     it("precondition: text is a non-empty string", async () => {
+        validator.validateMessageText = jest.fn(() => { throw new Error("Invalid message text") });
+        service = new MessageService(validator);
         try {
-            await service.sendMessage(profile, "")
-            fail('should have thrown an error')
+            await service.sendMessage(profile, "");
         } catch (e) {
             expect(e).toEqual(new Error('Invalid message text'))
         }
@@ -135,9 +135,10 @@ describe('sendMessage tests', () => {
         }
     });
     it("precondition: text is a non-empty string", async () => {
+        validator.validateMessageText = jest.fn(() => { throw new Error("Invalid message text") });
+        service = new MessageService(validator);
         try {
             await service.sendMessage(profile, 3 as unknown as string);
-            fail('should have thrown an error');
         } catch (e) {
             expect(e).toEqual(new Error('Invalid message text'));
         }

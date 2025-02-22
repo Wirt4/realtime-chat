@@ -1,22 +1,25 @@
-import { SenderHeader } from "@/schemas/senderHeaderSchema"
+import { SenderHeader, senderHeaderSchema } from "@/schemas/senderHeaderSchema"
 
 export interface MessageValidatorInterface {
     validateChatId(chatId: string): void
-    validateMessageContent(text: string): void
     validateProfile(profile: SenderHeader): void
     validateMessageArray(Message: []): void
-    validateMessageContent(text: string): void
+    validateMessageText(text: string): void
 }
 
 export class MessageValidator implements MessageValidatorInterface {
     validateChatId(chatId: string): void {
         throw new Error("Method not implemented.")
     }
-    validateMessageContent(text: unknown): void {
+    validateMessageText(text: string): void {
         throw new Error("Method not implemented.")
     }
     validateProfile(profile: SenderHeader): void {
-        throw new Error("Method not implemented.")
+        try {
+            senderHeaderSchema.parse(profile)
+        } catch {
+            throw new Error('Invalid chat profile')
+        }
     }
     validateMessageArray(Message: []): void {
         throw new Error("Method not implemented.")
