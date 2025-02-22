@@ -1,18 +1,13 @@
 import { Utils } from "@/lib/utils";
 import { SenderHeader, senderHeaderSchema } from "@/schemas/senderHeaderSchema"
 import { z } from 'zod';
-
-export interface MessageValidatorInterface {
-    validateChatId(chatId: string): void
-    validateProfile(profile: SenderHeader): void
-    validateMessageArray(Message: []): void
-    validateMessageText(text: string): void
-}
+import { MessageValidatorInterface } from "./interface";
 
 export class MessageValidator implements MessageValidatorInterface {
     validateChatId(chatId: string): void {
-        this.validateNonEmptyString(chatId);
-        if (Utils.isValidChatId(chatId)) {
+        const schema = z.string().nonempty();
+        const f = schema.safeParse(chatId);
+        if (Utils.isValidChatId(chatId) || !f.success) {
             throw new Error('Invalid chatId')
         }
     }
@@ -30,8 +25,18 @@ export class MessageValidator implements MessageValidatorInterface {
             throw new Error('Invalid chat profile')
         }
     }
-    validateMessageArray(Message: []): void {
-        throw new Error("Method not implemented.")
+    validateMessageArray(messages: Message[]): void {
+        const schema = z.array(z.object({
+            id: z.string(),
+            senderId: z.string(),
+            text: z.string(),
+            timestamp: z.number()
+        }));
+        try {
+            schema.parse(messages);
+        } catch {
+            throw new Error('Repository error, invalid format');
+        }
     }
 
     private validateNonEmptyString(text: string): void {

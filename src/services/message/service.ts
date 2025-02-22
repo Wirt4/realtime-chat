@@ -8,7 +8,7 @@ import { messagePusherFactory, messageRepositoryFactory } from "./factories";
 import { MessageRepositoryFacade } from "./repositoryFacade";
 import { SenderHeader } from "@/schemas/senderHeaderSchema";
 import { PusherSendMessageInterface } from "../pusher/interfaces";
-import { MessageValidatorInterface } from "./validator";
+import { MessageValidatorInterface } from "./validator/implementation";
 
 export class MessageService implements
     MessageSendInterface,

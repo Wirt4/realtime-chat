@@ -4,7 +4,7 @@ import { MessageRepositoryFacade } from "@/services/message/repositoryFacade";
 import { PusherSendMessageInterface } from "@/services/pusher/interfaces";
 import { SenderHeader } from "@/schemas/senderHeaderSchema";
 import { nanoid } from "nanoid";
-import { MessageValidatorInterface } from "@/services/message/validator";
+import { MessageValidatorInterface } from "@/services/message/validator/implementation";
 
 jest.mock("nanoid", () => ({
     nanoid: jest.fn().mockReturnValue('nano-id-value'),
