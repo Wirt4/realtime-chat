@@ -5,19 +5,17 @@ import { MessageValidatorInterface } from "./interface";
 
 export class MessageValidator implements MessageValidatorInterface {
     validateChatId(chatId: string): void {
-        const schema = z.string().nonempty();
-        const f = schema.safeParse(chatId);
-        if (Utils.isValidChatId(chatId) || !f.success) {
+        if (!(Utils.isValidChatId(chatId) && this.isValidNonEmptyString(chatId))) {
             throw new Error('Invalid chatId')
         }
     }
+
     validateMessageText(text: string): void {
-        try {
-            this.validateNonEmptyString(text)
-        } catch {
+        if (!this.isValidNonEmptyString(text)) {
             throw new Error('Invalid message text')
         }
     }
+
     validateProfile(profile: SenderHeader): void {
         try {
             senderHeaderSchema.parse(profile)
@@ -25,6 +23,7 @@ export class MessageValidator implements MessageValidatorInterface {
             throw new Error('Invalid chat profile')
         }
     }
+
     validateMessageArray(messages: Message[]): void {
         const schema = z.array(z.object({
             id: z.string(),
@@ -39,8 +38,7 @@ export class MessageValidator implements MessageValidatorInterface {
         }
     }
 
-    private validateNonEmptyString(text: string): void {
-        const schema = z.string().nonempty();
-        schema.parse(text);
+    private isValidNonEmptyString(text: string): boolean {
+        return z.string().nonempty().safeParse(text).success
     }
 }

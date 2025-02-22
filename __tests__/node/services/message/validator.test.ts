@@ -13,7 +13,7 @@ describe("MessageValidator", () => {
 
     describe("validateChatId", () => {
         it("should not throw an error for a valid chatId", () => {
-            (Utils.isValidChatId as jest.Mock).mockReturnValue(false);
+            (Utils.isValidChatId as jest.Mock).mockReturnValue(true);
             expect(() => validator.validateChatId("validChatId")).not.toThrow();
         });
 
@@ -22,7 +22,7 @@ describe("MessageValidator", () => {
         });
 
         it("should throw an error if Utils.isValidChatId returns true", () => {
-            (Utils.isValidChatId as jest.Mock).mockReturnValue(true);
+            (Utils.isValidChatId as jest.Mock).mockReturnValue(false);
             expect(() => validator.validateChatId("invalidChatId")).toThrow("Invalid chatId");
         });
     });
