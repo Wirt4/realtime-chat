@@ -10,7 +10,7 @@ export class ChatProfileRepository extends aChatProfileRepository {
     }
 
     async addChatMember(chatId: string, userId: string): Promise<void> {
-        await this.checkChatExist(chatId);
+        await this.checkChatExists(chatId);
         await this.database.sadd(this.keyAddress(chatId), userId);
     }
 
@@ -25,7 +25,7 @@ export class ChatProfileRepository extends aChatProfileRepository {
     }
 
     async getChatProfile(chatId: string): Promise<ChatProfile> {
-        await this.checkChatExist(chatId);
+        await this.checkChatExists(chatId);
         const memberList = await this.database.smembers(this.keyAddress(chatId)) as string[];
         return {
             id: chatId,
@@ -34,7 +34,7 @@ export class ChatProfileRepository extends aChatProfileRepository {
     }
 
     async overWriteChatProfile(profile: ChatProfile): Promise<void> {
-        await this.checkChatExist(profile.id);
+        await this.checkChatExists(profile.id);
 
         if (profile.members.size === 0) {
             await this.database.del(this.keyAddress(profile.id));
@@ -58,7 +58,7 @@ export class ChatProfileRepository extends aChatProfileRepository {
         return `chat:${chatId}:members`;
     }
 
-    private async checkChatExist(chatId: string): Promise<void> {
+    private async checkChatExists(chatId: string): Promise<void> {
         const chatExist = await this.database.exists(this.keyAddress(chatId));
         if (chatExist === 0) {
             throw new Error(`Chat ${chatId} not exist`);

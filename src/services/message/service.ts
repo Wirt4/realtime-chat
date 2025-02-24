@@ -1,14 +1,12 @@
 import { GetMessagesInterface, MessageRemoveAllInterface, MessageSendInterface } from "@/services/message/interface";
 import { nanoid } from "nanoid";
-import { z } from "zod";
-
 import { Message } from "@/lib/validations/messages";
 
 import { messagePusherFactory, messageRepositoryFactory } from "./factories";
 import { MessageRepositoryFacade } from "./repositoryFacade";
 import { SenderHeader } from "@/schemas/senderHeaderSchema";
 import { PusherSendMessageInterface } from "../pusher/interfaces";
-import { MessageValidatorInterface } from "./validator/implementation";
+import { MessageValidatorInterface } from "./validator/interface";
 
 export class MessageService implements
     MessageSendInterface,
@@ -68,9 +66,9 @@ export class MessageService implements
      */
     async getMessages(chatId: string): Promise<Message[]> {
         this.validator.validateChatId(chatId);
-        const messages = await this.repoFacade.getMessages(chatId)
+        const messages = await this.repoFacade.getMessages(chatId);
         this.validator.validateMessageArray(messages);
-        return messages
+        return messages;
     }
 
     private async sendAndPush(chatId: string, message: Message): Promise<void> {
@@ -78,20 +76,6 @@ export class MessageService implements
             this.repoFacade.sendMessage(chatId, message),
             this.pusher.sendMessage(chatId, message)
         ])
-    }
-
-    private validateMessageArray(messages: Message[]): void {
-        const schema = z.array(z.object({
-            id: z.string(),
-            senderId: z.string(),
-            text: z.string(),
-            timestamp: z.number()
-        }));
-        try {
-            schema.parse(messages);
-        } catch {
-            throw new Error('Repository error, invalid format');
-        }
     }
 
     private isMemberOfChat(chatProfile: ChatProfile, sender: string): boolean {

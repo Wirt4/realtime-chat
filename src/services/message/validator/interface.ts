@@ -1,5 +1,5 @@
 import { SenderHeader } from "@/schemas/senderHeaderSchema"
-
+import { Message } from "@/lib/validations/messages";
 export interface MessageValidatorInterface {
     validateChatId(chatId: string): void
     validateProfile(profile: SenderHeader): void

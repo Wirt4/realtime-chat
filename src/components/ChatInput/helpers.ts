@@ -40,7 +40,7 @@ export default class Helpers {
     async SendMessage(input: string) {
         this.setters.setIsLoading(true)
         try {
-            console.log('posting to', this.endpoint, 'with', { text: input, chatId: this.chatId })
+
 
             await axios.post(this.endpoint, { text: input, chatId: this.chatId })
             this.clearInput()

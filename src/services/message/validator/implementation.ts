@@ -2,6 +2,7 @@ import { Utils } from "@/lib/utils";
 import { SenderHeader, senderHeaderSchema } from "@/schemas/senderHeaderSchema"
 import { z } from 'zod';
 import { MessageValidatorInterface } from "./interface";
+import { Message } from "@/lib/validations/messages";
 
 export class MessageValidator implements MessageValidatorInterface {
     validateChatId(chatId: string): void {

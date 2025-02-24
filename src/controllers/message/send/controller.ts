@@ -7,7 +7,6 @@ import { aFriendsRepository } from "@/repositories/friends/abstract";
 import { db } from "@/lib/db";
 import { aSendMessageRepository } from "@/repositories/message/send/abstract";
 import { SendMessageRepository } from "@/repositories/message/send/implementation";
-import { ChatProfileRepository } from "@/repositories/chatProfile/implementation";
 
 
 export class MessageSendController extends AbstractMessageController {
@@ -31,7 +30,7 @@ export class MessageSendController extends AbstractMessageController {
         }
         const body = await request.json()
         const chatId = body.chatId
-        const chatProfile: SenderHeader = { id: chatId as string, sender: sessionUser as string }
+        const chatProfile = { id: chatId as string, sender: sessionUser as string }
         const isChatMember = await service.isValidChatMember(chatProfile)
 
         if (!isChatMember) {
@@ -41,7 +40,7 @@ export class MessageSendController extends AbstractMessageController {
 
 
         try {
-            await service.sendMessage(chatProfile, body.text, this.sendMessageRepository, this.pusher)
+            await service.sendMessage(chatProfile, body.text)
         } catch (error) {
             return this.respond(error as string, 500)
         }
