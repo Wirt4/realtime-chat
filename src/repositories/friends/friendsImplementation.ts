@@ -19,6 +19,7 @@ export class FriendsRepository extends aFriendsRepository {
     }
 
     async exists(userId: string, friendId: string): Promise<boolean> {
+        console.log('exists called with userId:', userId, 'friendId:', friendId)
         return this.template.exists(userId, friendId);
     }
 

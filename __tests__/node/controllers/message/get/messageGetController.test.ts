@@ -48,7 +48,7 @@ describe('messageGetController', () => {
     });
     it('if all checks pass, then pass the chatId to the service', async () => {
         await controller.execute(request);
-        expect(getMessagesMock).toHaveBeenCalledWith(testId, expect.anything());
+        expect(getMessagesMock).toHaveBeenCalledWith(testId);
     });
     it('if all checks pass, then result should have the data set to the array of messages', async () => {
         response = await controller.execute(request);

@@ -27,9 +27,16 @@ export class ChatProfileRepository extends aChatProfileRepository {
     async getChatProfile(chatId: string): Promise<ChatProfile> {
         await this.checkChatExists(chatId);
         const memberList = await this.database.smembers(this.keyAddress(chatId)) as string[];
+        const s = new Set<string>();
+        memberList.forEach((member) => {
+            if (member === '') {
+                throw new Error("Members must be strings");
+            }
+            s.add(member);
+        });
         return {
             id: chatId,
-            members: new Set(memberList)
+            members: s
         }
     }
 

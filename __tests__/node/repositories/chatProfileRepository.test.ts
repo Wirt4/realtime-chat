@@ -1,5 +1,6 @@
 import { ChatProfileRepository } from "@/repositories/chatProfile/implementation";
 import { Redis } from "@upstash/redis";
+import { mock } from "node:test";
 
 describe('repository.chatProfile tests', () => {
     let mockDb: Redis;
@@ -19,6 +20,7 @@ describe('repository.chatProfile tests', () => {
 
         expect(mockDb.sadd).toHaveBeenCalledWith('chat:chatId:members', 'member1');
         expect(mockDb.sadd).toHaveBeenCalledWith('chat:chatId:members', 'member2');
+        expect(mockDb.sadd).toHaveBeenCalledTimes(2);
     });
     it('getChatProfile should return a set of all participants', async () => {
         const expectedMembers = new Set(['member1', 'member2']);
@@ -112,6 +114,19 @@ describe('repository.chatProfile tests', () => {
         await chatProfileRepository.overWriteChatProfile({ id: chatId, members: new Set(["user1"]) });
 
         expect(mockDb.srem).toHaveBeenCalledWith('chat:happy-path:members', ['user2', 'user3']);
+    });
+
+    it('enforce contract: set of members may only contain strings', async () => {
+        mockDb.smembers = jest.fn().mockResolvedValue(['user1', 'user2', [], ""]);
+        chatProfileRepository = new ChatProfileRepository(mockDb);
+        const chatId = 'unhappy-path';
+
+        try {
+            await chatProfileRepository.getChatProfile(chatId);
+            expect(true).toBe(false);
+        } catch (e: any) {
+            expect(e.message).toBe('Members must be strings');
+        }
     });
 
 });

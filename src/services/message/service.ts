@@ -31,6 +31,7 @@ export class MessageService implements
         if (!this.isMemberOfChat(profile, chatProfile.sender)) {
             return false;
         }
+        console.log('calling hasFriendInChat...')
         return this.hasFriendInChat(chatProfile.sender, profile.members);
     }
 
@@ -79,7 +80,12 @@ export class MessageService implements
     }
 
     private isMemberOfChat(chatProfile: ChatProfile, sender: string): boolean {
-        return chatProfile.members.has(sender);
+        for (const member of chatProfile.members) {
+            if (member === sender) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private async getProfile(chatId: string): Promise<ChatProfile> {
@@ -89,7 +95,9 @@ export class MessageService implements
 
     private async hasFriendInChat(sender: string, members: Set<string>): Promise<boolean> {
         for (const member of members) {
-            if (member !== sender && await this.repoFacade.friendshipExists(sender, member)) {
+            if (member === sender) continue;
+            const friendshipExists = await this.repoFacade.friendshipExists(sender, member);
+            if (friendshipExists) {
                 return true;
             }
         }

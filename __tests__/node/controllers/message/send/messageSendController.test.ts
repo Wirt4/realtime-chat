@@ -42,8 +42,8 @@ describe('messageSendController.send test', () => {
         expect(response?.body?.toString()).toEqual('Error: error text')
     })
     it('confirm params passed to send message', async () => {
-        const expectedProfile: SenderHeader = { id: 'bar--foo', sender: 'foo' }
+        const expectedProfile = { id: 'bar--foo', sender: 'foo' }
         await controller.send(request, service)
-        expect(service.sendMessage).toHaveBeenCalledWith(expectedProfile, 'hello', expect.anything(), expect.anything())
+        expect(service.sendMessage).toHaveBeenCalledWith(expectedProfile, 'hello');
     })
 })
