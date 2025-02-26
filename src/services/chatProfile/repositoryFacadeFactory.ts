@@ -24,8 +24,9 @@ class Facade implements chatProfileRepositoryFacade {
         return this.userRepo.getUser(userId);
     }
 
-    async createChatProfile(chatId: string): Promise<void> {
-        await this.profileRepo.createChatProfile(chatId);
+    async createChatProfile(chatId: string, members: Set<string>): Promise<void> {
+        console.log('facade callind profile repository with', chatId, members);
+        await this.profileRepo.createChatProfile(chatId, members);
     }
 
     async addChatMember(chatId: string, userId: string): Promise<void> {

@@ -140,5 +140,4 @@ describe('repository.chatProfile tests', () => {
             expect(e.message).toBe('Members must be non-empty strings');
         }
     });
-
 });

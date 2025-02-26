@@ -1,5 +1,6 @@
 import { MessageService } from "@/services/message/service";
 import { MessageRemoveAllController } from "@/controllers/message/remove/all/controller";
+import { MessageValidator } from "@/services/message/validator/implementation";
 
 
 /**
@@ -29,7 +30,8 @@ import { MessageRemoveAllController } from "@/controllers/message/remove/all/con
  */
 
 export async function POST(request: Request) {
-    const service = new MessageService()
+    const validator = new MessageValidator()
+    const service = new MessageService(validator)
     const controller = new MessageRemoveAllController()
     return controller.removeAll(request, service)
 }

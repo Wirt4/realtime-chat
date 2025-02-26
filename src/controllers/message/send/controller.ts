@@ -26,10 +26,9 @@ export class MessageSendController extends AbstractMessageController {
         const sessionUser = await this.getUserId()
 
         if (!sessionUser) {
-            console.log('is not session user')
             return this.unauthorized()
         }
-        console.log('is session user')
+
         const body = await request.json()
         const chatId = body.chatId
         const chatProfile = { id: chatId as string, sender: sessionUser as string }

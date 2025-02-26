@@ -71,9 +71,10 @@ export class ChatProfileService implements aChatProfileService {
         return userSet;
     }
 
-    async createChat(): Promise<void> {
+    async createChat(members: Set<string>): Promise<void> {
         this.chatId = this.idGenerator.newId();
-        await this.repositoryFacade.createChatProfile(this.chatId);
+        console.log('services  repositoryFacade.createChatProfile with', this.chatId, members);
+        await this.repositoryFacade.createChatProfile(this.chatId, members);
     }
 
     async addUserToChat(userId: string): Promise<void> {

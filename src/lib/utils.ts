@@ -76,7 +76,6 @@ export class Utils {
             if (e instanceof ZodError) {
                 message = e.message
             } else if (e instanceof AxiosError) {
-                console.log({ e })
                 message = e.response?.data
             }
 

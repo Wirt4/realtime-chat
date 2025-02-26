@@ -31,7 +31,6 @@ export class MessageService implements
         if (!this.isMemberOfChat(profile, chatProfile.sender)) {
             return false;
         }
-        console.log('calling hasFriendInChat...')
         return this.hasFriendInChat(chatProfile.sender, profile.members);
     }
 

@@ -16,6 +16,5 @@ export async function POST(request: Request): Promise<Response> {
 
     const service = new AcceptFriendsService(facade, pusherService, chatProfileService);
     const controller = new AcceptFriendsController();
-    console.log('calling controller with', request);
     return controller.acceptFriendRequest(request, service);
 }

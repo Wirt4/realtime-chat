@@ -11,7 +11,7 @@ export class GetMessageController extends AbstractMessageController {
         this.service = service;
     }
     public async execute(request: Request): Promise<Response> {
-        console.log('controller called')
+
         if (request.method !== "GET") {
             return new Response(JSON.stringify({}), { status: 405 });
         }
