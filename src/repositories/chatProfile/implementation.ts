@@ -20,8 +20,8 @@ export class ChatProfileRepository extends aChatProfileRepository {
      * @param members non-empty set of string ids
      */
     async createChatProfile(chatId: string, members: Set<string>): Promise<void> {
-        if (!chatId) throw new Error("ChatId must be a non-empty string");
-        if (members.size === 0) throw new Error("members can not be empty");
+        this.validateString(chatId, "ChatId must be a non-empty string");
+        this.validateSet(members, "members can not be empty");
         members?.forEach(async (member) => {
             await this.database.sadd(this.keyAddress(chatId), member);
         });
@@ -72,6 +72,18 @@ export class ChatProfileRepository extends aChatProfileRepository {
         const chatExist = await this.database.exists(this.keyAddress(chatId));
         if (chatExist === 0) {
             throw new Error(`Chat ${chatId} not exist`);
+        }
+    }
+
+    private validateString(s: string, errMessage: string): void {
+        if (!s) {
+            throw new Error(errMessage);
+        }
+    }
+
+    private validateSet(s: Set<string>, errMessage: string): void {
+        if (!s || s.size === 0) {
+            throw new Error(errMessage);
         }
     }
 }
