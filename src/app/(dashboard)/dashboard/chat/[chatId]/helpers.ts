@@ -4,6 +4,7 @@ import QueryBuilder from "@/lib/queryBuilder";
 
 export class Helpers {
     async getChatMessages(chatId: string) {
+        console.log('getChatMessages called with', chatId);
         try {
 
             //const chats = []//await this.fetchChatById(chatId);

@@ -5,12 +5,22 @@ import Page from '@/app/(dashboard)/dashboard/chat/[chatId]/page'
 import { notFound } from "next/navigation";
 import myGetServerSession from '@/lib/myGetServerSession';
 import { ChatProfileService } from '@/services/chatProfile/implementation';
+import { MessageService } from '@/services/message/service';
+
 jest.mock("next/navigation", () => ({
     notFound: jest.fn(),
 }));
 jest.mock('@/lib/pusher', () => ({
     getPusherClient: jest.fn(),
 }))
+
+jest.mock('@/services/message/service', () => {
+    return {
+        MessageService: jest.fn().mockImplementation(() => ({
+            getMessages: jest.fn()
+        }))
+    }
+});
 
 jest.mock('@/services/chatProfile/implementation', () => {
     return {
@@ -32,9 +42,14 @@ describe('ChatPage renders with expected content', () => {
         jest.resetAllMocks();
         testId = "sidmaksfwalrwams8sjfnakwej4vgy8sdv2w--8ansdkfanwjawf-0k2kas-asjfacvgte4567";
         (myGetServerSession as jest.Mock).mockResolvedValue({ user: { id: 'userid1' } });
-        (ChatProfileService as jest.Mock).mockImplementation(() => ({
+        (ChatProfileService as unknown as jest.Mock).mockImplementation(() => ({
             getProfile: mockGetProfile,
             getUsers: mockGetUsers,
+        }));
+        (MessageService as unknown as jest.Mock).mockImplementation(() => ({
+            getMessages: jest.fn().mockResolvedValue([
+                { id: '1', chatId: testId, senderId: 'userid1', content: 'Hello, this is Bob', timestamp: new Date() }
+            ])
         }));
 
         mockGetProfile.mockResolvedValue({ members: new Set(['userid1', 'userid2']), id: testId });

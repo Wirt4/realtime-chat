@@ -20,7 +20,6 @@ export class ChatProfileRepository extends aChatProfileRepository {
      * @param members non-empty set of string ids
      */
     async createChatProfile(chatId: string, members: Set<string>): Promise<void> {
-        console.log('profile repository called with', chatId, members);
         this.validateString(chatId, "ChatId must be a non-empty string");
         this.validateSet(members, "members can not be empty");
         members?.forEach(async (member) => {

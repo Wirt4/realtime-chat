@@ -7,6 +7,8 @@ import MessagesHeader from "@/components/MessagesHeader";
 import myGetServerSession from "@/lib/myGetServerSession";
 import { Utils } from "@/lib/utils";
 import { ChatProfileService } from "@/services/chatProfile/implementation";
+import { MessageService } from "@/services/message/service";
+import { MessageValidator } from "@/services/message/validator/implementation";
 
 interface ChatProps {
     params: {
@@ -93,9 +95,9 @@ class Handler {
     }
 
     async getMessages() {
-        return []
-        //const messageService = new MessageService();
-        // return messageService.getMessages(this.chatId, new GetMessagesRepository());
+        const validator = new MessageValidator();
+        const messageService = new MessageService(validator);
+        return messageService.getMessages(this.chatId);
     }
 }
 
