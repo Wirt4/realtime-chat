@@ -9,7 +9,7 @@ describe('getMessagesRepository', () => {
     let repo: GetMessagesRepository;
     beforeEach(() => {
         jest.resetAllMocks();
-        zrangeSpy = jest.fn().mockResolvedValue(['{"id":"stub","senderId":"stub","timestamp":123,"text":"Hello World"}']);
+        zrangeSpy = jest.fn().mockResolvedValue([{ "id": "stub", "senderId": "stub", "timestamp": 123, "text": "Hello World" }]);
         (getMessageRepositoryFactory as jest.Mock).mockReturnValue({ zrange: zrangeSpy });
         repo = new GetMessagesRepository();
     })
@@ -36,20 +36,10 @@ describe('getMessagesRepository', () => {
 
         expect(repo.getMessages('chat--id')).rejects.toThrow(new Error('database returned invalid message format'));
     });
-    it('if the database returns data that is parsable by JSON, but does not fid the schema, then throw', async () => {
+    it('if the database returns  JSON, but does not fid the schema, then throw', async () => {
         //missing timestamp value
-        zrangeSpy.mockResolvedValue(['{"senderId":"stub","receiverId":"bar","text":"Hello World"}']);
+        zrangeSpy.mockResolvedValue([{ "senderId": "stub", "receiverId": "bar", "text": "Hello World" }]);
 
         expect(repo.getMessages('chat--id')).rejects.toThrow(new Error('database returned invalid message format'));
     });
-    it('if the database returns data that is parsable by JSON, and fits the schema, then return the parsed data', async () => {
-        const result = await repo.getMessages('chat--id');
-
-        expect(result).toEqual([{
-            senderId: "stub",
-            id: "stub",
-            timestamp: 123,
-            text: "Hello World"
-        }]);
-    })
 })

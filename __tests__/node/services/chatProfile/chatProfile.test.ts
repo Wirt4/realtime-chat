@@ -28,7 +28,7 @@ describe("ChatProfileService", () => {
     });
 
     test('CreateChat Test should call idGenerator.create()', async () => {
-        await chatProfileService.createChat();
+        await chatProfileService.createChat(new Set(['thingone', 'thingtwo']));
 
         expect(mockIdGenerator.newId).toHaveBeenCalledTimes(1);
     });
@@ -43,7 +43,7 @@ describe("ChatProfileService", () => {
         }
         chatProfileService = new ChatProfileService(mockIdGenerator);
 
-        await chatProfileService.createChat();
+        await chatProfileService.createChat(new Set(['thingone', 'thingtwo']));
 
         expect(chatProfileService.getChatId()).toEqual("123");
     });
@@ -53,10 +53,10 @@ describe("ChatProfileService", () => {
             newId: jest.fn().mockReturnValue("456")
         }
         chatProfileService = new ChatProfileService(mockIdGenerator);
+        const users = new Set(['thingone', 'thingtwo']);
+        await chatProfileService.createChat(users);
 
-        await chatProfileService.createChat();
-
-        expect(mockFacade.createChatProfile).toHaveBeenCalledWith("456");
+        expect(mockFacade.createChatProfile).toHaveBeenCalledWith("456", users);
     });
 
     test('when addUserToChat is called, it should pass the chatId and userId to the repository.addUserToChat', async () => {
@@ -66,7 +66,7 @@ describe("ChatProfileService", () => {
             newId: jest.fn().mockReturnValue(chatId)
         }
         chatProfileService = new ChatProfileService(mockIdGenerator);
-        await chatProfileService.createChat();
+        await chatProfileService.createChat(new Set(['thingone', 'thingtwo']));
 
         await chatProfileService.addUserToChat(userId);
 
