@@ -11,27 +11,25 @@ export class GetMessageController extends AbstractMessageController {
         this.service = service;
     }
     public async execute(request: Request): Promise<Response> {
+        console.log('controller called')
         if (request.method !== "GET") {
-            return this._respond(null, 405);
+            return new Response(JSON.stringify({}), { status: 405 });
         }
 
         const url = new URL(request.url);
         const chatId = url.searchParams.get("id");
 
         if (!(chatId && Utils.isValidChatId(chatId))) {
-            return this._respond(null, 400);
+            return new Response(JSON.stringify({}), { status: 400 });
         }
 
         const session = await myGetServerSession();
         if (!session) {
-            return this._respond(null, 401);
+            return new Response(JSON.stringify({}), { status: 401 });
         }
 
         const messages = await this.service.getMessages(chatId);
-        return this._respond(messages, 200);
+        return new Response(JSON.stringify({ data: messages }), { status: 200 });
     }
 
-    private async _respond(content: any, status: number): Promise<Response> {
-        return new Response(JSON.stringify({ data: content }), { status });
-    }
 }

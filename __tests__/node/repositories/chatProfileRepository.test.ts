@@ -15,7 +15,7 @@ describe('repository.chatProfile tests', () => {
         } as unknown as Redis;
         chatProfileRepository = new ChatProfileRepository(mockDb);
     })
-    it('createChatProfile should call redis', async () => {
+    it('postcondition: createChatProfile should have called database', async () => {
         await chatProfileRepository.createChatProfile('chatId', new Set(['member1', 'member2']));
 
         expect(mockDb.sadd).toHaveBeenCalledWith('chat:chatId:members', 'member1');
@@ -61,9 +61,21 @@ describe('repository.chatProfile tests', () => {
 
         expect(mockDb.sadd).toHaveBeenCalledWith('chat:chatId:members', 'userId');
     });
-    test("If createChatProfile is called with an empty set, then it should still call the database", async () => {
-        await chatProfileRepository.createChatProfile("123");
-        expect(mockDb.sadd).toHaveBeenCalledTimes(1);
+    it('precondition: createChatProfile may not be called with a non-empty string', async () => {
+        try {
+            await chatProfileRepository.createChatProfile('', new Set(['valid-id']));
+        } catch (e) {
+            expect(e).toEqual(new Error('ChatId must be a non-empty string'));
+        }
+
+    });
+    it('precondition: members set may not be empty', async () => {
+        try {
+            await chatProfileRepository.createChatProfile('valid=-', new Set());
+        } catch (e) {
+            expect(e).toEqual(new Error('members can not be empty'));
+        }
+
     });
     it('overWriteChatProfile should throw an error if no such chat exists', async () => {
         mockDb.exists = jest.fn().mockResolvedValue(0);
@@ -125,7 +137,7 @@ describe('repository.chatProfile tests', () => {
             await chatProfileRepository.getChatProfile(chatId);
             expect(true).toBe(false);
         } catch (e: any) {
-            expect(e.message).toBe('Members must be strings');
+            expect(e.message).toBe('Members must be non-empty strings');
         }
     });
 

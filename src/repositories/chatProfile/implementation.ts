@@ -14,12 +14,15 @@ export class ChatProfileRepository extends aChatProfileRepository {
         await this.database.sadd(this.keyAddress(chatId), userId);
     }
 
-    async createChatProfile(chatId: string, members: Set<string> | null = null): Promise<void> {
-        if (members == null) {
-            await this.database.sadd(this.keyAddress(chatId), '');
-            return;
-        }
-        members.forEach(async (member) => {
+    /**
+     * 
+     * @param chatId the ID to set the chat profile to
+     * @param members non-empty set of string ids
+     */
+    async createChatProfile(chatId: string, members: Set<string>): Promise<void> {
+        if (!chatId) throw new Error("ChatId must be a non-empty string");
+        if (members.size === 0) throw new Error("members can not be empty");
+        members?.forEach(async (member) => {
             await this.database.sadd(this.keyAddress(chatId), member);
         });
     }
@@ -30,7 +33,7 @@ export class ChatProfileRepository extends aChatProfileRepository {
         const s = new Set<string>();
         memberList.forEach((member) => {
             if (member === '') {
-                throw new Error("Members must be strings");
+                throw new Error("Members must be non-empty strings");
             }
             s.add(member);
         });
