@@ -2,7 +2,6 @@ import { Database } from "@/lib/interfaces/database";
 import { aGetMessagesRepository } from "./abstract";
 import { getMessageRepositoryFactory } from "./factory";
 import { messageArraySchema } from "@/lib/validations/messages";
-import { Message } from "@/lib/validations/messages";
 
 export class GetMessagesRepository extends aGetMessagesRepository {
     private db: Database;

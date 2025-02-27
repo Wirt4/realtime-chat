@@ -2,10 +2,10 @@ import { NextAuthOptions } from 'next-auth'
 import { UpstashRedisAdapter } from '@next-auth/upstash-redis-adapter'
 import { db } from './db'
 import GoogleProvider from 'next-auth/providers/google'
-import  fetchRedis  from '@/helpers/redis'
+import fetchRedis from '@/helpers/redis'
 import QueryBuilder from "@/lib/queryBuilder";
 
-const  getGoogleCredentials =() =>{
+const getGoogleCredentials = () => {
     const clientId = process.env.GOOGLE_CLIENT_ID
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET
 
@@ -27,7 +27,7 @@ const authOptions: NextAuthOptions = {
     },
 
     pages: {
-        signIn: '/login',
+        signIn: '/api/auth/signin',
     },
     providers: [
         GoogleProvider({
@@ -37,6 +37,7 @@ const authOptions: NextAuthOptions = {
     ],
     callbacks: {
         async jwt({ token, user }) {
+            console.log('jwt called with', token, user);
             const dbUserResult = (await fetchRedis('get', QueryBuilder.user(token.id))) as
                 | string
                 | null
@@ -51,6 +52,7 @@ const authOptions: NextAuthOptions = {
 
             const dbUser = JSON.parse(dbUserResult) as User
 
+            console.log('returning dbUser', dbUser)
             return {
                 id: dbUser.id,
                 name: dbUser.name,
@@ -59,19 +61,22 @@ const authOptions: NextAuthOptions = {
             }
         },
         async session({ session, token }) {
+            console.log('session called with', session, token);
             if (token) {
                 session.user.id = token.id as string
                 session.user.name = token.name
                 session.user.email = token.email
                 session.user.image = token.picture
             }
-
+            console.log('returning session', session);
             return session
         },
-        redirect() {
-            return '/dashboard'
+        redirect({ url, baseUrl }) {
+            console.log('redirect called with', url, baseUrl);
+            console.log('returning', url.startsWith(baseUrl) ? url : baseUrl + '/login');
+            return url.startsWith(baseUrl) ? url : baseUrl + '/login';
         },
     },
 }
 
-export {getGoogleCredentials, authOptions}
+export { getGoogleCredentials, authOptions }
