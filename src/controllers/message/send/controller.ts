@@ -35,7 +35,6 @@ export class MessageSendController extends AbstractMessageController {
         const isChatMember = await service.isValidChatMember(chatProfile)
 
         if (!isChatMember) {
-            //old logic for areFriend and isChatmember returning false
             return this.unauthorized()
         }
 

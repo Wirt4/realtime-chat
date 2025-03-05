@@ -1,14 +1,9 @@
 import { FC } from "react";
 import { notFound } from "next/navigation";
-import Messages from "@/components/Messages";
-import { Message } from "@/lib/validations/messages";
-import ChatInput from "@/components/ChatInput/ChatInput";
-import MessagesHeader from "@/components/MessagesHeader";
 import myGetServerSession from "@/lib/myGetServerSession";
 import { Utils } from "@/lib/utils";
-import { ChatProfileService } from "@/services/chatProfile/implementation";
-import { MessageService } from "@/services/message/service";
-import { MessageValidator } from "@/services/message/validator/implementation";
+import { Handler } from "./handler"
+import Display from "./display";
 
 interface ChatProps {
     params: {
@@ -39,77 +34,8 @@ const Page: FC<ChatProps> = async ({ params }) => {
     const chatInfo = { chatId, messages }
     const users = await handler.getUsers();
 
-    return <Display chatInfo={chatInfo} participants={deriveChatParticipants(session?.user?.id, users)} />
+    return <Display chatInfo={chatInfo} participants={handler.deriveChatParticipants(session?.user?.id, users)} />
 }
 
-interface DisplayProps {
-    chatInfo: ChatInfo
-    participants: ChatParticipants
-}
-
-interface ChatInfo {
-    chatId: string
-    messages: Message[]
-}
-
-interface ChatParticipants {
-    user: User
-    partner: User
-    sessionId: string
-}
-
-const Display: FC<DisplayProps> = ({ chatInfo, participants }) => {
-    const { partner } = participants
-    const { chatId } = chatInfo
-
-    return (
-        <>
-            <title>{`Chat With ${partner.name}`}</title>
-            <div className='chat-a'>
-                <MessagesHeader partner={partner} chatId={chatId} />
-                <Messages initialMessages={chatInfo.messages} participants={participants} chatId={chatId} />
-                <ChatInput chatPartner={partner} chatId={chatId} />
-            </div>
-        </>
-    )
-}
 
 export default Page;
-
-class Handler {
-    private chatId: string;
-
-    constructor(chatId: string) {
-        this.chatId = chatId;
-    }
-
-    async getChatProfile() {
-        const service = new ChatProfileService();
-        return service.getProfile(this.chatId);
-    }
-
-    async getUsers(): Promise<User[]> {
-        const service = new ChatProfileService();
-        const userSet = await service.getUsers(this.chatId);
-        return Array.from(userSet);
-    }
-
-    async getMessages() {
-        const validator = new MessageValidator();
-        const messageService = new MessageService(validator);
-        return messageService.getMessages(this.chatId);
-    }
-}
-
-function deriveChatParticipants(sessionId: string, participants: User[]): ChatParticipants {
-    let user: User;
-    let partner: User;
-    if (participants[0].id === sessionId) {
-        user = participants[0];
-        partner = participants[1];
-    } else {
-        user = participants[1];
-        partner = participants[0];
-    }
-    return { user, partner, sessionId: sessionId }
-}

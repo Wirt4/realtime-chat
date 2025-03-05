@@ -10,6 +10,12 @@ export class GetMessageController extends AbstractMessageController {
         super();
         this.service = service;
     }
+    /**
+     * Precondition: a request object is passed with a valid chatID and method is GET
+     * PostCondition: the caller is given a response object containing all messages in the chat keyed to the id
+     * @param request 
+     * @returns Response object contating the messages
+     */
     public async execute(request: Request): Promise<Response> {
 
         if (request.method !== "GET") {
