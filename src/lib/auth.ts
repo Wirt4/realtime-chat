@@ -37,7 +37,6 @@ const authOptions: NextAuthOptions = {
     ],
     callbacks: {
         async jwt({ token, user }) {
-            console.log('jwt called with', token, user);
             const dbUserResult = (await fetchRedis('get', QueryBuilder.user(token.id))) as
                 | string
                 | null
@@ -61,19 +60,15 @@ const authOptions: NextAuthOptions = {
             }
         },
         async session({ session, token }) {
-            console.log('session called with', session, token);
             if (token) {
                 session.user.id = token.id as string
                 session.user.name = token.name
                 session.user.email = token.email
                 session.user.image = token.picture
             }
-            console.log('returning session', session);
             return session
         },
         redirect({ url, baseUrl }) {
-            console.log('redirect called with', url, baseUrl);
-            console.log('returning', url.startsWith(baseUrl) ? url : baseUrl + '/login');
             return url.startsWith(baseUrl) ? url : baseUrl + '/login';
         },
     },

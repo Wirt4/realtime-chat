@@ -7,7 +7,6 @@ import { authenticatorFactory } from "@/services/middleware/authenticator/factor
 export class Middleware {
 
     async processRequest(req: NextRequest) {
-        console.log('Processing request')
         const dashboard = '/dashboard'
         const login = '/login'
         const home = '/'
