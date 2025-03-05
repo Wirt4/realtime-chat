@@ -5,6 +5,11 @@ import GoogleProvider from 'next-auth/providers/google'
 import fetchRedis from '@/helpers/redis'
 import QueryBuilder from "@/lib/queryBuilder";
 
+/**
+ * Preconditions: client Secret and client ID exist in the environment variables
+ * Postconditions: returns the client ID and client Secret from the environment variables
+ * @returns 
+ */
 const getGoogleCredentials = () => {
     const clientId = process.env.GOOGLE_CLIENT_ID
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET
@@ -20,6 +25,9 @@ const getGoogleCredentials = () => {
     return { clientId, clientSecret }
 }
 
+/**
+ * Is not a function, but a constant that holds the NextAuthOptions object
+ */
 const authOptions: NextAuthOptions = {
     adapter: UpstashRedisAdapter(db),
     session: {
@@ -51,7 +59,6 @@ const authOptions: NextAuthOptions = {
 
             const dbUser = JSON.parse(dbUserResult) as User
 
-            console.log('returning dbUser', dbUser)
             return {
                 id: dbUser.id,
                 name: dbUser.name,
