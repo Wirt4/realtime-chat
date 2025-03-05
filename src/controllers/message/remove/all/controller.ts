@@ -1,6 +1,7 @@
 import { MessageRemoveAllInterface } from "@/services/message/interface";
 import { z } from "zod";
 import { AbstractMessageController } from "@/controllers/message/abstractController";
+import { SenderHeader } from "@/schemas/senderHeaderSchema";
 
 export class MessageRemoveAllController extends AbstractMessageController {
     async removeAll(request: Request, service: MessageRemoveAllInterface): Promise<Response> {
@@ -20,11 +21,11 @@ export class MessageRemoveAllController extends AbstractMessageController {
 
         const chatProfile: SenderHeader = { id: chatId.toString(), sender: sessionId.toString() }
 
-        if (!service.isChatMember(chatProfile)) {
+        if (!service.isValidChatMember(chatProfile)) {
             return this.unauthorized()
         }
         try {
-            await service.deleteChat(chatId, this.messageRepository)
+            await service.deleteChat(chatId)
         } catch (error) {
             return this.respond(error as string, 500)
         }

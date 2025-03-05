@@ -57,6 +57,10 @@ export class Utils {
         })
     }
 
+    static isValidChatId(chatId: string): boolean {
+        const regex = /^[a-z0-9-]{36}--[a-z0-9-]{36}$/
+        return regex.test(chatId)
+    }
     static toastError(msg: string) {
         toast.error(msg)
     }
@@ -72,7 +76,6 @@ export class Utils {
             if (e instanceof ZodError) {
                 message = e.message
             } else if (e instanceof AxiosError) {
-                console.log({ e })
                 message = e.response?.data
             }
 

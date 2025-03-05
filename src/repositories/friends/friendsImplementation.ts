@@ -10,7 +10,14 @@ export class FriendsRepository extends aFriendsRepository {
         this.template = new FriendsTemplateRepository(db, 'friends');
     }
 
+    /**
+     * precondition: userId and friendId are seperate, valid, nonempety userID strings
+     * @param userId 
+     * @param friendId 
+     * postcondition: friendId is added to userId's friends list in the database
+     */
     async add(userId: string, friendId: string): Promise<void> {
+        this.precondition(userId, friendId);
         await this.template.add(userId, friendId);
     }
 
@@ -19,10 +26,20 @@ export class FriendsRepository extends aFriendsRepository {
     }
 
     async exists(userId: string, friendId: string): Promise<boolean> {
+
         return this.template.exists(userId, friendId);
     }
 
     async remove(userId: string, friendId: string): Promise<void> {
         await this.template.remove(userId, friendId);
+    }
+
+    private precondition(userId: string, friendId: string): void {
+        if (userId === '' || friendId === '') {
+            throw new Error('userId and friendId must be nonempty strings');
+        }
+        if (userId === friendId) {
+            throw new Error('userId and friendId must be different');
+        }
     }
 }

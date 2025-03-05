@@ -49,6 +49,14 @@ describe('FriendRepository.add', () => {
         await repo.add('foo', 'bar');
         expect(mockDB.sadd).toHaveBeenCalledWith('user:foo:friends', 'bar');
     });
+    it('precondition: throws if either string is empty', async () => {
+        await expect(repo.add('', 'bar')).rejects.toThrow();
+        await expect(repo.add('foo', '')).rejects.toThrow();
+        await expect(repo.add('', '')).rejects.toThrow();
+    });
+    it('precondition: throws if both strings are equal', async () => {
+        await expect(repo.add('ayn', 'ayn')).rejects.toThrow();
+    });
 });
 
 describe('FriendRepository.exists', () => {

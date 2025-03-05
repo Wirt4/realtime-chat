@@ -28,6 +28,8 @@ describe('acceptFriendsService', () => {
             createChat: jest.fn(),
             addUserToChat: jest.fn(),
             getChatId: jest.fn(),
+            getProfile: jest.fn(),
+            loadProfileFromUsers: jest.fn(),
         }
     });
 
@@ -115,6 +117,17 @@ describe('acceptFriendsService', () => {
             expect(e).toEqual(expected);
         }
     });
+
+    it('AcceptFriendRequest ends with a call to Repository.AddFriend for each participant', async () => {
+        service = new AcceptFriendsService(facade, mockPusher, mockChatProfileService);
+        const ids: Ids = { requestId: '1', sessionId: '2' };
+
+        await service.acceptFriendRequest(ids);
+
+        expect(facade.addFriend).toHaveBeenCalledTimes(2);
+        expect(facade.addFriend).toHaveBeenCalledWith({ requestId: ids.requestId, sessionId: ids.sessionId });
+        expect(facade.addFriend).toHaveBeenCalledWith({ requestId: ids.sessionId, sessionId: ids.requestId });
+    });;
 
     it('if the parser for getIdTo add throws, then getIdToAdd throws', async () => {
         service = new AcceptFriendsService(facade, mockPusher, mockChatProfileService);

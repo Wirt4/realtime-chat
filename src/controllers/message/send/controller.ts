@@ -28,20 +28,19 @@ export class MessageSendController extends AbstractMessageController {
         if (!sessionUser) {
             return this.unauthorized()
         }
+
         const body = await request.json()
         const chatId = body.chatId
-        const chatProfile: SenderHeader = { id: chatId as string, sender: sessionUser as string }
+        const chatProfile = { id: chatId as string, sender: sessionUser as string }
+        const isChatMember = await service.isValidChatMember(chatProfile)
 
-        const areFriends = await service.areFriends(chatProfile, this.friendsRepository)
-        const isChatMember = service.isChatMember(chatProfile)
-
-        if (!(isChatMember && areFriends)) {
+        if (!isChatMember) {
             return this.unauthorized()
         }
 
 
         try {
-            await service.sendMessage(chatProfile, body.text, this.sendMessageRepository, this.pusher)
+            await service.sendMessage(chatProfile, body.text)
         } catch (error) {
             return this.respond(error as string, 500)
         }

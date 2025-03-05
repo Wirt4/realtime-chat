@@ -2,10 +2,15 @@ import { NextAuthOptions } from 'next-auth'
 import { UpstashRedisAdapter } from '@next-auth/upstash-redis-adapter'
 import { db } from './db'
 import GoogleProvider from 'next-auth/providers/google'
-import  fetchRedis  from '@/helpers/redis'
+import fetchRedis from '@/helpers/redis'
 import QueryBuilder from "@/lib/queryBuilder";
 
-const  getGoogleCredentials =() =>{
+/**
+ * Preconditions: client Secret and client ID exist in the environment variables
+ * Postconditions: returns the client ID and client Secret from the environment variables
+ * @returns 
+ */
+const getGoogleCredentials = () => {
     const clientId = process.env.GOOGLE_CLIENT_ID
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET
 
@@ -20,6 +25,9 @@ const  getGoogleCredentials =() =>{
     return { clientId, clientSecret }
 }
 
+/**
+ * Is not a function, but a constant that holds the NextAuthOptions object
+ */
 const authOptions: NextAuthOptions = {
     adapter: UpstashRedisAdapter(db),
     session: {
@@ -27,7 +35,7 @@ const authOptions: NextAuthOptions = {
     },
 
     pages: {
-        signIn: '/login',
+        signIn: '/api/auth/signin',
     },
     providers: [
         GoogleProvider({
@@ -65,13 +73,12 @@ const authOptions: NextAuthOptions = {
                 session.user.email = token.email
                 session.user.image = token.picture
             }
-
             return session
         },
-        redirect() {
-            return '/dashboard'
+        redirect({ url, baseUrl }) {
+            return url.startsWith(baseUrl) ? url : baseUrl + '/login';
         },
     },
 }
 
-export {getGoogleCredentials, authOptions}
+export { getGoogleCredentials, authOptions }

@@ -28,6 +28,6 @@ describe('authOptions', () => {
         if (authOptions.pages === undefined) {
             throw new Error('authOptions.pages is undefined')
         }
-        expect(authOptions.pages.signIn).toBe('/login')
+        expect(authOptions.pages.signIn).toBe('/api/auth/signin')
     })
 })
