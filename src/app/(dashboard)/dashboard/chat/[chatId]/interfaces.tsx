@@ -5,7 +5,7 @@ export interface DisplayProps {
     participants: ChatParticipants
 }
 
-interface ChatParticipants {
+export interface ChatParticipants {
     user: User
     partner: User
     sessionId: string
