@@ -76,10 +76,13 @@ const authOptions: NextAuthOptions = {
             return session
         },
         redirect({ url, baseUrl }) {
-            if (url === `${baseUrl}/login`) {
-                return url;
-            }
-            return url.startsWith(baseUrl) ? url : baseUrl + '/login';
+            if (url.startsWith('/')) return `${baseUrl}${url}`;
+
+            // Allow navigation if it's within the same domain
+            if (url.startsWith(baseUrl)) return url;
+
+            // Default to home page after login instead of forcing back to '/login'
+            return baseUrl;
         },
     },
 }
