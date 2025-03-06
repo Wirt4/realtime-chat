@@ -35,7 +35,7 @@ const authOptions: NextAuthOptions = {
     },
 
     pages: {
-        signIn: '/api/auth/signin',
+        signIn: '/login',
     },
     providers: [
         GoogleProvider({
@@ -51,7 +51,7 @@ const authOptions: NextAuthOptions = {
 
             if (!dbUserResult) {
                 if (user) {
-                    token.id = user!.id
+                    token.id = user?.id
                 }
 
                 return token
