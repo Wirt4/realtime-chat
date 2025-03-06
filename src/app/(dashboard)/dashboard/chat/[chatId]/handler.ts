@@ -1,6 +1,7 @@
 import { ChatProfileService } from "@/services/chatProfile/implementation";
 import { MessageService } from "@/services/message/service";
 import { MessageValidator } from "@/services/message/validator/implementation";
+import { ChatParticipants } from "./interfaces";
 
 export class Handler {
     private chatId: string;
