@@ -76,6 +76,9 @@ const authOptions: NextAuthOptions = {
             return session
         },
         redirect({ url, baseUrl }) {
+            if (url === `${baseUrl}/login`) {
+                return url;
+            }
             return url.startsWith(baseUrl) ? url : baseUrl + '/login';
         },
     },
