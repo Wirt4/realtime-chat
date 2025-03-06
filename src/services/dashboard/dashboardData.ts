@@ -3,15 +3,12 @@ import { aDashboardData } from "./abstract";
 import { SidebarProps } from "@/components/Sidebar/interface";
 import { aSessionData } from "../session/abstract";
 import { sessionDataFactory } from "../session/factory";
-import { SidebarChatListItemProps } from "@/components/Sidebar/ChatListItem/interface";
 import { FriendRequestSidebarOptionsProps } from "@/components/Sidebar/SidebarOptions/friendRequestSidebarOptions/interface";
-import { SidebarChatListProps } from "@/components/Sidebar/ChatList/interface";
 import { aDashboardFacade } from "@/repositories/dashboardFacade/abstact";
 
 export class DashboardData extends aDashboardData {
     private sessionData: aSessionData
     private facade: aDashboardFacade
-
 
     constructor(facade: aDashboardFacade) {
         super()
@@ -27,11 +24,11 @@ export class DashboardData extends aDashboardData {
         const sessionId = session.user.id;
         const asyncData = await this.getAsyncData(sessionId);
 
-        const friendsListProps = { friends: asyncData.friendProfiles };
+        const friendsListProps = { friends: asyncData.friendProfiles, sessionid: sessionId };
         const hasFriends = asyncData.friends.length > 0;
         const hasActiveChats = asyncData.friends.length > 0;
         const friendRequestSidebarOptionsProps = this.getFriendRequestSidebarOptionsProps(sessionId, asyncData.friendRequests);
-        const sidebarChatlistProps = this.sidebarChatlistProps(sessionId, asyncData.sessionUser, asyncData.friends);
+        const sidebarChatlistProps = { chats: asyncData.chatProfiles, sessionId };
 
         return {
             hasFriends,
@@ -48,12 +45,29 @@ export class DashboardData extends aDashboardData {
         const friends = await Promise.all(friendIds.map(async (id: string) => {
             return this.facade.getUser(id);
         }));
-        let friendProfiles: { name: string, id: string }[] = [];
+        const activeChats = await this.facade.getUsersChats(sessionId);
+        const chatProfiles: { sessionId: string, chatId: string, participants: User[], unseenMessages: number }[] = [];
+        for (let i = 0; i < activeChats.length; i++) {
+            const chatId = activeChats[i];
+            const profile = await this.facade.getChatProfile(chatId);
+            const members = Array.from(profile.members);
+            const participants: User[] = [];
+            for (let j = 0; j < members.length; j++) {
+                const user = await this.facade.getUser(members[j]);
+                if (!user) {
+                    continue;
+                }
+                participants.push(user);
+            }
+            chatProfiles.push({ sessionId, chatId: profile.id, participants, unseenMessages: 0 });
+        }
+
+        const friendProfiles: { name: string, id: string }[] = [];
         for (const friend of friends) {
             friendProfiles.push({ name: friend.name, id: friend.id });
         }
         const sessionUser = await this.facade.getUser(sessionId);
-        return { friendRequests, friends, friendProfiles, sessionUser }
+        return { friendRequests, friends, friendProfiles, sessionUser, chatProfiles }
     }
 
 
@@ -62,23 +76,5 @@ export class DashboardData extends aDashboardData {
             initialRequestCount: friendRequests?.length || 0,
             sessionId
         }
-    }
-
-    private sidebarChatlistProps(sessionId: string, sessionUser: User, friends: User[]): SidebarChatListProps {
-        let chats: SidebarChatListItemProps[] = [];
-
-        for (const friend of friends) {
-            chats.push({
-                participants: [sessionUser, friend],
-                unseenMessages: 0,
-                chatId: this.getChatId([sessionUser.id, friend.id]),
-                sessionId
-            });
-        }
-        return { chats, sessionId }
-    }
-
-    private getChatId(participantIds: string[]): string {
-        return participantIds.sort().join('--');
     }
 }

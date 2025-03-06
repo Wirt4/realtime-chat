@@ -1,50 +1,105 @@
-import { MessageRemoveAllInterface, MessageSendInterface } from "@/services/message/interface";
+import { GetMessagesInterface, MessageRemoveAllInterface, MessageSendInterface } from "@/services/message/interface";
 import { nanoid } from "nanoid";
-import { PusherSendMessageInterface } from "@/services/pusher/interfaces";
-import { aFriendsRepository } from "@/repositories/friends/abstract";
-import { aMessageRepository } from "@/repositories/message/removeAll/abstract";
-import { aSendMessageRepository } from "@/repositories/message/send/abstract";
+import { Message } from "@/lib/validations/messages";
+
+import { messagePusherFactory, messageRepositoryFactory } from "./factories";
+import { MessageRepositoryFacade } from "./repositoryFacade";
+import { SenderHeader } from "@/schemas/senderHeaderSchema";
+import { PusherSendMessageInterface } from "../pusher/interfaces";
+import { MessageValidatorInterface } from "./validator/interface";
 
 export class MessageService implements
     MessageSendInterface,
+    GetMessagesInterface,
     MessageRemoveAllInterface {
-    isChatMember(chatProfile: ChatProfile): boolean {
-        const participants = new Participants(chatProfile.id)
-        return participants.isParticipant(chatProfile.sender)
+    private readonly repoFacade: MessageRepositoryFacade
+    private readonly pusher: PusherSendMessageInterface
+    private readonly validator: MessageValidatorInterface
+    constructor(validator: MessageValidatorInterface) {
+        this.repoFacade = messageRepositoryFactory()
+        this.pusher = messagePusherFactory()
+        this.validator = validator
     }
 
-    async areFriends(chatProfile: ChatProfile, friendRepository: aFriendsRepository): Promise<boolean> {
-        const participants = new Participants(chatProfile.id)
-        return friendRepository.exists(chatProfile.sender, participants.getCorrespondent(chatProfile.sender))
+    /**
+     * Checks if the user is a member of the chat
+     * @param chatProfile 
+     * @returns Promise<boolean>
+     */
+    async isValidChatMember(chatProfile: SenderHeader): Promise<boolean> {
+        const profile = await this.getProfile(chatProfile.id);
+        if (!this.isMemberOfChat(profile, chatProfile.sender)) {
+            return false;
+        }
+        return this.hasFriendInChat(chatProfile.sender, profile.members);
     }
 
-    async sendMessage(chatProfile: ChatProfile, text: string, repository: aSendMessageRepository, pusher: PusherSendMessageInterface): Promise<void> {
-        const msg = { id: nanoid(), senderId: chatProfile.sender, text, timestamp: Date.now() }
+    /**
+     * Sends the message to the chat and and alerts all other participants
+     * @param chatProfile 
+     * @param text - a non-zero string
+     * @returns Promice<void>
+     */
+    async sendMessage(chatProfile: SenderHeader, text: string,): Promise<void> {
+        this.validator.validateMessageText(text);
+        this.validator.validateProfile(chatProfile);
+        const messageId: string = nanoid();
+        const date: number = Date.now();
+        const msg = { id: messageId, senderId: chatProfile.sender, text, timestamp: date };
+        return this.sendAndPush(chatProfile.id, msg);
+    }
+
+    /**
+     * 
+     * @param chatId - a non-empty, valid chatID
+     * @returns Promise<void>
+     */
+    async deleteChat(chatId: string,): Promise<void> {
+        this.validator.validateChatId(chatId);
+        await this.repoFacade.removeAllMessages(chatId);
+    }
+
+    /**
+     * 
+     * @param chatId - a non-empty, valid chatID
+     * @returns array of Message objects
+     */
+    async getMessages(chatId: string): Promise<Message[]> {
+        this.validator.validateChatId(chatId);
+        const messages = await this.repoFacade.getMessages(chatId);
+        this.validator.validateMessageArray(messages);
+        return messages;
+    }
+
+    private async sendAndPush(chatId: string, message: Message): Promise<void> {
         await Promise.all([
-            repository.sendMessage(chatProfile.id, msg),
-            pusher.sendMessage(chatProfile.id, msg)
+            this.repoFacade.sendMessage(chatId, message),
+            this.pusher.sendMessage(chatId, message)
         ])
     }
 
-    async deleteChat(chatId: string, repository: aMessageRepository): Promise<number> {
-        return repository.removeAllMessages(chatId)
-    }
-}
-
-class Participants {
-    private readonly user1: string
-    private readonly user2: string
-    constructor(chatId: string) {
-        const [user1, user2] = chatId.split('--')
-        this.user1 = user1
-        this.user2 = user2
+    private isMemberOfChat(chatProfile: ChatProfile, sender: string): boolean {
+        for (const member of chatProfile.members) {
+            if (member === sender) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    isParticipant(userId: string): boolean {
-        return userId === this.user1 || userId === this.user2
+    private async getProfile(chatId: string): Promise<ChatProfile> {
+        const profile = await this.repoFacade.getChatProfile(chatId)
+        return profile
     }
 
-    getCorrespondent(userId: string): string {
-        return userId === this.user1 ? this.user2 : this.user1
+    private async hasFriendInChat(sender: string, members: Set<string>): Promise<boolean> {
+        for (const member of members) {
+            if (member === sender) continue;
+            const friendshipExists = await this.repoFacade.friendshipExists(sender, member);
+            if (friendshipExists) {
+                return true;
+            }
+        }
+        return false;
     }
 }

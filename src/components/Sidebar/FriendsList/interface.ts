@@ -1,5 +1,6 @@
 export interface FriendsListProps {
     friends: Profile[];
+    sessionid: string;
 }
 
 interface Profile {

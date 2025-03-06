@@ -25,4 +25,21 @@ export class UserRepository extends aUserRepository {
         }
         return user as unknown as User;
     }
+
+    async getUserChats(userId: string): Promise<Set<string>> {
+        const data = await this.database.smembers(this.repoKey(userId));
+        return new Set(data);
+    }
+
+    async removeUserChat(userId: string, chatId: string): Promise<void> {
+        await this.database.srem(this.repoKey(userId), chatId);
+    }
+
+    async addUserChat(userId: string, chatId: string): Promise<void> {
+        await this.database.sadd(this.repoKey(userId), chatId);
+    }
+
+    private repoKey(userId: string): string {
+        return `user:${userId}:chats`;
+    }
 }

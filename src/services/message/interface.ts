@@ -1,18 +1,19 @@
+import { Message } from "@/lib/validations/messages";
+import { SenderHeader } from "@/schemas/senderHeaderSchema";
 
-import { PusherSendMessageInterface } from "@/services/pusher/interfaces";
-import { aFriendsRepository } from "@/repositories/friends/abstract";
-import { aMessageRepository } from "@/repositories/message/removeAll/abstract";
-import { aSendMessageRepository } from "@/repositories/message/send/abstract";
 
 export interface MessageSendInterface extends MessageServiceInterface {
-    areFriends(chatProfile: ChatProfile, repository: aFriendsRepository): Promise<boolean>
-    sendMessage(chatProfile: ChatProfile, text: string, repository: aSendMessageRepository, pusher: PusherSendMessageInterface): Promise<void>
+    sendMessage(chatProfile: SenderHeader, text: string): Promise<void>
 }
 
 export interface MessageRemoveAllInterface extends MessageServiceInterface {
-    deleteChat(chatId: string, repository: aMessageRepository): Promise<number>
+    deleteChat(chatId: string): Promise<void>
+}
+
+export interface GetMessagesInterface {
+    getMessages(chatId: string): Promise<Message[]>
 }
 
 interface MessageServiceInterface {
-    isChatMember(chatProfile: ChatProfile): boolean
+    isValidChatMember(chatProfile: SenderHeader): Promise<boolean>
 }

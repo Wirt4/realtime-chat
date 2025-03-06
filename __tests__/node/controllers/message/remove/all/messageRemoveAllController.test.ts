@@ -1,7 +1,7 @@
-import {MessageRemoveAllController} from "@/controllers/message/remove/all/controller";
+import { MessageRemoveAllController } from "@/controllers/message/remove/all/controller";
 import myGetServerSession from "@/lib/myGetServerSession";
-import {POST} from "@/app/api/message/remove/all/route";
-import {MessageRemoveAllInterface} from "@/services/message/interface";
+import { POST } from "@/app/api/message/remove/all/route";
+import { MessageRemoveAllInterface } from "@/services/message/interface";
 
 jest.mock("@/lib/myGetServerSession")
 
@@ -11,8 +11,8 @@ describe('messageRemoveAllController', () => {
     let response: Response
     let service: MessageRemoveAllInterface
 
-    beforeEach(()=>{
-        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'kappa'}});
+    beforeEach(() => {
+        (myGetServerSession as jest.Mock).mockResolvedValue({ user: { id: 'kappa' } });
         request = new Request("/api/message/remove/all",
             {
                 method: "POST",
@@ -20,17 +20,17 @@ describe('messageRemoveAllController', () => {
                 headers: { 'Content-Type': 'application/json' }
             });
         controller = new MessageRemoveAllController();
-        service ={
-            isChatMember: jest.fn().mockReturnValue(true),
+        service = {
+            isValidChatMember: jest.fn().mockReturnValue(true),
             deleteChat: jest.fn()
         }
     })
-    it('return 401 if invalid',async ()=>{
+    it('return 401 if invalid', async () => {
         (myGetServerSession as jest.Mock).mockResolvedValue(null)
         response = await controller.removeAll(request, service)
         expect(response.status).toBe(401)
     })
-    it('return 422 if chatId missing', async ()=>{
+    it('return 422 if chatId missing', async () => {
         request = new Request("/api/message/remove/all",
             {
                 method: "POST",
@@ -40,28 +40,28 @@ describe('messageRemoveAllController', () => {
         response = await controller.removeAll(request, service)
         expect(response.status).toBe(422)
     })
-    it('return 401 if not part of chat', async ()=>{
-        service.isChatMember = jest.fn().mockReturnValue(false)
+    it('return 401 if not part of chat', async () => {
+        service.isValidChatMember = jest.fn().mockReturnValue(false)
         const response = await controller.removeAll(request, service)
         expect(response.status).toBe(401)
     })
-    it("return 422 if chat id is not formatted correctly", async ()=>{
-        (myGetServerSession as jest.Mock).mockResolvedValue({user:{id:'kappa'}});
+    it("return 422 if chat id is not formatted correctly", async () => {
+        (myGetServerSession as jest.Mock).mockResolvedValue({ user: { id: 'kappa' } });
         request = new Request("/api/message/remove/all",
             {
                 method: "POST",
-                body: JSON.stringify({chatId: "kappa"}),
+                body: JSON.stringify({ chatId: "kappa" }),
                 headers: { 'Content-Type': 'application/json' }
             });
 
         const response = await controller.removeAll(request, service)
         expect(response.status).toBe(422)
     })
-    it('return 200 if successful', async ()=>{
+    it('return 200 if successful', async () => {
         response = await controller.removeAll(request, service)
         expect(response.status).toBe(200)
     })
-    it('returns 500 if service throws', async ()=>{
+    it('returns 500 if service throws', async () => {
         service.deleteChat = jest.fn().mockRejectedValue(new Error('error text'))
         response = await controller.removeAll(request, service)
         expect(response.status).toBe(500)

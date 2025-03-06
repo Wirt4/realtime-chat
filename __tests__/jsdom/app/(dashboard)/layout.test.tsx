@@ -33,9 +33,11 @@ describe('Layout tests', () => {
             getSidebarProps: jest.fn().mockResolvedValue({
                 hasFriends,
                 hasActiveChats,
-                friends, friendRequestSidebarOptionsProps: {
-                    initialRequestCount,
-                    sessionId
+                friends,
+                friendRequestSidebarOptionsProps: {
+                    friends,
+                    sessionId,
+                    initialRequestCount
                 },
                 sidebarChatlistProps: {
                     friends, sessionId, chatId
@@ -64,7 +66,8 @@ describe('Layout tests', () => {
         (SidebarChatList as jest.Mock).mockImplementation(() => {
             return <ul aria-label='chat list' />;
         });
-    })
+    });
+
     afterEach(() => {
         jest.resetAllMocks();
     });
@@ -89,7 +92,7 @@ describe('Layout tests', () => {
         expect(notFound).toHaveBeenCalledTimes(1);
     });
 
-    test("If it's a fine session, then  notFound should not be called", async () => {
+    test("If it's a fine session, then notFound should not be called", async () => {
         jest.spyOn(dashBoardData, 'getSession').mockResolvedValue({ user: { id: '1234' } } as Session);
         render(await Layout());
         expect(notFound).not.toHaveBeenCalled();
@@ -133,7 +136,7 @@ describe('Layout tests', () => {
         await waitFor(() => expect(friendRequestSpy).toHaveBeenCalledWith(5));
     });
 
-    test('Output of getIncomingFriendRequests is passed to  FriendRequestSidebarOptions, different data', async () => {
+    test('Output of getIncomingFriendRequests is passed to FriendRequestSidebarOptions, different data', async () => {
         initialRequestCount = 2;
         (dashboardDataFactory as jest.Mock).mockReturnValue(mockDashBoardData());
         const friendRequestSpy = jest.fn();
@@ -165,7 +168,6 @@ describe('Layout tests', () => {
         const logoutButton = queryByLabelText('sign out button');
         expect(logoutButton).toBeInTheDocument();
     });
-
 
     test('should contain a SidebarChatList component', async () => {
         const { queryByLabelText } = render(await Layout());
