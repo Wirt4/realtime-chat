@@ -38,6 +38,7 @@ The cycle is "red", "green", "refactor".
 Don't worry about changing tests.
 It's normal for tests to be updated for new features. And like any other code, unit tests are only right
 until proven wrong. So don't be afraid to change, maintain and refactor the test suites.
+
 #### Testing
 Tests for tsx docs go in the `__tests__/jsdom` directory. 
 Tests for conventional ts files go in the `__tests__/node` directory.
@@ -45,7 +46,6 @@ run both `npm run test:jsdom` and `npm run test:node` to run all tests.
 Run `sh scripts/testAll.sh` to run all tests in one go.
 
 ### Deploying
-The app is set up with Heroku (live version at https://salthouse-chat-2e94934e3b3e.herokuapp.com/).
 When it's ready to publish,
 1. merge changes from `dev` to `main`
 2. Open the heroku dashboard at `https://dashboard.heroku.com/apps/salthouse-chat/deploy/github`
